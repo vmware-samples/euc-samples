@@ -1,0 +1,12 @@
+<Replace>
+	<CmdID>2</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/AssignedAccess/KioskModeApp</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">chr</Format>
+		</Meta>
+		<Data>{"Account":"standard","AUMID":"AirWatchLLC.AirWatchBrowser_htcwkw4rx2gx4!App"}</Data>
+	</Item>
+</Replace>
