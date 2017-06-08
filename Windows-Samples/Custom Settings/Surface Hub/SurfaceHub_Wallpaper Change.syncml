@@ -1,0 +1,13 @@
+<Replace>
+	<CmdID>1</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Vendor/MSFT/SurfaceHub/InBoxApps/Welcome/CurrentBackgroundPath</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>https://dev7.airwatchdev.com/images/WorldWideEnterprises.png</Data>
+	</Item>
+</Replace>

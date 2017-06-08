@@ -1,0 +1,30 @@
+<Replace>
+	<CmdID>2</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+		./Vendor/MSFT/SurfaceHub/MaintenanceHoursSimple/Hours/StartTime
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">int</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>60</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>3</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+		./Vendor/MSFT/SurfaceHub/MaintenanceHoursSimple/Hours/Duration
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">int</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>180</Data>
+	</Item>
+</Replace>

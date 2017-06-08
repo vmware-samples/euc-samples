@@ -1,0 +1,26 @@
+<Replace>
+	<CmdID>9</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Vendor/MSFT/SurfaceHub/MOMAgent/WorkspaceID</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>your workspace id</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>10</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Vendor/MSFT/SurfaceHub/MOMAgent/WorkspaceKey</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>your workspace key</Data>
+	</Item>
+</Replace>

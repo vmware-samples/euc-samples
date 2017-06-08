@@ -1,0 +1,15 @@
+<Replace>
+	<CmdID>12</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/SurfaceHub/Properties/FriendlyName
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>Shub Conf Room 005</Data>
+	</Item>
+</Replace>

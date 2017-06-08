@@ -1,0 +1,15 @@
+<Replace>
+	<CmdID>11</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/SurfaceHub/InBoxApps/Welcome/MeetingInfoOption
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">int</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>1</Data>
+	</Item>
+</Replace>

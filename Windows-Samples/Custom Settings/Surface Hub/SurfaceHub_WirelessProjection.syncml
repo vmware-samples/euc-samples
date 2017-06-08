@@ -1,0 +1,45 @@
+<Replace>
+	<CmdID>6</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+		./Vendor/MSFT/SurfaceHub/InBoxApps/WirelessProjection/PINRequired
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>7</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+		./Vendor/MSFT/SurfaceHub/InBoxApps/WirelessProjection/Enabled
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>8</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+		./Vendor/MSFT/SurfaceHub/InBoxApps/WirelessProjection/Channel
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">int</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>6</Data>
+	</Item>
+</Replace>

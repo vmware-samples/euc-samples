@@ -1,0 +1,13 @@
+<Replace>
+	<CmdID>5</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Vendor/MSFT/SurfaceHub/InBoxApps/Welcome/AutoWakeScreen</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Replace>
