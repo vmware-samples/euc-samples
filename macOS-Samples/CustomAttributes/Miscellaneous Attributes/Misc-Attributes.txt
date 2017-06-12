@@ -1,0 +1,28 @@
+# Author Name:  Robert Terakedis (rterakedis@vmware.com)
+# Date:  1/26/2017 
+# Minimal/High Level Description:    Custom Attribute Payloads to report various macOS attributes.  Paste each individual script section into a separate Custom XML payload (do not include the header).
+# Tested Version:   AirWatch version 9.0
+
+
+
+## BATTERY CYCLECOUNT ##
+
+ioreg -r -c "AppleSmartBattery" | grep -w "CycleCount" | awk '{print $3}' | sed s/\"//g
+
+
+
+## BATTERY HEALTHSTATUS ##
+
+result=`ioreg -r -c "AppleSmartBattery" | grep "PermanentFailureStatus" | awk '{print $3}' | sed s/\"//g`
+if [ "$result" == "1" ]; then
+result="Failure"
+elif [ "$result" == "0" ]; then
+result="OK"
+fi
+echo $result
+
+
+
+## OPERATING SYSTEM MINOR BUILD VERSION: ##
+
+/usr/bin/sw_vers -buildVersion
