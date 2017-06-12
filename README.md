@@ -6,6 +6,7 @@
   - [Required Information](#required-information)
   - [Suggested Information](#suggested-information)
   - [Contribution Process](#contribution-process)
+  - [Developer Certificate of Origin](#developer-certificate-of-origin)
   - [Code Style](#code-style)
 - [Resource Maintenance](#resource-maintenance)
   - [Maintenance Ownership](#maintenance-ownership)
@@ -50,6 +51,9 @@ Follow the [GitHub process](https://help.github.com/articles/fork-a-repo)
 * Please use one commit and pull request per sample
 * Please post the sample output along with the pull request
 * If you include a license with your sample, use the project license
+
+### Developer Certificate of Origin
+The AirWatch-samples project team welcomes contributions from the community. Before you start working with AirWatch-samples, please read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch.
 
 ### Code Style
 
