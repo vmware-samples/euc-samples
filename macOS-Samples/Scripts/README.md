@@ -1,29 +1,7 @@
 # AirWatch-samples
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Submitting samples](#submitting-samples)
-  - [Required Information](#required-information)
-  - [Suggested Information](#suggested-information)
-  - [Contribution Process](#contribution-process)
-  - [Developer Certificate of Origin](#developer-certificate-of-origin)
-  - [Code Style](#code-style)
-- [Resource Maintenance](#resource-maintenance)
-  - [Maintenance Ownership](#maintenance-ownership)
-  - [Filing Issues](#filing-issues)
-  - [Resolving Issues](#resolving-issues)
-  - [VMware Sample Exchange](#vmware-sample-exchange)
-- [VMware Resources](#vmware-resources)
-
-
-## Introduction
-Welcome to the **Airwatch-samples** repository.  This project is intended for the community and VMware to share commonly used code snippets that can aid VMWare Airwatch device administrators. 
-
-Some examples of items to submit for consideration and use by the community:
-* Custom XML Profile Payloads
-* Script content for Custom Attributes
-* Scripts to be leveraged via Products  (Bash/shell, Python, Powershell, Batch, etc)
-* Scripts to assist with automation against the AirWatch Rest API
+## macOS-Samples \ Scripts
+This section of the **AirWatch-samples** repository contains samples relating to macOS endpoint management via scripts.   Please feel free to submit any scripts you wish to share with the community!
 
 
 ## Submitting samples
@@ -52,9 +30,6 @@ Follow the [GitHub process](https://help.github.com/articles/fork-a-repo)
 * Please post the sample output along with the pull request
 * If you include a license with your sample, use the project license
 
-### Developer Certificate of Origin
-The AirWatch-samples project team welcomes contributions from the community. Before you start working with AirWatch-samples, please read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch.
-
 ### Code Style
 
 We won't actively enforce any "official" style guides, but do ask that you do what you can to:
@@ -80,6 +55,8 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 
 ## VMware Resources
+* [Airwatch-Samples GitHub Repository](https://github.com/vmwaresamples/AirWatch-samples)
+* [WHITEPAPER - Product Provisioning Best Practices](https://blogs.vmware.com/euc/2017/05/vmware-airwatch-office-2016-macos-product-deployment-best-practices.html)
 * [VMware Code](https://code.vmware.com/home)
 * [VMware Developer Community](https://communities.vmware.com/community/vmtn/developer)
 * [VMware End User Computing Blog - AirWatch](https://blogs.vmware.com/euc/products/airwatch)
