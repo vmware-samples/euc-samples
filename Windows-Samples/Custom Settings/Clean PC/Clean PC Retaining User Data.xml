@@ -1,0 +1,12 @@
+<Exec>
+	<CmdID>2</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/CleanPC/CleanPCRetainingUserData</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">int</Format>
+		</Meta>
+		<Data>1</Data>
+	</Item>
+</Exec>
