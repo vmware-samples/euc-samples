@@ -4,7 +4,7 @@
 - **Author**: Josue Negron
 - **Email**: jnegron@vmware.com
 - **Date Created**: 7/11/2017
-- **Supported Platforms**: Windows 10 Home, Pro, Enterprise and Education
+- **Supported Platforms**: Windows 10 Enterprise and Education
 - **Tested on Windows 10**: 1703
 
 ## Purpose 
