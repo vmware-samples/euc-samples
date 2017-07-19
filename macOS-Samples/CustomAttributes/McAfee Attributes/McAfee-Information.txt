@@ -11,9 +11,9 @@
 isManaged=`sudo /Library/McAfee/agent/bin/cmdagent -i | grep GUID | cut -c 7-43`
 if [ $isManaged != "N/A" ] ; 
 then
-result="Managed"
+    result="Managed"
 else
-result="Unmanaged"
+    result="Unmanaged"
 fi
 echo $result
 
@@ -43,7 +43,7 @@ echo $datver
 ## MCAFEE-FIREWALLSTATUS: ##
 
 if [ -f "/Library/Preferences/com.mcafee.ssm.StatefulFirewall.plist" ]; then
-result=`/usr/bin/defaults read /Library/Preferences/com.mcafee.ssm.StatefulFirewall IsFirewallEnabled`
+    result=`/usr/bin/defaults read /Library/Preferences/com.mcafee.ssm.StatefulFirewall IsFirewallEnabled`
 fi
 if [ "$result" = "1" ]; then
     echo "Enabled"
@@ -56,10 +56,10 @@ fi
 ## MCAFEE-LASTDATUPDATETIME: ##
 
 if [ -f "/Library/Preferences/com.mcafee.ssm.antimalware.plist" ]; then
-result=`date -r "$(/usr/bin/defaults read /Library/Preferences/com.mcafee.ssm.antimalware Update_Last_Update_Time)" "+%Y-%m-%d %H:%M:%S"`
-echo $result
+    result=`date -r "$(/usr/bin/defaults read /Library/Preferences/com.mcafee.ssm.antimalware Update_Last_Update_Time)" "+%Y-%m-%d %H:%M:%S"`
+    echo $result
 else
-echo "Not installed"
+    echo "Not installed"
 fi
 
 
