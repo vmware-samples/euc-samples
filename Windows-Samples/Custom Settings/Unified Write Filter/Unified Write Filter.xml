@@ -1,0 +1,120 @@
+<Replace>
+	<CmdID>1</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/FilterEnabled
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>2</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/Volume/C:/Protected
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>3</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/Volume/C:/BindByDriveLetter
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Replace>
+<Add>
+	<CmdID>4</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/Volume/C:/Exclusions/%5CProgram%20Files%5CWindows%20Defender
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Add>
+<Add>
+	<CmdID>5</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/Volume/C:/Exclusions/%5CProgramData%5CMicrosoft%5CWindows%20Defender
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Add>
+<Add>
+	<CmdID>6</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/Volume/C:/Exclusions/%5CWindows%5CWindowsUpdate.log
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Add>
+<Add>
+	<CmdID>7</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/Volume/C:/Exclusions/%5CWindows%5CTemp%5CMpCmdRun.log
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Add>
+<Add>
+	<CmdID>8</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./Vendor/MSFT/UnifiedWriteFilter/NextSession/RegistryExclusions/HKEY_LOCAL_MACHINE%5CSOFTWARE%5CMicrosoft%5CWindows%20Defender
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">bool</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>True</Data>
+	</Item>
+</Add>
