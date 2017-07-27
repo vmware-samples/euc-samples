@@ -1,5 +1,5 @@
 # Example - DEPNotify package
-This package is designed to open on first user login
+This package is designed to open [DEPNotify](https://gitlab.com/Mactroll/DEPNotify) on first user login
 
 The repository is setup to build with `munkipkg`
 
@@ -13,7 +13,7 @@ productbuild --sign "Developer ID Installer: VMWARE AIRWATCH (MXNCQ3W382)" --pac
 ```
 
 
-## To build with munkipkg
+## To build with [munkipkg](https://github.com/munki/munki-pkg)
 First modify the `build-info.json` file for your certificate in login keychain
 ```
 munkipkg Example-DEPNotify/
