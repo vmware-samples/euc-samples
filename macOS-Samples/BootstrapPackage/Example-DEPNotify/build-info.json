@@ -1,0 +1,14 @@
+{
+    "postinstall_action": "none",
+    "suppress_bundle_relocation": true,
+    "name": "DEPNotify-Example-${version}.pkg",
+    "distribution_style": true,
+    "install_location": "/",
+    "version": "1.0",
+    "ownership": "recommended",
+    "identifier": "com.vmware.airwatch.DEPNotify-Example",
+    "signing_info": {
+	     "identity": "Developer ID Installer: AIRWATCH LLC (MXNCQ3W382)",
+       "timestamp": true
+    }
+}

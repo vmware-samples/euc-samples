@@ -1,0 +1,18 @@
+#!/bin/bash
+
+LA="/Library/LaunchAgents/com.vmware.airwatch.depnotify.plist"
+notifylog="/private/var/tmp/depnotify.log"
+
+# Get current user uid and start the LaunchAgent as that user.
+# This is only needed for Non-DEP scenarios in which the LaunchAgent is
+# placed while user session is already active.
+uid=$(/usr/bin/stat -f %u /dev/console)
+if [ $uid -gt 500 ];
+  then
+    /bin/launchctl asuser $uid /bin/launchctl load $LA
+fi
+
+# Initialize DEPNotify with some text
+echo "Command: MainText: Thank you for enrolling your Mac!" >> $notifylog
+echo "Command: Alert: Please be patient while your apps install" >> $notifylog
+echo "Status: Installing apps..." >> $notifylog
