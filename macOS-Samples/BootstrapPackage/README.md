@@ -89,6 +89,8 @@ If **On Demand** is selected, then it will only install to devices that have bee
 
 In both cases, the package will not be published to an existing enrolled device unless specifically initiated via On Demand install via the Console.
 
+**For a more detailed guide (with pictures) on the Console setup, Erik Gomez has created a [fantastic blog post here](http://blog.eriknicolasgomez.com/2017/07/27/Custom-DEP-Part-7-Getting-started-with-AirWatch-9.1.3/)**
+
 
 ## Troubleshooting
 [Please be sure to read the Caveats!](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage#caveats)
