@@ -1,6 +1,6 @@
 # Bootstrap Package
 
-<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/macOS-Samples/BootstrapPackage/images/Bootstrap_icon.png" alt="Drawing" style="width: 200px;"/>
+![Bootstrap Package](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/macOS-Samples/BootstrapPackage/images/Bootstrap_icon_400px.png)
 
 The Bootstrap Package feature gives admins the ability to have their installer pkgs deployed to devices *immediately* after enrollment has completed.
 
