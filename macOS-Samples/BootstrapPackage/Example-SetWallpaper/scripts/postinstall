@@ -7,7 +7,7 @@ import os
 import sys
 
 # Change this url to your image
-image_url = 'https://s3.us-east-2.amazonaws.com/vmware-it-tet/wallpapers/vmware-v3.jpg'
+image_url = 'https://s3.us-east-2.amazonaws.com/vmware-it-test/wallpapers/vmware-v3.jpg'
 save_path = '/private/tmp/'
 
 def main():
