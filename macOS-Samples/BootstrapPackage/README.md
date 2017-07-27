@@ -65,6 +65,8 @@ There are several tools that can assist in creating a package for use in this fe
 
 [**Example: Building a simple package to set the wallpaper**](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage/Example-SetWallpaper)  
 
+[**Recommended Deployment - InstallApplications Tool**](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage#recommended-deployment---installapplications-tool)
+
 ## Setup via AirWatch Console
 This feature has been added to the UI where Internal Apps currently reside
 
