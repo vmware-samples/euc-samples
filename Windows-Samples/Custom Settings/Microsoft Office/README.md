@@ -8,12 +8,12 @@
 - **Tested on Windows 10**: 1703
 
 ## Purpose 
-The [Office CSP](https://docs.microsoft.com/en-us/windows/client-management/mdm/office-csp) is used to install the Office client on a device via the Office Deployment Tool. This CSP was added in Windows 10 1703. 
+The [Office CSP](https://docs.microsoft.com/en-us/windows/client-management/mdm/office-csp) is used to install the Office on a device via the Office Deployment Tool. This CSP was added in Windows 10 1703. 
 
 ## Details
-The [Office CSP ](https://docs.microsoft.com/en-us/windows/client-management/mdm/office-csp) is the ability to remotely execute a PC Refresh (via MDM) which users can do manually on their device by going to **Settings > Update & Security > Recovery > Reset this PC > Get Started**, then you are presented with **Keep my Files** or **Remove Everything**. This best explains the differences between Retaining User Data and without Retaining User Data. 
+The [Office CSP ](https://docs.microsoft.com/en-us/windows/client-management/mdm/office-csp) allows customers to attach a serialized configuration XML within the Data tags to allow of auto download and installation of various Office 365 editions. 
 
-A sample configuration XML for deploying Office 365 for Business Retail is below, but you can also use [Configuration XML Editor](https://officedev.github.io/Office-IT-Pro-Deployment-Scripts/XmlEditor.html) to quickly generate this XML, then serialize the XML (using XML Tools Plugin on Notepad++ or any online tool) before pasting between the <data></data> tags in the custom XML sample.
+A sample configuration XML for deploying Office 365 for Business Retail is below, but you can also use [Configuration XML Editor](https://officedev.github.io/Office-IT-Pro-Deployment-Scripts/XmlEditor.html) to quickly generate this XML, then serialize (Encode) the XML (using XML Tools Plugin on Notepad++ (Convert XML to Text) or any [online tool](http://coderstoolbox.net/string/#!encoding=xml&action=encode&charset=us_ascii)) before pasting between the <data></data> tags in the custom XML sample.
 
 ### Configuration XML for Office 365 for Business, Current Channel
     <Configuration>
@@ -37,6 +37,7 @@ A sample configuration XML for deploying Office 365 for Business Retail is below
 
 ## Change Log
 - 7/11/2017: Created Sample for Office CSP
+- 7/27/2017: Updated README Details Section
 
 
 ## Additional Resources
