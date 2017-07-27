@@ -8,7 +8,7 @@
     "ownership": "recommended",
     "identifier": "com.vmware.airwatch.DEPNotify-Example",
     "signing_info": {
-      "identity": "Developer ID Installer: VMWARE AIRWATCH (MXNCQ3W382)",
+      "identity": "YOUR IDENTITY FROM LOGIN KEYCHAIN",
       "timestamp": true
     }
 }
