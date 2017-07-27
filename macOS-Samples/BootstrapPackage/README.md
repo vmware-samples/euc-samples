@@ -55,7 +55,7 @@ There are several tools that can assist in creating a package for use in this fe
 
 **Recommended Package Creation Tools:**
 
-* Native CLI tools - [pkgbuild](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/pkgbuild.1.html) + [productbuild] (https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/productbuild.1.html) (example below)
+* Native CLI tools - [pkgbuild](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/pkgbuild.1.html) + [productbuild](https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/productbuild.1.html) (example below)
 * Munkipkg (does not require Munki)
 * Packages
 
@@ -135,7 +135,7 @@ Pkgs are stored on an external file server, such as AWS S3. A JSON Manifest shou
 
 [<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/macOS-Samples/BootstrapPackage/images/InstallApplications%20Tool.png">](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/macOS-Samples/BootstrapPackage/images/InstallApplications%20Tool.png)
 
-**Why should I use this tool?**
+**Why should I use this tool?**  
 Due to the caveats and limitations stated earlier, this tool extends the Bootstrap feature to give the admin more control over when the packages are deployed and in what order they are installed.
 
 1. The tool handles installing packages during Setup Assistant in a DEP enrollment during "PreStage". Packages defined in "Stage 1" or "Stage 2" will not install until a user session is active. This allows the admin to install critical tools first, before the user even gets to the desktop, then install user-context tools and UI windows once the user is in their session. With this model of deployment, the admin can create any custom installation deployment flow they want.
