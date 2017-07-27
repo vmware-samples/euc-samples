@@ -11,7 +11,7 @@ Some admins might want to use some alternative tools to handle the majority of t
 
 The feature is best paired with a DEP Enrollment, but is available for all types of enrollments - Agent, Web, and DEP.
 
-##### Common Uses Cases:
+#### Common Uses Cases:
 * Admin wants to use Munki for Application Management. The Munki client needs to be installed right after enrollment so the user can begin installing apps, rather than going through the AirWatch Agent + App Catalog.
 * Admin only uses MDM for certificate management, security, and some software management, but uses Chef or Puppet for configuration management. They want Chef/Puppet installed instantly when enrollment completes, to start configuring the machine before the user starts to use it.
 * Admin wants to create a custom branded end-user experience (see DEPNotify or SplashBuddy) that launches a window as soon as enrollment completes, to let the user know what's happening and to hold off using the machine until it's done downloading and provisioning.
@@ -135,12 +135,12 @@ However, when used correctly with 10.12.6+, it has shown to be reliable enough f
 ## Recommended Deployment - InstallApplications Tool
 To have greater control over what packages are installed on enrollment, and also to work around Apple bugs on pre-10.12.6 devices, we advise using the open source tool, [InstallApplications](https://github.com/erikng/installapplications). This tool was created *specifically for this feature*, to enhance the capabilities of `InstallApplication` and work around the OS platform issues & limitations.
 
-**How does the tool work?**  
+#### How does the tool work?  
 Pkgs are stored on an external file server, such as AWS S3. A JSON Manifest should be created that defines the location, name, and SHA256 hash of each file and also stored on a file server. The InstallApplications tool will look at this manifest to download and install the packages in the defined order, validating the hash before installation for security.  
 
 [<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/macOS-Samples/BootstrapPackage/images/InstallApplications%20Tool.png">](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/macOS-Samples/BootstrapPackage/images/InstallApplications%20Tool.png)
 
-**Why should I use this tool?**  
+#### Why should I use this tool?  
 Due to the caveats and limitations stated above, this tool extends the Bootstrap feature to give the admin more control over when the packages are deployed and in what order they are installed.
 
 1. The tool handles installing packages during Setup Assistant in a DEP enrollment during "PreStage". Packages defined in "Stage 1" or "Stage 2" will not install until a user session is active. This allows the admin to install critical tools first, before the user even gets to the desktop, then install user-context tools and UI windows once the user is in their session. With this model of deployment, the admin can create any custom installation deployment flow they want.
@@ -149,7 +149,7 @@ Due to the caveats and limitations stated above, this tool extends the Bootstrap
 4. The Admin wants to use DEP+Bootstrap to replace their imaging workflow to provision devices with multiple softwares automatically
 
 
-**Troubleshooting InstallApplications Tool**  
+#### Troubleshooting InstallApplications Tool  
 Grab a device that has enrolled and open Terminal.app
 
 1. Enter `sudo log collect --output ~/Desktop`
