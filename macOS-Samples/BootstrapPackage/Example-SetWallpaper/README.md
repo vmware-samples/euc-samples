@@ -1,5 +1,8 @@
 # Example - SetWallpaper package
 This package is designed to set the wallpaper of an image hosted online
+
+*Be sure to modify the postinstall and change the url for your image*
+
 This package is designed for a user-session install. It will not work if installed during DEP Setup Assistant since there is no desktop yet to modify. As such, recommended deployment for this is to use [InstallApplications](https://github.com/erikng/installapplications) and place the package in Stage1 or Stage2
 
 The repository is setup to build with `munkipkg`
