@@ -63,6 +63,8 @@ The following examples have instructions for creating packages with either `pkgb
 
 [**Example: Building a simple custom UI package with DEPNotify**](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage/Example-DEPNotify)
 
+[**Example: Building a package to install Santa and configure blacklist rules**](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage/Example-Santa_BlockChess)
+
 [**Example: Building a simple package to set the wallpaper**](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage/Example-SetWallpaper)  
 
 [**Recommended Deployment - InstallApplications Tool**](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage#recommended-deployment---installapplications-tool)
