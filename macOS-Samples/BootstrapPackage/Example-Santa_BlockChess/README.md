@@ -1,7 +1,9 @@
 # Example - DEPNotify package
 This package is designed to install Google's [Santa](https://github.com/google/santa) and configure a blacklist rule to block an app, in this example Chess.app
 
-This package will contain 2 sub-packages: 1. the current latest release of Santa ([here](https://github.com/google/santa/releases)) & 2. a payload-free pkg to run a [postinstall script](https://github.com/vmwaresamples/AirWatch-samples/blob/master/macOS-Samples/BootstrapPackage/Example-Santa_BlockChess/scripts/postinstall) to set a `santactl` blacklist rule
+This distribution package will contain 2 sub-packages:  
+  1. a pkg to install the latest release of Santa ([here](https://github.com/google/santa/releases))  
+  2. a payload-free pkg to run a [postinstall script](https://github.com/vmwaresamples/AirWatch-samples/blob/master/macOS-Samples/BootstrapPackage/Example-Santa_BlockChess/scripts/postinstall) to set a `santactl` blacklist rule
 
 ### To build the config pkg with pkgbuild:
 Edit the [postinstall script](https://github.com/vmwaresamples/AirWatch-samples/blob/master/macOS-Samples/BootstrapPackage/Example-Santa_BlockChess/scripts/postinstall) to add your desired [Santa rules](https://github.com/google/santa/wiki)
@@ -14,7 +16,7 @@ pkgbuild --install-location / --identifier "com.google.santa.santa_config" --ver
 ```
 
 ### To build the config pkg with [munkipkg](https://github.com/munki/munki-pkg)
-No changes are needed to the build-info.json unless you want to change the pkg identifiers. Munkipkg also ignores .DS_Store automatically.  
+No changes are needed to the [build-info.json](https://github.com/vmwaresamples/AirWatch-samples/blob/master/macOS-Samples/BootstrapPackage/Example-Santa_BlockChess/build-info.json) unless you want to change the pkg identifiers. Munkipkg also ignores .DS_Store automatically.  
 
 ```
 munkipkg santa_config/
