@@ -1,0 +1,10 @@
+{
+ "ownership": "recommended",
+ "suppress_bundle_relocation": true,
+ "identifier": "com.google.santa.santa_config",
+ "postinstall_action": "none",
+ "distribution_style": false,
+ "version": "1.0",
+ "name": "santa_config.pkg",
+ "install_location": "/"
+}

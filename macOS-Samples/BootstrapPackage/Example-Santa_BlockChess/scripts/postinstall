@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ "$3" == "/" ]; then
+    TARGETVOL=""
+else
+    TARGETVOL="$3"
+fi
+
+if [ "$3" == "/" ]; then
+
+    sudo /usr/local/bin/santactl rule --blacklist --path /Applications/Chess.app --message "NO GAMES!!!"
+fi
