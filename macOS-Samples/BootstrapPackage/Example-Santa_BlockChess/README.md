@@ -1,4 +1,4 @@
-# Example - DEPNotify package
+# Example - Santa (Block Chess.app) package
 This package is designed to install Google's [Santa](https://github.com/google/santa) and configure a blacklist rule to block an app, in this example Chess.app
 
 This distribution package will contain 2 sub-packages:  
