@@ -11,10 +11,10 @@ Some admins might want to use some alternative tools to handle the majority of t
 
 The feature is best paired with a DEP Enrollment, but is available for all types of enrollments - **Agent**, **Web**, and **DEP**.
 
-#### Common Uses Cases:
-* Admin wants to use Munki for Application Management. The Munki client needs to be installed right after enrollment so the user can begin installing apps, rather than going through the AirWatch Agent + App Catalog.
-* Admin only uses MDM for certificate management, security, and some software management, but uses Chef or Puppet for configuration management. They want Chef/Puppet installed instantly when enrollment completes, to start configuring the machine before the user starts to use it.
+#### Common Uses Cases for this feature:
+* Admin wants to use [Munki](https://github.com/munki/munki) for Application Management. The Munki client needs to be installed right after enrollment so the user can begin installing apps, rather than going through the AirWatch Agent + App Catalog.
 * Admin wants to create a custom branded end-user experience that launches a window as soon as enrollment completes, to let the user know what's happening and to hold off on using the machine until it's done downloading and provisioning (check out [DEPNotify](https://gitlab.com/Mactroll/DEPNotify) or [SplashBuddy](https://github.com/ftiff/SplashBuddy)).
+* Admin only uses MDM for certificate management, security, and some software management, but uses Chef or Puppet for configuration management. They want the Chef/Puppet client installed instantly when enrollment completes, to start configuring the machine before the user starts to use it.
 * Admin doesn't want to deploy AirWatch Agent, but still needs some critical software to be deployed to devices.
 
 ## How does it work?
