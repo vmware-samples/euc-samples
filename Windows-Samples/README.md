@@ -5,8 +5,8 @@ This section of the **AirWatch-samples** repository contains samples relating to
 
 Some examples of items to submit for consideration and use by the community:
 * Custom XML Profile Payloads
-* Script content for Custom Attributes
-* Scripts to deploy in a Product
+* Scripts for Product Provisioning
+* Scripts to use as helpful tools
 
 
 
