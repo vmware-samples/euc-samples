@@ -4,11 +4,18 @@ from AppKit import NSBundle, NSWorkspace, NSScreen
 from Foundation import NSURL
 import urllib
 import os
+import subprocess
 import sys
 
 # Change this url to your image
 image_url = 'https://s3.us-east-2.amazonaws.com/vmware-it-test/wallpapers/vmware-v3.jpg'
 save_path = '/private/tmp/'
+
+def getconsoleuser_uid():
+    cmd = ['/usr/bin/stat', '-f', '%u', '/dev/console']
+    run = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, err = run.communicate()
+    return output.split('\n')[0]
 
 def main():
     img_path = str(os.path.join(save_path, os.path.basename(image_url)))
@@ -19,6 +26,10 @@ def main():
       print e
       sys.exit(1)
 
+    curruser = getconsoleuser_uid()
+
+    os.setuid(int(curruser))
+
     # Prevent Python icon from showing in dock, credit Erik Gomez
     hidedock = NSBundle.mainBundle().infoDictionary()
     hidedock['LSBackgroundOnly'] = '1'
@@ -28,6 +39,9 @@ def main():
     ws = NSWorkspace.sharedWorkspace()
     for screen in NSScreen.screens():
       (result, error) = ws.setDesktopImageURL_forScreen_options_error_(file_url, screen, options, None)
+      print error
+      print result
+
 
 if __name__ == '__main__':
     main()
