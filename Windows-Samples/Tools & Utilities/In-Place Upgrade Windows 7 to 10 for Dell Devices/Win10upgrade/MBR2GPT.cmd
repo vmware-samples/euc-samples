@@ -1,0 +1,1 @@
+C:\DeplymentShare\Win10upgrade\MBRGPT\MBR2GPT.Exe  /allowFullOS /silent

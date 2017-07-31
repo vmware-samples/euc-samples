@@ -1,0 +1,78 @@
+;/*++
+;
+;Copyright (c) 2002-2004 Dell Inc.. All Rights Reserved.
+;
+;Module Name:
+;
+;    dcdbas64.inf
+;
+;Abstract:
+;
+;
+;--*/
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=SYSTEM
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider=%DELL%
+DriverVer=05/19/2015,8.2.0.454
+CatalogFile=dcdbas64.cat
+
+; ================= Class section =====================
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+;*****************************************
+; dcdbas Device  Install Section
+;*****************************************
+
+[Manufacturer]
+%DELL%=Standard,ntamd64
+
+[Standard.ntamd64]
+; DisplayName       	     Section DeviceId
+; -----------       	     ------- --------
+%dcdbasDevice.DeviceDesc% = dcdbas, root\dcdbas
+
+[dcdbas.ntamd64]
+CopyFiles= dcdbas.ntamd64.Copy
+
+[dcdbas.ntamd64.Copy]
+dcdbas64.sys
+
+[dcdbas.ntamd64.HW]
+AddReg=dcdbas.ntamd64.Security
+
+[dcdbas.ntamd64.Security]
+HKR,,DeviceCharacteristics,0x10001,0x100
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GRGWGX;;;BA)(A;;GRGX;;;WD)"
+
+;-------------- Service installation----------------------------------
+
+[dcdbas.ntamd64.Services]
+AddService = dcdbas, 0x00000002, dcdbas_Service_Inst
+
+; -------------- dcdbas Driver install sections----------------------
+
+[dcdbas_Service_Inst]
+DisplayName    = %dcdbas.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\dcdbas64.sys
+
+[SourceDisksNames]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles]
+dcdbas64.sys  = 1,,
+
+[Strings]
+DELL = "DELL INC"
+StdMfg = "(Standard system devices)"
+ClassName = "System"
+dcdbasDevice.DeviceDesc = "System Management Device"
+dcdbas.SVCDESC = "System Management Driver"
+DiskId1 = "Disk 1"

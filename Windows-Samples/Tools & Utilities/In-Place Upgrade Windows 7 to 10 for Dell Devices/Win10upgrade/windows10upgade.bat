@@ -1,0 +1,1 @@
+PowerShell.exe -Command "& {Start-Process PowerShell.exe -ArgumentList '-ExecutionPolicy Bypass -File ""C:\DeplymentShare\Win10upgrade\windows10upgade.ps1""' -windowstyle hidden -Verb RunAs}"
