@@ -1,0 +1,26 @@
+[Config]
+Authorization=Basic %BASE_64_ENCODED_API_CREDENTIALS%
+API_Key=%API_KEY%
+API_Server=https://%API_SERVER_URL%/api
+Enrollment_Server=%ENROLLMENT_SERVER_URL%
+;LocationGroupID is Optional - can search by group id
+LocationGroupID=%LOCATIONGROUP_ID% 
+GroupID=%GROUP_ID%
+AdminEmailAddress=%ADMIN_EMAIL_ADDRESS%
+StagingUser=%STAGING_USERNAME%
+StagingPassword=%STAGING_PASSWORD%
+
+[SMTP]
+UseSMTP=0
+SMTPServer=%SMTPServer%
+Sender=%SMTPSender%
+
+[Staging]
+AllowedStagingUsers=%UserAccount% 
+;Deliniate multiple accounts using commas.  Use a period to represent local machines
+;Azure Users 
+
+[Debug]
+EnableDebug=0
+DebugUser=%DebugUserName%
+;This section is for testing only.  Delete entire section when deploying.
