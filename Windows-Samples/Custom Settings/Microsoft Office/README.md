@@ -38,6 +38,7 @@ A sample configuration XML for deploying Office 365 for Business Retail is below
 ## Change Log
 - 7/11/2017: Created Sample for Office CSP
 - 7/27/2017: Updated README Details Section
+- 8/2/2017: Converted Office.xml to OfficeRetailSample.xml and OfficeTemplate.xml
 
 
 ## Additional Resources

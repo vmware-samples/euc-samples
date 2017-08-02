@@ -1,0 +1,12 @@
+<Exec>
+	<CmdID>2</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Vendor/MSFT/Office/Installation/0AA79349-F334-4859-96E8-B4AB43E9FEA0/install</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">chr</Format>
+		</Meta> 
+		<Data>SerializedConfiguration</Data>
+	</Item>
+</Exec>
