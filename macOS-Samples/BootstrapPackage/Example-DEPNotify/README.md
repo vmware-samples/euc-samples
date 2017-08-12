@@ -1,5 +1,8 @@
 # Example - DEPNotify package
-This package is designed to open [DEPNotify](https://gitlab.com/Mactroll/DEPNotify) on first user login
+This package is designed to open [DEPNotify](https://gitlab.com/Mactroll/DEPNotify) on first user login coming out of Setup Assistant from a DEP enrollment. 
+
+Additionally, if the pkg is deployed after the user session is already active, it's also designed to start the LaunchAgent immediately, which will kick off the DEPNotify UI.
+
 
 The repository is setup to build with `munkipkg`
 
