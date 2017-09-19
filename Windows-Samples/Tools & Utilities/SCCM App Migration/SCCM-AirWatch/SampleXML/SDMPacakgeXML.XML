@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-16"?>
+<AppMgmtDigest xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Application AuthoringScopeId="ScopeId_AE40D5A0-9880-4233-B19C-7430C1620A21" LogicalName="Application_c7725a42-a413-47ad-b3e0-b57ea987b27f" Version="2">
+		<DisplayInfo DefaultLanguage="en-US">
+			<Info Language="en-US">
+				<Title>Device Management Registration Compatibility Tool</Title>
+			</Info>
+		</DisplayInfo>
+		<DeploymentTypes>
+			<DeploymentType AuthoringScopeId="ScopeId_AE40D5A0-9880-4233-B19C-7430C1620A21" LogicalName="DeploymentType_c589b71d-77d9-423e-bceb-0f4f347e79b0" Version="1"/>
+		</DeploymentTypes>
+		<Title ResourceId="Res_1398928690">Device Management Registration Compatibility Tool</Title>
+		<Owners>
+			<User Qualifier="LogonName" Id="Administrator"/>
+		</Owners>
+		<Contacts>
+			<User Qualifier="LogonName" Id="Administrator"/>
+		</Contacts>
+		<HighPriority>1</HighPriority>
+		<AutoDistribute>true</AutoDistribute>
+	</Application>
+	<DeploymentType AuthoringScopeId="ScopeId_AE40D5A0-9880-4233-B19C-7430C1620A21" LogicalName="DeploymentType_c589b71d-77d9-423e-bceb-0f4f347e79b0" Version="1">
+		<Title ResourceId="Res_1281446408">Device Management Registration Compatibility Tool - Windows Installer (*.msi file)</Title>
+		<DeploymentTechnology>GLOBAL/MSIDeploymentTechnology</DeploymentTechnology>
+		<Technology>MSI</Technology>
+		<Hosting>Native</Hosting>
+		<Installer Technology="MSI">
+			<ExecutionContext>System</ExecutionContext>
+			<Contents>
+				<Content ContentId="Content_0a2fa1d3-f93c-4ef3-80c5-96a16e3ef6ad" Version="1">
+					<File Name="SCCMIntegrationClient.msi" Size="1462272"/>
+					<Location>\\O365SCCM\apps\AirWatch\</Location>
+					<PeerCache>true</PeerCache>
+					<OnFastNetwork>Download</OnFastNetwork>
+					<OnSlowNetwork>DoNothing</OnSlowNetwork>
+				</Content>
+			</Contents>
+			<DetectAction>
+				<Provider>MSI</Provider>
+				<Args>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="ProductCode" Type="String">{252D0765-577B-41D1-B35A-7F3D34CA36EE}</Arg>
+					<Arg Name="PackageCode" Type="String"/>
+					<Arg Name="PatchCodes" Type="String[]"/>
+				</Args>
+			</DetectAction>
+			<InstallAction>
+				<Provider>MSI</Provider>
+				<Args>
+					<Arg Name="InstallCommandLine" Type="String">msiexec /i "SCCMIntegrationClient.msi" /q</Arg>
+					<Arg Name="WorkingDirectory" Type="String"/>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="RequiresLogOn" Type="String"/>
+					<Arg Name="RequiresElevatedRights" Type="Boolean">false</Arg>
+					<Arg Name="RequiresUserInteraction" Type="Boolean">false</Arg>
+					<Arg Name="RequiresReboot" Type="Boolean">false</Arg>
+					<Arg Name="UserInteractionMode" Type="String">Hidden</Arg>
+					<Arg Name="PostInstallBehavior" Type="String">BasedOnExitCode</Arg>
+					<Arg Name="ExecuteTime" Type="Int32">0</Arg>
+					<Arg Name="MaxExecuteTime" Type="Int32">120</Arg>
+					<Arg Name="RunAs32Bit" Type="Boolean">false</Arg>
+					<Arg Name="SuccessExitCodes" Type="Int32[]">
+						<Item>0</Item>
+						<Item>1707</Item>
+					</Arg>
+					<Arg Name="RebootExitCodes" Type="Int32[]">
+						<Item>3010</Item>
+					</Arg>
+					<Arg Name="HardRebootExitCodes" Type="Int32[]">
+						<Item>1641</Item>
+					</Arg>
+					<Arg Name="FastRetryExitCodes" Type="Int32[]">
+						<Item>1618</Item>
+					</Arg>
+				</Args>
+				<Contents>
+					<Content ContentId="Content_0a2fa1d3-f93c-4ef3-80c5-96a16e3ef6ad" Version="1"/>
+				</Contents>
+			</InstallAction>
+			<UninstallAction>
+				<Provider>MSI</Provider>
+				<Args>
+					<Arg Name="InstallCommandLine" Type="String">msiexec /x {252D0765-577B-41D1-B35A-7F3D34CA36EE} /q</Arg>
+					<Arg Name="WorkingDirectory" Type="String"/>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="RequiresLogOn" Type="String"/>
+					<Arg Name="RequiresElevatedRights" Type="Boolean">false</Arg>
+					<Arg Name="RequiresUserInteraction" Type="Boolean">false</Arg>
+					<Arg Name="RequiresReboot" Type="Boolean">false</Arg>
+					<Arg Name="UserInteractionMode" Type="String">Hidden</Arg>
+					<Arg Name="PostInstallBehavior" Type="String">BasedOnExitCode</Arg>
+					<Arg Name="ExecuteTime" Type="Int32">0</Arg>
+					<Arg Name="MaxExecuteTime" Type="Int32">120</Arg>
+					<Arg Name="RunAs32Bit" Type="Boolean">false</Arg>
+					<Arg Name="SuccessExitCodes" Type="Int32[]">
+						<Item>0</Item>
+						<Item>1707</Item>
+					</Arg>
+					<Arg Name="RebootExitCodes" Type="Int32[]">
+						<Item>3010</Item>
+					</Arg>
+					<Arg Name="HardRebootExitCodes" Type="Int32[]">
+						<Item>1641</Item>
+					</Arg>
+					<Arg Name="FastRetryExitCodes" Type="Int32[]">
+						<Item>1618</Item>
+					</Arg>
+				</Args>
+				<Contents>
+					<Content ContentId="Content_0a2fa1d3-f93c-4ef3-80c5-96a16e3ef6ad" Version="1"/>
+				</Contents>
+			</UninstallAction>
+			<CustomData>
+				<DetectionMethod>ProductCode</DetectionMethod>
+				<ProductCode>{252D0765-577B-41D1-B35A-7F3D34CA36EE}</ProductCode>
+				<ProductVersion>1.0.0</ProductVersion>
+				<InstallCommandLine>msiexec /i "SCCMIntegrationClient.msi" /q</InstallCommandLine>
+				<InstallContent ContentId="Content_0a2fa1d3-f93c-4ef3-80c5-96a16e3ef6ad" Version="1"/>
+				<UninstallCommandLine>msiexec /x {252D0765-577B-41D1-B35A-7F3D34CA36EE} /q</UninstallCommandLine>
+				<ExitCodes>
+					<ExitCode Code="0" Class="Success"/>
+					<ExitCode Code="1707" Class="Success"/>
+					<ExitCode Code="3010" Class="SoftReboot"/>
+					<ExitCode Code="1641" Class="HardReboot"/>
+					<ExitCode Code="1618" Class="FastRetry"/>
+				</ExitCodes>
+				<UserInteractionMode>Hidden</UserInteractionMode>
+				<UserInstall>true</UserInstall>
+				<ContainsSystemRegistryKeys>true</ContainsSystemRegistryKeys>
+				<ContainsSystemFolders>true</ContainsSystemFolders>
+			</CustomData>
+		</Installer>
+	</DeploymentType>
+</AppMgmtDigest>

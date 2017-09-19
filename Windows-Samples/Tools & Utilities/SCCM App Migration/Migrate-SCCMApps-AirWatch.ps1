@@ -76,7 +76,10 @@ Write-Verbose ("Endpoint URL: " + $groupID)
 Write-Verbose "-----------------------------"
 Write-Verbose ""
 
-Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module 
+Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module
+Import-Module .\SCCM-AirWatch\SCCM-AirWatch.ps1
+Import-Module .\AirWatchAPI\AirWatchAPI.ps1
+ 
 Set-Location $SCCMSiteCode # Set the current location to be the site code.
 
 ##Progress bar
@@ -162,16 +165,16 @@ Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentCompl
   This implementation uses Basic authentication.  See "Client side" at https://en.wikipedia.org/wiki/Basic_access_authentication for a description
   of this implementation.
 #>
-Function Get-BasicUserForAuth {
-
-	Param([string]$func_username)
-
-	$userNameWithPassword = $func_username
-	$encoding = [System.Text.Encoding]::ASCII.GetBytes($userNameWithPassword)
-	$encodedString = [Convert]::ToBase64String($encoding)
-
-	Return "Basic " + $encodedString
-}
+#Function Get-BasicUserForAuth {
+#
+#	Param([string]$func_username)
+#
+#	$userNameWithPassword = $func_username
+#	$encoding = [System.Text.Encoding]::ASCII.GetBytes($userNameWithPassword)
+#	$encodedString = [Convert]::ToBase64String($encoding)
+#
+#	Return "Basic " + $encodedString
+#}
 
 <#
   This method builds the headers for the REST API calls being made to the AirWatch Server.
@@ -387,17 +390,18 @@ $awProperties = (Extract-PackageProperties)[1]
 #Generate Auth Headers from username and password
 $concateUserInfo = $userName + ":" + $password
 $deviceListURI = $baseURL + $bulkDeviceEndpoint
-$restUserName = Get-BasicUserForAuth ($concateUserInfo)
+$restUserName = Create-BasicAuthHeader -username $userName -password $password
 
 # Define Content Types and Accept Types
 $useJSON = "application/json"
-$useOctetStream = "application/octet-stream"
+$useOctetStream = "application/octet-stream" #NOT USED
 
 #Build Headers
 $headers = Build-Headers $restUserName $tenantAPIKey $useJSON $useOctetStream
 
 # Extract Filename, configure Blob Upload API URL and invoke the API.
 $uploadFileName = Split-Path $awProperties.FilePath -leaf
+#Check Why this is done*****
 $awProperties.Add("LocationGroupId", $groupID)
 $blobUploadEndpoint = "$AWServer/api/mam/blobs/uploadblob?filename=$uploadFileName&organizationgroupid=$groupID"
 $networkFilePath = "Microsoft.Powershell.Core\FileSystem::" + $awProperties.FilePath

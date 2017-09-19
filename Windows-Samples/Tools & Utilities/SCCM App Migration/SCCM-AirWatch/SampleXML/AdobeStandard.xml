@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-16"?>
+<AppMgmtDigest xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Application AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="Application_e2ca3307-c133-42e3-a8c2-152770cbfe3b" Version="5">
+		<DisplayInfo DefaultLanguage="en-US">
+			<Info Language="en-US">
+				<Title>Acrobat Standard 11.0.20</Title>
+				<Publisher>Adobe</Publisher>
+				<Version>11.0.20</Version>
+				<ReleaseDate>4/19/2017</ReleaseDate>
+				<Icon Id="Icon_HIHODufaIBs9mPJv_34geKyhIf8sMsUyBedg44YPFns"/>
+			</Info>
+		</DisplayInfo>
+		<DeploymentTypes>
+			<DeploymentType AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="DeploymentType_56d02c3e-4a7f-4f8d-8bd4-807576f4be60" Version="4"/>
+			<DeploymentType AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="DeploymentType_4014079f-9f70-49c1-984a-d65956a09649" Version="2"/>
+		</DeploymentTypes>
+		<Title ResourceId="Res_884850041">Acrobat Standard 11.0.20</Title>
+		<Description ResourceId="Res_18155529">B-1847135  Acrobat is a family of application software used to view, create, manipulate, print and manage files in pdf format</Description>
+		<Publisher ResourceId="Res_1797032117">Adobe</Publisher>
+		<SoftwareVersion ResourceId="Res_558987552">11.0.20</SoftwareVersion>
+		<ReleaseDate ResourceId="Res_1361884442">4/19/2017</ReleaseDate>
+		<AutoInstall>true</AutoInstall>
+		<Owners>
+			<User Qualifier="LogonName" Id="w-omk445"/>
+		</Owners>
+		<Contacts>
+			<User Qualifier="LogonName" Id="w-omk445"/>
+		</Contacts>
+	</Application>
+	<DeploymentType AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="DeploymentType_56d02c3e-4a7f-4f8d-8bd4-807576f4be60" Version="4">
+		<Title ResourceId="Res_1255917520">Acrobat Standard 11.0.20 - UserLoggedOn</Title>
+		<Requirements>
+			<Rule xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules" id="Rule_49e226fc-c6eb-4e49-9744-56cabc709bc8" Severity="None" NonCompliantWhenSettingIsNotFound="false">
+				<Annotation>
+					<DisplayName Text="User logged On Equals True"/>
+					<Description Text=""/>
+				</Annotation>
+				<Expression>
+					<Operator>Equals</Operator>
+					<Operands>
+						<GlobalSettingReference AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="GlobalSettings_04312372-27dd-42e3-8966-e0468e792a08" DataType="Boolean" SettingLogicalName="ScriptSetting_3e2e40a3-d71f-4ed2-97f0-140844c81134" SettingSourceType="Script" Method="Value"/>
+						<ConstantValue Value="True" DataType="Boolean"/>
+					</Operands>
+				</Expression>
+			</Rule>
+			<Rule xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules" id="Rule_bf58c931-d037-4394-af1c-77a89321c176" Severity="None" NonCompliantWhenSettingIsNotFound="false">
+				<Annotation>
+					<DisplayName Text="Operating system One of {All Windows 7 (64-bit), Windows 7 (64-bit), All Windows 10 (64-bit)}"/>
+					<Description Text=""/>
+				</Annotation>
+				<OperatingSystemExpression>
+					<Operator>OneOf</Operator>
+					<Operands>
+						<RuleExpression RuleId="Windows/All_x64_Windows_7_Client"/>
+						<RuleExpression RuleId="Windows/x64_Windows_7_Client"/>
+						<RuleExpression RuleId="Windows/All_x64_Windows_10_and_higher_Clients"/>
+					</Operands>
+				</OperatingSystemExpression>
+			</Rule>
+		</Requirements>
+		<DeploymentTechnology>GLOBAL/ScriptDeploymentTechnology</DeploymentTechnology>
+		<Technology>Script</Technology>
+		<Hosting>Native</Hosting>
+		<Installer Technology="Script">
+			<ExecutionContext>System</ExecutionContext>
+			<RequiresLogOn>true</RequiresLogOn>
+			<Contents>
+				<Content ContentId="Content_ef704579-0222-4efc-bcc2-5e85eb3e4057" Version="1">
+					<File Name="Deploy-Application.exe" Size="314880"/>
+					<File Name="Deploy-Application.exe.config" Size="184"/>
+					<File Name="Deploy-Application.ps1" Size="10897"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitBanner.png" Size="11573"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitConfig.xml" Size="131538"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitExtensions.ps1" Size="1943"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitLogo.ico" Size="1150"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitMain.cs" Size="25885"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitMain.ps1" Size="473808"/>
+					<File Name="AppDeployToolkit\Thumbs.db" Size="10240"/>
+					<File Name="Files\ABCPY.INI" Size="672"/>
+					<File Name="Files\AcrobatUpd11020.msp" Size="259026944"/>
+					<File Name="Files\AcroStan.msi" Size="9098752"/>
+					<File Name="Files\AcroStan.mst" Size="61440"/>
+					<File Name="Files\Data1.cab" Size="419997015"/>
+					<Location>\\kdcpsccpkg02\PackageSource$\SWPkgSrc\Adobe\Acrobat\Standard\11.0.20\</Location>
+					<PeerCache>true</PeerCache>
+					<OnFastNetwork>Download</OnFastNetwork>
+					<OnSlowNetwork>DoNothing</OnSlowNetwork>
+				</Content>
+			</Contents>
+			<DetectAction>
+				<Provider>Local</Provider>
+				<Args>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="MethodBody" Type="String">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;EnhancedDetectionMethod xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest"&gt;
+  &lt;Settings xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest"&gt;
+    &lt;MSI LogicalName="MSI_48f63380-c538-4a89-bd79-2668357d2218" IsPerUser="false" xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/07/10/DesiredConfiguration"&gt;
+      &lt;Annotation xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules"&gt;
+        &lt;DisplayName Text="" /&gt;
+        &lt;Description Text="" /&gt;
+      &lt;/Annotation&gt;
+      &lt;ProductCode&gt;{AC76BA86-1033-FFFF-BA7E-000000000006}&lt;/ProductCode&gt;
+    &lt;/MSI&gt;
+  &lt;/Settings&gt;
+  &lt;Rule id="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C/DeploymentType_56d02c3e-4a7f-4f8d-8bd4-807576f4be60" Severity="Informational" NonCompliantWhenSettingIsNotFound="false" xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules"&gt;
+    &lt;Annotation&gt;
+      &lt;DisplayName Text="" /&gt;
+      &lt;Description Text="" /&gt;
+    &lt;/Annotation&gt;
+    &lt;Expression&gt;
+      &lt;Operator&gt;GreaterEquals&lt;/Operator&gt;
+      &lt;Operands&gt;
+        &lt;SettingReference AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="Application_e2ca3307-c133-42e3-a8c2-152770cbfe3b" Version="1" DataType="Version" SettingLogicalName="MSI_48f63380-c538-4a89-bd79-2668357d2218" SettingSourceType="MSI" Method="Value" PropertyPath="ProductVersion" Changeable="false" /&gt;
+        &lt;ConstantValue Value="11.0.20" DataType="Version" /&gt;
+      &lt;/Operands&gt;
+    &lt;/Expression&gt;
+  &lt;/Rule&gt;
+&lt;/EnhancedDetectionMethod&gt;</Arg>
+				</Args>
+			</DetectAction>
+			<InstallAction>
+				<Provider>Script</Provider>
+				<Args>
+					<Arg Name="InstallCommandLine" Type="String">Deploy-Application.exe</Arg>
+					<Arg Name="WorkingDirectory" Type="String"/>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="RequiresLogOn" Type="String">True</Arg>
+					<Arg Name="RequiresElevatedRights" Type="Boolean">false</Arg>
+					<Arg Name="RequiresUserInteraction" Type="Boolean">true</Arg>
+					<Arg Name="RequiresReboot" Type="Boolean">false</Arg>
+					<Arg Name="UserInteractionMode" Type="String">Normal</Arg>
+					<Arg Name="PostInstallBehavior" Type="String">BasedOnExitCode</Arg>
+					<Arg Name="ExecuteTime" Type="Int32">20</Arg>
+					<Arg Name="MaxExecuteTime" Type="Int32">120</Arg>
+					<Arg Name="RunAs32Bit" Type="Boolean">false</Arg>
+					<Arg Name="SuccessExitCodes" Type="Int32[]">
+						<Item>0</Item>
+						<Item>1707</Item>
+					</Arg>
+					<Arg Name="RebootExitCodes" Type="Int32[]">
+						<Item>3010</Item>
+					</Arg>
+					<Arg Name="HardRebootExitCodes" Type="Int32[]">
+						<Item>1641</Item>
+					</Arg>
+					<Arg Name="FastRetryExitCodes" Type="Int32[]">
+						<Item>1618</Item>
+					</Arg>
+				</Args>
+				<Contents>
+					<Content ContentId="Content_ef704579-0222-4efc-bcc2-5e85eb3e4057" Version="1"/>
+				</Contents>
+			</InstallAction>
+			<UninstallAction>
+				<Provider>Script</Provider>
+				<Args>
+					<Arg Name="InstallCommandLine" Type="String">Deploy-Application.exe -deploymenttype uninstall</Arg>
+					<Arg Name="WorkingDirectory" Type="String"/>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="RequiresLogOn" Type="String">True</Arg>
+					<Arg Name="RequiresElevatedRights" Type="Boolean">false</Arg>
+					<Arg Name="RequiresUserInteraction" Type="Boolean">true</Arg>
+					<Arg Name="RequiresReboot" Type="Boolean">false</Arg>
+					<Arg Name="UserInteractionMode" Type="String">Normal</Arg>
+					<Arg Name="PostInstallBehavior" Type="String">BasedOnExitCode</Arg>
+					<Arg Name="ExecuteTime" Type="Int32">20</Arg>
+					<Arg Name="MaxExecuteTime" Type="Int32">120</Arg>
+					<Arg Name="RunAs32Bit" Type="Boolean">false</Arg>
+					<Arg Name="SuccessExitCodes" Type="Int32[]">
+						<Item>0</Item>
+						<Item>1707</Item>
+					</Arg>
+					<Arg Name="RebootExitCodes" Type="Int32[]">
+						<Item>3010</Item>
+					</Arg>
+					<Arg Name="HardRebootExitCodes" Type="Int32[]">
+						<Item>1641</Item>
+					</Arg>
+					<Arg Name="FastRetryExitCodes" Type="Int32[]">
+						<Item>1618</Item>
+					</Arg>
+				</Args>
+				<Contents>
+					<Content ContentId="Content_ef704579-0222-4efc-bcc2-5e85eb3e4057" Version="1"/>
+				</Contents>
+			</UninstallAction>
+			<CustomData>
+				<DetectionMethod>Enhanced</DetectionMethod>
+				<EnhancedDetectionMethod>
+					<Settings xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest">
+						<MSI xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/07/10/DesiredConfiguration" LogicalName="MSI_48f63380-c538-4a89-bd79-2668357d2218" IsPerUser="false">
+							<Annotation xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules">
+								<DisplayName Text=""/>
+								<Description Text=""/>
+							</Annotation>
+							<ProductCode>{AC76BA86-1033-FFFF-BA7E-000000000006}</ProductCode>
+						</MSI>
+					</Settings>
+					<Rule xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules" id="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C/DeploymentType_56d02c3e-4a7f-4f8d-8bd4-807576f4be60" Severity="Informational" NonCompliantWhenSettingIsNotFound="false">
+						<Annotation>
+							<DisplayName Text=""/>
+							<Description Text=""/>
+						</Annotation>
+						<Expression>
+							<Operator>GreaterEquals</Operator>
+							<Operands>
+								<SettingReference AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="Application_e2ca3307-c133-42e3-a8c2-152770cbfe3b" Version="1" DataType="Version" SettingLogicalName="MSI_48f63380-c538-4a89-bd79-2668357d2218" SettingSourceType="MSI" Method="Value" PropertyPath="ProductVersion" Changeable="false"/>
+								<ConstantValue Value="11.0.20" DataType="Version"/>
+							</Operands>
+						</Expression>
+					</Rule>
+				</EnhancedDetectionMethod>
+				<InstallCommandLine>Deploy-Application.exe</InstallCommandLine>
+				<InstallContent ContentId="Content_ef704579-0222-4efc-bcc2-5e85eb3e4057" Version="1"/>
+				<UninstallCommandLine>Deploy-Application.exe -deploymenttype uninstall</UninstallCommandLine>
+				<RequiresUserInteraction>true</RequiresUserInteraction>
+				<ExecuteTime>20</ExecuteTime>
+				<ExitCodes>
+					<ExitCode Code="0" Class="Success"/>
+					<ExitCode Code="1707" Class="Success"/>
+					<ExitCode Code="3010" Class="SoftReboot"/>
+					<ExitCode Code="1641" Class="HardReboot"/>
+					<ExitCode Code="1618" Class="FastRetry"/>
+				</ExitCodes>
+				<AllowUninstall>true</AllowUninstall>
+			</CustomData>
+		</Installer>
+	</DeploymentType>
+	<DeploymentType AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="DeploymentType_4014079f-9f70-49c1-984a-d65956a09649" Version="2">
+		<Title ResourceId="Res_1246468717">Acrobat Standard 11.0.20 - UserNotLoggedOn</Title>
+		<Description ResourceId="Res_562625487"/>
+		<Requirements>
+			<Rule xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules" id="Rule_bf58c931-d037-4394-af1c-77a89321c176" Severity="None" NonCompliantWhenSettingIsNotFound="false">
+				<Annotation>
+					<DisplayName Text="Operating system One of {All Windows 7 (64-bit), Windows 7 (64-bit), All Windows 10 (64-bit)}"/>
+					<Description Text=""/>
+				</Annotation>
+				<OperatingSystemExpression>
+					<Operator>OneOf</Operator>
+					<Operands>
+						<RuleExpression RuleId="Windows/All_x64_Windows_7_Client"/>
+						<RuleExpression RuleId="Windows/x64_Windows_7_Client"/>
+						<RuleExpression RuleId="Windows/All_x64_Windows_10_and_higher_Clients"/>
+					</Operands>
+				</OperatingSystemExpression>
+			</Rule>
+		</Requirements>
+		<DeploymentTechnology>GLOBAL/ScriptDeploymentTechnology</DeploymentTechnology>
+		<Technology>Script</Technology>
+		<Hosting>Native</Hosting>
+		<Installer Technology="Script">
+			<ExecutionContext>System</ExecutionContext>
+			<RequiresLogOn>false</RequiresLogOn>
+			<Contents>
+				<Content ContentId="Content_4b94a203-a845-4089-a57d-4e2d0a8c017f" Version="1">
+					<File Name="Deploy-Application.exe" Size="314880"/>
+					<File Name="Deploy-Application.exe.config" Size="184"/>
+					<File Name="Deploy-Application.ps1" Size="12331"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitBanner.png" Size="11573"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitConfig.xml" Size="131538"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitExtensions.ps1" Size="1943"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitLogo.ico" Size="1150"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitMain.cs" Size="25885"/>
+					<File Name="AppDeployToolkit\AppDeployToolkitMain.ps1" Size="473808"/>
+					<File Name="AppDeployToolkit\Thumbs.db" Size="10240"/>
+					<File Name="Files\ABCPY.INI" Size="672"/>
+					<File Name="Files\AcrobatUpd11020.msp" Size="259026944"/>
+					<File Name="Files\AcroStan.msi" Size="9098752"/>
+					<File Name="Files\AcroStan.mst" Size="61440"/>
+					<File Name="Files\Data1.cab" Size="419997015"/>
+					<Location>\\kdcpsccpkg02\PackageSource$\SWPkgSrc\Adobe\Acrobat\Standard\11.0.20\</Location>
+					<PeerCache>true</PeerCache>
+					<OnFastNetwork>Download</OnFastNetwork>
+					<OnSlowNetwork>DoNothing</OnSlowNetwork>
+				</Content>
+			</Contents>
+			<DetectAction>
+				<Provider>Local</Provider>
+				<Args>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="MethodBody" Type="String">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;EnhancedDetectionMethod xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest"&gt;
+  &lt;Settings xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest"&gt;
+    &lt;MSI LogicalName="MSI_da11815d-1d34-4cc3-b7c2-90e9164b0cf8" IsPerUser="false" xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/07/10/DesiredConfiguration"&gt;
+      &lt;Annotation xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules"&gt;
+        &lt;DisplayName Text="" /&gt;
+        &lt;Description Text="" /&gt;
+      &lt;/Annotation&gt;
+      &lt;ProductCode&gt;{AC76BA86-1033-FFFF-BA7E-000000000006}&lt;/ProductCode&gt;
+    &lt;/MSI&gt;
+  &lt;/Settings&gt;
+  &lt;Rule id="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C/DeploymentType_56d02c3e-4a7f-4f8d-8bd4-807576f4be60" Severity="Informational" NonCompliantWhenSettingIsNotFound="false" xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules"&gt;
+    &lt;Annotation&gt;
+      &lt;DisplayName Text="" /&gt;
+      &lt;Description Text="" /&gt;
+    &lt;/Annotation&gt;
+    &lt;Expression&gt;
+      &lt;Operator&gt;GreaterEquals&lt;/Operator&gt;
+      &lt;Operands&gt;
+        &lt;SettingReference AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="Application_e2ca3307-c133-42e3-a8c2-152770cbfe3b" Version="1" DataType="Version" SettingLogicalName="MSI_da11815d-1d34-4cc3-b7c2-90e9164b0cf8" SettingSourceType="MSI" Method="Value" PropertyPath="ProductVersion" Changeable="false" /&gt;
+        &lt;ConstantValue Value="11.0.20" DataType="Version" /&gt;
+      &lt;/Operands&gt;
+    &lt;/Expression&gt;
+  &lt;/Rule&gt;
+&lt;/EnhancedDetectionMethod&gt;</Arg>
+				</Args>
+			</DetectAction>
+			<InstallAction>
+				<Provider>Script</Provider>
+				<Args>
+					<Arg Name="InstallCommandLine" Type="String">Deploy-Application.exe</Arg>
+					<Arg Name="WorkingDirectory" Type="String"/>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="RequiresLogOn" Type="String">False</Arg>
+					<Arg Name="RequiresElevatedRights" Type="Boolean">false</Arg>
+					<Arg Name="RequiresUserInteraction" Type="Boolean">false</Arg>
+					<Arg Name="RequiresReboot" Type="Boolean">false</Arg>
+					<Arg Name="UserInteractionMode" Type="String">Hidden</Arg>
+					<Arg Name="PostInstallBehavior" Type="String">BasedOnExitCode</Arg>
+					<Arg Name="ExecuteTime" Type="Int32">20</Arg>
+					<Arg Name="MaxExecuteTime" Type="Int32">120</Arg>
+					<Arg Name="RunAs32Bit" Type="Boolean">false</Arg>
+					<Arg Name="SuccessExitCodes" Type="Int32[]">
+						<Item>0</Item>
+						<Item>1707</Item>
+					</Arg>
+					<Arg Name="RebootExitCodes" Type="Int32[]">
+						<Item>3010</Item>
+					</Arg>
+					<Arg Name="HardRebootExitCodes" Type="Int32[]">
+						<Item>1641</Item>
+					</Arg>
+					<Arg Name="FastRetryExitCodes" Type="Int32[]">
+						<Item>1618</Item>
+					</Arg>
+				</Args>
+				<Contents>
+					<Content ContentId="Content_4b94a203-a845-4089-a57d-4e2d0a8c017f" Version="1"/>
+				</Contents>
+			</InstallAction>
+			<UninstallAction>
+				<Provider>Script</Provider>
+				<Args>
+					<Arg Name="InstallCommandLine" Type="String">Deploy-Application.exe -deploymenttype uninstall</Arg>
+					<Arg Name="WorkingDirectory" Type="String"/>
+					<Arg Name="ExecutionContext" Type="String">System</Arg>
+					<Arg Name="RequiresLogOn" Type="String">False</Arg>
+					<Arg Name="RequiresElevatedRights" Type="Boolean">false</Arg>
+					<Arg Name="RequiresUserInteraction" Type="Boolean">false</Arg>
+					<Arg Name="RequiresReboot" Type="Boolean">false</Arg>
+					<Arg Name="UserInteractionMode" Type="String">Hidden</Arg>
+					<Arg Name="PostInstallBehavior" Type="String">BasedOnExitCode</Arg>
+					<Arg Name="ExecuteTime" Type="Int32">20</Arg>
+					<Arg Name="MaxExecuteTime" Type="Int32">120</Arg>
+					<Arg Name="RunAs32Bit" Type="Boolean">false</Arg>
+					<Arg Name="SuccessExitCodes" Type="Int32[]">
+						<Item>0</Item>
+						<Item>1707</Item>
+					</Arg>
+					<Arg Name="RebootExitCodes" Type="Int32[]">
+						<Item>3010</Item>
+					</Arg>
+					<Arg Name="HardRebootExitCodes" Type="Int32[]">
+						<Item>1641</Item>
+					</Arg>
+					<Arg Name="FastRetryExitCodes" Type="Int32[]">
+						<Item>1618</Item>
+					</Arg>
+				</Args>
+				<Contents>
+					<Content ContentId="Content_4b94a203-a845-4089-a57d-4e2d0a8c017f" Version="1"/>
+				</Contents>
+			</UninstallAction>
+			<CustomData>
+				<DetectionMethod>Enhanced</DetectionMethod>
+				<EnhancedDetectionMethod>
+					<Settings xmlns="http://schemas.microsoft.com/SystemCenterConfigurationManager/2009/AppMgmtDigest">
+						<MSI xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/07/10/DesiredConfiguration" LogicalName="MSI_da11815d-1d34-4cc3-b7c2-90e9164b0cf8" IsPerUser="false">
+							<Annotation xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules">
+								<DisplayName Text=""/>
+								<Description Text=""/>
+							</Annotation>
+							<ProductCode>{AC76BA86-1033-FFFF-BA7E-000000000006}</ProductCode>
+						</MSI>
+					</Settings>
+					<Rule xmlns="http://schemas.microsoft.com/SystemsCenterConfigurationManager/2009/06/14/Rules" id="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C/DeploymentType_56d02c3e-4a7f-4f8d-8bd4-807576f4be60" Severity="Informational" NonCompliantWhenSettingIsNotFound="false">
+						<Annotation>
+							<DisplayName Text=""/>
+							<Description Text=""/>
+						</Annotation>
+						<Expression>
+							<Operator>GreaterEquals</Operator>
+							<Operands>
+								<SettingReference AuthoringScopeId="ScopeId_06D47100-668E-4F86-91CE-3F964C286E0C" LogicalName="Application_e2ca3307-c133-42e3-a8c2-152770cbfe3b" Version="1" DataType="Version" SettingLogicalName="MSI_da11815d-1d34-4cc3-b7c2-90e9164b0cf8" SettingSourceType="MSI" Method="Value" PropertyPath="ProductVersion" Changeable="false"/>
+								<ConstantValue Value="11.0.20" DataType="Version"/>
+							</Operands>
+						</Expression>
+					</Rule>
+				</EnhancedDetectionMethod>
+				<InstallCommandLine>Deploy-Application.exe</InstallCommandLine>
+				<InstallContent ContentId="Content_4b94a203-a845-4089-a57d-4e2d0a8c017f" Version="1"/>
+				<InstallFolder/>
+				<UninstallCommandLine>Deploy-Application.exe -deploymenttype uninstall</UninstallCommandLine>
+				<UninstallFolder/>
+				<ExecuteTime>20</ExecuteTime>
+				<ExitCodes>
+					<ExitCode Code="0" Class="Success"/>
+					<ExitCode Code="1707" Class="Success"/>
+					<ExitCode Code="3010" Class="SoftReboot"/>
+					<ExitCode Code="1641" Class="HardReboot"/>
+					<ExitCode Code="1618" Class="FastRetry"/>
+				</ExitCodes>
+				<UserInteractionMode>Hidden</UserInteractionMode>
+				<AllowUninstall>true</AllowUninstall>
+			</CustomData>
+		</Installer>
+	</DeploymentType>
+	<Resources>
+		<Icon Id="Icon_HIHODufaIBs9mPJv_34geKyhIf8sMsUyBedg44YPFns">
+			<Data>iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOVSURBVFhHxZc7TxtBFIWhiKIkVTpAdJEINKkSiShdKKgiQSRKCI8fQJ0IqKio+QUEGpSCSKFGaamIqHi/vF7ba4zBGPMwTObccIa7ozWkibPSJ+/Ozp3vzMza1jbYo9HyyPLY8qROwAUn3A1Pq9Wqub6+NvU6bm5uBLgR4DkDoLEeBzzwwY0ALfUMQDmccCNAKy4Abv7LEFp+dXWFAK0SABdchb9ZifLXryb17JkJOzpM2N5+21r74MQ4UfguLy/jAXQIFtQ6sp2dEqA0PS2f9x0YhxPT8ouLi7sAuEBj0kokBYE06u6Wc6yCf7COUl98fn4uxAL4Ie4LEjQ3C9XdXZO7DcI+FNeSg0qlIrgATOQH0WF0oNLMjKxCcXLSlL9/j8kAazGOnjXFZ2dnplwu3wXgDT+EDqLDXB4eulXAue4DtFjLIab89PT0LgAacEMH0WEIByZRX19MRFjP8bQUlEolIRaAIZKCEF+EbahsbMT6sJbiJPnJyYngAqCRHYAfiOjB8yMjpvjtm4TQfVhbS3p8fGyKxaLgAuAGlyUpiAaS07U1EeM6/fKlKYehnOtajkc5xJQfHR0JLgBvMiXRg2jw8GWHhtw1wuSGh2O1WqilhULBHNoHF7gA7MSipDAaCAvz8+4agdB2nEq5No7BEBBTns/nBReAN5kSMJRPNDFhcuPjck4J2gK7FQgBsqOjJjs2ZqLFRRP9+GGCtjaTamoSaRRFJpfLCS4Al4RB/DCksLoqs8VncX/fZD5+FGH6zRuTGRw0YW/vnwBWXrC/khhHZru9bYLXr508m80KLgBucFkIQ2ncDKemTP7XL9fu14YDA64vCe0/KKSZTMaE9qEFLgBSIYSGg0EQray4AOmurpgM+LWyxJubJvzyxaQtmaUlEWt5Op2+C4AbXBbAQNi7zOysyf38KXsYvH/v9k+ja4EvozBltyEIApOyDyuIBdDIQHNzkhzn2GPMntc+fr2WAkhF/PmziA8ODgQXgB0dCwsixODp2/0M+vtjM/IlhDI9Uwr37YML9vb2BBdAFwnLy3+kPT1O7ot8GaH0PvGu/YYAF4AdNXqgJJJqKKol3NnZEbbt1xK4AH4hSBKQpP6AwofEW1tbggvAjj7+gCSpL6BIy7Rw0341wYb9CwcM0KILNQ9JfJKkSeL19XUBbgTA69E7ywfLpzoBF5zyaoYXxBeWV5a3dQIuOOXl9D++njc0/ga3DSlEigeT6gAAAABJRU5ErkJggg==</Data>
+		</Icon>
+	</Resources>
+</AppMgmtDigest>
