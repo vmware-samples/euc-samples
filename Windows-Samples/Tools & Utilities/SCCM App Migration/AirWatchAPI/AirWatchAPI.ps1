@@ -4,7 +4,11 @@
 #>
 Function Create-BasicAuthHeader {
 
-	Param([string]$username, [string]$password)
+	Param(
+		[Parameter(Mandatory=$True)]
+		[string]$username,
+		[Parameter(Mandatory=$True)]
+		[string]$password)
 
 	$combined = $username + ":" + $password
 	$encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
@@ -18,7 +22,15 @@ Function Create-BasicAuthHeader {
 #>
 Function Create-Headers {
 
-    Param([string]$authString, [string]$tenantCode, [string]$acceptType, [string]$contentType)
+    Param(
+		[Parameter(Mandatory=$True)]
+		[string]$authString,
+		[Parameter(Mandatory=$True)]
+		[string]$tenantCode,
+		[Parameter(Mandatory=$True)]
+		[string]$acceptType, 
+		[Parameter(Mandatory=$True)]
+		[string]$contentType)
 
     $header = @{"Authorization" = $authString; "aw-tenant-code" = $tenantCode; "Accept" = $acceptType; "Content-Type" = $contentType}
      
@@ -29,11 +41,17 @@ Function Create-Headers {
     This Function uploads the app file to the AirWatch server
 #>
 Function Upload-Blob {
-  Param([String] $airwatchServer,
-        [String] $filename,
-        [String] $filePath,
-        [String] $groupID,
-        [hashtable] $headers
+  Param(
+	  [Parameter(Mandatory=$True)]
+	  [String] $airwatchServer,
+	  [Parameter(Mandatory=$True)]
+      [String] $filename,
+	  [Parameter(Mandatory=$True)]
+      [String] $filePath,
+	  [Parameter(Mandatory=$True)]
+      [String] $groupID,
+	  [Parameter(Mandatory=$True)]
+      [hashtable] $headers
   )
 
 #$networkFilePath = "Microsoft.Powershell.Core\FileSystem::" + $awProperties.FilePath ***Passing as a param to function to limit work
@@ -49,11 +67,33 @@ Function Upload-Blob {
   Creates the url for the blob upload
 #>
 Function Create-BlobURL {
-    Param([String] $baseURL,
-          [String] $filename,
-          [String] $groupID
-          )
+    Param(
+		[Parameter(Mandatory=$True)]
+		[String] $baseURL,
+		[Parameter(Mandatory=$True)]
+        [String] $filename,
+		[Parameter(Mandatory=$True)]
+        [String] $groupID
+	)
     $url = "$baseURL/api/mam/blobs/uploadblob?filename=$filename&organizationgroupid=$groupID"
 
     Return $url
+}
+
+Function Save-App {
+	Param(
+		[Parameter(Mandatory=$True)]
+		[String] $awServer,
+		[Parameter(Mandatory=$True)]
+		[hashtable] $headers,
+		[Parameter(Mandatory=$True)]
+		[hashtable] $appDetails
+	)
+
+	$url = "$awServer/api/v1/mam/apps/internal/begininstall"
+	$body = Map-AppDetailsJSON -awProperties $appDetails
+
+	$response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -Body $body
+
+	Return $response
 }
