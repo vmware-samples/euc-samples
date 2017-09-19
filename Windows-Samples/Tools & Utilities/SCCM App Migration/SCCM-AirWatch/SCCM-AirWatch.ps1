@@ -4,7 +4,10 @@
 #>
 Function Extract-PackageProperties {
 
-    Param([xml]$SDMPackageXML)
+    Param(
+		[Parameter(Mandatory=$True)]
+		[xml]$SDMPackageXML
+	)
 
     [hashtable]$AirWatchProperties = @{}
 
@@ -92,4 +95,101 @@ Function Extract-PackageProperties {
     Write-Verbose("")
 
     return $AirWatchProperties
+}
+
+<#
+  This method maps all the AirWatch Properties extracked and stored in a table to the corresponding JSON value in the AirWatch
+  API body.
+#>
+Function Map-AppDetailsJSON {
+
+    Param(
+		[Parameter(Mandatory=$True)]
+		[hashtable] $awProperties
+	)
+
+    # Map all table values to the AirWatch JSON format
+    $applicationProperties = @{
+        ApplicationName = $awProperties.ApplicationName
+	    AutoUpdateVersion = 'true'
+	    BlobId = $awProperties.BlobID
+	    DeploymentOptions = @{
+		    WhenToInstall = @{
+			    DiskSpaceRequiredInKb = 1
+			    DevicePowerRequired= 2
+			    RamRequiredInMb= 3
+		    }
+		    HowToInstall= @{
+			    AdminPrivileges = "true"
+			    DeviceRestart = "DoNotRestart"
+			    InstallCommand = $awProperties.InstallCommand
+			    InstallContext = $awProperties.InstallContext
+			    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes 
+			    InstallerRebootExitCode = $awProperties.InstallerRebootExitCode 
+			    InstallerSuccessExitCode = $awProperties.InstallerSuccessExitCode 
+			    RetryCount = 3
+			    RetryIntervalInMinutes = 5
+		    }
+		    WhenToCallInstallComplete = @{
+			    UseAdditionalCriteria = "false"
+			    IdentifyApplicationBy = "DefiningCriteria"
+                CriteriaList = @(@{
+                    CriteriaType = "AppExists"
+				    LogicalCondition = "End"
+                    AppCriteria = @{
+                        ApplicationIdentifier = $awProperties.InstallApplicationIdentifier
+                        VersionCondition = "Any"
+                    }			    
+                })
+			    CustomScript = @{
+				    ScriptType = "Unknown"
+				    CommandToRunTheScript = "Text value"
+				    CustomScriptFileBlodId = 3
+				    SuccessExitCode = 1
+			    }
+		    }
+	    }
+	    FilesOptions = @{
+		    ApplicationUnInstallProcess = @{
+			    UseCustomScript = "true"
+			    CustomScript =  @{
+				    CustomScriptType = "Input"
+				    UninstallCommand = $awProperties.UninstallCommandLine
+			    }
+		    }
+	    }
+	    Description = $awProperties.Description
+	    Developer = $awProperties.Developer
+	    DeveloperEmail = ""
+	    DeveloperPhone = ""
+	    DeviceType = 12
+	    EnableProvisioning = "false"
+	    FileName = $awProperties.UploadFileName
+	    IsDependencyFile = "false"
+	    LocationGroupId = $awProperties.LocationGroupId
+	    MsiDeploymentParamModel = @{
+		    CommandLineArguments = $awProperties.InstallCommand
+		    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes
+		    RetryCount = 3
+		    RetryIntervalInMinutes = 5
+	    }
+	    PushMode = 0
+	    SupportEmail = ""
+	    SupportPhone = ""
+	    SupportedModels = @{
+		    Model = @(@{
+			    ApplicationId = 704
+			    ModelId = 50
+		    })
+	    }
+	    SupportedProcessorArchitecture = "x86"
+    }
+
+    $json = $applicationProperties | ConvertTo-Json -Depth 10
+    Write-Verbose "------- JSON to Post---------"
+    Write-Verbose $json
+    Write-Verbose "-----------------------------"
+    Write-Verbose ""
+    
+    Return $json
 }

@@ -152,7 +152,9 @@ else
 }
 
 ##Progress bar
-Write-Progress -Activity "Application Export" -Status "Searching for applications" -PercentComplete 30
+Write-Progress -Activity "Application Export" `
+    -Status "Searching for applications" `
+	-PercentComplete 30
 
 #Parse the Deployment details of the Selected application and deserialize.
 $selectedAppObject = Get-CMApplication -Name $SelectedApplication
@@ -161,251 +163,37 @@ $selectedAppObject = Get-CMApplication -Name $SelectedApplication
 ##Progress bar
 Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
 
-<#
-  This implementation uses Basic authentication.  See "Client side" at https://en.wikipedia.org/wiki/Basic_access_authentication for a description
-  of this implementation.
-#>
-#Function Get-BasicUserForAuth {
-#
-#	Param([string]$func_username)
-#
-#	$userNameWithPassword = $func_username
-#	$encoding = [System.Text.Encoding]::ASCII.GetBytes($userNameWithPassword)
-#	$encodedString = [Convert]::ToBase64String($encoding)
-#
-#	Return "Basic " + $encodedString
-#}
-
-<#
-  This method builds the headers for the REST API calls being made to the AirWatch Server.
-#>
-Function Build-Headers {
-
-    Param([string]$authoriztionString, [string]$tenantCode, [string]$acceptType, [string]$contentType)
-
-    $authString = $authoriztionString
-    $tcode = $tenantCode
-    $accept = $acceptType
-    $content = $contentType
-
-    Write-Verbose("---------- Headers ----------")
-    Write-Verbose("Authorization: " + $authString)
-    Write-Verbose("aw-tenant-code:" + $tcode)
-    Write-Verbose("Accept: " + $accept)
-    Write-Verbose("Content-Type: " + $content)
-    Write-Verbose("------------------------------")
-    Write-Verbose("")
-    $header = @{"Authorization" = $authString; "aw-tenant-code" = $tcode; "Accept" = $useJSON; "Content-Type" = $useJSON}
-     
-    Return $header
-}
-
-<#
-  This method extracts specific properties from the SCCM deployment details and stores them in an AirWatch Properties table.
-  Different deployment modes require different properties to be stored.
-#>
-Function Extract-PackageProperties {
-
-    [hashtable]$AirWatchProperties = @{}
-
-    # Extract top level app properties
-    $ApplicationName = $SDMPackageXML.AppMgmtDigest.Application.Title.InnerText
-    $AirWatchProperties.Add("ApplicationName", $ApplicationName)
-    $AirWatchProperties.Add("Description", $SDMPackageXML.AppMgmtDigest.Application.Description.InnerText)
-    $AirWatchProperties.Add("Developer", $SDMPackageXML.AppMgmtDigest.Application.Publisher.InnerText)
-    $AirWatchProperties.Add("ActualFileVersion", $SDMPackageXML.AppMgmtDigest.Application.SoftwareVersion.InnerText)
-
-    # Get the first deployment method of multiple.
-    $currentDeployment = $SDMPackageXML.AppMgmtDigest.DeploymentType | Select-Object -First 1
-
-    # Map Install actions section to the corresponding AW properties
-    $AirWatchProperties.Add("InstallCommand", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText)
-    $AirWatchProperties.Add("InstallerRebootExitCode", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "RebootExitCodes"}).InnerText)
-    $AirWatchProperties.Add("InstallerSuccessExitCode", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "SuccessExitCodes"}).InnerText)
-    $AirWatchProperties.Add("DeviceRestart", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "RequiresReboot"}).InnerText)
-    $AirWatchProperties.Add("InstallTimeoutInMinutes", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "ExecuteTime"}).InnerText)
-
-    # Only set Uninstall command if present
-    if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText -eq $null) 
-    {
-        $AirWatchProperties.Add("UninstallCommandLine","An Uninstall Command is not setup in SCCM. Please update this field")
-    } 
-    else 
-    {
-        $AirWatchProperties.Add("UninstallCommandLine", ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText)
-    }
-
-
-    #Set Default Install Context and modify if the Package context is System
-    $AirWatchProperties.Add("InstallContext", "User")
-        If(($SDMPackageXML.AppMgmtDigest.DeploymentType.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "ExecutionContext"}).InnerText -eq "System")
-    {
-        $AirWatchProperties.Set_Item("InstallContext", "Device")
-    }
-    
-    # Switch the file generation based on Deployment Technology. Script deployment files are zipped up into a single file.
-    switch ($currentDeployment.Technology)
-    {
-        "MSI"    
-                {
-                    $source = $currentDeployment.Installer.Contents.Content.Location
-                    $file = ($currentDeployment.Installer.Contents.Content.File | ? {$_.Name -like "*.msi"}).Name
-                    $uploadFilePath = $source + $file
-                    $AirWatchProperties.Add("FilePath", $uploadFilePath)
-                }
-        "Script" 
-                {
-                    #Zip Script deployments into a file for upload
-                    $source = $currentDeployment.Installer.Contents.Content.Location
-                    $parentFolder = ($source | Split-Path -Parent)
-                    $folderName = ($source | Split-Path -Leaf)
-                    $uploadFilePath = $parentFolder + "\$folderName.zip"
-                    If(Test-path $uploadFilePath) {Remove-item $uploadFilePath}
-                    Add-Type -assembly "system.io.compression.filesystem"
-                    [io.compression.zipfile]::CreateFromDirectory($source, $uploadFilePath)
-                    $AirWatchProperties.Add("FilePath", $uploadFilePath)
-                }
-    }
-
-    # Get the application identifier from the Enhanced Detection Method
-
-    if(($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText -eq $null)
-    {
-        $AirWatchProperties.Add("InstallApplicationIdentifier", "No Product Code Found")        
-    }
-    else 
-    {
-        [xml] $enhancedDetectionMethodXML = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText
-        $InstallApplicationIdentifier = $enhancedDetectionMethodXML.EnhancedDetectionMethod.Settings.MSI.ProductCode
-        $AirWatchProperties.Add("InstallApplicationIdentifier", $InstallApplicationIdentifier)
-    }
-
-    Write-Verbose("---------- AW Properties ----------")
-    Write-Host $AirWatchProperties | Out-String 
-    Write-Verbose("------------------------------")
-    Write-Verbose("")
-
-    return $AirWatchProperties
-}
-
-<#
-  This method maps all the AirWatch Properties extracked and stored in a table to the corresponding JSON value in the AirWatch
-  API body.
-#>
-Function Map-AppDetailsJSON {
-
-    Param([hashtable] $awProperties)
-
-    # Map all table values to the AirWatch JSON format
-    $applicationProperties = @{
-        ApplicationName = $awProperties.ApplicationName
-	    AutoUpdateVersion = 'true'
-	    BlobId = $awProperties.BlobID
-	    DeploymentOptions = @{
-		    WhenToInstall = @{
-			    DiskSpaceRequiredInKb = 1
-			    DevicePowerRequired= 2
-			    RamRequiredInMb= 3
-		    }
-		    HowToInstall= @{
-			    AdminPrivileges = "true"
-			    DeviceRestart = "DoNotRestart"
-			    InstallCommand = $awProperties.InstallCommand
-			    InstallContext = $awProperties.InstallContext
-			    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes 
-			    InstallerRebootExitCode = $awProperties.InstallerRebootExitCode 
-			    InstallerSuccessExitCode = $awProperties.InstallerSuccessExitCode 
-			    RetryCount = 3
-			    RetryIntervalInMinutes = 5
-		    }
-		    WhenToCallInstallComplete = @{
-			    UseAdditionalCriteria = "false"
-			    IdentifyApplicationBy = "DefiningCriteria"
-                CriteriaList = @(@{
-                    CriteriaType = "AppExists"
-				    LogicalCondition = "End"
-                    AppCriteria = @{
-                        ApplicationIdentifier = $awProperties.InstallApplicationIdentifier
-                        VersionCondition = "Any"
-                    }			    
-                })
-			    CustomScript = @{
-				    ScriptType = "Unknown"
-				    CommandToRunTheScript = "Text value"
-				    CustomScriptFileBlodId = 3
-				    SuccessExitCode = 1
-			    }
-		    }
-	    }
-	    FilesOptions = @{
-		    ApplicationUnInstallProcess = @{
-			    UseCustomScript = "true"
-			    CustomScript =  @{
-				    CustomScriptType = "Input"
-				    UninstallCommand = $awProperties.UninstallCommandLine
-			    }
-		    }
-	    }
-	    Description = $awProperties.Description
-	    Developer = $awProperties.Developer
-	    DeveloperEmail = ""
-	    DeveloperPhone = ""
-	    DeviceType = 12
-	    EnableProvisioning = "false"
-	    FileName = $awProperties.UploadFileName
-	    IsDependencyFile = "false"
-	    LocationGroupId = $awProperties.LocationGroupId
-	    MsiDeploymentParamModel = @{
-		    CommandLineArguments = $awProperties.InstallCommand
-		    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes
-		    RetryCount = 3
-		    RetryIntervalInMinutes = 5
-	    }
-	    PushMode = 0
-	    SupportEmail = ""
-	    SupportPhone = ""
-	    SupportedModels = @{
-		    Model = @(@{
-			    ApplicationId = 704
-			    ModelId = 50
-		    })
-	    }
-	    SupportedProcessorArchitecture = "x86"
-    }
-
-    $json = $applicationProperties | ConvertTo-Json -Depth 10
-    Write-Verbose "------- JSON to Post---------"
-    Write-Verbose $json
-    Write-Verbose "-----------------------------"
-    Write-Verbose ""
-    
-    Return $json
-}
 
 #MAIN
 
 #Extract the hashtable returned from the function
-$awProperties = (Extract-PackageProperties)[1]
+$awProperties = Extract-PackageProperties -SDMPackageXML $SDMPackageXML
 
 #Generate Auth Headers from username and password
-$concateUserInfo = $userName + ":" + $password
 $deviceListURI = $baseURL + $bulkDeviceEndpoint
 $restUserName = Create-BasicAuthHeader -username $userName -password $password
 
 # Define Content Types and Accept Types
 $useJSON = "application/json"
-$useOctetStream = "application/octet-stream" #NOT USED
+#$useOctetStream = "application/octet-stream" #NOT USED
 
 #Build Headers
-$headers = Build-Headers $restUserName $tenantAPIKey $useJSON $useOctetStream
+$headers = Create-Headers -authString $restUserName `
+    -tenantCode $tenantCode `
+	-acceptType $useJson `
+	-contentType $useJson
 
 # Extract Filename, configure Blob Upload API URL and invoke the API.
 $uploadFileName = Split-Path $awProperties.FilePath -leaf
 #Check Why this is done*****
 $awProperties.Add("LocationGroupId", $groupID)
-$blobUploadEndpoint = "$AWServer/api/mam/blobs/uploadblob?filename=$uploadFileName&organizationgroupid=$groupID"
+
 $networkFilePath = "Microsoft.Powershell.Core\FileSystem::" + $awProperties.FilePath
-$blobUploadResponse = Invoke-RestMethod -Method Post -Uri $blobUploadEndpoint.ToString() -Headers $headers -InFile $networkFilePath
+$blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
+    -filename $uploadFileName `
+	-filepath $networkFilePath `
+	-groupID $groupID `
+	-headers $headers
 
 ##Progress bar
 Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
@@ -417,15 +205,20 @@ $awProperties.Add("BlobID", $blobID)
 $awProperties.Add("UploadFileName", $uploadFileName)
 
 ##Progress bar
-Write-Progress -Activity "Application Export" -Status "Exporting $SelectedApplication" -PercentComplete 80
+Write-Progress -Activity "Application Export" `
+    -Status "Exporting $SelectedApplication" `
+	-PercentComplete 80
 
 # Call function to map all properties from SCCM to AirWatch JSON.
-$appDetailsJSON = Map-AppDetailsJSON $awProperties
-$saveAppDetailsEndpoint = "$AWServer/api/v1/mam/apps/internal/begininstall"
-$webReturn = Invoke-RestMethod -Method Post -Uri $saveAppDetailsEndpoint.ToString() -Headers $headers -Body $appDetailsJSON
+$webReturn = Save-App -awServer $AWServer `
+    -headers $headers `
+	-appDetails $awProperties
 
 ##Progress bar
-Write-Progress -Activity "Application Export" -Status "Export of $SelectedApplication Completed" -PercentComplete 100
+Write-Progress -Activity "Application Export" `
+    -Status "Export of $SelectedApplication Completed" `
+	-PercentComplete 100
+
 Write-Verbose $webReturn
 
 #Fin
