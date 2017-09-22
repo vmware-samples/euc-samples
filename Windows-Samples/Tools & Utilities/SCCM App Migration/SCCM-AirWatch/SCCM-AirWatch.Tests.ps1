@@ -12,9 +12,7 @@ Describe "SCCM XML Extraction" {
 
         # Then
         $properties.ApplicationName | Should be "Acrobat Standard 11.0.20"
-        
-        #$current = $adobe.AppMgmtDigest.DeploymentType | Select-Object -First 1
-        #$properties.UploadFilePath | Should be "C:\tmp\Adobe\Acrobat\Standard\11.0.20\"
+        $properties.FilePath | Should be "\\kdcpsccpkg02\PackageSource$\SWPkgSrc\Adobe\Acrobat\Standard\11.0.20.zip"
         
     }
 }

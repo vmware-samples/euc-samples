@@ -76,9 +76,11 @@ Write-Verbose ("Endpoint URL: " + $groupID)
 Write-Verbose "-----------------------------"
 Write-Verbose ""
 
+$baseDir = Get-Location
+
 Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module
-Import-Module .\SCCM-AirWatch\SCCM-AirWatch.ps1
-Import-Module .\AirWatchAPI\AirWatchAPI.ps1
+Import-Module "$baseDir\SCCM-AirWatch\SCCM-AirWatch.ps1"
+Import-Module "$baseDir\AirWatchAPI\AirWatchAPI.ps1"
  
 Set-Location $SCCMSiteCode # Set the current location to be the site code.
 
@@ -163,9 +165,6 @@ $selectedAppObject = Get-CMApplication -Name $SelectedApplication
 ##Progress bar
 Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
 
-
-#MAIN
-
 #Extract the hashtable returned from the function
 $awProperties = Extract-PackageProperties -SDMPackageXML $SDMPackageXML
 
@@ -179,16 +178,15 @@ $useJSON = "application/json"
 
 #Build Headers
 $headers = Create-Headers -authString $restUserName `
-    -tenantCode $tenantCode `
+    -tenantCode $tenantAPIKey `
 	-acceptType $useJson `
 	-contentType $useJson
 
 # Extract Filename, configure Blob Upload API URL and invoke the API.
 $uploadFileName = Split-Path $awProperties.FilePath -leaf
-#Check Why this is done*****
-$awProperties.Add("LocationGroupId", $groupID)
 
 $networkFilePath = "Microsoft.Powershell.Core\FileSystem::" + $awProperties.FilePath
+
 $blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
     -filename $uploadFileName `
 	-filepath $networkFilePath `
@@ -201,8 +199,12 @@ Write-Verbose $blobUploadResponse
 
 # Extract Blob ID and store in the properties table.
 $blobID = $blobUploadResponse.Value
-$awProperties.Add("BlobID", $blobID)
-$awProperties.Add("UploadFileName", $uploadFileName)
+$awProperties.Set_Item("BlobID", $blobID)
+
+# Add additonal values to hashtable
+$awProperties.Set_Item("UploadFileName", $uploadFileName)
+#Check Why this is done*****
+$awProperties.Set_Item("LocationGroupId", $groupID)
 
 ##Progress bar
 Write-Progress -Activity "Application Export" `
@@ -210,9 +212,12 @@ Write-Progress -Activity "Application Export" `
 	-PercentComplete 80
 
 # Call function to map all properties from SCCM to AirWatch JSON.
+$awJson = Map-AppDetailsJson -awProperties $awProperties
+
+# Save App/Finish Upload in AirWatch
 $webReturn = Save-App -awServer $AWServer `
     -headers $headers `
-	-appDetails $awProperties
+	-appDetails $awJson
 
 ##Progress bar
 Write-Progress -Activity "Application Export" `
