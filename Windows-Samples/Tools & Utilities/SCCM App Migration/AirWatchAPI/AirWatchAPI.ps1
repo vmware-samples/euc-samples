@@ -87,13 +87,12 @@ Function Save-App {
 		[Parameter(Mandatory=$True)]
 		[hashtable] $headers,
 		[Parameter(Mandatory=$True)]
-		[hashtable] $appDetails
+		$appDetails
 	)
 
 	$url = "$awServer/api/v1/mam/apps/internal/begininstall"
-	$body = Map-AppDetailsJSON -awProperties $appDetails
 
-	$response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -Body $body
+	$response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -Body $appDetails
 
 	Return $response
 }

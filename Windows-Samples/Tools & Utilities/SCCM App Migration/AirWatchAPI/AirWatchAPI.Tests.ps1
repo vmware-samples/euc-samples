@@ -55,3 +55,26 @@ Describe "Upload Blob" {
         $res.Value | Should be 1234
     }
 }
+
+Describe "Save App in AirWatch" {
+    It "saves the app details and blob in AirWatch" {
+        
+        # Given
+        $server = "https://test.awmdm.com"
+        $headers = Create-Headers -authString "Basic adbced" -tenant "faketenant" -acceptType "application\json" -contentType "appliction\json"
+        $appDetails = @{Name = "Test"; FilePath = "c:\tmp\app"}
+        $appJson = $appDetails | ConvertTo-Json
+
+        $mockRes = @{Status = 200;}
+
+        Mock Invoke-RestMethod {return $mockRes}
+
+        # When
+        $res = Save-App -awServer $server `
+            -headers $headers `
+            -appDetails $appJson
+
+        # Then
+        $res.Status | Should be 200
+    }
+}
