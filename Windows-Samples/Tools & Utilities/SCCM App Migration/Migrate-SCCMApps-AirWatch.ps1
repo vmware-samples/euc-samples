@@ -133,7 +133,10 @@ Function Extract-PackageProperties {
                     $source = $currentDeployment.Installer.Contents.Content.Location
                     $file = ($currentDeployment.Installer.Contents.Content.File | ? {$_.Name -like "*.msi"}).Name
                     $uploadFilePath = $source + $file
+
+                    Write-Verbose -Message "Adding file path to properties - $($uploadFilePath)"
                     $AirWatchProperties.Add("FilePath", $uploadFilePath)
+                    $AirWatchProperties.Add("UploadFileName", $(Split-Path $uploadFilePath -Leaf))
                 }
         "Script" 
                 {
@@ -152,6 +155,7 @@ Function Extract-PackageProperties {
                         "Unable to zip script file with error: $_"
                     }
                     $AirWatchProperties.Add("FilePath", $uploadFilePath)
+                    $AirWatchProperties.Add("UploadFileName", $(Split-Path $uploadFilePath -Leaf))
                 }
     }
 
@@ -168,12 +172,16 @@ Function Extract-PackageProperties {
         $AirWatchProperties.Add("InstallApplicationIdentifier", $InstallApplicationIdentifier)
     }
 
+    # Add addition keys and values if we have them
+    $AirWatchProperties.Add("BlobId", $null)
+    $AirWatchProperties.Add("LocationGroupId", $groupID)
+
     Write-Verbose("---------- AW Properties ----------")
     Write-Host $AirWatchProperties | Out-String 
     Write-Verbose("------------------------------")
     Write-Verbose("")
 
-    return $AirWatchProperties
+    Return $AirWatchProperties
 }
 #endregion
 
@@ -186,7 +194,7 @@ Function Map-AppDetailsJSON {
 
     Param(
 		[Parameter(Mandatory=$True)]
-		[hashtable] $awProperties
+		$awProperties
 	)
 
     # Map all table values to the AirWatch JSON format
@@ -260,6 +268,7 @@ Function Map-AppDetailsJSON {
 	    SupportedModels = @{
 		    Model = @(@{
 			    ApplicationId = 704
+                ModelName = "Desktop"
 			    ModelId = 50
 		    })
 	    }
@@ -305,11 +314,13 @@ Function Create-Headers {
 		[Parameter(Mandatory=$True)]
 		[string]$tenantCode,
 		[Parameter(Mandatory=$True)]
-		[string]$acceptType, 
+        [string]$acceptType,
 		[Parameter(Mandatory=$True)]
-		[string]$contentType)
+		[string]$contentType
+    )
+      
 
-    $header = @{"Authorization" = $authString; "aw-tenant-code" = $tenantCode; "Accept" = $acceptType; "Content-Type" = $contentType}
+    $header = @{"Authorization" = $authString; "aw-tenant-code" = $tenantCode; "Accept" = $acceptType.ToString(); "Content-Type" = $contentType.ToString()}
      
     Return $header
 }
@@ -332,6 +343,8 @@ Function Upload-Blob {
   )
 
   $url = Create-BlobURL -baseURL $airwatchServer -filename $filename -groupID $groupID
+
+  Write-Verbose "File Path $filePath"
 
   $response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -InFile $filePath
 
@@ -369,14 +382,22 @@ Function Save-App {
 
 	$url = "$awServer/api/v1/mam/apps/internal/begininstall"
 
-	$response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -Body $appDetails
+    try {
+        $response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -Body $appDetails
+    } catch {
+         Write-Verbose -Message "Save app failed :: $PSItem"
+    }
+
+	
     Write-Verbose "Response 'Save App' :: $response"
 
 	Return $response
 }
+
 #endregion
 
 #region UI
+# TODO - Use this instead of the block below in Main
 Function Setup-UI {
     Param(
         $applications
@@ -522,17 +543,15 @@ Function Main {
     Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
 
     #Extract the hashtable returned from the function
-    $airwatchProperties = @{}
-    $airwatchProperties = Extract-PackageProperties -SDMPackageXML $SDMPackageXML
-    Write-Verbose -Message "AW Properties $airwatchProperties"
-
+    $appProperties = @{}
+    $appProperties = $(Extract-PackageProperties -SDMPackageXML $SDMPackageXML)
+    
     #Generate Auth Headers from username and password
     $deviceListURI = $baseURL + $bulkDeviceEndpoint
     $restUserName = Create-BasicAuthHeader -username $userName -password $password
 
     # Define Content Types and Accept Types
     $useJSON = "application/json"
-    #$useOctetStream = "application/octet-stream" #NOT USED
 
     #Build Headers
     $headers = Create-Headers -authString $restUserName `
@@ -541,43 +560,49 @@ Function Main {
     	-contentType $useJson
     
     # Extract Filename, configure Blob Upload API URL and invoke the API.
-    $uploadFileName = Split-Path $airwatchProperties.FilePath -leaf
+    $uploadFileName = Split-Path $appProperties.FilePath -leaf
+    $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($appProperties.FilePath)"
+    
+    # Confirm that the app binary is reachable and exists
+    if(Test-Path $networkFilePath) {
+        $blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
+           -filename $uploadFileName `
+    	    -filepath $networkFilePath `
+    	    -groupID $groupID `
+    	    -headers $headers
 
-    $networkFilePath = "Microsoft.Powershell.Core\FileSystem::" + $awProperties.FilePath
+        ##Progress bar
+        Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
 
-    $blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
-       -filename $uploadFileName `
-    	-filepath $networkFilePath `
-    	-groupID $groupID `
-    	-headers $headers
+        # Extract Blob ID and store in the properties table.
+        $blobID = [string]$blobUploadResponse.Value
+        # This resets the properties to a hashtable since powershell returns an array from the function
+        $appProperties = $appProperties[1]
+    
+        $appProperties["BlobId"] = $blobID
 
-    ##Progress bar
-    Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
-    Write-Verbose -Message "$blobUploadResponse"
+        ##Progress bar
+        Write-Progress -Activity "Application Export" `
+            -Status "Exporting $SelectedApplication" `
+	        -PercentComplete 80
 
-    # Extract Blob ID and store in the properties table.
-    $blobID = $blobUploadResponse.Value
-    $airwatchProperties.Set_Item("BlobID", "88248")
+        # Call function to map all properties from SCCM to AirWatch JSON.
+        $awJson = Map-AppDetailsJson -awProperties $appProperties
 
-    # Add additonal values to hashtable
-    $airwatchProperties.Set_Item("UploadFileName", $uploadFileName)
-    #Check Why this is done*****
-    $airwatchProperties.Set_Item("LocationGroupId", $groupID)
+        if($appProperties.BlobId -ne $null) {
+             # Save App/Finish Upload in AirWatch
+            $webReturn = Save-App -awServer $AWServer `
+                -headers $headers `
+	            -appDetails $awJson
 
-    ##Progress bar
-    Write-Progress -Activity "Application Export" `
-        -Status "Exporting $SelectedApplication" `
-	    -PercentComplete 80
-
-    # Call function to map all properties from SCCM to AirWatch JSON.
-    $awJson = Map-AppDetailsJson -awProperties $airwatchProperties
-
-    # Save App/Finish Upload in AirWatch
-    $webReturn = Save-App -awServer $AWServer `
-        -headers $headers `
-	    -appDetails $awJson
-
-    Write-Verbose -Message "Return from save $webReturn"
+            Write-Verbose -Message "Return from save $webReturn"
+        } else {
+            Write-Verbose -Message "Blob ID not in hashtable, unable to finish upload of  $SelectedApplication"
+        }
+   
+    } else {
+        Write-Output "Unable to reach app file path, $SelectedApplication not uploaded to AirWatch"
+    }
 
     ##Progress bar
     Write-Progress -Activity "Application Export" `
