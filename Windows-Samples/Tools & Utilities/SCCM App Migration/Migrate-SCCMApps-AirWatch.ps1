@@ -76,132 +76,17 @@ Write-Verbose ("Endpoint URL: " + $groupID)
 Write-Verbose "-----------------------------"
 Write-Verbose ""
 
-Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module 
-Set-Location $SCCMSiteCode # Set the current location to be the site code.
-
-##Progress bar
-Write-Progress -Activity "Application Export" -Status "Starting Script" -PercentComplete 10
-
-##Get applicaion list via WMI
-##$Applications = Get-WMIObject -ComputerName $SCCMServer -Namespace Root\SMS\Site_$SCCMSiteCode -Class "SMS_Application" | Select -unique LocalizedDisplayName | sort LocalizedDisplayName
-$Applications = Get-CMApplication | Select LocalizedDisplayName | sort LocalizedDisplayName
-
-##Application Import Selection Form
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
-
-# Start Drawing Form. The form has some issues depending on the screen resolution. #Needs to be updated
-$form1 = New-Object System.Windows.Forms.Form
-$form1.Text = "Application Import"
-$form1.Size = New-Object System.Drawing.Size(425,380)
-$form1.StartPosition = "CenterScreen"
-
-$OKButton1 = New-Object System.Windows.Forms.Button
-$OKButton1.Location = New-Object System.Drawing.Point(300,325)
-$OKButton1.Size = New-Object System.Drawing.Size(75,23)
-$OKButton1.Text = "OK"
-$OKButton1.DialogResult = [System.Windows.Forms.DialogResult]::OK
-$OKButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-$form1.AcceptButton = $OKButton1
-$form1.Controls.Add($OKButton1)
-
-$CancelButton1 = New-Object System.Windows.Forms.Button
-$CancelButton1.Location = New-Object System.Drawing.Point(225,325)
-$CancelButton1.Size = New-Object System.Drawing.Size(75,23)
-$CancelButton1.Text = "Cancel"
-$CancelButton1.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-$CancelButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-$form1.CancelButton = $CancelButton1
-$form1.Controls.Add($CancelButton1)
-
-$label1 = New-Object System.Windows.Forms.Label
-$label1.Location = New-Object System.Drawing.Point(10,5)
-$label1.Size = New-Object System.Drawing.Size(280,20)
-$label1.Text = "Select an application to import"
-$form1.Controls.Add($label1)
-
-$listBox1 = New-Object System.Windows.Forms.Listbox
-$listBox1.Location = New-Object System.Drawing.Size(10,30)
-$listBox1.Width = 400
-$listBox1.Height = 296
-$listBox1.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-
-##Add items to form
-foreach($Application in $Applications)
-{
-    [void] $ListBox1.Items.Add($Application.LocalizedDisplayName)
-}
-
-#Display form to Admin
-$form1.Controls.Add($listBox1)
-$form1.Topmost = $True
-$result1 = $form1.ShowDialog()
-
-# If a valid input is selected then set Application else quit
-if ($result1 -eq [System.Windows.Forms.DialogResult]::OK)
-{
-    $SelectedApplication = $listBox1.SelectedItems
-    $SelectedApplication = $SelectedApplication[0]
-}
-else
-{
-    exit
-}
-
-##Progress bar
-Write-Progress -Activity "Application Export" -Status "Searching for applications" -PercentComplete 30
-
-#Parse the Deployment details of the Selected application and deserialize.
-$selectedAppObject = Get-CMApplication -Name $SelectedApplication
-[xml]$SDMPackageXML = $selectedAppObject.SDMPackageXML
-
-##Progress bar
-Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
-
-<#
-  This implementation uses Basic authentication.  See "Client side" at https://en.wikipedia.org/wiki/Basic_access_authentication for a description
-  of this implementation.
-#>
-Function Get-BasicUserForAuth {
-
-	Param([string]$func_username)
-
-	$userNameWithPassword = $func_username
-	$encoding = [System.Text.Encoding]::ASCII.GetBytes($userNameWithPassword)
-	$encodedString = [Convert]::ToBase64String($encoding)
-
-	Return "Basic " + $encodedString
-}
-
-<#
-  This method builds the headers for the REST API calls being made to the AirWatch Server.
-#>
-Function Build-Headers {
-
-    Param([string]$authoriztionString, [string]$tenantCode, [string]$acceptType, [string]$contentType)
-
-    $authString = $authoriztionString
-    $tcode = $tenantCode
-    $accept = $acceptType
-    $content = $contentType
-
-    Write-Verbose("---------- Headers ----------")
-    Write-Verbose("Authorization: " + $authString)
-    Write-Verbose("aw-tenant-code:" + $tcode)
-    Write-Verbose("Accept: " + $accept)
-    Write-Verbose("Content-Type: " + $content)
-    Write-Verbose("------------------------------")
-    Write-Verbose("")
-    $header = @{"Authorization" = $authString; "aw-tenant-code" = $tcode; "Accept" = $useJSON; "Content-Type" = $useJSON}
-     
-    Return $header
-}
-
+#region SCCM Helpers
 <#
   This method extracts specific properties from the SCCM deployment details and stores them in an AirWatch Properties table.
   Different deployment modes require different properties to be stored.
 #>
 Function Extract-PackageProperties {
+
+    Param(
+		[Parameter(Mandatory=$True)]
+		[xml]$SDMPackageXML
+	)
 
     [hashtable]$AirWatchProperties = @{}
 
@@ -248,7 +133,10 @@ Function Extract-PackageProperties {
                     $source = $currentDeployment.Installer.Contents.Content.Location
                     $file = ($currentDeployment.Installer.Contents.Content.File | ? {$_.Name -like "*.msi"}).Name
                     $uploadFilePath = $source + $file
+
+                    Write-Verbose -Message "Adding file path to properties - $($uploadFilePath)"
                     $AirWatchProperties.Add("FilePath", $uploadFilePath)
+                    $AirWatchProperties.Add("UploadFileName", $(Split-Path $uploadFilePath -Leaf))
                 }
         "Script" 
                 {
@@ -257,10 +145,17 @@ Function Extract-PackageProperties {
                     $parentFolder = ($source | Split-Path -Parent)
                     $folderName = ($source | Split-Path -Leaf)
                     $uploadFilePath = $parentFolder + "\$folderName.zip"
+                    #remove zip if already exists
                     If(Test-path $uploadFilePath) {Remove-item $uploadFilePath}
                     Add-Type -assembly "system.io.compression.filesystem"
-                    [io.compression.zipfile]::CreateFromDirectory($source, $uploadFilePath)
+                    
+                    try {
+                        [io.compression.zipfile]::CreateFromDirectory($source, $uploadFilePath)
+                    } catch {
+                        "Unable to zip script file with error: $_"
+                    }
                     $AirWatchProperties.Add("FilePath", $uploadFilePath)
+                    $AirWatchProperties.Add("UploadFileName", $(Split-Path $uploadFilePath -Leaf))
                 }
     }
 
@@ -277,21 +172,30 @@ Function Extract-PackageProperties {
         $AirWatchProperties.Add("InstallApplicationIdentifier", $InstallApplicationIdentifier)
     }
 
+    # Add addition keys and values if we have them
+    $AirWatchProperties.Add("BlobId", $null)
+    $AirWatchProperties.Add("LocationGroupId", $groupID)
+
     Write-Verbose("---------- AW Properties ----------")
     Write-Host $AirWatchProperties | Out-String 
     Write-Verbose("------------------------------")
     Write-Verbose("")
 
-    return $AirWatchProperties
+    Return $AirWatchProperties
 }
+#endregion
 
+#region AirWatch API
 <#
   This method maps all the AirWatch Properties extracked and stored in a table to the corresponding JSON value in the AirWatch
   API body.
 #>
 Function Map-AppDetailsJSON {
 
-    Param([hashtable] $awProperties)
+    Param(
+		[Parameter(Mandatory=$True)]
+		$awProperties
+	)
 
     # Map all table values to the AirWatch JSON format
     $applicationProperties = @{
@@ -364,6 +268,7 @@ Function Map-AppDetailsJSON {
 	    SupportedModels = @{
 		    Model = @(@{
 			    ApplicationId = 704
+                ModelName = "Desktop"
 			    ModelId = 50
 		    })
 	    }
@@ -379,50 +284,335 @@ Function Map-AppDetailsJSON {
     Return $json
 }
 
-#MAIN
+<#
+  This implementation uses Basic authentication.  See "Client side" at https://en.wikipedia.org/wiki/Basic_access_authentication for a description
+  of this implementation.
+#>
+Function Create-BasicAuthHeader {
 
-#Extract the hashtable returned from the function
-$awProperties = (Extract-PackageProperties)[1]
+	Param(
+		[Parameter(Mandatory=$True)]
+		[string]$username,
+		[Parameter(Mandatory=$True)]
+		[string]$password)
 
-#Generate Auth Headers from username and password
-$concateUserInfo = $userName + ":" + $password
-$deviceListURI = $baseURL + $bulkDeviceEndpoint
-$restUserName = Get-BasicUserForAuth ($concateUserInfo)
+	$combined = $username + ":" + $password
+	$encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
+	$encodedString = [Convert]::ToBase64String($encoding)
 
-# Define Content Types and Accept Types
-$useJSON = "application/json"
-$useOctetStream = "application/octet-stream"
+	Return "Basic " + $encodedString
+}
 
-#Build Headers
-$headers = Build-Headers $restUserName $tenantAPIKey $useJSON $useOctetStream
+<#
+  This method builds the headers for the REST API calls being made to the AirWatch Server.
+#>
+Function Create-Headers {
 
-# Extract Filename, configure Blob Upload API URL and invoke the API.
-$uploadFileName = Split-Path $awProperties.FilePath -leaf
-$awProperties.Add("LocationGroupId", $groupID)
-$blobUploadEndpoint = "$AWServer/api/mam/blobs/uploadblob?filename=$uploadFileName&organizationgroupid=$groupID"
-$networkFilePath = "Microsoft.Powershell.Core\FileSystem::" + $awProperties.FilePath
-$blobUploadResponse = Invoke-RestMethod -Method Post -Uri $blobUploadEndpoint.ToString() -Headers $headers -InFile $networkFilePath
+    Param(
+		[Parameter(Mandatory=$True)]
+		[string]$authString,
+		[Parameter(Mandatory=$True)]
+		[string]$tenantCode,
+		[Parameter(Mandatory=$True)]
+        [string]$acceptType,
+		[Parameter(Mandatory=$True)]
+		[string]$contentType
+    )
+      
 
-##Progress bar
-Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
-Write-Verbose $blobUploadResponse
+    $header = @{"Authorization" = $authString; "aw-tenant-code" = $tenantCode; "Accept" = $acceptType.ToString(); "Content-Type" = $contentType.ToString()}
+     
+    Return $header
+}
 
-# Extract Blob ID and store in the properties table.
-$blobID = $blobUploadResponse.Value
-$awProperties.Add("BlobID", $blobID)
-$awProperties.Add("UploadFileName", $uploadFileName)
+<#
+    This Function uploads the app file to the AirWatch server
+#>
+Function Upload-Blob {
+  Param(
+	  [Parameter(Mandatory=$True)]
+	  [String] $airwatchServer,
+	  [Parameter(Mandatory=$True)]
+      [String] $filename,
+	  [Parameter(Mandatory=$True)]
+      [String] $filePath,
+	  [Parameter(Mandatory=$True)]
+      [String] $groupID,
+	  [Parameter(Mandatory=$True)]
+      [hashtable] $headers
+  )
 
-##Progress bar
-Write-Progress -Activity "Application Export" -Status "Exporting $SelectedApplication" -PercentComplete 80
+  $url = Create-BlobURL -baseURL $airwatchServer -filename $filename -groupID $groupID
 
-# Call function to map all properties from SCCM to AirWatch JSON.
-$appDetailsJSON = Map-AppDetailsJSON $awProperties
-$saveAppDetailsEndpoint = "$AWServer/api/v1/mam/apps/internal/begininstall"
-$webReturn = Invoke-RestMethod -Method Post -Uri $saveAppDetailsEndpoint.ToString() -Headers $headers -Body $appDetailsJSON
+  Write-Verbose "File Path $filePath"
 
-##Progress bar
-Write-Progress -Activity "Application Export" -Status "Export of $SelectedApplication Completed" -PercentComplete 100
-Write-Verbose $webReturn
+  $response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -InFile $filePath
 
-#Fin
-Write-Output "End"
+  Write-Verbose "Response 'Upload Blob' :: $response"
+
+  Return $response
+}
+
+<# 
+  Creates the url for the blob upload
+#>
+Function Create-BlobURL {
+    Param(
+		[Parameter(Mandatory=$True)]
+		[String] $baseURL,
+		[Parameter(Mandatory=$True)]
+        [String] $filename,
+		[Parameter(Mandatory=$True)]
+        [String] $groupID
+	)
+    $url = "$baseURL/api/mam/blobs/uploadblob?filename=$filename&organizationgroupid=$groupID"
+
+    Return $url
+}
+
+Function Save-App {
+	Param(
+		[Parameter(Mandatory=$True)]
+		[String] $awServer,
+		[Parameter(Mandatory=$True)]
+		[hashtable] $headers,
+		[Parameter(Mandatory=$True)]
+		$appDetails
+	)
+
+	$url = "$awServer/api/v1/mam/apps/internal/begininstall"
+
+    try {
+        $response = Invoke-RestMethod -Method Post -Uri $url.ToString() -Headers $headers -Body $appDetails
+    } catch {
+         Write-Verbose -Message "Save app failed :: $PSItem"
+    }
+
+	
+    Write-Verbose "Response 'Save App' :: $response"
+
+	Return $response
+}
+
+#endregion
+
+#region UI
+# TODO - Use this instead of the block below in Main
+Function Setup-UI {
+    Param(
+        $applications
+    )
+
+    # Start Drawing Form. The form has some issues depending on the screen resolution. #Needs to be updated
+    $form1 = New-Object System.Windows.Forms.Form
+    $form1.Text = "Application Import"
+    $form1.Size = New-Object System.Drawing.Size(425,380)
+    $form1.StartPosition = "CenterScreen"
+
+    $OKButton1 = New-Object System.Windows.Forms.Button
+    $OKButton1.Location = New-Object System.Drawing.Point(300,325)
+    $OKButton1.Size = New-Object System.Drawing.Size(75,23)
+    $OKButton1.Text = "OK"
+    $OKButton1.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $OKButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $form1.AcceptButton = $OKButton1
+    $form1.Controls.Add($OKButton1)
+
+    $CancelButton1 = New-Object System.Windows.Forms.Button
+    $CancelButton1.Location = New-Object System.Drawing.Point(225,325)
+    $CancelButton1.Size = New-Object System.Drawing.Size(75,23)
+    $CancelButton1.Text = "Cancel"
+    $CancelButton1.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+    $CancelButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $form1.CancelButton = $CancelButton1
+    $form1.Controls.Add($CancelButton1)
+
+    $label1 = New-Object System.Windows.Forms.Label
+    $label1.Location = New-Object System.Drawing.Point(10,5)
+    $label1.Size = New-Object System.Drawing.Size(280,20)
+    $label1.Text = "Select an application to import"
+    $form1.Controls.Add($label1)
+
+    $listBox1 = New-Object System.Windows.Forms.Listbox
+    $listBox1.Location = New-Object System.Drawing.Size(10,30)
+    $listBox1.Width = 400
+    $listBox1.Height = 296
+    $listBox1.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+
+    ##Add items to form
+    foreach($Application in $Applications)
+    {
+        [void] $ListBox1.Items.Add($Application.LocalizedDisplayName)
+    }
+
+    #Display form to Admin
+    $form1.Controls.Add($listBox1)
+    $form1.Topmost = $True
+
+    Return $form1
+}
+#endregion
+
+#region MAIN
+Function Main {
+    Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module
+ 
+    Set-Location $SCCMSiteCode # Set the current location to be the site code.
+
+    ##Progress bar
+    Write-Progress -Activity "Application Export" -Status "Starting Script" -PercentComplete 10
+
+    ##Get applicaion list via WMI
+    ##$Applications = Get-WMIObject -ComputerName $SCCMServer -Namespace Root\SMS\Site_$SCCMSiteCode -Class "SMS_Application" | Select -unique LocalizedDisplayName | sort LocalizedDisplayName
+    $Applications = Get-CMApplication | Select LocalizedDisplayName | sort LocalizedDisplayName
+
+    ##Application Import Selection Form
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+
+    #$ui = Setup-UI -applications $Applications
+    #region UI for debugging - TODO move to separate function
+    # Start Drawing Form. The form has some issues depending on the screen resolution. #Needs to be updated
+    $form1 = New-Object System.Windows.Forms.Form
+    $form1.Text = "Application Import"
+    $form1.Size = New-Object System.Drawing.Size(425,380)
+    $form1.StartPosition = "CenterScreen"
+
+    $OKButton1 = New-Object System.Windows.Forms.Button
+    $OKButton1.Location = New-Object System.Drawing.Point(300,325)
+    $OKButton1.Size = New-Object System.Drawing.Size(75,23)
+    $OKButton1.Text = "OK"
+    $OKButton1.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $OKButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $form1.AcceptButton = $OKButton1
+    $form1.Controls.Add($OKButton1)
+
+    $CancelButton1 = New-Object System.Windows.Forms.Button
+    $CancelButton1.Location = New-Object System.Drawing.Point(225,325)
+    $CancelButton1.Size = New-Object System.Drawing.Size(75,23)
+    $CancelButton1.Text = "Cancel"
+    $CancelButton1.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+    $CancelButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $form1.CancelButton = $CancelButton1
+    $form1.Controls.Add($CancelButton1)
+
+    $label1 = New-Object System.Windows.Forms.Label
+    $label1.Location = New-Object System.Drawing.Point(10,5)
+    $label1.Size = New-Object System.Drawing.Size(280,20)
+    $label1.Text = "Select an application to import"
+    $form1.Controls.Add($label1)
+
+    $listBox1 = New-Object System.Windows.Forms.Listbox
+    $listBox1.Location = New-Object System.Drawing.Size(10,30)
+    $listBox1.Width = 400
+    $listBox1.Height = 296
+    $listBox1.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+
+    ##Add items to form
+    foreach($Application in $Applications)
+    {
+        [void] $ListBox1.Items.Add($Application.LocalizedDisplayName)
+    }
+
+    #Display form to Admin
+    $form1.Controls.Add($listBox1)
+    $form1.Topmost = $True
+    #endregion
+    $result1 = $form1.ShowDialog()
+
+    # If a valid input is selected then set Application else quit
+    if ($result1 -eq [System.Windows.Forms.DialogResult]::OK) {
+        $SelectedApplication = $listBox1.SelectedItems
+        $SelectedApplication = $SelectedApplication[0]
+        Write-Host "Selected:: $SelectedApplication"
+    } else {
+        exit
+    }
+
+
+    ##Progress bar
+    Write-Progress -Activity "Application Export" `
+        -Status "Searching for applications" `
+	    -PercentComplete 30
+
+    #Parse the Deployment details of the Selected application and deserialize.
+    $selectedAppObject = Get-CMApplication -Name $SelectedApplication
+    [xml]$SDMPackageXML = $selectedAppObject.SDMPackageXML
+
+    ##Progress bar
+    Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
+
+    #Extract the hashtable returned from the function
+    $appProperties = @{}
+    $appProperties = $(Extract-PackageProperties -SDMPackageXML $SDMPackageXML)
+    
+    #Generate Auth Headers from username and password
+    $deviceListURI = $baseURL + $bulkDeviceEndpoint
+    $restUserName = Create-BasicAuthHeader -username $userName -password $password
+
+    # Define Content Types and Accept Types
+    $useJSON = "application/json"
+
+    #Build Headers
+    $headers = Create-Headers -authString $restUserName `
+        -tenantCode $tenantAPIKey `
+    	-acceptType $useJson `
+    	-contentType $useJson
+    
+    # Extract Filename, configure Blob Upload API URL and invoke the API.
+    $uploadFileName = Split-Path $appProperties.FilePath -leaf
+    $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($appProperties.FilePath)"
+    
+    # Confirm that the app binary is reachable and exists
+    if(Test-Path $networkFilePath) {
+        $blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
+           -filename $uploadFileName `
+    	    -filepath $networkFilePath `
+    	    -groupID $groupID `
+    	    -headers $headers
+
+        ##Progress bar
+        Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
+
+        # Extract Blob ID and store in the properties table.
+        $blobID = [string]$blobUploadResponse.Value
+        # This resets the properties to a hashtable since powershell returns an array from the function
+        $appProperties = $appProperties[1]
+    
+        $appProperties["BlobId"] = $blobID
+
+        ##Progress bar
+        Write-Progress -Activity "Application Export" `
+            -Status "Exporting $SelectedApplication" `
+	        -PercentComplete 80
+
+        # Call function to map all properties from SCCM to AirWatch JSON.
+        $awJson = Map-AppDetailsJson -awProperties $appProperties
+
+        if($appProperties.BlobId -ne $null) {
+             # Save App/Finish Upload in AirWatch
+            $webReturn = Save-App -awServer $AWServer `
+                -headers $headers `
+	            -appDetails $awJson
+
+            Write-Verbose -Message "Return from save $webReturn"
+        } else {
+            Write-Verbose -Message "Blob ID not in hashtable, unable to finish upload of  $SelectedApplication"
+        }
+   
+    } else {
+        Write-Output "Unable to reach app file path, $SelectedApplication not uploaded to AirWatch"
+    }
+
+    ##Progress bar
+    Write-Progress -Activity "Application Export" `
+        -Status "Export of $SelectedApplication Completed" `
+	    -PercentComplete 100
+
+    Write-Output "End"
+}
+#endregion
+
+
+#Calling Main
+Main
