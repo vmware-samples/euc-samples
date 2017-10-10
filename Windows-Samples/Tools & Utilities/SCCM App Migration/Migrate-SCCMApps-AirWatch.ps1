@@ -4,12 +4,12 @@
     This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
     MUST RUN AS ADMIN
     MUST UPDATE SCCM SITECODE
-        
+
   .DESCRIPTION
-    When run, this script will prompt you to select an application for migration. It then parses through the deployment details of the 
-    application and pushes the application package to AirWatch. The script then maps all the deployment commands and settings over to the 
-    AirWatch application record. MSIs are ported over as-is. Script deployments are ported over as ZIP folders with the correct execution 
-    commands to unpack and apply them.      
+    When run, this script will prompt you to select an application for migration. It then parses through the deployment details of the
+    application and pushes the application package to AirWatch. The script then maps all the deployment commands and settings over to the
+    AirWatch application record. MSIs are ported over as-is. Script deployments are ported over as ZIP folders with the correct execution
+    commands to unpack and apply them.
 
   .EXAMPLE
 
@@ -27,7 +27,7 @@
 
   .PARAMETER AWServer
     Server URL for the AirWatch API Server
-  
+
   .PARAMETER userName
     An AirWatch account in the tenant is being queried.  This user must have the API role at a minimum.
 
@@ -49,7 +49,7 @@
     Param(
         [Parameter(Mandatory=$True)]
         [string]$SCCMSiteCode,
-        
+
         [Parameter(Mandatory=$True)]
         [string]$AWServer,
 
@@ -108,11 +108,11 @@ Function Extract-PackageProperties {
     $AirWatchProperties.Add("InstallTimeoutInMinutes", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "ExecuteTime"}).InnerText)
 
     # Only set Uninstall command if present
-    if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText -eq $null) 
+    if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText -eq $null)
     {
         $AirWatchProperties.Add("UninstallCommandLine","An Uninstall Command is not setup in SCCM. Please update this field")
-    } 
-    else 
+    }
+    else
     {
         $AirWatchProperties.Add("UninstallCommandLine", ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText)
     }
@@ -124,11 +124,11 @@ Function Extract-PackageProperties {
     {
         $AirWatchProperties.Set_Item("InstallContext", "Device")
     }
-    
+
     # Switch the file generation based on Deployment Technology. Script deployment files are zipped up into a single file.
     switch ($currentDeployment.Technology)
     {
-        "MSI"    
+        "MSI"
                 {
                     $source = $currentDeployment.Installer.Contents.Content.Location
                     $file = ($currentDeployment.Installer.Contents.Content.File | ? {$_.Name -like "*.msi"}).Name
@@ -138,7 +138,7 @@ Function Extract-PackageProperties {
                     $AirWatchProperties.Add("FilePath", $uploadFilePath)
                     $AirWatchProperties.Add("UploadFileName", $(Split-Path $uploadFilePath -Leaf))
                 }
-        "Script" 
+        "Script"
                 {
                     #Zip Script deployments into a file for upload
                     $source = $currentDeployment.Installer.Contents.Content.Location
@@ -148,7 +148,7 @@ Function Extract-PackageProperties {
                     #remove zip if already exists
                     If(Test-path $uploadFilePath) {Remove-item $uploadFilePath}
                     Add-Type -assembly "system.io.compression.filesystem"
-                    
+
                     try {
                         [io.compression.zipfile]::CreateFromDirectory($source, $uploadFilePath)
                     } catch {
@@ -163,9 +163,9 @@ Function Extract-PackageProperties {
 
     if(($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText -eq $null)
     {
-        $AirWatchProperties.Add("InstallApplicationIdentifier", "No Product Code Found")        
+        $AirWatchProperties.Add("InstallApplicationIdentifier", "No Product Code Found")
     }
-    else 
+    else
     {
         [xml] $enhancedDetectionMethodXML = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText
         $InstallApplicationIdentifier = $enhancedDetectionMethodXML.EnhancedDetectionMethod.Settings.MSI.ProductCode
@@ -177,7 +177,7 @@ Function Extract-PackageProperties {
     $AirWatchProperties.Add("LocationGroupId", $groupID)
 
     Write-Verbose("---------- AW Properties ----------")
-    Write-Host $AirWatchProperties | Out-String 
+    Write-Host $AirWatchProperties | Out-String
     Write-Verbose("------------------------------")
     Write-Verbose("")
 
@@ -213,9 +213,9 @@ Function Map-AppDetailsJSON {
 			    DeviceRestart = "DoNotRestart"
 			    InstallCommand = $awProperties.InstallCommand
 			    InstallContext = $awProperties.InstallContext
-			    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes 
-			    InstallerRebootExitCode = $awProperties.InstallerRebootExitCode 
-			    InstallerSuccessExitCode = $awProperties.InstallerSuccessExitCode 
+			    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes
+			    InstallerRebootExitCode = $awProperties.InstallerRebootExitCode
+			    InstallerSuccessExitCode = $awProperties.InstallerSuccessExitCode
 			    RetryCount = 3
 			    RetryIntervalInMinutes = 5
 		    }
@@ -228,7 +228,7 @@ Function Map-AppDetailsJSON {
                     AppCriteria = @{
                         ApplicationIdentifier = $awProperties.InstallApplicationIdentifier
                         VersionCondition = "Any"
-                    }			    
+                    }
                 })
 			    CustomScript = @{
 				    ScriptType = "Unknown"
@@ -280,7 +280,7 @@ Function Map-AppDetailsJSON {
     Write-Verbose $json
     Write-Verbose "-----------------------------"
     Write-Verbose ""
-    
+
     Return $json
 }
 
@@ -318,10 +318,10 @@ Function Create-Headers {
 		[Parameter(Mandatory=$True)]
 		[string]$contentType
     )
-      
+
 
     $header = @{"Authorization" = $authString; "aw-tenant-code" = $tenantCode; "Accept" = $acceptType.ToString(); "Content-Type" = $contentType.ToString()}
-     
+
     Return $header
 }
 
@@ -353,7 +353,7 @@ Function Upload-Blob {
   Return $response
 }
 
-<# 
+<#
   Creates the url for the blob upload
 #>
 Function Create-BlobURL {
@@ -388,7 +388,7 @@ Function Save-App {
          Write-Verbose -Message "Save app failed :: $PSItem"
     }
 
-	
+
     Write-Verbose "Response 'Save App' :: $response"
 
 	Return $response
@@ -404,59 +404,63 @@ Function Setup-UI {
     )
 
     # Start Drawing Form. The form has some issues depending on the screen resolution. #Needs to be updated
-    $form1 = New-Object System.Windows.Forms.Form
-    $form1.Text = "Application Import"
-    $form1.Size = New-Object System.Drawing.Size(425,380)
-    $form1.StartPosition = "CenterScreen"
+    $MainForm = New-Object System.Windows.Forms.Form
+    $MainForm.Text = "Application Import"
+    $MainForm.Size = New-Object System.Drawing.Size(450, 300)
+    $MainForm.StartPosition = "CenterScreen"
+    $MainForm.ShowIcon = $false
 
-    $OKButton1 = New-Object System.Windows.Forms.Button
-    $OKButton1.Location = New-Object System.Drawing.Point(300,325)
-    $OKButton1.Size = New-Object System.Drawing.Size(75,23)
-    $OKButton1.Text = "OK"
-    $OKButton1.DialogResult = [System.Windows.Forms.DialogResult]::OK
-    $OKButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $form1.AcceptButton = $OKButton1
-    $form1.Controls.Add($OKButton1)
+    $HeadingLabel = New-Object System.Windows.Forms.Label
+    $HeadingLabel.Location = New-Object System.Drawing.Point(13,8)
+
+    $HeadingLabel.Size = New-Object System.Drawing.Size($($MainForm.Width - 40), 15)
+    $HeadingLabel.Text = "Select Apps to Import"
+    $HeadingLabel.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
+    $MainForm.Controls.Add($HeadingLabel)
+
+    $AppsListBox = New-Object System.Windows.Forms.CheckedListbox
+    $AppsListBox.Location = New-Object System.Drawing.Size(13,22)
+    $AppsListBox.Width = ($MainForm.Width - 40)
+    $AppsListBox.Height = $($MainForm.Height - 100)
+    $AppsListBox.AutoSize = $True
+    $AppsListBox.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+
+    $OKButton = New-Object System.Windows.Forms.Button
+    $OKButton.Location = New-Object System.Drawing.Point(($MainForm.Width - 105), ($MainForm.Height - 75))
+    $OKButton.Size = New-Object System.Drawing.Size(75,23)
+    $OKButton.Text = "OK"
+    $OKButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $OKButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $MainForm.AcceptButton = $OKButton
+    $MainForm.Controls.Add($OKButton)
 
     $CancelButton1 = New-Object System.Windows.Forms.Button
-    $CancelButton1.Location = New-Object System.Drawing.Point(225,325)
+    $CancelButton1.Location = New-Object System.Drawing.Point(($MainForm.Width - 190), ($MainForm.Height - 75))
     $CancelButton1.Size = New-Object System.Drawing.Size(75,23)
     $CancelButton1.Text = "Cancel"
     $CancelButton1.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
     $CancelButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $form1.CancelButton = $CancelButton1
-    $form1.Controls.Add($CancelButton1)
-
-    $label1 = New-Object System.Windows.Forms.Label
-    $label1.Location = New-Object System.Drawing.Point(10,5)
-    $label1.Size = New-Object System.Drawing.Size(280,20)
-    $label1.Text = "Select an application to import"
-    $form1.Controls.Add($label1)
-
-    $listBox1 = New-Object System.Windows.Forms.Listbox
-    $listBox1.Location = New-Object System.Drawing.Size(10,30)
-    $listBox1.Width = 400
-    $listBox1.Height = 296
-    $listBox1.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $MainForm.CancelButton = $CancelButton1
+    $MainForm.Controls.Add($CancelButton1)
 
     ##Add items to form
     foreach($Application in $Applications)
     {
-        [void] $ListBox1.Items.Add($Application.LocalizedDisplayName)
+        [void] $AppsListBox.Items.Add($Application)
     }
 
     #Display form to Admin
-    $form1.Controls.Add($listBox1)
-    $form1.Topmost = $True
+    $MainForm.Controls.Add($AppsListBox)
+    $MainForm.Topmost = $True
 
-    Return $form1
+    Return $MainForm
 }
 #endregion
 
 #region MAIN
 Function Main {
     Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module
- 
+
     Set-Location $SCCMSiteCode # Set the current location to be the site code.
 
     ##Progress bar
@@ -470,61 +474,13 @@ Function Main {
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
 
-    #$ui = Setup-UI -applications $Applications
-    #region UI for debugging - TODO move to separate function
-    # Start Drawing Form. The form has some issues depending on the screen resolution. #Needs to be updated
-    $form1 = New-Object System.Windows.Forms.Form
-    $form1.Text = "Application Import"
-    $form1.Size = New-Object System.Drawing.Size(425,380)
-    $form1.StartPosition = "CenterScreen"
-
-    $OKButton1 = New-Object System.Windows.Forms.Button
-    $OKButton1.Location = New-Object System.Drawing.Point(300,325)
-    $OKButton1.Size = New-Object System.Drawing.Size(75,23)
-    $OKButton1.Text = "OK"
-    $OKButton1.DialogResult = [System.Windows.Forms.DialogResult]::OK
-    $OKButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $form1.AcceptButton = $OKButton1
-    $form1.Controls.Add($OKButton1)
-
-    $CancelButton1 = New-Object System.Windows.Forms.Button
-    $CancelButton1.Location = New-Object System.Drawing.Point(225,325)
-    $CancelButton1.Size = New-Object System.Drawing.Size(75,23)
-    $CancelButton1.Text = "Cancel"
-    $CancelButton1.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-    $CancelButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $form1.CancelButton = $CancelButton1
-    $form1.Controls.Add($CancelButton1)
-
-    $label1 = New-Object System.Windows.Forms.Label
-    $label1.Location = New-Object System.Drawing.Point(10,5)
-    $label1.Size = New-Object System.Drawing.Size(280,20)
-    $label1.Text = "Select an application to import"
-    $form1.Controls.Add($label1)
-
-    $listBox1 = New-Object System.Windows.Forms.Listbox
-    $listBox1.Location = New-Object System.Drawing.Size(10,30)
-    $listBox1.Width = 400
-    $listBox1.Height = 296
-    $listBox1.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-
-    ##Add items to form
-    foreach($Application in $Applications)
-    {
-        [void] $ListBox1.Items.Add($Application.LocalizedDisplayName)
-    }
-
-    #Display form to Admin
-    $form1.Controls.Add($listBox1)
-    $form1.Topmost = $True
-    #endregion
-    $result1 = $form1.ShowDialog()
+    $UI = Setup-UI -applications $Applications
+    $result = $UI.ShowDialog()
 
     # If a valid input is selected then set Application else quit
     if ($result1 -eq [System.Windows.Forms.DialogResult]::OK) {
-        $SelectedApplication = $listBox1.SelectedItems
-        $SelectedApplication = $SelectedApplication[0]
-        Write-Host "Selected:: $SelectedApplication"
+        $SelectedApps = $form.Controls[3].CheckedItems
+        Write-Host "Selected:: $SelectedApps"
     } else {
         exit
     }
@@ -535,84 +491,86 @@ Function Main {
         -Status "Searching for applications" `
 	    -PercentComplete 30
 
-    #Parse the Deployment details of the Selected application and deserialize.
-    $selectedAppObject = Get-CMApplication -Name $SelectedApplication
-    [xml]$SDMPackageXML = $selectedAppObject.SDMPackageXML
-
-    ##Progress bar
-    Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
-
-    #Extract the hashtable returned from the function
-    $appProperties = @{}
-    $appProperties = $(Extract-PackageProperties -SDMPackageXML $SDMPackageXML)
-    
-    #Generate Auth Headers from username and password
-    $deviceListURI = $baseURL + $bulkDeviceEndpoint
-    $restUserName = Create-BasicAuthHeader -username $userName -password $password
-
-    # Define Content Types and Accept Types
-    $useJSON = "application/json"
-
-    #Build Headers
-    $headers = Create-Headers -authString $restUserName `
-        -tenantCode $tenantAPIKey `
-    	-acceptType $useJson `
-    	-contentType $useJson
-    
-    # Extract Filename, configure Blob Upload API URL and invoke the API.
-    $uploadFileName = Split-Path $appProperties.FilePath -leaf
-    $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($appProperties.FilePath)"
-    
-    # Confirm that the app binary is reachable and exists
-    if(Test-Path $networkFilePath) {
-        $blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
-           -filename $uploadFileName `
-    	    -filepath $networkFilePath `
-    	    -groupID $groupID `
-    	    -headers $headers
+    Foreach($App in $SelectedApps) {
+        #Parse the Deployment details of the Selected application and deserialize.
+        $selectedAppObject = Get-CMApplication -Name $App
+        [xml]$SDMPackageXML = $selectedAppObject.SDMPackageXML
 
         ##Progress bar
-        Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
+        Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
 
-        # Extract Blob ID and store in the properties table.
-        $blobID = [string]$blobUploadResponse.Value
-        # This resets the properties to a hashtable since powershell returns an array from the function
-        $appProperties = $appProperties[1]
-    
-        $appProperties["BlobId"] = $blobID
+        #Extract the hashtable returned from the function
+        $appProperties = @{}
+        $appProperties = $(Extract-PackageProperties -SDMPackageXML $SDMPackageXML)
+
+        #Generate Auth Headers from username and password
+        $deviceListURI = $baseURL + $bulkDeviceEndpoint
+        $restUserName = Create-BasicAuthHeader -username $userName -password $password
+
+        # Define Content Types and Accept Types
+        $useJSON = "application/json"
+
+        #Build Headers
+        $headers = Create-Headers -authString $restUserName `
+            -tenantCode $tenantAPIKey `
+        	-acceptType $useJson `
+        	-contentType $useJson
+
+        # Extract Filename, configure Blob Upload API URL and invoke the API.
+        $uploadFileName = Split-Path $appProperties.FilePath -leaf
+        $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($appProperties.FilePath)"
+
+        # Confirm that the app binary is reachable and exists
+        if(Test-Path $networkFilePath) {
+            $blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
+               -filename $uploadFileName `
+        	    -filepath $networkFilePath `
+        	    -groupID $groupID `
+        	    -headers $headers
+
+            ##Progress bar
+            Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
+
+            # Extract Blob ID and store in the properties table.
+            $blobID = [string]$blobUploadResponse.Value
+            # This resets the properties to a hashtable since powershell returns an array from the function
+            $appProperties = $appProperties[1]
+
+            $appProperties["BlobId"] = $blobID
+
+            ##Progress bar
+            Write-Progress -Activity "Application Export" `
+                -Status "Exporting $SelectedApplication" `
+                -PercentComplete 80
+
+            # Call function to map all properties from SCCM to AirWatch JSON.
+            $awJson = Map-AppDetailsJson -awProperties $appProperties
+
+            if($appProperties.BlobId -ne $null) {
+                 # Save App/Finish Upload in AirWatch
+                $webReturn = Save-App -awServer $AWServer `
+                    -headers $headers `
+                    -appDetails $awJson
+
+                Write-Verbose -Message "Return from save $webReturn"
+            } else {
+                Write-Verbose -Message "Blob ID not in hashtable, unable to finish upload of  $SelectedApplication"
+            }
+
+        } else {
+            Write-Output "Unable to reach app file path, $SelectedApplication not uploaded to AirWatch"
+        }
 
         ##Progress bar
         Write-Progress -Activity "Application Export" `
-            -Status "Exporting $SelectedApplication" `
-	        -PercentComplete 80
+            -Status "Export of $SelectedApplication Completed" `
+            -PercentComplete 100
 
-        # Call function to map all properties from SCCM to AirWatch JSON.
-        $awJson = Map-AppDetailsJson -awProperties $appProperties
-
-        if($appProperties.BlobId -ne $null) {
-             # Save App/Finish Upload in AirWatch
-            $webReturn = Save-App -awServer $AWServer `
-                -headers $headers `
-	            -appDetails $awJson
-
-            Write-Verbose -Message "Return from save $webReturn"
-        } else {
-            Write-Verbose -Message "Blob ID not in hashtable, unable to finish upload of  $SelectedApplication"
-        }
-   
-    } else {
-        Write-Output "Unable to reach app file path, $SelectedApplication not uploaded to AirWatch"
-    }
-
-    ##Progress bar
-    Write-Progress -Activity "Application Export" `
-        -Status "Export of $SelectedApplication Completed" `
-	    -PercentComplete 100
+    } # End foreach
 
     Write-Output "End"
 }
 #endregion
-
 
 #Calling Main
 Main
