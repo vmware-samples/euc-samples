@@ -1,41 +1,32 @@
-<Replace>
-	<CmdID>1</CmdID>
-	<Item>
-		<Target>
-			<LocURI>./Vendor/MSFT/NetworkProxy/ProxySettingsPerUser</LocURI>
-		</Target>
-		<Meta>
-			<Format xmlns="syncml:metinf">int</Format>
-			<Type>text/plain</Type>
-		</Meta>
-		<Data>0</Data>
-	</Item>
+﻿<Replace>
+  <CmdID>2</CmdID>
+  <Item>
+	<Target>
+	  <LocURI>
+		./Vendor/MSFT/NetworkProxy/AutoDetect
+	  </LocURI>
+	</Target>
+	<Meta>
+	  <Format xmlns="syncml:metinf">int</Format>
+	  <Type>text/plain</Type>
+	</Meta>
+	<Data>0 OR 1</Data>
+  </Item>
 </Replace>
 <Replace>
-	<CmdID>2</CmdID>
-	<Item>
-		<Target>
-			<LocURI>./Vendor/MSFT/NetworkProxy/AutoDetect</LocURI>
-		</Target>
-		<Meta>
-			<Format xmlns="syncml:metinf">int</Format>
-			<Type>text/plain</Type>
-		</Meta>
-		<Data>1</Data>
-	</Item>
-</Replace> 
-<Replace>
-	<CmdID>3</CmdID>
-	<Item>
-		<Target>
-			<LocURI>./Vendor/MSFT/NetworkProxy/SetupScriptUrl</LocURI>
-		</Target>
-		<Meta>
-			<Format xmlns="syncml:metinf">chr</Format>
-			<Type>text/plain</Type>
-		</Meta>
-		<Data>INSERT PROXY PAC LOCATION URL HERE</Data>
-	</Item>
+  <CmdID>3</CmdID>
+  <Item>
+	<Target>
+	  <LocURI>
+		./Vendor/MSFT/NetworkProxy/SetupScriptUrl
+	  </LocURI>
+	</Target>
+	<Meta>
+	  <Format xmlns="syncml:metinf">chr</Format>
+	  <Type>text/plain</Type>
+	</Meta>
+	<Data>INSERT SETUP SCRIPT URL</Data>
+  </Item>
 </Replace>
 <Replace>
   <CmdID>4</CmdID>
