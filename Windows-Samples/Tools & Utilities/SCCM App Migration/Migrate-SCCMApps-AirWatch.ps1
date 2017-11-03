@@ -148,7 +148,6 @@ Function Extract-PackageProperties {
                     #remove zip if already exists
                     If(Test-path $uploadFilePath) {Remove-item $uploadFilePath}
                     Add-Type -assembly "system.io.compression.filesystem"
-
                     try {
                         [io.compression.zipfile]::CreateFromDirectory($source, $uploadFilePath)
                     } catch {
@@ -574,3 +573,4 @@ Function Main {
 
 #Calling Main
 Main
+
