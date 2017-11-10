@@ -13,6 +13,7 @@ Navigate to **Apps & Books > Native > Internal > Add Application**, then follow 
         
 ## DESCRIPTION
 VMware Workspace ONE, powered by VMware AirWatch unified endpoint management allows you to quickly package and deploy even the most complex set of applications all from the AirWatch console providing end users with automatic installation of business critical apps or allowing them to install on-demand apps from the Workspace ONE unified catalog. 
+
 [![Windows 10 Software Distribution](https://img.youtube.com/vi/-wW0371d8Wc/0.jpg)](https://www.youtube.com/watch?v=-wW0371d8Wc)
 	
 ## Modifications Required
