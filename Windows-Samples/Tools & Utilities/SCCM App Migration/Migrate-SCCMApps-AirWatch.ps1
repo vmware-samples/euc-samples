@@ -1,4 +1,4 @@
-<# Migrate SCCMApps-AirWatch Powershell Script Help
+﻿<# Migrate SCCMApps-AirWatch Powershell Script Help
 
   .SYNOPSIS
     This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
@@ -268,7 +268,7 @@ Function Map-AppDetailsJSON {
 	    SupportedModels = @{
 		    Model = @(@{
 			    ApplicationId = 704
-                ModelName = "Desktop"
+                ModelName = "WinRT"
 			    ModelId = 50
 		    })
 	    }
@@ -446,7 +446,7 @@ Function Setup-UI {
     ##Add items to form
     foreach($Application in $Applications)
     {
-        [void] $AppsListBox.Items.Add($Application)
+        [void] $AppsListBox.Items.Add($Application.LocalizedDisplayName)
     }
 
     #Display form to Admin
@@ -478,8 +478,9 @@ Function Main {
     $result = $UI.ShowDialog()
 
     # If a valid input is selected then set Application else quit
-    if ($result1 -eq [System.Windows.Forms.DialogResult]::OK) {
-        $SelectedApps = $form.Controls[3].CheckedItems
+    if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+        Write-Verbose "$($UI)"
+        $SelectedApps = $UI.Controls[3].CheckedItems
         Write-Host "Selected:: $SelectedApps"
     } else {
         exit
@@ -574,3 +575,4 @@ Function Main {
 
 #Calling Main
 Main
+
