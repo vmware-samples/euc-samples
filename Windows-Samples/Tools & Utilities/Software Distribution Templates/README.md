@@ -4,6 +4,7 @@
 - **Author**: Josue Negron
 - **Email**: jnegron@vmware.com
 - **Date Created**: 11/10/2017
+- **Updated**: 11/29/2017
 - **Tested on**: Various Windows 10 1607-1709
 
 ## SYNOPSIS
@@ -23,6 +24,11 @@ These are simply templates, you will have to modify some values for your use-cas
 ## Resources
 - [Troubleshooting, Tips and Tricks](https://airwatch.zendesk.com/entries/103598667-Software-Distribution-Tips-and-Troubleshooting)
 - [Software Distribution Product Guide](https://my.air-watch.com/help/9.2/en/Content/Core_Guides/MAM/C/Win32_SofDist_Dscrptn.htm)
+
+## Updates
+
+- 11/10/17 Created
+- 11/29/17 Added Adobe AIR, Lenovo System Update, Password Safe 3.37.1 for Windows, PulseSecure VPN Client, Symantec Endpoint Encryption Client, Symantec Endpoint Protection, Veritas Enterprise Vault Outlook Add-In, Veritas System Recovery 16, WebEx Productivity Tools
 
 
 
