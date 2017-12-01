@@ -1,0 +1,482 @@
+<Replace>
+	<CmdID>30</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneNavigateWindowsAndFrames</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1607&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>31</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneInitializeAndScriptActiveXControls</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1201&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>32</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneAllowNETFrameworkReliantComponents</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2004&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>33</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneAllowFontDownloads</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1604&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>34</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneAllowAutomaticPromptingForFileDownloads</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2200&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>35</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneAllowAutomaticPromptingForActiveXControls</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2201&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>36</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneAllowAccessToDataSources</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1406&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>37</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneUsePopupBlocker</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1809&quot; value=&quot;3&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>38</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneRunNETFrameworkReliantComponentsSignedWithAuthenticode</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2001&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>39</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneNavigateWindowsAndFrames</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1607&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>40</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneLaunchingApplicationsAndFilesInIFRAME</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1804&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>42</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneEnableMIMESniffing</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2100&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>43</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneDownloadUnsignedActiveXControls</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1004&quot; value=&quot;1&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>44</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneDownloadSignedActiveXControls</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1001&quot; value=&quot;1&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>45</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowUserDataPersistence</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1606&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>46</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowScriptInitiatedWindows</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2102&quot; value=&quot;3&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>47</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowLessPrivilegedSites</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2101&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>48</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowFontDownloads</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1604&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>49</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowDragAndDropCopyAndPasteFiles</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1802&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>50</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowCopyPasteViaScript</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1407&quot; value=&quot;3&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>51</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowAutomaticPromptingForFileDownloads</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2200&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>52</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowAutomaticPromptingForActiveXControls</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname2201&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>53</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneAllowAccessToDataSources</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1406&quot; value=&quot;1&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>54</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/IncludeAllNetworkPaths</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_UNCAsIntranet&quot; value=&quot;1&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>55</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/IncludeAllLocalSites</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_IncludeUnspecifiedLocalSites&quot; value=&quot;1&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>56</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/DoNotBlockOutdatedActiveXControls</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;VerMgmtDisable&quot; value=&quot;0&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>57</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneJavaPermissions</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1C00&quot; value=&quot;65536&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>58</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/InternetZoneLogonOptions</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1A00&quot; value=&quot;65536&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>59</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/TrustedSitesZoneJavaPermissions</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_Partname1C00&quot; value=&quot;131072&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>60</CmdID>
+	<Item>
+		<Target>
+			<LocURI>
+            ./User/Vendor/MSFT/Policy/Config/InternetExplorer/AllowAutoComplete
+			</LocURI>
+		</Target>
+		<Meta>
+			<Format xmlns="syncml:metinf">chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Data>disabled</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>61</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/AllowSiteToZoneAssignmentList</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_ZonemapPrompt&quot; value=&quot;mondecorp.local&amp;#xF000;1&amp;#xF000;internal.mondecorp.com&amp;#xF000;1&amp;/></Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>62</CmdID>
+	<Item>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/DisableFirstRunWizard </LocURI>
+		</Target>
+		<Data>
+          &lt;enabled/&gt;
+          &lt;data id=&quot;FirstRunOptions&quot; value=&quot;1&quot;/&gt;
+		</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>63</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./User/Vendor/MSFT/Policy/Config/InternetExplorer/DisableHomePageChange</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;EnterHomePagePrompt&quot; value=&quot;http://mondecorp.com&quot;/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>64</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/DoNotAllowUsersToAddSites</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>65</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/DoNotAllowUsersToChangePolicies</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>66</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/DoNotBlockOutdatedActiveXControls</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;VersionCheckEnabled&quot; value=&quot;0&quot;/&gt;&lt;/data&gt;</Data>
+	</Item>
+</Replace>
+<Replace>
+	<CmdID>67</CmdID>
+	<Item>
+		<Meta>
+			<Format>chr</Format>
+			<Type>text/plain</Type>
+		</Meta>
+		<Target>
+			<LocURI>./Device/Vendor/MSFT/Policy/Config/InternetExplorer/IncludeAllLocalSites</LocURI>
+		</Target>
+		<Data>&lt;enabled/&gt;&lt;data id=&quot;IZ_IncludeUnspecifiedLocalSites&quot; value=&quot;1&quot;/&gt;</Data>
+</Item>
+</Replace>
