@@ -9,7 +9,7 @@
 
 ## Purpose 
 This folder has a sample configuration that will apply a custom firewall rule for an application on a Windows 10 Desktop for versions 1709 and above.
-The [NetworkProxy CSP](https://docs.microsoft.com/en-us/windows/client-management/mdm/firewall-csp) was introduced in the 1709 update and only applies to the Windows 10 Desktop SKU.
+The [Firewall CSP](https://docs.microsoft.com/en-us/windows/client-management/mdm/firewall-csp) was introduced in the 1709 update and only applies to the Windows 10 Desktop SKU.
 
 The Sample configuration creates a Firewall rule that allows an applications traffic to come inbound through the firewall. Outbound rules can be specified as well.
 
@@ -23,4 +23,4 @@ Change the Rule name route node to match each value node. Change `<CHANGEME - Cu
 
 ## Additional Resources
 * [Windows 10 Configuration Service Provider Reference](http://aka.ms/CSPList)
-* [NetworkProxy CSP Reference](https://docs.microsoft.com/en-us/windows/client-management/mdm/firewall-csp)
+* [Firewall CSP Reference](https://docs.microsoft.com/en-us/windows/client-management/mdm/firewall-csp)
