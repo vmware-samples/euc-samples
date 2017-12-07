@@ -20,5 +20,6 @@ None
 
 ## Additional Resources
 [Technical Note TN2459 - User-Approved Kernel Extension Loading - Apple](https://developer.apple.com/library/content/technotes/tn2459/_index.html)
+
 [Prepare for changes to kernel extensions in macOS High Sierra - Apple](https://support.apple.com/en-us/HT208019)
 
