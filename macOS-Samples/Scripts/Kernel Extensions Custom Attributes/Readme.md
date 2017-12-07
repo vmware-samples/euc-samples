@@ -1,4 +1,4 @@
-# Custom Attributes
+# KEXT Custom Attributes via Products
 
 ## Overview
 - **Authors**: Robert Terakedis
