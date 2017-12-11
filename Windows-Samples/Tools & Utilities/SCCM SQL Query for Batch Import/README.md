@@ -10,7 +10,9 @@
 In order to silently onboard Windows 10 devices into AirWatch and have them automatically assigned to the primary user, you will have to first preregister devices via a batch import. You can use the attached SQL queries to generate the CSV file needed to perform a batch import in AirWatch. 
 
 Detailed instructions can be found at [http://www.brookspeppin.com](http://www.brookspeppin.com/blog/how-to-silently-enroll-windows-10-systems-into-airwatch-using-sccm)
-	
+
+[![Batch Import from SCCM to Workspace ONE](https://img.youtube.com/vi/93j-WL6LZBk/0.jpg)](https://www.youtube.com/watch?v=93j-WL6LZBk)
+
 ## Modifications Required
 Update the following attributes before executing the script: 
 
