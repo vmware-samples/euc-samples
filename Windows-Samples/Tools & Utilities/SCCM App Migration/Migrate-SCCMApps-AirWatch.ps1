@@ -131,8 +131,13 @@ Function Extract-PackageProperties {
         "MSI"
                 {
                     $source = $currentDeployment.Installer.Contents.Content.Location
-                    $file = ($currentDeployment.Installer.Contents.Content.File | ? {$_.Name -like "*.msi"}).Name
-                    $uploadFilePath = $source + $file
+
+                    # Although the deployment technology indicates a MSI file, sometims it can be a .exe file, the "name like *.msi" check will fail
+                    # and results in a empty filename. Simply removing the file type check fixes the problem.
+                    $file = $currentDeployment.Installer.Contents.Content.File.Name
+
+                    # In some cases the $source returns without the backslash, then the full file path is wrong.
+                    $uploadFilePath = $source + '\' + $file
 
                     Write-Verbose -Message "Adding file path to properties - $($uploadFilePath)"
                     $AirWatchProperties.Add("FilePath", $uploadFilePath)
@@ -159,17 +164,26 @@ Function Extract-PackageProperties {
                 }
     }
 
-    # Get the application identifier from the Enhanced Detection Method
 
-    if(($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText -eq $null)
+    # Get the application identifier by searching ProductCode arg in the deployment xml, if not found, set the value to be a "not null" string.
+    # The previous code snippet will not set the value in some cases, which fails the AirWatch Begininstall API call.
+
+    $argProductCode = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "ProductCode"}).InnerText
+
+    [xml] $enhancedDetectionMethodXML = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText
+    $argMethodBodyProductCode = $enhancedDetectionMethodXML.EnhancedDetectionMethod.Settings.MSI.ProductCode
+
+    if ($argProductCode -ne $null)
+    {
+        $AirWatchProperties.Add("InstallApplicationIdentifier", $argProductCode)
+    }
+    elseif ($argMethodBodyProductCode -ne $null) 
+    {
+        $AirWatchProperties.Add("InstallApplicationIdentifier", $argMethodBodyProductCode)
+    } 
+    else 
     {
         $AirWatchProperties.Add("InstallApplicationIdentifier", "No Product Code Found")
-    }
-    else
-    {
-        [xml] $enhancedDetectionMethodXML = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText
-        $InstallApplicationIdentifier = $enhancedDetectionMethodXML.EnhancedDetectionMethod.Settings.MSI.ProductCode
-        $AirWatchProperties.Add("InstallApplicationIdentifier", $InstallApplicationIdentifier)
     }
 
     # Add addition keys and values if we have them
