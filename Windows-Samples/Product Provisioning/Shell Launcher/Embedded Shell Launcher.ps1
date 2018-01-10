@@ -1,7 +1,7 @@
 # PowerShell.exe -ExecutionPolicy Bypass -File "C:\Temp\AirWatch\Embedded Shell Launcher.ps1"
 
-# Enable EmbeddedShellLauncher
-#enable-windowsoptionalfeature -online -featureName Client-EmbeddedShellLauncher
+# Enable EmbeddedShellLauncher (if the below line works, you will not have to run the enable ESL.bat file, if it doesn't comment this line)
+enable-windowsoptionalfeature -online -featureName Client-EmbeddedShellLauncher
 
 $COMPUTER = "localhost"
 $NAMESPACE = "root\standardcimv2\embedded"
