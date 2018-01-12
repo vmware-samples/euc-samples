@@ -655,12 +655,12 @@ function Initialize {
     
     # Ensure backup folder exists, create if needed
     if (!(Test-Path -Path $backupFolder)) { 
-        New-Item -Path $backupFolder -ItemType Directory 
+        New-Item -Path $backupFolder -ItemType Directory | Out-Null
     }
 
     # Ensure upload folder exists, create if needed
     if (!(Test-Path -Path $uploadFolder)) {
-        New-Item -Path $uploadFolder -ItemType Directory
+        New-Item -Path $uploadFolder -ItemType Directory | Out-Null
     }
 
     # Ensure LGPO.exe exists, instruct to download and place file in project if missing
