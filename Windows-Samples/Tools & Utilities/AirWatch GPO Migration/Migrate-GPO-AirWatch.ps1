@@ -707,7 +707,15 @@ function MAIN {
     # Handle Task selection
     switch ($selection) {
         "1" {
-            Get-GPOBackups | Out-GridView -OutputMode Multiple -Title "GPO Backups"
+            $gpoBackups = @(Get-GPOBackups)
+            if ($gpoBackups.Count -ge 1) {
+                Write-Host "`nFound $($gpoBackups.Count) GPO backups within '$backupFolder'!"
+                $gpoBackups | Out-GridView -OutputMode Multiple -Title "GPO Backups" | Out-Null
+            }
+            else {
+                Write-Warning "No GPO backups or captures exist within '$backupFolder'!"
+                Write-Warning "Copy existing GPO backups into the above directory or capture a GPO backup using this tool first!"
+            }
         }
 
         "2" {
