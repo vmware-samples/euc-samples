@@ -1,4 +1,10 @@
-
+<# Enables RDP on target machine
+  .SYNOPSIS
+    1. Opens firewall to allow incoming connections
+    2. Disables "Deny TS Connections" registry key
+    3. Sets termservice to start automatically at boot 
+    4. Starts termservice
+#>
 
 REM Open the firewall to allow incoming connections
 netsh advfirewall firewall set rule group="Remote Desktop" new enable=Yes
