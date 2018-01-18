@@ -384,13 +384,11 @@ function Map-AppDetailsJSON {
 		[hashtable] $appProperties
 	)
 
-    # Get AirWatch Version and parse into double 
-    $awVersionStr = Get-AirWatchVersion
-    $awVersionArr = $awVersionStr.Split('.')
-    $awVersion = [Double]($awVersionArr[0] + "." + $awVersionArr[1])
+    # Get AirWatch Version and parse
+    $awVersion = [System.Version]$(Get-AirWatchVersion)
 
     # Setup properties reliant on AW versions
-    if ($awVersion -ge 9.2) {
+    if ($awVersion -ge [System.Version]"9.2.0.0") {
         $appProperties.Add("DeviceType", 12)
         $appProperties.Add("SupportedModels", @{
             Model = @(@{
