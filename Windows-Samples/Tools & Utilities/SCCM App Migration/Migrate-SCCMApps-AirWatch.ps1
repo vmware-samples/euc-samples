@@ -131,13 +131,8 @@ Function Extract-PackageProperties {
         "MSI"
                 {
                     $source = $currentDeployment.Installer.Contents.Content.Location
-
-                    # Although the deployment technology indicates a MSI file, sometims it can be a .exe file, the "name like *.msi" check will fail
-                    # and results in a empty filename. Simply removing the file type check fixes the problem.
-                    $file = $currentDeployment.Installer.Contents.Content.File.Name
-
-                    # In some cases the $source returns without the backslash, then the full file path is wrong.
-                    $uploadFilePath = $source + '\' + $file
+                    $file = ($currentDeployment.Installer.Contents.Content.File | ? {$_.Name -like "*.msi"}).Name
+                    $uploadFilePath = $source + $file
 
                     Write-Verbose -Message "Adding file path to properties - $($uploadFilePath)"
                     $AirWatchProperties.Add("FilePath", $uploadFilePath)
@@ -164,26 +159,17 @@ Function Extract-PackageProperties {
                 }
     }
 
+    # Get the application identifier from the Enhanced Detection Method
 
-    # Get the application identifier by searching ProductCode arg in the deployment xml, if not found, set the value to be a "not null" string.
-    # The previous code snippet will not set the value in some cases, which fails the AirWatch Begininstall API call.
-
-    $argProductCode = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "ProductCode"}).InnerText
-
-    [xml] $enhancedDetectionMethodXML = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText
-    $argMethodBodyProductCode = $enhancedDetectionMethodXML.EnhancedDetectionMethod.Settings.MSI.ProductCode
-
-    if ($argProductCode -ne $null)
-    {
-        $AirWatchProperties.Add("InstallApplicationIdentifier", $argProductCode)
-    }
-    elseif ($argMethodBodyProductCode -ne $null) 
-    {
-        $AirWatchProperties.Add("InstallApplicationIdentifier", $argMethodBodyProductCode)
-    } 
-    else 
+    if(($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText -eq $null)
     {
         $AirWatchProperties.Add("InstallApplicationIdentifier", "No Product Code Found")
+    }
+    else
+    {
+        [xml] $enhancedDetectionMethodXML = ($currentDeployment.Installer.DetectAction.Args.Arg | ? {$_.Name -eq "MethodBody"}).InnerText
+        $InstallApplicationIdentifier = $enhancedDetectionMethodXML.EnhancedDetectionMethod.Settings.MSI.ProductCode
+        $AirWatchProperties.Add("InstallApplicationIdentifier", $InstallApplicationIdentifier)
     }
 
     # Add addition keys and values if we have them
@@ -210,26 +196,6 @@ Function Map-AppDetailsJSON {
 		[Parameter(Mandatory=$True)]
 		$awProperties
 	)
-
-    # Setup DeviceType and SupportedModels based on AW Version
-    if ($awProperties["AirWatchVersion"] -ge [System.Version]"9.2.0.0") {
-        $awProperties.Add("DeviceType", 12)
-        $awProperties.Add("SupportedModels", @{
-            Model = @(@{
-                ModelId = 83
-                ModelName = "Desktop"
-            })
-        })
-    }
-    else {
-        $awProperties.Add("DeviceType", 12)
-        $awProperties.Add("SupportedModels", @{
-            Model = @(@{
-                ModelId = 50
-                ModelName = "Windows 10"
-            })
-        })
-    }
 
     # Map all table values to the AirWatch JSON format
     $applicationProperties = @{
@@ -285,7 +251,7 @@ Function Map-AppDetailsJSON {
 	    Developer = $awProperties.Developer
 	    DeveloperEmail = ""
 	    DeveloperPhone = ""
-	    DeviceType = $awProperties.DeviceType
+	    DeviceType = 12
 	    EnableProvisioning = "false"
 	    FileName = $awProperties.UploadFileName
 	    IsDependencyFile = "false"
@@ -299,7 +265,13 @@ Function Map-AppDetailsJSON {
 	    PushMode = 0
 	    SupportEmail = ""
 	    SupportPhone = ""
-	    SupportedModels = $awProperties.SupportedModels
+	    SupportedModels = @{
+		    Model = @(@{
+			    ApplicationId = 704
+                ModelName = "WinRT"
+			    ModelId = 50
+		    })
+	    }
 	    SupportedProcessorArchitecture = "x86"
     }
 
@@ -422,31 +394,6 @@ Function Save-App {
 	Return $response
 }
 
-function Get-AirWatchVersion {
-    Param(
-        [Parameter(Mandatory=$True)]
-        [hashtable] $headers
-    )
-    
-    try {
-        $endpoint = "$awServer/api/system/info"
-	    $response = Invoke-RestMethod -Method Get -Uri $endpoint.ToString() -Headers $headers
-        $version = $response.ProductVersion
-
-    }
-    catch [System.Net.WebException] {
-        $response = $_.Exception.Response | ConvertTo-Json
-        Write-Verbose "Querying AirWatch version ($endpoint) Failed! Exception :: $($_.Exception.Message)"
-        Write-Verbose "RESPONSE :: $($_.Exception.Response | ConvertTo-Json)"
-    } 
-    catch {
-        $response = $null
-        Write-Verbose "Get AirWatch Version failed :: $PSItem"
-    }
-
-    Write-Verbose "Get AirWatch Version response :: $response"
-    return $version;
-}
 #endregion
 
 #region UI
@@ -539,18 +486,6 @@ Function Main {
         exit
     }
 
-    #Setup header information
-    $restUserName = Create-BasicAuthHeader -username $userName -password $password
-    $useJSON = "application/json"
-    
-    #Build Headers for APIs
-    $headers = Create-Headers -authString $restUserName `
-        -tenantCode $tenantAPIKey `
-        -acceptType $useJson `
-        -contentType $useJson
-
-    #Retrieve AW version
-    $airwatchVersion = Get-AirWatchVersion -headers $headers
 
     ##Progress bar
     Write-Progress -Activity "Application Export" `
@@ -567,17 +502,21 @@ Function Main {
 
         #Extract the hashtable returned from the function
         $appProperties = @{}
-        $appProperties = Extract-PackageProperties -SDMPackageXML $SDMPackageXML
-        
-        # This resets the properties to a hashtable since powershell returns an array from the function
-        $appProperties = $appProperties[1]
-
-        # Add AW Version
-        $appProperties.Add("AirWatchVersion", [System.Version]$airwatchVersion)
+        $appProperties = $(Extract-PackageProperties -SDMPackageXML $SDMPackageXML)
 
         #Generate Auth Headers from username and password
         $deviceListURI = $baseURL + $bulkDeviceEndpoint
-        
+        $restUserName = Create-BasicAuthHeader -username $userName -password $password
+
+        # Define Content Types and Accept Types
+        $useJSON = "application/json"
+
+        #Build Headers
+        $headers = Create-Headers -authString $restUserName `
+            -tenantCode $tenantAPIKey `
+        	-acceptType $useJson `
+        	-contentType $useJson
+
         # Extract Filename, configure Blob Upload API URL and invoke the API.
         $uploadFileName = Split-Path $appProperties.FilePath -leaf
         $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($appProperties.FilePath)"
@@ -595,6 +534,9 @@ Function Main {
 
             # Extract Blob ID and store in the properties table.
             $blobID = [string]$blobUploadResponse.Value
+            # This resets the properties to a hashtable since powershell returns an array from the function
+            $appProperties = $appProperties[1]
+
             $appProperties["BlobId"] = $blobID
 
             ##Progress bar
