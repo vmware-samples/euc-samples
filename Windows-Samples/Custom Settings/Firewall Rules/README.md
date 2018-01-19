@@ -1,11 +1,12 @@
-# Network Proxy Samples
+# Firewall Samples
 
 ## Overview
 - **Author**: Mike Nelson
 - **Email**: miken@vmware.com
 - **Date Created**: 11/14/2017
-- **Supported Platforms**: Windows 10 Desktop 1709 and above
-- **Tested on Windows 10**: 1709
+- **Supported Platforms**: Windows 10 Desktop 1709 and above 
+- **Supported SKUs**: Pro, Business, Enterprise, Education
+- **Tested on**: Windows 10 1709 Enterprise
 
 ## Purpose 
 This folder has a sample configuration that will apply a custom firewall rule for an application on a Windows 10 Desktop for versions 1709 and above.
@@ -19,7 +20,7 @@ Please update the `<Data> </Data>` tag with the right values for your firewall r
 Change the Rule name route node to match each value node. Change `<CHANGEME - CustomFirewallRule Name>` to `RuleNameExample` at each LocURI in the sample.
 
 ## Change Log
-- 11/14/2017: Created sample for Setup Script (PAC) based Network Proxy sample.
+- 11/14/2017: Created sample for Firewall Rules with app exceptions.
 
 ## Additional Resources
 * [Windows 10 Configuration Service Provider Reference](http://aka.ms/CSPList)
