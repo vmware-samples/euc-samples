@@ -1,0 +1,15 @@
+<Replace>
+  <CmdID>1</CmdID>
+  <Item>
+	<Target>
+	  <LocURI>
+		./User/Vendor/MSFT/Policy/Config/System/AllowTelemetry
+	  </LocURI>
+	</Target>
+	<Meta>
+	  <Format xmlns="syncml:metinf">int</Format>
+	  <Type>text/plain</Type>
+	</Meta>
+	<Data>INSERT 0,1,2,3 HERE</Data>
+  </Item>
+</Replace>
