@@ -1,0 +1,10 @@
+<Delete>
+  <CmdID>2</CmdID>
+  <Item>
+	<Target>
+	  <LocURI>
+		./User/Vendor/MSFT/Policy/Config/System/AllowTelemetry
+	  </LocURI>
+	</Target>
+  </Item>
+</Delete>
