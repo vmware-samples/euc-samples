@@ -19,6 +19,8 @@ Update the following attributes before executing the script:
 - **YourGroupID** - Group ID of your OG
 - **YourDeviceGroupID** - Enrollment OG for the Device
 - **YourCollectionID** - Device Collection ID for the collection you want to export
+- You might also want to remove anything after the WHERE statement to pull a larger group of devices, or to pull in device serial numbers which are virtual machines (VMs). 
+- For fresh installs of System Center ConfigMgr, the **givenName** and **sn** AD attributes are not automatically synced, thus the SQL script will fail to pull these values in until you sync these attributes over. Production environments should already have these attributes syncing. 
 
         
 There are two version **Simple** and **Advanced**, all that is required is simple however some will want to add additional attributes ahead of time so they are imported with the device records. 
