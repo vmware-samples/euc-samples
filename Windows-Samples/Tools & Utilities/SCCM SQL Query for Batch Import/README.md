@@ -4,7 +4,8 @@
 - **Author**: Brooks Peppin & Josue Negron
 - **Email**: jnegron@vmware.com
 - **Date Created**: 12/1/2017
-- **Tested on**: SCCM 1706 with SQL Server 2012
+- **Updated:** 2/5/2018
+- **Tested on**: SCCM 1706/1710 with SQL Server 2012
 
 ## SYNOPSIS
 In order to silently onboard Windows 10 devices into AirWatch and have them automatically assigned to the primary user, you will have to first preregister devices via a batch import. You can use the attached SQL queries to generate the CSV file needed to perform a batch import in AirWatch. 
@@ -27,6 +28,9 @@ There are two version **Simple** and **Advanced**, all that is required is simpl
 
 ## Resources
 - [Brooks Peppin Blog with How to Steps](http://www.brookspeppin.com/blog/how-to-silently-enroll-windows-10-systems-into-airwatch-using-sccm)
+
+##Change Log
+-2/5/2018 - Updated Email Address AD Attribute from "vru.User_Principal_Name0" to "vru.Mail0"
 
 
 

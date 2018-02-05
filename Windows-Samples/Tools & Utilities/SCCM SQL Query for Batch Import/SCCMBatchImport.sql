@@ -7,9 +7,9 @@ sys.User_Name0 as 'Username*',
 '' as 'Enable Device Staging',
 '' as 'Pre Register for Vpp',
 '' as 'Email Username',
-vru.User_Principal_Name0 as 'Email Address*',
+vru.Mail0 as 'Email Address*',
 '' as 'Email Password',
-'' as 'User Principal Name',
+vru.User_Principal_Name0 as 'User Principal Name',
 vru.givenName0 as 'First Name*',
 '' as 'Middle Name',
 vru.sn0 as 'Last Name*',
@@ -57,6 +57,7 @@ Where FCM.CollectionID = 'YourCollectionID' 		-- Your Collection ID
 and sys.User_Name0 != 'Null'  						-- Remove Null Usernames
 and sys.User_Name0 != 'Administrator' 				-- Remove Administrators
 and vru.User_Principal_Name0 != 'Null' 				-- Remove Null UPN
+and vru.Mail0 != 'Null'								-- Remove Null Email Address
 and vru.givenName0 != 'Null' 						-- Remove Null First Name
 and vru.sn0 != 'Null' 								-- Remove Null Last Name
 and v_GS_PC_BIOS.SerialNumber0 not like '%vmware%' 	-- Optional, Remove VMs, Remove VMs with serial numbers starting with VMware
