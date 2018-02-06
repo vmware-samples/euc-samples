@@ -1,0 +1,40 @@
+{"Systems":[{"Name":"Inventory",
+		"CmndletMappings":[
+		{"Cmdlet":"Get-CIMInstance CIM_ComputerSystem",
+	     "FormattedAttributes":{
+				 "ComputerHostname":"$_.Name",
+				 "ComputerDomain":"If($_.PartOfDomain){ $_.Domain } Else { '' }",
+				 "MemoryAmount":"'{0:N2}' -F ($_.TotalPhysicalMemory / '1GB')"
+	        }
+		},
+		{"Cmdlet":"Get-CIMInstance CIM_BIOSElement",
+		 "FormattedAttributes":{
+				"BIOSName":"$_.Name",
+				"BIOSVersion":"$_.SMBIOSBIOSVersion"
+			}
+		},
+		{"Cmdlet":"Get-CIMInstance CIM_OperatingSystem",
+		 "FormattedAttributes":{
+				 "OSLastBootTime":"$_.LastBootUpTime",
+				 "OSSystemDrive":"$_.SystemDrive",
+				 "OSArchitecture":"$_.OSArchitecture"
+				}
+		},
+		{"Cmdlet":"Get-CIMInstance CIM_Processor",
+		 "FormattedAttributes":{
+			  "CPUManufacturer":"$_.Manufacturer",
+			  "CPUName":"$_.Name",
+			  "CPUNumberOfCores":"$_.NumberOfCores",
+			  "CPUSpeed":"$_.MaxClockSpeed"
+			}
+		},
+		{"Cmdlet":"(Get-CIMInstance Win32_LogicalDisk)[0]",
+		 "FormattedAttributes":{
+				"HDDCapacity":"'{0:N2}' -F ($_.Size / '1GB')",
+				"HDDFreeSpace":"'{0:N2}' -F ($_.FreeSpace / '1GB')"
+			}
+		}
+	    ]
+	  }
+   ]
+}

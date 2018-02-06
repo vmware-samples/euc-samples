@@ -1,0 +1,23 @@
+<wap-provisioningdoc id="c14e8e45-792c-4ec3-88e1-be121d8c33dc" name="customprofile">
+<characteristic type="com.airwatch.winrt.powershellcommand" uuid="7957d046-7765-4422-9e39-6fd5eef38174">
+<parm name="PowershellCommand" value='$type="XPROFILE";
+$templateType="CustomAttributes"; #CustomAttributes, SmarterGroups, GroupPolicy
+$x=
+@"
+INSERT YOUR BASE64 ENDCODING HERE
+"@
+
+$InstallPath = "C:\Temp\Reg\Queue"  #Change this is you change the install path
+If(!(Test-Path $InstallPath)){
+    $InstallPath = "C:\Temp"  		#Change this is you change the install path
+}
+
+Set-Content ($InstallPath + "\CustomAttributes-{ID}.profile") $x;  #Replace {ID} with the ID of the profile
+$TaskCheck = (Get-ScheduledTask | where { $_.TaskName -eq "Install_Profiles" -and $_.TaskPath -like "*AirWatch MDM*"} | Measure);
+If($TaskCheck.Count -gt 0){
+   Start-ScheduledTask -TaskName "Install_Profiles" -TaskPath "\AirWatch MDM\";
+}
+
+'/>
+</characteristic>
+</wap-provisioningdoc>
