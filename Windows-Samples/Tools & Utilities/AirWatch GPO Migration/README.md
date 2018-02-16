@@ -3,7 +3,7 @@
 ## Overview
 - **Author**: Justin Sheets
 - **Email**: jsheets@vmware.com
-- **Date Created**: 01/11/2018
+- **Date Updated**: 02/16/2018
 - **Tested on AirWatch 9.2.3.0**: Completed
 
 ## SYNOPSIS
@@ -13,7 +13,7 @@ This Powershell script allows you to capture and upload both new or existing GPO
 
 - Must Download and include the [Microsoft Security Compliance Toolkit](https://www.microsoft.com/en-us/download/details.aspx?id=55319 "Microsoft Security Compliance Toolkit") in the root folder of the project
 - Must have access to an AirWatch Admin Account that can authenticate to the APIs with Basic (Certificates currently not supported)
-- Full API automation support only available on AirWatch 9.2.3.0 and newer 
+- Full API automation support only available on AirWatch 9.2.4.0 and newer 
         
 ## DESCRIPTION
 When run, this script will prompt you to view, capture, or upload GPO backups to AirWatch.
@@ -32,7 +32,7 @@ When selecting GPOs backups to upload, you can select multiple GPOs by holding S
 You will need to supply your AirWatch Admin credentials, including the AirWatch API Key, when prompted. 
 
 ## Known Issues
-The task to upload the GPO package to the AirWatch Console will fail versions of AirWatch prior to 9.2.3.0.  See the EXAMPLE section for a full walkthrough of both processes.
+The task to upload the GPO package to the AirWatch Console will fail versions of AirWatch prior to 9.2.4.0.  See the EXAMPLE section for a full walkthrough of both processes.
 	
 ## Video Walk-through
 Click the below link to see a guided walk-through on how to setup and use this tool.
@@ -49,14 +49,14 @@ Click the below link to see a guided walk-through on how to setup and use this t
         -awGroupID "652" `
         -Verbose
 
-**AirWatch 9.2.3.0 and Newer:**
+**AirWatch 9.2.4.0 and Newer:**
 
 1. Run the Migrate-GPO-AirWach.ps1 script
 2. When prompted, select option 2 to capture a local GPO backup
 3. When prompted, select option 3 to upload the local GPO backup to the AirWatch Console.
 4. Navigate to the AirWatch Console and find the uploaded GPO package under Apps & Books > Applications > Native.  Click Assign by the Application and add your target devices and/or users.
 
-**AirWatch 9.2.2.X and Prior:**
+**AirWatch 9.2.3.X and Prior:**
 
 1. Run the Migrate-GPO-AirWach.ps1 script
 2. When prompted, select option 2 to capture a local GPO backup

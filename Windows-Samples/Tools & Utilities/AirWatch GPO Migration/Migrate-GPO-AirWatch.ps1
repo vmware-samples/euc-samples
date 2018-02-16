@@ -80,6 +80,7 @@ $basePath = $PSScriptRoot
 $backupFolder = "$basePath\GPO Backups"
 $uploadFolder = "$basePath\GPO Uploads"
 $lgpoPath = "$basePath\LGPO.exe"
+$installPath = "%programdata%\AirWatch\GPOs\"
 
 # Supporting Files
 $supportFilePath = "$basePath\Supporting Files"
@@ -89,10 +90,13 @@ $confirmPackageScriptFilename = "LGPOConfirmPackageInstall.ps1"
 $confirmPackageScriptFilepath = "$supportFilePath\$confirmPackageScriptFilename"
 $loggingScriptFilename = "Logging.ps1"
 $loggingScriptFilepath = "$supportFilePath\$loggingScriptFilename"
+$installPathTextFilename = "installpath.txt"
+$installSuccessTextFilename = "success.txt"
 
 # State Vars
 $initialized = $false
 $apiAuthenticated = $false
+$identifyApplicationByCriteria = "UsingCustomScript" #"DefiningCriteria"
 
 #region LGPO Commands
 <#
@@ -152,7 +156,9 @@ function Get-GPOBackups {
 function Build-GPOPackage {
     Param(
 		[Parameter(Mandatory=$True)]
-		[System.Collections.Generic.List[System.Object]]$GPOs
+		[System.Collections.Generic.List[System.Object]]$GPOs,
+        [Parameter(Mandatory=$False)]
+        [hashtable]$appProperties = $null
 	)
     
     # Include all GPO Backup folders that were selected
@@ -168,7 +174,14 @@ function Build-GPOPackage {
     $deployPackageCsvPath = Build-DeployPackageCSV -GPOs $GPOs
     $targets.Add($deployPackageCsvPath)
     $targets.Add($deployPackageScriptFilepath)
-    $targets.Add($loggingScriptFilepath)
+    #$targets.Add($loggingScriptFilepath)
+
+    $installPathDetails = Build-InstallPathTXT
+    $targets.Add($installPathDetails.filepath)
+    if ($appProperties -ne $null) {
+        #$appProperties.Add("FileCriteriaPath", "$($installPathDetails.installPath)\$installSuccessTextFilename")
+        $appProperties.Add("FileCriteriaPath", $installPath)
+    }
     
     # Build .zip file for upload
     $filename = "$(Get-GPOPolicyName).zip"
@@ -192,6 +205,7 @@ function Build-GPOPackage {
     
     # Delete the supporting files that were packaged in the .zip
     if (Test-Path -Path $deployPackageCsvPath) { Remove-Item $deployPackageCsvPath }
+    if (Test-Path -Path $installPathDetails.filepath) { Remove-Item $installPathDetails.filepath }
 
     return $gpoPackage
 }
@@ -244,6 +258,9 @@ function Get-GPOPolicyName {
     the AirWatch Console, then publishes the application.
 #>
 function Upload-GPOsToAirWatch {
+    [hashtable] $appProperties = @{}
+    $appProperties.Add("IdentifyApplicationByCriteria", $identifyApplicationByCriteria)
+
     # Select GPO(s) to upload
     Write-Host "`nBeginning Upload-GPOsToAirWatch. Select the GPO(s) from the popup to upload."
     $GPOs = Select-GPOBackups
@@ -253,8 +270,9 @@ function Upload-GPOsToAirWatch {
     
     # Build .zip package for GPO(s), LGPO.exe and ps1
     Write-Progress -Activity "GPO Migration" -Status "Building GPO Package" -PercentComplete 10
-    $gpoPackage = Build-GPOPackage -GPOs $GPOs
+    $gpoPackage = Build-GPOPackage -GPOs $GPOs -appProperties $appProperties
     if ($gpoPackage -eq $null) {
+        Write-Progress -Activity "GPO Migration" -Completed
         return Write-Host "An error occurred when attempting to build the GPO zip package - quitting! Check the output for more details."
     }
     
@@ -278,7 +296,6 @@ function Upload-GPOsToAirWatch {
 
     # Build app properties
     Write-Progress -Activity "GPO Migration" -Status "Building App Properties" -PercentComplete 50
-    [hashtable] $appProperties = @{}
     $appProperties.Add("ApplicationName", $gpoPackage.filename)
     $appProperties.Add("BlobId", $uploadBlobResponse.Value)
     $appProperties.Add("CustomScriptFileBlodId", $uploadScriptResponse.Value)
@@ -406,7 +423,7 @@ function Map-AppDetailsJSON {
             })
         })
     }
-    
+
     # Build App Details body
     $body = @{
 	    ApplicationName = $appProperties.ApplicationName
@@ -431,18 +448,9 @@ function Map-AppDetailsJSON {
                 DeviceRestart = "DoNotRestart"
                 RetryCount = 3
                 RetryIntervalInMinutes = 5
-                InstallTimeoutInMinutes = 30
+                InstallTimeoutInMinutes = 15
                 InstallerRebootExitCode = "0"
                 InstallerSuccessExitCode = "0"
-            }
-            WhenToCallInstallComplete = @{
-                IdentifyApplicationBy = "UsingCustomScript"
-                CustomScript = @{
-                    ScriptType = "PowerShell"
-                    CommandToRunTheScript = "powershell -executionpolicy bypass -File LGPOConfirmPackageInstall.ps1"
-                    CustomScriptFileBlodId = $appProperties.CustomScriptFileBlodId
-                    SuccessExitCode = 0
-                }
             }
         }
         FilesOptions = @{
@@ -455,6 +463,38 @@ function Map-AppDetailsJSON {
             }
         }
     }
+
+    if ($appProperties.IdentifyApplicationByCriteria -eq "DefiningCriteria") {
+        $body.DeploymentOptions.WhenToCallInstallComplete = @{
+            UseAdditionalCriteria = "false"
+            IdentifyApplicationBy = "DefiningCriteria"
+            CriteriaList = @(@{   
+                CriteriaType = "FileExists"
+                FileCriteria = @{
+                    Path = $appProperties.FileCriteriaPath
+                    VersionCondition = "Any"
+                    MajorVersion = 0
+                    MinorVersion = 0
+                    RevisionNumber = 0
+                    BuildNumber = 0
+                    ModifiedOn = (Get-Date -UFormat "%Y/%m/%d")
+                }
+                LogicalCondition = "End"
+            })
+        }
+    }
+    else {
+        $body.DeploymentOptions.WhenToCallInstallComplete = @{
+            IdentifyApplicationBy = "UsingCustomScript"
+            CustomScript = @{
+                ScriptType = "PowerShell"
+                CommandToRunTheScript = "powershell -executionpolicy bypass -File LGPOConfirmPackageInstall.ps1"
+                CustomScriptFileBlodId = $appProperties.CustomScriptFileBlodId
+                SuccessExitCode = 0
+            }
+        }
+    }
+
     $json = $body | ConvertTo-Json -Depth 10
     return $json
 }
@@ -640,6 +680,19 @@ function Build-DeployPackageCSV {
 
     Write-Verbose "Build-DeployPackageCSV filepath = $filepath"
     return $filepath
+}
+
+function Build-InstallPathTXT {
+    $baseInstallPath = "$installPath$([guid]::NewGuid())"
+    $baseInstallPath | Out-File "$PSScriptRoot\$installPathTextFilename"
+
+    $installPathDetails = New-Object -TypeName psobject -Property @{
+        installPath = $baseInstallPath
+        filename = $installPathTextFilename
+        filepath = "$PSScriptRoot\$installPathTextFilename"
+    }
+    
+    return $installPathDetails
 }
 #endregion
 
