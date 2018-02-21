@@ -215,7 +215,8 @@ Function Map-AppDetailsJSON {
 	)
 
     # Setup DeviceType and SupportedModels based on AW Version
-    if ($appDetails.AirWatchVersion -ge [System.Version]"9.2.0.0") {
+    if ([System.Version]$appDetails.AirWatchVersion -ge [System.Version]"9.2.0.0") {
+        Write-Log -logString "AirWatch version $($appDetails.AirWatchVersion) is greater than 9.2, using Modelname Desktop"
         $appDetails | Add-Member -MemberType NoteProperty -Name "DeviceType" -Value 12
         $appDetails | Add-Member -MemberType NoteProperty -Name "SupportedModels" -Value @{
             Model = @(@{
@@ -225,6 +226,7 @@ Function Map-AppDetailsJSON {
         }
     }
     else {
+        Write-Log -logString "AirWatch version $($appDetails.AirWatchVersion) is less than 9.2, using Modelname Windows 10"
         $appDetails | Add-Member -MemberType NoteProperty -Name "DeviceType" -Value 12
         $appDetails | Add-Member -MemberType NoteProperty -Name "SupportedModels" -Value @{
             Model = @(@{
@@ -514,6 +516,7 @@ function Migrate-AppsToAirWatch {
 
     #Retrieve AW version
     $airwatchVersion = Get-AirWatchVersion -headers $headers
+    Write-Log "AirWatch version is $($airWatchVersion)"
 
     #Get Apps
     $apps = Get-AppsFromReport
@@ -522,7 +525,7 @@ function Migrate-AppsToAirWatch {
         Write-Host "Exporting $($app.ApplicationName)"
         
         # Add additional properties
-        $app | Add-Member -MemberType NoteProperty -Name "AirWatchVersion" -Value [System.Version]$airwatchVersion
+        $app | Add-Member -MemberType NoteProperty -Name "AirWatchVersion" -Value $airwatchVersion
         
         # Fetch App filename and path
         $uploadFileName = Split-Path $app.FilePath -leaf
@@ -648,8 +651,8 @@ Function Main {
         MAIN
     }
 
-    }
 }
+
 #endregion
 
 #Calling Main
