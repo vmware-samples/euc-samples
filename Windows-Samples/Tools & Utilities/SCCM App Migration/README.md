@@ -1,24 +1,33 @@
 # SCCM App Migration Tool
 
 ## Overview
-- **Author**: Varun Murthy 
-- **Email**: vmurthy@vmware.com
+- **Author**: Varun Murthy / Mike Nelson 
+- **Email**: vmurthy@vmware.com / miken@vmware.com
 - **Date Created**: 08/07/2017
+- **Date Updated**: 02/22/2018
 - **Tested on SCCM 1702**: Completed
 
 ## SYNOPSIS
-This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
-
-[![SCCM App Migration to Workspace ONE Tool](https://img.youtube.com/vi/aQ_tJGR9e8g/0.jpg)](https://www.youtube.com/watch?v=aQ_tJGR9e8g)
+This Powershell script allows you to create a report of the applications in SCCM with related meta-data and automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
         
 ## DESCRIPTION
-When run, this script will prompt you to select an application for migration. It then parses through the deployment details of the application and pushes the application package to AirWatch. The script then maps all the deployment commands and settings over to the AirWatch application record. MSIs are ported over as-is. Script deployments are ported over as ZIP folders with the correct execution commands to unpack and apply them.
+When run, the script will prompt for which process that should be run. Select 1 to generate a report of the applications in SCCM or Select 2 to move previously reported applications to AirWatch with their meta-data. The script parses the information in SCCM and generates a report assoicating the application with the relevant AirWatch Meta-data. Once option 2 is run, the script will iterate through the csv report and upload the apps to AirWatch. Once the apps are uploaded they will need to be assigned to the appropriate Smart Groups.
+
+**Note:** A CSV report must be generated first in order to move the applications to AirWatch.
+
+## Recommended Workflow
+
+1. Run option 1 to generate a csv report for the applications in SCCM, if there are a lot of apps it may take some time for the script to generate the report.
+1. Review the report and delete any apps that do not need to be migrated.
+1. Run option 2 of the script and select the csv report that was generated and edited in Steps 1 & 2.
+ 1. Optional - Break the applications into small batches of the csv and move them in batches as opposed to one big push. E.g. select 5 apps from the main report by saving a copy of the csv with only those targeted applications.
 	
 ## Modifications Required
 This script must be run as an admin
 
 ## Known Issues
-One some screens the form that shows the SCCM Apps does not render correctly. You can still select an app and hit Enter.
+
+* Depending on the SCCM environment setup, the script may not be able to upload the application from SCCM. This is typical a result of permissions issues in more secure environments. If that fails, the application may need to be manually downloaded.
 	
 ## EXAMPLE
 
