@@ -135,7 +135,7 @@ else
 ForEach ($pc In $SMSMembers)
     {
         #Check for Primary User
-        $sprimaryuser = Get-WmiObject -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select * from SMS_UserMachineRelationship where ResourceName = '$($pc.name)'"
+        $sprimaryuser = Get-WmiObject -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select * from SMS_UserMachineRelationship where ResourceName = '$($pc.name)' and Types = '1'"
         $theprimaryuser = $sprimaryuser.UniqueUserName
         #Retrieve the user information associate with this device        
         $sgetuser = Get-WmiObject -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select * from SMS_R_System where name = '$($pc.name)'"
@@ -143,8 +143,9 @@ ForEach ($pc In $SMSMembers)
         #Use primary user if it exists        
         if($theprimaryuser -eq $null)
         #If primary user does not exist, use last logged on user
-      
-        {$slastuser = $sgetuser.lastlogonusername
+        {
+        Write-Host("*****************************************************************")      
+        $slastuser = $sgetuser.lastlogonusername
         Write-Host("Using Last Logged on User $($slastuser)")
         }
 
@@ -152,6 +153,7 @@ ForEach ($pc In $SMSMembers)
         $slastuser = $theprimaryuser
         $puarray = $slastuser.split("\")
         $slastuser = $puarray[1]
+        Write-Host("*****************************************************************")
         Write-Host("Using Primary User $($slastuser)")
         }
         
@@ -163,14 +165,14 @@ ForEach ($pc In $SMSMembers)
        
         if ($sn -eq $null)
             {
+                
                 #Machine is Not an SCCM Client
                 Write-Host("$($pc.name) Not an SCCM Client")
-                                    
+                            
             }
             
         else 
             {
-                    
                 Write-Host("Processing $($pc.name)")                    
                 #Process AW device registration - code from Brooks Peppin
                 #contruct REST HEADER
@@ -196,7 +198,7 @@ ForEach ($pc In $SMSMembers)
                 $userid = ($userid | where { ($_.username -like "$slastuser") -and ($_.group -notlike "staging") }).ID.Value #ensures its a real acccount
                 $body = @{
                     'LocationGroupID' = "$AirwatchGroupID"; #enroll into Production OG
-                    'FriendlyName'    = "$slastuser";
+                    'FriendlyName'    = "$($pc.name)";
                     'Ownership'	      = 'C'; #company owned
                     'SerialNumber'    = "$sn";
                     'PlatformID'	  = '12'; #Windows Desktop platform ID
@@ -225,14 +227,16 @@ ForEach ($pc In $SMSMembers)
                 else
                 {
                     Write-host "Device registration already exists. Checking now for matching registration..."
-                    If ($registration.device.username -eq $slastuser)
+                    $registereduser = $registration.device.username
+
+                    If ($registereduser -eq $slastuser)
                     {
-                        $registration = $registration.device.username
-                        Write-Host "Device $sn is already registered to $registration"
+                        
+                        Write-Host "Device $sn is already registered to $registereduser"
                     }
                     else
                     {
-                        Write-Host "Device $sn is registered to $registration"
+                        Write-Host "Device $sn is registered to $registereduser"
                         Write-Host "Registration does not match. Updating record."
                         $apipath = "/system/users/$userid/registerdevice"
                         Invoke-RestMethod -Uri "$URL$apipath" -Method POST -Headers $header -Body $json
@@ -244,7 +248,7 @@ ForEach ($pc In $SMSMembers)
 }
 
 Write-Host("Processing Complete")
-
+Write-Host("*****************************************************************")
 }
 
 
