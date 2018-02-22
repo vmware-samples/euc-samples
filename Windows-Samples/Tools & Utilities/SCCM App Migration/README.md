@@ -27,7 +27,6 @@ This script must be run as an admin
 
 ## Known Issues
 
-* EXE applications are not fully supported. (Roadmap item)
 * Depending on the SCCM environment setup, the script may not be able to upload the application from SCCM. This is typical a result of permissions issues in more secure environments. If that fails, the application may need to be manually downloaded.
 	
 ## EXAMPLE

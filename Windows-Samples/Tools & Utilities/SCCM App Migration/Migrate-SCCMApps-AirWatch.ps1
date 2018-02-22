@@ -157,15 +157,17 @@ Function Extract-PackageProperties {
                     $parentFolder = ($source | Split-Path -Parent)
                     $folderName = ($source | Split-Path -Leaf)
                     $uploadFilePath = $parentFolder + "\$folderName.zip"
+                    
                     #remove zip if already exists
-                    #If(Test-path $uploadFilePath) {Remove-item $uploadFilePath}
-                    #Add-Type -assembly "system.io.compression.filesystem"
+                    If(Test-path $uploadFilePath) {Remove-item $uploadFilePath}
+                    Add-Type -assembly "system.io.compression.filesystem"
 
-                    #try {
-                    #    [io.compression.zipfile]::CreateFromDirectory($source, $uploadFilePath)
-                    #} catch {
-                    #    "Unable to zip script file with error: $_"
-                    #}
+                    try {
+                        [io.compression.zipfile]::CreateFromDirectory($source, $uploadFilePath)
+                    } catch {
+                        "Unable to zip script file with error: $_"
+                    }
+
                     $AppObject |  Add-Member -MemberType NoteProperty -Name "FilePath" -Value $uploadFilePath
                     $AppObject |  Add-Member -MemberType NoteProperty -Name "UploadFileName" -Value $(Split-Path $uploadFilePath -Leaf)
                 }
