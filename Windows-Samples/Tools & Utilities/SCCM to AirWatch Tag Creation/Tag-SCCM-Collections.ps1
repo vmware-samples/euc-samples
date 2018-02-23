@@ -2,7 +2,7 @@
 <# Tag SCCM Devices in Airwatch with SCCM Collection Name
 
 #Author:  Chris Halstead - chalstead@vmware.com
-#February 2018
+#February 23 2018
 #Version 1.0
 
   .SYNOPSIS
