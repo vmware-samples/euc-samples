@@ -2,8 +2,8 @@
 <# Tag SCCM Devices in Airwatch with SCCM Collection Name
 
 #Author:  Chris Halstead - chalstead@vmware.com
-#February 23 2018
-#Version 1.0
+#February 2018
+#Version 1.1
 
   .SYNOPSIS
     This Powershell script allows you to automatically create tags in Airwatch for SCCM Collections and tag devices which exist in Airwatch with that collection name.
