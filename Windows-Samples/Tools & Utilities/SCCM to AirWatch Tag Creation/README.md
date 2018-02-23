@@ -3,8 +3,7 @@
 ## Overview
 - **Author**: Chris Halstead
 - **Email**: chalstead@vmware.com
-- **Date Created**: 2/20/2018
-- **Updated:** 2/20/2018
+- **Date Created**: 2/23/2018
 - **Tested on**: SCCM 2012 R2 and AirWatch 9.2.3
 
 ## SYNOPSIS
