@@ -96,7 +96,7 @@ $installSuccessTextFilename = "success.txt"
 # State Vars
 $initialized = $false
 $apiAuthenticated = $false
-$identifyApplicationByCriteria = "UsingCustomScript" #"DefiningCriteria"
+$identifyApplicationByCriteria = "DefiningCriteria" #"UsingCustomScript" 
 
 #region LGPO Commands
 <#
@@ -179,24 +179,33 @@ function Build-GPOPackage {
     $installPathDetails = Build-InstallPathTXT
     $targets.Add($installPathDetails.filepath)
     if ($appProperties -ne $null) {
-        #$appProperties.Add("FileCriteriaPath", "$($installPathDetails.installPath)\$installSuccessTextFilename")
-        $appProperties.Add("FileCriteriaPath", $installPath)
+        $appProperties.Add("FileCriteriaPath", $installPathDetails.installPath)
     }
-    
+
     # Build .zip file for upload
-    $filename = "$(Get-GPOPolicyName).zip"
-    $filepath = "$uploadFolder\$filename"
+    #$filename = "$(Get-GPOPolicyName).zip"
+    #$filepath = "$uploadFolder\$filename"
+    $filename = Get-GPOPolicyName
+    $folderpath = "$uploadFolder\$filename"
+    $filepath = "$folderpath\$filename.zip"
     
     # Delete the file if it already exists
-    if (Test-Path -Path $filepath) { Remove-Item $filepath }
+    if (Test-Path -Path $folderpath) { Remove-Item $folderpath }
+    New-Item -Path $folderpath -ItemType Directory | Out-Null
 
     try {
         # Compress the target files and create the gpoPackage object
         $output = Compress-Archive -LiteralPath $targets -CompressionLevel Optimal -DestinationPath $filepath -Force
         $gpoPackage = New-Object -TypeName psobject -Property @{
             fileIO = $output
-            filename = $filename
+            filename = "$filename.zip"
             filepath = $filepath
+            folderpath = $folderpath
+        }
+
+        # If using Defining Criteria, copy the installpath 
+        if ($identifyApplicationByCriteria -eq "DefiningCriteria") {
+            Copy-Item $($installPathDetails.filepath) $folderpath
         }
     }
     catch {
@@ -683,10 +692,12 @@ function Build-DeployPackageCSV {
 }
 
 function Build-InstallPathTXT {
-    $baseInstallPath = "$installPath$([guid]::NewGuid())"
+    $folderPath = "$installPath$([guid]::NewGuid())"
+    $baseInstallPath = "$folderPath\$installSuccessTextFilename"
     $baseInstallPath | Out-File "$PSScriptRoot\$installPathTextFilename"
 
     $installPathDetails = New-Object -TypeName psobject -Property @{
+        folderPath = $folderPath
         installPath = $baseInstallPath
         filename = $installPathTextFilename
         filepath = "$PSScriptRoot\$installPathTextFilename"
@@ -752,6 +763,7 @@ function MAIN {
     Write-Host "(1) List GPO Backups"
     Write-Host "(2) Capture Local GPO Backup"
     Write-Host "(3) Upload GPO to AirWatch"
+    Write-Host "(4) Build GPO Package"
     Write-Host "(0) END"
     $selection = Read-Host -Prompt "Selection"
 
@@ -788,6 +800,27 @@ function MAIN {
             else {
                 Write-Host "AirWatch API authentication failed - quitting! Check the output for additional details."
             }
+        }
+
+        "4" {
+            [hashtable] $appProperties = @{}
+            $appProperties.Add("IdentifyApplicationByCriteria", $identifyApplicationByCriteria)
+
+            Write-Host "`nBeginning Upload-GPOsToAirWatch. Select the GPO(s) from the popup to upload."
+            $GPOs = Select-GPOBackups
+            if ($GPOs -eq $null) {
+                return Write-Host "No GPO backups were selected to upload - quitting!"
+            }
+    
+            # Build .zip package for GPO(s), LGPO.exe and ps1
+            Write-Progress -Activity "GPO Migration" -Status "Building GPO Package" -PercentComplete 10
+            $gpoPackage = Build-GPOPackage -GPOs $GPOs -appProperties $appProperties
+            if ($gpoPackage -eq $null) {
+                Write-Progress -Activity "GPO Migration" -Completed
+                return Write-Host "An error occurred when attempting to build the GPO zip package - quitting! Check the output for more details."
+            }
+
+            Invoke-Item -Path $gpoPackage.folderpath
         }
 
         "0" { }
