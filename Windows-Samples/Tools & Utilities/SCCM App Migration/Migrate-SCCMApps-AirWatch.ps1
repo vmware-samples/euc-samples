@@ -530,7 +530,7 @@ function Migrate-AppsToAirWatch {
         $app | Add-Member -MemberType NoteProperty -Name "AirWatchVersion" -Value $airwatchVersion
         
         # Fetch App filename and path
-        $uploadFileName = Split-Path $app.FilePath -leaf
+        $uploadFileName = $app.UploadFileName
         $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($app.FilePath)"
         
         # Upload Blob
