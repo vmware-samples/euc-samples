@@ -1,4 +1,5 @@
 ﻿<# Migrate SCCMApps-AirWatch Powershell Script Help
+#3/15/18 - Updated Uninstallstring Logic - Chris Halstead
 
   .SYNOPSIS
     This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
