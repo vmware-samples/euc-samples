@@ -116,12 +116,13 @@ Function Extract-PackageProperties {
 
     # Only set Uninstall command if present
     if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText -eq $null)
-    {
-        $AppObject |  Add-Member -MemberType NoteProperty -Name "UninstallCommandLine","An Uninstall Command is not setup in SCCM. Please update this field"
+    { 
+        [string]$UninstallCommandLineString = "UninstallCommandLine"
+        $AppObject | Add-Member -MemberType NoteProperty -Name $($UninstallCommandLineString) -Value "An Uninstall Command is not setup in SCCM. Please update this field"
     }
     else
     {
-        $AppObject |  Add-Member -MemberType NoteProperty -Name "UninstallCommandLine"-Value ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText
+        $AppObject | Add-Member -MemberType NoteProperty -Name "UninstallCommandLine" -Value ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText
     }
 
 
