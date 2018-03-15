@@ -1,6 +1,5 @@
 ﻿<# Migrate SCCMApps-AirWatch Powershell Script Help
-#3/15/18 - Updated Uninstallstring Logic - Chris Halstead
-
+#Updated UninstallString Detection Logic - Chris Halstead chalstead@vmware.com
   .SYNOPSIS
     This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
     MUST RUN AS ADMIN
@@ -114,17 +113,18 @@ Function Extract-PackageProperties {
     $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallerSuccessExitCode"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "SuccessExitCodes"}).InnerText
     $AppObject |  Add-Member -MemberType NoteProperty -Name "DeviceRestart"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "RequiresReboot"}).InnerText
     $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallTimeoutInMinutes"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "ExecuteTime"}).InnerText
-
-    # Only set Uninstall command if present
-   if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq “InstallCommandLine”}).InnerText -eq $null)
-   {
-       [string]$UninstallCommandLineString = “UninstallCommandLine”
-       $AppObject | Add-Member -MemberType NoteProperty -Name $($UninstallCommandLineString) -Value “An Uninstall Command is not setup in SCCM. Please update this field”
-   }
-   else
-   {
-       $AppObject | Add-Member -MemberType NoteProperty -Name “UninstallCommandLine” -Value ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq “InstallCommandLine”}).InnerText
-   }
+ 
+     # Only set Uninstall command if present
+     #Updated 3/15/18 - Chris Halstead
+    if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq “InstallCommandLine”}).InnerText -eq $null)
+    {
+        [string]$UninstallCommandLineString = “UninstallCommandLine”
+        $AppObject | Add-Member -MemberType NoteProperty -Name $($UninstallCommandLineString) -Value “An Uninstall Command is not setup in SCCM. Please update this field”
+    }
+    else
+    {
+        $AppObject | Add-Member -MemberType NoteProperty -Name “UninstallCommandLine” -Value ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq “InstallCommandLine”}).InnerText
+    }
 
     #Set Default Install Context and modify if the Package context is System
     $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallContext"-Value "User"
@@ -532,7 +532,6 @@ function Migrate-AppsToAirWatch {
         
         # Fetch App filename and path
         $uploadFileName = $app.UploadFileName
-        #$uploadFileName = Split-Path $app.FilePath -leaf
         $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($app.FilePath)"
         
         # Upload Blob
@@ -661,4 +660,3 @@ Function Main {
 
 #Calling Main
 Main
-
