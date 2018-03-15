@@ -1,10 +1,10 @@
 # SCCM App Migration Tool
 
 ## Overview
-- **Author**: Varun Murthy / Mike Nelson 
-- **Email**: vmurthy@vmware.com / miken@vmware.com
+- **Author**: Varun Murthy / Mike Nelson / Chris Halstead
+- **Email**: vmurthy@vmware.com / miken@vmware.com / chalstead@vmware.com
 - **Date Created**: 08/07/2017
-- **Date Updated**: 02/22/2018
+- **Date Updated**: 03/15/2018
 - **Tested on SCCM 1702**: Completed
 
 ## SYNOPSIS
@@ -68,3 +68,12 @@ The groupID is the ID of the Organization Group where the apps will be migrated.
 
 The shorcut to getting this value is to navigate to **https://<YOUR HOST>/AirWatch/#/AirWatch/OrganizationGroup/Details**.
 The ID you are redirected to appears in the URL (7 in the following example). **https://<YOUR HOST>/AirWatch/#/AirWatch/OrganizationGroup/Details/Index/7**
+
+**Changelog**
+
+3/14/18 - Mike Nelson - Update processing of .CSV
+3/15/18 - Chris Halstead - Update logic of processing UninstallString
+
+
+
+
