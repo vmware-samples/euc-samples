@@ -1,0 +1,11 @@
+<ADD>
+  <CmdID>1</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Vendor/MSFT/Update/ApprovedUpdates/E6CF1350-C01B-414D-A61F-263D14D133B4</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">node</Format>
+    </Meta>
+  </Item>
+</ADD>
