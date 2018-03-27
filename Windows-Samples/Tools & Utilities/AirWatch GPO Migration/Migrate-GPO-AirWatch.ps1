@@ -56,7 +56,7 @@
 [CmdletBinding()]
     Param(
         [Parameter(Mandatory=$False)]
-		[string]$awServer,
+        [string]$awServer,
         [Parameter(Mandatory=$False)]
         [string]$awUsername,
         [Parameter(Mandatory=$False)]
@@ -96,7 +96,7 @@ $installSuccessTextFilename = "success.txt"
 # State Vars
 $initialized = $false
 $apiAuthenticated = $false
-$identifyApplicationByCriteria = "DefiningCriteria" #"UsingCustomScript" 
+$identifyApplicationByCriteria = "UsingCustomScript" #"DefiningCriteria" 
 
 #region LGPO Commands
 <#
@@ -106,7 +106,7 @@ $identifyApplicationByCriteria = "DefiningCriteria" #"UsingCustomScript"
 function Select-GPOBackups {
     Param(
         [Parameter(Mandatory=$False)]
-		[string]$title = "Select GPO Backups for Upload"
+        [string]$title = "Select GPO Backups for Upload"
     )
 
     # Query the list of GPOs held in our GPO Backup folder and display them to the user in a grid
@@ -133,9 +133,9 @@ function Get-GPOBackups {
     $GPOs = New-Object System.Collections.Generic.List[System.Object]
     foreach ($gpoPath in $gpoPaths) {
         [xml]$a = Get-Content -Path "$gpoPath\bkupInfo.xml"
-		$name = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.GPODisplayName } Else { $a.BackupInst.GPODisplayName.InnerText }
-		$time = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.BackupTime } Else { $a.BackupInst.BackupTime.InnerText }
-		$id = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.ID } Else { $a.BackupInst.ID.InnerText }
+        $name = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.GPODisplayName } Else { $a.BackupInst.GPODisplayName.InnerText }
+        $time = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.BackupTime } Else { $a.BackupInst.BackupTime.InnerText }
+        $id = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.ID } Else { $a.BackupInst.ID.InnerText }
         
         $gpoProperty = [ordered]@{
             name = $name
@@ -155,11 +155,11 @@ function Get-GPOBackups {
 #>
 function Build-GPOPackage {
     Param(
-		[Parameter(Mandatory=$True)]
-		[System.Collections.Generic.List[System.Object]]$GPOs,
+        [Parameter(Mandatory=$True)]
+        [System.Collections.Generic.List[System.Object]]$GPOs,
         [Parameter(Mandatory=$False)]
         [hashtable]$appProperties = $null
-	)
+    )
     
     # Include all GPO Backup folders that were selected
     $targets = New-Object System.Collections.Generic.List[System.Object]
@@ -246,9 +246,9 @@ function Capture-LocalGPO {
 #>
 function Process-LGPOCommand {
     Param(
-		[Parameter(Mandatory=$True)]
-		[string]$params
-	)
+        [Parameter(Mandatory=$True)]
+        [string]$params
+    )
 
     return Start-Process $lgpoPath $params -Verb runas -Wait -WindowStyle Hidden
 }
@@ -268,6 +268,12 @@ function Get-GPOPolicyName {
 #>
 function Upload-GPOsToAirWatch {
     [hashtable] $appProperties = @{}
+
+    # Setup properties reliant on AW versions
+    $awVersion = [System.Version]$(Get-AirWatchVersion)
+    if ($awVersion -le [System.Version]"9.2.3.0") {
+        $identifyApplicationByCriteria = "DefiningCriteria"
+    }
     $appProperties.Add("IdentifyApplicationByCriteria", $identifyApplicationByCriteria)
 
     # Select GPO(s) to upload
@@ -288,7 +294,7 @@ function Upload-GPOsToAirWatch {
     # Upload zip Blob to AW
     Write-Host "Uploading .zip package to AirWatch..."
     Write-Progress -Activity "GPO Migration" -Status "Uploading GPO Package to AirWatch" -PercentComplete 25
-    $uploadBlobResponse = Upload-Blob -filename $gpoPackage.filename -filepath $gpoPackage.filepath
+    $uploadBlobResponse = Upload-Blob -filename $gpoPackage.filename -filepath $gpoPackage.filepath -isSFDApp $true
     if ($uploadBlobResponse -eq $null -or $uploadBlobResponse.uuid -eq $null) {
         Write-Progress -Activity "GPO Migration" -Completed
         return Write-Host "An error occurred when attempting to upload the .zip package to AirWatch - quitting! Check the output for more details."
@@ -297,7 +303,7 @@ function Upload-GPOsToAirWatch {
     # Upload PS1 Blob to AW
     Write-Host "Uploading .ps1 script to AirWatch..."
     Write-Progress -Activity "GPO Migration" -Status "Uploading PS1 Script to AirWatch" -PercentComplete 40
-    $uploadScriptResponse = Upload-Blob -filename $confirmPackageScriptFilename -filepath $confirmPackageScriptFilepath
+    $uploadScriptResponse = Upload-Blob -filename $confirmPackageScriptFilename -filepath $confirmPackageScriptFilepath -isSFDApp $false
     if ($uploadScriptResponse -eq $null -or $uploadScriptResponse.uuid -eq $null) {
         Write-Progress -Activity "GPO Migration" -Completed
         return Write-Host "An error occurred when attempting to upload the .ps1 script to AirWatch - quitting! Check the output for more details."
@@ -337,11 +343,16 @@ function Upload-Blob {
         [Parameter(Mandatory=$True)]
         [string]$filename,
         [Parameter(Mandatory=$True)]
-        [string]$filepath
-	)
+        [string]$filepath,
+        [Parameter(Mandatory=$False)]
+        [bool]$isSFDApp = $False
+    )
     
     $headers = Build-AirWatchHeaders -contentType "application/octet-stream"
     $endpoint = "$awServer/api/mam/blobs/uploadblob?filename=$filename&organizationgroupid=$awGroupID"
+    if ($isSFDApp -eq $true) {
+        $endpoint = "$($endpoint)&moduleType=Application"
+    }
 
     Write-Verbose "------  mam/blobs/uploadblob API ------"
     Write-Verbose "headers: $headers"
@@ -350,7 +361,7 @@ function Upload-Blob {
     Write-Verbose "---------------------------------------`n"
 
     try {
-	    $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -InFile $filepath
+        $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -InFile $filepath
     } 
     catch [System.Net.WebException] {
         $response = $_.Exception.Response | ConvertTo-Json
@@ -373,7 +384,7 @@ function Save-App {
     Param(
         [Parameter(Mandatory=$True)]
         $appProperties
-	)
+    )
 
     $headers = Build-AirWatchHeaders
     $endpoint = "$awServer/api/mam/apps/internal/begininstall"
@@ -385,7 +396,7 @@ function Save-App {
     Write-Verbose "-------------------------------------------------`n"
 
     try {
-	    $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -Body $appProperties
+        $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -Body $appProperties
     }
     catch [System.Net.WebException] {
         $response = $_.Exception.Response | ConvertTo-Json
@@ -406,9 +417,9 @@ function Save-App {
 #>
 function Map-AppDetailsJSON {
     Param(
-		[Parameter(Mandatory=$True)]
-		[hashtable] $appProperties
-	)
+        [Parameter(Mandatory=$True)]
+        [hashtable] $appProperties
+    )
 
     # Get AirWatch Version and parse
     $awVersion = [System.Version]$(Get-AirWatchVersion)
@@ -435,16 +446,16 @@ function Map-AppDetailsJSON {
 
     # Build App Details body
     $body = @{
-	    ApplicationName = $appProperties.ApplicationName
-	    BlobId = $appProperties.BlobId
-	    DeviceType = $appProperties.DeviceType
-	    SupportedModels = $appProperties.SupportedModels
-	    PushMode = 0
-	    SupportedProcessorArchitecture = "x64"
-	    EnableProvisioning = "true"
-	    IsDependencyFile = "false"
-	    LocationGroupId = $awGroupID
-	    DeploymentOptions = @{
+        ApplicationName = $appProperties.ApplicationName
+        BlobId = $appProperties.BlobId
+        DeviceType = $appProperties.DeviceType
+        SupportedModels = $appProperties.SupportedModels
+        PushMode = 0
+        SupportedProcessorArchitecture = "x64"
+        EnableProvisioning = "true"
+        IsDependencyFile = "false"
+        LocationGroupId = $awGroupID
+        DeploymentOptions = @{
             WhenToInstall = @{
                 DiskSpaceRequiredInKb = 1000
                 DevicePowerRequired = 0
@@ -516,7 +527,7 @@ function Get-AirWatchVersion {
 
     try {
         $endpoint = "$awServer/api/system/info"
-	    $response = Invoke-RestMethod -Method Get -Uri $endpoint.ToString() -Headers $headers
+        $response = Invoke-RestMethod -Method Get -Uri $endpoint.ToString() -Headers $headers
         $version = $response.ProductVersion
 
     }
@@ -541,7 +552,7 @@ function Get-AirWatchOrganizationGroup {
     Param(
         [Parameter(Mandatory=$True)]
         [int]$orgGroupId
-	)
+    )
 
     $headers = Build-AirWatchHeaders
 
@@ -665,11 +676,11 @@ function Build-AirWatchHeaders {
     Base64 Encoding for the AirWatch account credentials to authorize the API request
 #>
 Function Get-BasicUserForAuth {
-	$basicAuthString = $awUsername + ":" + $awPassword
-	$encoding = [System.Text.Encoding]::ASCII.GetBytes($basicAuthString)
-	$encodedString = [Convert]::ToBase64String($encoding)
-	
-	Return "Basic " + $encodedString
+    $basicAuthString = $awUsername + ":" + $awPassword
+    $encoding = [System.Text.Encoding]::ASCII.GetBytes($basicAuthString)
+    $encodedString = [Convert]::ToBase64String($encoding)
+    
+    Return "Basic " + $encodedString
 }
 #endregion
 
