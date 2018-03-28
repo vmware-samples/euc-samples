@@ -1,0 +1,16 @@
+<dict>
+    <key>PayloadDisplayName</key>
+    <string>Disable Apple Watch Unlock</string>
+    <key>PayloadEnabled</key>
+    <true/>
+    <key>PayloadIdentifier</key>
+    <string>com.apple.applicationaccess.allowAutoUnlock</string>
+    <key>PayloadType</key>
+    <string>com.apple.applicationaccess</string>
+    <key>PayloadUUID</key>
+    <string>8D8739D2-B3A1-41AB-8302-E72D979D1FAB</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>allowAutoUnlock</key>
+    <false/>
+</dict>

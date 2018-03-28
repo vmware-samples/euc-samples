@@ -1,5 +1,5 @@
 ﻿<# Migrate SCCMApps-AirWatch Powershell Script Help
-
+#Updated UninstallString Detection Logic - Chris Halstead chalstead@vmware.com
   .SYNOPSIS
     This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
     MUST RUN AS ADMIN
@@ -66,6 +66,12 @@
         [string]$groupID
 )
 
+#region 
+### Script Variables ####
+$OutputFolder = "$($PSScriptRoot)\App-Migration-Output"
+$initialized = $false
+#endregion
+
 Write-Verbose "-- Command Line Parameters --"
 Write-Verbose ("Site Code: " + $SCCMSiteCode)
 Write-Verbose ("Site Code: " + $AWServer)
@@ -73,6 +79,7 @@ Write-Verbose ("UserName: " + $userName)
 Write-Verbose ("Password: " + $password)
 Write-Verbose ("Tenant API Key: " + $tenantAPIKey)
 Write-Verbose ("Endpoint URL: " + $groupID)
+Write-Verbose ("Working Directory: " + $OutputFolder)
 Write-Verbose "-----------------------------"
 Write-Verbose ""
 
@@ -88,41 +95,42 @@ Function Extract-PackageProperties {
 		[xml]$SDMPackageXML
 	)
 
-    [hashtable]$AirWatchProperties = @{}
+    [pscustomobject]$AppObject = New-Object PSObject
 
     # Extract top level app properties
     $ApplicationName = $SDMPackageXML.AppMgmtDigest.Application.Title.InnerText
-    $AirWatchProperties.Add("ApplicationName", $ApplicationName)
-    $AirWatchProperties.Add("Description", $SDMPackageXML.AppMgmtDigest.Application.Description.InnerText)
-    $AirWatchProperties.Add("Developer", $SDMPackageXML.AppMgmtDigest.Application.Publisher.InnerText)
-    $AirWatchProperties.Add("ActualFileVersion", $SDMPackageXML.AppMgmtDigest.Application.SoftwareVersion.InnerText)
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "ApplicationName"-Value $ApplicationName
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "Description"-Value $SDMPackageXML.AppMgmtDigest.Application.Description.InnerText
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "Developer"-Value $SDMPackageXML.AppMgmtDigest.Application.Publisher.InnerText
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "ActualFileVersion"-Value $SDMPackageXML.AppMgmtDigest.Application.SoftwareVersion.InnerText
 
     # Get the first deployment method of multiple.
     $currentDeployment = $SDMPackageXML.AppMgmtDigest.DeploymentType | Select-Object -First 1
 
     # Map Install actions section to the corresponding AW properties
-    $AirWatchProperties.Add("InstallCommand", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText)
-    $AirWatchProperties.Add("InstallerRebootExitCode", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "RebootExitCodes"}).InnerText)
-    $AirWatchProperties.Add("InstallerSuccessExitCode", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "SuccessExitCodes"}).InnerText)
-    $AirWatchProperties.Add("DeviceRestart", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "RequiresReboot"}).InnerText)
-    $AirWatchProperties.Add("InstallTimeoutInMinutes", ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "ExecuteTime"}).InnerText)
-
-    # Only set Uninstall command if present
-    if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText -eq $null)
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallCommand"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallerRebootExitCode"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "RebootExitCodes"}).InnerText
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallerSuccessExitCode"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "SuccessExitCodes"}).InnerText
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "DeviceRestart"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "RequiresReboot"}).InnerText
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallTimeoutInMinutes"-Value ($currentDeployment.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "ExecuteTime"}).InnerText
+ 
+     # Only set Uninstall command if present
+     #Updated 3/15/18 - Chris Halstead
+    if(($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq “InstallCommandLine”}).InnerText -eq $null)
     {
-        $AirWatchProperties.Add("UninstallCommandLine","An Uninstall Command is not setup in SCCM. Please update this field")
+        [string]$UninstallCommandLineString = “UninstallCommandLine”
+        $AppObject | Add-Member -MemberType NoteProperty -Name $($UninstallCommandLineString) -Value “An Uninstall Command is not setup in SCCM. Please update this field”
     }
     else
     {
-        $AirWatchProperties.Add("UninstallCommandLine", ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq "InstallCommandLine"}).InnerText)
+        $AppObject | Add-Member -MemberType NoteProperty -Name “UninstallCommandLine” -Value ($currentDeployment.Installer.UninstallAction.Args.Arg | ? {$_.Name -eq “InstallCommandLine”}).InnerText
     }
 
-
     #Set Default Install Context and modify if the Package context is System
-    $AirWatchProperties.Add("InstallContext", "User")
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallContext"-Value "User"
         If(($SDMPackageXML.AppMgmtDigest.DeploymentType.Installer.InstallAction.Args.Arg | ? {$_.Name -eq "ExecutionContext"}).InnerText -eq "System")
     {
-        $AirWatchProperties.Set_Item("InstallContext", "Device")
+        $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallContext" -Value "Device" -Force
     }
 
     # Switch the file generation based on Deployment Technology. Script deployment files are zipped up into a single file.
@@ -132,7 +140,7 @@ Function Extract-PackageProperties {
                 {
                     $source = $currentDeployment.Installer.Contents.Content.Location
 
-                    # Although the deployment technology indicates a MSI file, sometims it can be a .exe file, the "name like *.msi" check will fail
+                    # Although the deployment technology indicates a MSI file, sometimes it can be a .exe file, the "name like *.msi" check will fail
                     # and results in a empty filename. Simply removing the file type check fixes the problem.
                     $file = $currentDeployment.Installer.Contents.Content.File.Name
 
@@ -140,8 +148,8 @@ Function Extract-PackageProperties {
                     $uploadFilePath = $source + '\' + $file
 
                     Write-Verbose -Message "Adding file path to properties - $($uploadFilePath)"
-                    $AirWatchProperties.Add("FilePath", $uploadFilePath)
-                    $AirWatchProperties.Add("UploadFileName", $(Split-Path $uploadFilePath -Leaf))
+                    $AppObject |  Add-Member -MemberType NoteProperty -Name "FilePath"-Value $uploadFilePath
+                    $AppObject |  Add-Member -MemberType NoteProperty -Name "UploadFileName"-Value $(Split-Path $uploadFilePath -Leaf)
                 }
         "Script"
                 {
@@ -150,6 +158,7 @@ Function Extract-PackageProperties {
                     $parentFolder = ($source | Split-Path -Parent)
                     $folderName = ($source | Split-Path -Leaf)
                     $uploadFilePath = $parentFolder + "\$folderName.zip"
+                    
                     #remove zip if already exists
                     If(Test-path $uploadFilePath) {Remove-item $uploadFilePath}
                     Add-Type -assembly "system.io.compression.filesystem"
@@ -159,9 +168,11 @@ Function Extract-PackageProperties {
                     } catch {
                         "Unable to zip script file with error: $_"
                     }
-                    $AirWatchProperties.Add("FilePath", $uploadFilePath)
-                    $AirWatchProperties.Add("UploadFileName", $(Split-Path $uploadFilePath -Leaf))
+
+                    $AppObject |  Add-Member -MemberType NoteProperty -Name "FilePath" -Value $uploadFilePath
+                    $AppObject |  Add-Member -MemberType NoteProperty -Name "UploadFileName" -Value $(Split-Path $uploadFilePath -Leaf)
                 }
+       
     }
 
 
@@ -175,27 +186,22 @@ Function Extract-PackageProperties {
 
     if ($argProductCode -ne $null)
     {
-        $AirWatchProperties.Add("InstallApplicationIdentifier", $argProductCode)
+        $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallApplicationIdentifier"-Value $argProductCode
     }
     elseif ($argMethodBodyProductCode -ne $null) 
     {
-        $AirWatchProperties.Add("InstallApplicationIdentifier", $argMethodBodyProductCode)
+        $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallApplicationIdentifier"-Value $argMethodBodyProductCode
     } 
     else 
     {
-        $AirWatchProperties.Add("InstallApplicationIdentifier", "No Product Code Found")
+        $AppObject |  Add-Member -MemberType NoteProperty -Name "InstallApplicationIdentifier"-Value "No Product Code Found"
     }
 
     # Add addition keys and values if we have them
-    $AirWatchProperties.Add("BlobId", $null)
-    $AirWatchProperties.Add("LocationGroupId", $groupID)
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "BlobId"-Value $null
+    $AppObject |  Add-Member -MemberType NoteProperty -Name "LocationGroupId"-Value $groupID
 
-    Write-Verbose("---------- AW Properties ----------")
-    Write-Host $AirWatchProperties | Out-String
-    Write-Verbose("------------------------------")
-    Write-Verbose("")
-
-    Return $AirWatchProperties
+    Return $AppObject
 }
 #endregion
 
@@ -208,34 +214,36 @@ Function Map-AppDetailsJSON {
 
     Param(
 		[Parameter(Mandatory=$True)]
-		$awProperties
+		$appDetails
 	)
 
     # Setup DeviceType and SupportedModels based on AW Version
-    if ($awProperties["AirWatchVersion"] -ge [System.Version]"9.2.0.0") {
-        $awProperties.Add("DeviceType", 12)
-        $awProperties.Add("SupportedModels", @{
+    if ([System.Version]$appDetails.AirWatchVersion -ge [System.Version]"9.2.0.0") {
+        Write-Log -logString "AirWatch version $($appDetails.AirWatchVersion) is greater than 9.2, using Modelname Desktop"
+        $appDetails | Add-Member -MemberType NoteProperty -Name "DeviceType" -Value 12
+        $appDetails | Add-Member -MemberType NoteProperty -Name "SupportedModels" -Value @{
             Model = @(@{
                 ModelId = 83
                 ModelName = "Desktop"
             })
-        })
+        }
     }
     else {
-        $awProperties.Add("DeviceType", 12)
-        $awProperties.Add("SupportedModels", @{
+        Write-Log -logString "AirWatch version $($appDetails.AirWatchVersion) is less than 9.2, using Modelname Windows 10"
+        $appDetails | Add-Member -MemberType NoteProperty -Name "DeviceType" -Value 12
+        $appDetails | Add-Member -MemberType NoteProperty -Name "SupportedModels" -Value @{
             Model = @(@{
                 ModelId = 50
                 ModelName = "Windows 10"
             })
-        })
+        }
     }
 
     # Map all table values to the AirWatch JSON format
     $applicationProperties = @{
-        ApplicationName = $awProperties.ApplicationName
+        ApplicationName = $appDetails.ApplicationName
 	    AutoUpdateVersion = 'true'
-	    BlobId = $awProperties.BlobID
+	    BlobId = $appDetails.BlobID
 	    DeploymentOptions = @{
 		    WhenToInstall = @{
 			    DiskSpaceRequiredInKb = 1
@@ -245,11 +253,11 @@ Function Map-AppDetailsJSON {
 		    HowToInstall= @{
 			    AdminPrivileges = "true"
 			    DeviceRestart = "DoNotRestart"
-			    InstallCommand = $awProperties.InstallCommand
-			    InstallContext = $awProperties.InstallContext
-			    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes
-			    InstallerRebootExitCode = $awProperties.InstallerRebootExitCode
-			    InstallerSuccessExitCode = $awProperties.InstallerSuccessExitCode
+			    InstallCommand = $appDetails.InstallCommand
+			    InstallContext = $appDetails.InstallContext
+			    InstallTimeoutInMinutes = $appDetails.InstallTimeoutInMinutes
+			    InstallerRebootExitCode = $appDetails.InstallerRebootExitCode
+			    InstallerSuccessExitCode = $appDetails.InstallerSuccessExitCode
 			    RetryCount = 3
 			    RetryIntervalInMinutes = 5
 		    }
@@ -260,7 +268,7 @@ Function Map-AppDetailsJSON {
                     CriteriaType = "AppExists"
 				    LogicalCondition = "End"
                     AppCriteria = @{
-                        ApplicationIdentifier = $awProperties.InstallApplicationIdentifier
+                        ApplicationIdentifier = $appDetails.InstallApplicationIdentifier
                         VersionCondition = "Any"
                     }
                 })
@@ -277,29 +285,29 @@ Function Map-AppDetailsJSON {
 			    UseCustomScript = "true"
 			    CustomScript =  @{
 				    CustomScriptType = "Input"
-				    UninstallCommand = $awProperties.UninstallCommandLine
+				    UninstallCommand = $appDetails.UninstallCommandLine
 			    }
 		    }
 	    }
-	    Description = $awProperties.Description
-	    Developer = $awProperties.Developer
+	    Description = $appDetails.Description
+	    Developer = $appDetails.Developer
 	    DeveloperEmail = ""
 	    DeveloperPhone = ""
-	    DeviceType = $awProperties.DeviceType
+	    DeviceType = $appDetails.DeviceType
 	    EnableProvisioning = "false"
-	    FileName = $awProperties.UploadFileName
+	    FileName = $appDetails.UploadFileName
 	    IsDependencyFile = "false"
-	    LocationGroupId = $awProperties.LocationGroupId
+	    LocationGroupId = $appDetails.LocationGroupId
 	    MsiDeploymentParamModel = @{
-		    CommandLineArguments = $awProperties.InstallCommand
-		    InstallTimeoutInMinutes = $awProperties.InstallTimeoutInMinutes
+		    CommandLineArguments = $appDetails.InstallCommand
+		    InstallTimeoutInMinutes = $appDetails.InstallTimeoutInMinutes
 		    RetryCount = 3
 		    RetryIntervalInMinutes = 5
 	    }
 	    PushMode = 0
 	    SupportEmail = ""
 	    SupportPhone = ""
-	    SupportedModels = $awProperties.SupportedModels
+	    SupportedModels = $appDetails.SupportedModels
 	    SupportedProcessorArchitecture = "x86"
     }
 
@@ -449,96 +457,56 @@ function Get-AirWatchVersion {
 }
 #endregion
 
-#region UI
-# TODO - Use this instead of the block below in Main
-Function Setup-UI {
+#region UTIL
+function Initialize {
     Param(
-        $applications
+        $OutputFolder
     )
 
-    # Start Drawing Form. The form has some issues depending on the screen resolution. #Needs to be updated
-    $MainForm = New-Object System.Windows.Forms.Form
-    $MainForm.Text = "Application Import"
-    $MainForm.Size = New-Object System.Drawing.Size(450, 300)
-    $MainForm.StartPosition = "CenterScreen"
-    $MainForm.ShowIcon = $false
+    Write-Log -logString "Importing ConfigurationManager.psd1"
+    #Import-Module "$($env:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1"
 
-    $HeadingLabel = New-Object System.Windows.Forms.Label
-    $HeadingLabel.Location = New-Object System.Drawing.Point(13,8)
+    Write-Host "Initializing"
 
-    $HeadingLabel.Size = New-Object System.Drawing.Size($($MainForm.Width - 40), 15)
-    $HeadingLabel.Text = "Select Apps to Import"
-    $HeadingLabel.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
-    $MainForm.Controls.Add($HeadingLabel)
-
-    $AppsListBox = New-Object System.Windows.Forms.CheckedListbox
-    $AppsListBox.Location = New-Object System.Drawing.Size(13,22)
-    $AppsListBox.Width = ($MainForm.Width - 40)
-    $AppsListBox.Height = $($MainForm.Height - 100)
-    $AppsListBox.AutoSize = $True
-    $AppsListBox.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-
-    $OKButton = New-Object System.Windows.Forms.Button
-    $OKButton.Location = New-Object System.Drawing.Point(($MainForm.Width - 105), ($MainForm.Height - 75))
-    $OKButton.Size = New-Object System.Drawing.Size(75,23)
-    $OKButton.Text = "OK"
-    $OKButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
-    $OKButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $MainForm.AcceptButton = $OKButton
-    $MainForm.Controls.Add($OKButton)
-
-    $CancelButton1 = New-Object System.Windows.Forms.Button
-    $CancelButton1.Location = New-Object System.Drawing.Point(($MainForm.Width - 190), ($MainForm.Height - 75))
-    $CancelButton1.Size = New-Object System.Drawing.Size(75,23)
-    $CancelButton1.Text = "Cancel"
-    $CancelButton1.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-    $CancelButton1.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    $MainForm.CancelButton = $CancelButton1
-    $MainForm.Controls.Add($CancelButton1)
-
-    ##Add items to form
-    foreach($Application in $Applications)
-    {
-        [void] $AppsListBox.Items.Add($Application.LocalizedDisplayName)
+    Write-Log "Checking if $($OutputFolder) exists"
+    if(!$(Test-Path -Path $OutputFolder)) {
+        Write-Log "Creating $($OutputFolder)"
+        New-Item -Path $OutputFolder -ItemType "Directory" | Out-Null
     }
+}
 
-    #Display form to Admin
-    $MainForm.Controls.Add($AppsListBox)
-    $MainForm.Topmost = $True
+function Write-Log {
+    Param(
+        [Parameter(Mandatory=$True)]
+        [string]$logString
+    )
 
-    Return $MainForm
+    $logDate = Get-Date -UFormat "%y-%m-%d"
+    $dateTime = (Get-Date).toString()
+    $logPath = "$($OutputFolder)\Logs"
+
+    if(!(Test-Path -Path $logPath)) { New-Item -Path $logPath -ItemType Directory | Out-Null }
+
+    $logFile = "$($logPath)\log-$($logDate).txt"
+    "$($dateTime) | $($logString)" | Out-File -FilePath $logFile -Append
 }
 #endregion
 
-#region MAIN
-Function Main {
-    Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module
+#region Import Apps To AirWatch
+function Get-AppsFromReport {
+    Write-Log "Showing UI for CSV selection"
+    $csv = Get-ChildItem -Path $OutputFolder -Filter "*.csv" | Select Name, FullName | Out-GridView -OutputMode Single -Title "Select App CSV to Export"
+    
+    Write-Log "Fetching details from csv at $($csv.FullName)"
+    $apps = Import-Csv -Path $csv.FullName
 
-    Set-Location $SCCMSiteCode # Set the current location to be the site code.
+    Write-Log "Retrieved $($apps.count) Apps from csv"
 
-    ##Progress bar
-    Write-Progress -Activity "Application Export" -Status "Starting Script" -PercentComplete 10
+    return $apps
+}
 
-    ##Get applicaion list via WMI
-    ##$Applications = Get-WMIObject -ComputerName $SCCMServer -Namespace Root\SMS\Site_$SCCMSiteCode -Class "SMS_Application" | Select -unique LocalizedDisplayName | sort LocalizedDisplayName
-    $Applications = Get-CMApplication | Select LocalizedDisplayName | sort LocalizedDisplayName
-
-    ##Application Import Selection Form
-    Add-Type -AssemblyName System.Windows.Forms
-    Add-Type -AssemblyName System.Drawing
-
-    $UI = Setup-UI -applications $Applications
-    $result = $UI.ShowDialog()
-
-    # If a valid input is selected then set Application else quit
-    if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
-        Write-Verbose "$($UI)"
-        $SelectedApps = $UI.Controls[3].CheckedItems
-        Write-Host "Selected:: $SelectedApps"
-    } else {
-        exit
-    }
-
+function Migrate-AppsToAirWatch {
+    # Setup API Info
     #Setup header information
     $restUserName = Create-BasicAuthHeader -username $userName -password $password
     $useJSON = "application/json"
@@ -551,86 +519,144 @@ Function Main {
 
     #Retrieve AW version
     $airwatchVersion = Get-AirWatchVersion -headers $headers
+    Write-Log "AirWatch version is $($airWatchVersion)"
 
-    ##Progress bar
-    Write-Progress -Activity "Application Export" `
-        -Status "Searching for applications" `
-	    -PercentComplete 30
-
-    Foreach($App in $SelectedApps) {
-        #Parse the Deployment details of the Selected application and deserialize.
-        $selectedAppObject = Get-CMApplication -Name $App
-        [xml]$SDMPackageXML = $selectedAppObject.SDMPackageXML
-
-        ##Progress bar
-        Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 40
-
-        #Extract the hashtable returned from the function
-        $appProperties = @{}
-        $appProperties = Extract-PackageProperties -SDMPackageXML $SDMPackageXML
+    #Get Apps
+    $apps = Get-AppsFromReport
+    #Loop Through Apps
+    foreach($app in $apps) {
+        Write-Host "Exporting $($app.ApplicationName)"
         
-        # This resets the properties to a hashtable since powershell returns an array from the function
-        $appProperties = $appProperties[1]
-
-        # Add AW Version
-        $appProperties.Add("AirWatchVersion", [System.Version]$airwatchVersion)
-
-        #Generate Auth Headers from username and password
-        $deviceListURI = $baseURL + $bulkDeviceEndpoint
+        # Add additional properties
+        $app | Add-Member -MemberType NoteProperty -Name "AirWatchVersion" -Value $airwatchVersion
         
-        # Extract Filename, configure Blob Upload API URL and invoke the API.
-        $uploadFileName = Split-Path $appProperties.FilePath -leaf
-        $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($appProperties.FilePath)"
-
-        # Confirm that the app binary is reachable and exists
+        # Fetch App filename and path
+        $uploadFileName = $app.UploadFileName
+        $networkFilePath = "Microsoft.Powershell.Core\FileSystem::$($app.FilePath)"
+        
+        # Upload Blob
         if(Test-Path $networkFilePath) {
             $blobUploadResponse = Upload-Blob -airwatchServer $AWServer `
                -filename $uploadFileName `
         	    -filepath $networkFilePath `
         	    -groupID $groupID `
-        	    -headers $headers
-
-            ##Progress bar
-            Write-Progress -Activity "Application Export" -Status "Finalizing" -PercentComplete 70
+                -headers $headers
 
             # Extract Blob ID and store in the properties table.
             $blobID = [string]$blobUploadResponse.Value
-            $appProperties["BlobId"] = $blobID
+            $app.BlobId = $blobID
 
-            ##Progress bar
-            Write-Progress -Activity "Application Export" `
-                -Status "Exporting $SelectedApplication" `
-                -PercentComplete 80
+            # Map App details to Json
+            $awJson = Map-AppDetailsJson -appDetails $app
 
-            # Call function to map all properties from SCCM to AirWatch JSON.
-            $awJson = Map-AppDetailsJson -awProperties $appProperties
+            # Save App
+            if($app.BlobId -ne $null) {
+                # Save App/Finish Upload in AirWatch
+               $webReturn = Save-App -awServer $AWServer `
+                   -headers $headers `
+                   -appDetails $awJson
 
-            if($appProperties.BlobId -ne $null) {
-                 # Save App/Finish Upload in AirWatch
-                $webReturn = Save-App -awServer $AWServer `
-                    -headers $headers `
-                    -appDetails $awJson
-
-                Write-Verbose -Message "Return from save $webReturn"
-            } else {
-                Write-Verbose -Message "Blob ID not in hashtable, unable to finish upload of  $SelectedApplication"
-            }
+               Write-Verbose -Message "Return from save $webReturn"
+           } else {
+               Write-Verbose -Message "Blob ID not in hashtable, unable to finish upload of  $($app.ApplicationName)"
+           }
 
         } else {
-            Write-Output "Unable to reach app file path, $SelectedApplication not uploaded to AirWatch"
+            Write-Output "Unable to reach app file path, $($app.ApplicationName) not uploaded to AirWatch"
+        }
+     
+    }
+    
+}
+#endregion
+
+#region Generate App Export Report
+function Create-AppExportReport {
+
+    Param($OutputFolder)
+
+
+    #Get the Apps
+    Write-Host "Fetching Apps from SCCM...this may take a few minutes"
+    Write-Log -logString "Running Get-CMApplication to retrieve apps from SCCM"
+    $sccmApps = Get-CMApplication
+    
+    Write-Log -logString "Fetched $($sccmApps.Count) from SCCM"
+    Write-Host "Fetched $($sccmApps.Count) from SCCM"
+    
+    #Create new PSObject for Each App
+    Write-Host "Processing Apps from SCCM"
+    $apps = @()
+    $i = 1 #Holds current count for percent indicator
+    
+    foreach($app in $sccmApps) {
+        Write-Progress -Activity "Exporting App Data" -Status "Processing $($app.LocalizedDisplayName)" -PercentComplete ($i / $sccmApps.Count * 100)
+        Write-Log -logString "Processing $($app.LocalizedDisplayName) :: $($i) of $($sccmApps.Count)"
+        [pscustomobject]$appObject = Extract-PackageProperties -SDMPackageXML $app.SDMPackageXML
+        
+        
+        #Add apps to larger array
+        $apps += $appObject
+        $i += 1
+    }
+
+    Write-Progress -Activity "Exporting App Data" -Completed
+
+    $DateStr = (Get-Date).ToString("yyyy-MM-dd")
+
+    #Export to csv
+    $reportPath = "$($OutputFolder)\$($DateStr)-SCCM-Apps-Report.csv"
+
+    Write-Log -logString "Exporting apps to csv at $($reportPath)"
+    Write-Host "Exporting apps to csv at $($reportPath)"
+    $apps | Export-Csv -Path $reportPath -NoTypeInformation
+    
+}
+#endregion
+
+#region MAIN
+Function Main {
+    Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" # Import the ConfigurationManager.psd1 module
+
+    Set-Location $SCCMSiteCode # Set the current location to be the site code.
+    
+    Initialize -OutputFolder $OutputFolder
+
+    Write-Host "`nChoose a Task:"
+    Write-Host "================"
+    Write-Host "(1) Generate MSI and EXE App Report"
+    Write-Host "(2) Migrate Apps to AirWatch"
+    Write-Host "(0) END"
+
+    $selection = Read-Host -Prompt "Selection"
+
+    switch($selection) {
+        "1" {
+            Write-Host "Generating MSI and EXE App Report"
+            Write-Log -logString "Generating MSI and EXE App Report"
+            Create-AppExportReport -OutputFolder $OutputFolder
         }
 
-        ##Progress bar
-        Write-Progress -Activity "Application Export" `
-            -Status "Export of $SelectedApplication Completed" `
-            -PercentComplete 100
+        "2" {
+            Write-Host "Migrating Apps to AirWatch"
+            Write-Log -logString "Migrating Apps to AirWatch"
+            Migrate-AppsToAirWatch
+        }
 
-    } # End foreach
+        "0" { }
 
-    Write-Output "End"
+        default {
+            Write-Host "Invalid choice! Please choose a value from the above list."
+        }
+    }
+
+    if($selection -ne "0") {
+        MAIN
+    }
+
 }
+
 #endregion
 
 #Calling Main
 Main
-

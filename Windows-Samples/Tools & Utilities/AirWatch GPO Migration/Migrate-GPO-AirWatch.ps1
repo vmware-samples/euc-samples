@@ -56,7 +56,7 @@
 [CmdletBinding()]
     Param(
         [Parameter(Mandatory=$False)]
-		[string]$awServer,
+        [string]$awServer,
         [Parameter(Mandatory=$False)]
         [string]$awUsername,
         [Parameter(Mandatory=$False)]
@@ -80,6 +80,7 @@ $basePath = $PSScriptRoot
 $backupFolder = "$basePath\GPO Backups"
 $uploadFolder = "$basePath\GPO Uploads"
 $lgpoPath = "$basePath\LGPO.exe"
+$installPath = "%programdata%\AirWatch\GPOs\"
 
 # Supporting Files
 $supportFilePath = "$basePath\Supporting Files"
@@ -89,10 +90,13 @@ $confirmPackageScriptFilename = "LGPOConfirmPackageInstall.ps1"
 $confirmPackageScriptFilepath = "$supportFilePath\$confirmPackageScriptFilename"
 $loggingScriptFilename = "Logging.ps1"
 $loggingScriptFilepath = "$supportFilePath\$loggingScriptFilename"
+$installPathTextFilename = "installpath.txt"
+$installSuccessTextFilename = "success.txt"
 
 # State Vars
 $initialized = $false
 $apiAuthenticated = $false
+$identifyApplicationByCriteria = "UsingCustomScript" #"DefiningCriteria" 
 
 #region LGPO Commands
 <#
@@ -102,7 +106,7 @@ $apiAuthenticated = $false
 function Select-GPOBackups {
     Param(
         [Parameter(Mandatory=$False)]
-		[string]$title = "Select GPO Backups for Upload"
+        [string]$title = "Select GPO Backups for Upload"
     )
 
     # Query the list of GPOs held in our GPO Backup folder and display them to the user in a grid
@@ -129,9 +133,9 @@ function Get-GPOBackups {
     $GPOs = New-Object System.Collections.Generic.List[System.Object]
     foreach ($gpoPath in $gpoPaths) {
         [xml]$a = Get-Content -Path "$gpoPath\bkupInfo.xml"
-		$name = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.GPODisplayName } Else { $a.BackupInst.GPODisplayName.InnerText }
-		$time = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.BackupTime } Else { $a.BackupInst.BackupTime.InnerText }
-		$id = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.ID } Else { $a.BackupInst.ID.InnerText }
+        $name = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.GPODisplayName } Else { $a.BackupInst.GPODisplayName.InnerText }
+        $time = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.BackupTime } Else { $a.BackupInst.BackupTime.InnerText }
+        $id = If ($a.BackupInst.BackupTime.InnerText -eq $null) { $a.BackupInst.ID } Else { $a.BackupInst.ID.InnerText }
         
         $gpoProperty = [ordered]@{
             name = $name
@@ -151,9 +155,11 @@ function Get-GPOBackups {
 #>
 function Build-GPOPackage {
     Param(
-		[Parameter(Mandatory=$True)]
-		[System.Collections.Generic.List[System.Object]]$GPOs
-	)
+        [Parameter(Mandatory=$True)]
+        [System.Collections.Generic.List[System.Object]]$GPOs,
+        [Parameter(Mandatory=$False)]
+        [hashtable]$appProperties = $null
+    )
     
     # Include all GPO Backup folders that were selected
     $targets = New-Object System.Collections.Generic.List[System.Object]
@@ -168,22 +174,38 @@ function Build-GPOPackage {
     $deployPackageCsvPath = Build-DeployPackageCSV -GPOs $GPOs
     $targets.Add($deployPackageCsvPath)
     $targets.Add($deployPackageScriptFilepath)
-    $targets.Add($loggingScriptFilepath)
-    
+    #$targets.Add($loggingScriptFilepath)
+
+    $installPathDetails = Build-InstallPathTXT
+    $targets.Add($installPathDetails.filepath)
+    if ($appProperties -ne $null) {
+        $appProperties.Add("FileCriteriaPath", $installPathDetails.installPath)
+    }
+
     # Build .zip file for upload
-    $filename = "$(Get-GPOPolicyName).zip"
-    $filepath = "$uploadFolder\$filename"
+    #$filename = "$(Get-GPOPolicyName).zip"
+    #$filepath = "$uploadFolder\$filename"
+    $filename = Get-GPOPolicyName
+    $folderpath = "$uploadFolder\$filename"
+    $filepath = "$folderpath\$filename.zip"
     
     # Delete the file if it already exists
-    if (Test-Path -Path $filepath) { Remove-Item $filepath }
+    if (Test-Path -Path $folderpath) { Remove-Item $folderpath }
+    New-Item -Path $folderpath -ItemType Directory | Out-Null
 
     try {
         # Compress the target files and create the gpoPackage object
         $output = Compress-Archive -LiteralPath $targets -CompressionLevel Optimal -DestinationPath $filepath -Force
         $gpoPackage = New-Object -TypeName psobject -Property @{
             fileIO = $output
-            filename = $filename
+            filename = "$filename.zip"
             filepath = $filepath
+            folderpath = $folderpath
+        }
+
+        # If using Defining Criteria, copy the installpath 
+        if ($identifyApplicationByCriteria -eq "DefiningCriteria") {
+            Copy-Item $($installPathDetails.filepath) $folderpath
         }
     }
     catch {
@@ -192,6 +214,7 @@ function Build-GPOPackage {
     
     # Delete the supporting files that were packaged in the .zip
     if (Test-Path -Path $deployPackageCsvPath) { Remove-Item $deployPackageCsvPath }
+    if (Test-Path -Path $installPathDetails.filepath) { Remove-Item $installPathDetails.filepath }
 
     return $gpoPackage
 }
@@ -223,9 +246,9 @@ function Capture-LocalGPO {
 #>
 function Process-LGPOCommand {
     Param(
-		[Parameter(Mandatory=$True)]
-		[string]$params
-	)
+        [Parameter(Mandatory=$True)]
+        [string]$params
+    )
 
     return Start-Process $lgpoPath $params -Verb runas -Wait -WindowStyle Hidden
 }
@@ -244,6 +267,15 @@ function Get-GPOPolicyName {
     the AirWatch Console, then publishes the application.
 #>
 function Upload-GPOsToAirWatch {
+    [hashtable] $appProperties = @{}
+
+    # Setup properties reliant on AW versions
+    $awVersion = [System.Version]$(Get-AirWatchVersion)
+    if ($awVersion -le [System.Version]"9.2.3.0") {
+        $identifyApplicationByCriteria = "DefiningCriteria"
+    }
+    $appProperties.Add("IdentifyApplicationByCriteria", $identifyApplicationByCriteria)
+
     # Select GPO(s) to upload
     Write-Host "`nBeginning Upload-GPOsToAirWatch. Select the GPO(s) from the popup to upload."
     $GPOs = Select-GPOBackups
@@ -253,15 +285,16 @@ function Upload-GPOsToAirWatch {
     
     # Build .zip package for GPO(s), LGPO.exe and ps1
     Write-Progress -Activity "GPO Migration" -Status "Building GPO Package" -PercentComplete 10
-    $gpoPackage = Build-GPOPackage -GPOs $GPOs
+    $gpoPackage = Build-GPOPackage -GPOs $GPOs -appProperties $appProperties
     if ($gpoPackage -eq $null) {
+        Write-Progress -Activity "GPO Migration" -Completed
         return Write-Host "An error occurred when attempting to build the GPO zip package - quitting! Check the output for more details."
     }
     
     # Upload zip Blob to AW
     Write-Host "Uploading .zip package to AirWatch..."
     Write-Progress -Activity "GPO Migration" -Status "Uploading GPO Package to AirWatch" -PercentComplete 25
-    $uploadBlobResponse = Upload-Blob -filename $gpoPackage.filename -filepath $gpoPackage.filepath
+    $uploadBlobResponse = Upload-Blob -filename $gpoPackage.filename -filepath $gpoPackage.filepath -isSFDApp $true
     if ($uploadBlobResponse -eq $null -or $uploadBlobResponse.uuid -eq $null) {
         Write-Progress -Activity "GPO Migration" -Completed
         return Write-Host "An error occurred when attempting to upload the .zip package to AirWatch - quitting! Check the output for more details."
@@ -270,7 +303,7 @@ function Upload-GPOsToAirWatch {
     # Upload PS1 Blob to AW
     Write-Host "Uploading .ps1 script to AirWatch..."
     Write-Progress -Activity "GPO Migration" -Status "Uploading PS1 Script to AirWatch" -PercentComplete 40
-    $uploadScriptResponse = Upload-Blob -filename $confirmPackageScriptFilename -filepath $confirmPackageScriptFilepath
+    $uploadScriptResponse = Upload-Blob -filename $confirmPackageScriptFilename -filepath $confirmPackageScriptFilepath -isSFDApp $false
     if ($uploadScriptResponse -eq $null -or $uploadScriptResponse.uuid -eq $null) {
         Write-Progress -Activity "GPO Migration" -Completed
         return Write-Host "An error occurred when attempting to upload the .ps1 script to AirWatch - quitting! Check the output for more details."
@@ -278,7 +311,6 @@ function Upload-GPOsToAirWatch {
 
     # Build app properties
     Write-Progress -Activity "GPO Migration" -Status "Building App Properties" -PercentComplete 50
-    [hashtable] $appProperties = @{}
     $appProperties.Add("ApplicationName", $gpoPackage.filename)
     $appProperties.Add("BlobId", $uploadBlobResponse.Value)
     $appProperties.Add("CustomScriptFileBlodId", $uploadScriptResponse.Value)
@@ -311,11 +343,16 @@ function Upload-Blob {
         [Parameter(Mandatory=$True)]
         [string]$filename,
         [Parameter(Mandatory=$True)]
-        [string]$filepath
-	)
+        [string]$filepath,
+        [Parameter(Mandatory=$False)]
+        [bool]$isSFDApp = $False
+    )
     
     $headers = Build-AirWatchHeaders -contentType "application/octet-stream"
     $endpoint = "$awServer/api/mam/blobs/uploadblob?filename=$filename&organizationgroupid=$awGroupID"
+    if ($isSFDApp -eq $true) {
+        $endpoint = "$($endpoint)&moduleType=Application"
+    }
 
     Write-Verbose "------  mam/blobs/uploadblob API ------"
     Write-Verbose "headers: $headers"
@@ -324,7 +361,7 @@ function Upload-Blob {
     Write-Verbose "---------------------------------------`n"
 
     try {
-	    $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -InFile $filepath
+        $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -InFile $filepath
     } 
     catch [System.Net.WebException] {
         $response = $_.Exception.Response | ConvertTo-Json
@@ -347,7 +384,7 @@ function Save-App {
     Param(
         [Parameter(Mandatory=$True)]
         $appProperties
-	)
+    )
 
     $headers = Build-AirWatchHeaders
     $endpoint = "$awServer/api/mam/apps/internal/begininstall"
@@ -359,7 +396,7 @@ function Save-App {
     Write-Verbose "-------------------------------------------------`n"
 
     try {
-	    $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -Body $appProperties
+        $response = Invoke-RestMethod -Method Post -Uri $endpoint.ToString() -Headers $headers -Body $appProperties
     }
     catch [System.Net.WebException] {
         $response = $_.Exception.Response | ConvertTo-Json
@@ -380,9 +417,9 @@ function Save-App {
 #>
 function Map-AppDetailsJSON {
     Param(
-		[Parameter(Mandatory=$True)]
-		[hashtable] $appProperties
-	)
+        [Parameter(Mandatory=$True)]
+        [hashtable] $appProperties
+    )
 
     # Get AirWatch Version and parse
     $awVersion = [System.Version]$(Get-AirWatchVersion)
@@ -406,19 +443,19 @@ function Map-AppDetailsJSON {
             })
         })
     }
-    
+
     # Build App Details body
     $body = @{
-	    ApplicationName = $appProperties.ApplicationName
-	    BlobId = $appProperties.BlobId
-	    DeviceType = $appProperties.DeviceType
-	    SupportedModels = $appProperties.SupportedModels
-	    PushMode = 0
-	    SupportedProcessorArchitecture = "x64"
-	    EnableProvisioning = "true"
-	    IsDependencyFile = "false"
-	    LocationGroupId = $awGroupID
-	    DeploymentOptions = @{
+        ApplicationName = $appProperties.ApplicationName
+        BlobId = $appProperties.BlobId
+        DeviceType = $appProperties.DeviceType
+        SupportedModels = $appProperties.SupportedModels
+        PushMode = 0
+        SupportedProcessorArchitecture = "x64"
+        EnableProvisioning = "true"
+        IsDependencyFile = "false"
+        LocationGroupId = $awGroupID
+        DeploymentOptions = @{
             WhenToInstall = @{
                 DiskSpaceRequiredInKb = 1000
                 DevicePowerRequired = 0
@@ -431,18 +468,9 @@ function Map-AppDetailsJSON {
                 DeviceRestart = "DoNotRestart"
                 RetryCount = 3
                 RetryIntervalInMinutes = 5
-                InstallTimeoutInMinutes = 30
+                InstallTimeoutInMinutes = 15
                 InstallerRebootExitCode = "0"
                 InstallerSuccessExitCode = "0"
-            }
-            WhenToCallInstallComplete = @{
-                IdentifyApplicationBy = "UsingCustomScript"
-                CustomScript = @{
-                    ScriptType = "PowerShell"
-                    CommandToRunTheScript = "powershell -executionpolicy bypass -File LGPOConfirmPackageInstall.ps1"
-                    CustomScriptFileBlodId = $appProperties.CustomScriptFileBlodId
-                    SuccessExitCode = 0
-                }
             }
         }
         FilesOptions = @{
@@ -455,6 +483,38 @@ function Map-AppDetailsJSON {
             }
         }
     }
+
+    if ($appProperties.IdentifyApplicationByCriteria -eq "DefiningCriteria") {
+        $body.DeploymentOptions.WhenToCallInstallComplete = @{
+            UseAdditionalCriteria = "false"
+            IdentifyApplicationBy = "DefiningCriteria"
+            CriteriaList = @(@{   
+                CriteriaType = "FileExists"
+                FileCriteria = @{
+                    Path = $appProperties.FileCriteriaPath
+                    VersionCondition = "Any"
+                    MajorVersion = 0
+                    MinorVersion = 0
+                    RevisionNumber = 0
+                    BuildNumber = 0
+                    ModifiedOn = (Get-Date -UFormat "%Y/%m/%d")
+                }
+                LogicalCondition = "End"
+            })
+        }
+    }
+    else {
+        $body.DeploymentOptions.WhenToCallInstallComplete = @{
+            IdentifyApplicationBy = "UsingCustomScript"
+            CustomScript = @{
+                ScriptType = "PowerShell"
+                CommandToRunTheScript = "powershell -executionpolicy bypass -File LGPOConfirmPackageInstall.ps1"
+                CustomScriptFileBlodId = $appProperties.CustomScriptFileBlodId
+                SuccessExitCode = 0
+            }
+        }
+    }
+
     $json = $body | ConvertTo-Json -Depth 10
     return $json
 }
@@ -467,7 +527,7 @@ function Get-AirWatchVersion {
 
     try {
         $endpoint = "$awServer/api/system/info"
-	    $response = Invoke-RestMethod -Method Get -Uri $endpoint.ToString() -Headers $headers
+        $response = Invoke-RestMethod -Method Get -Uri $endpoint.ToString() -Headers $headers
         $version = $response.ProductVersion
 
     }
@@ -492,7 +552,7 @@ function Get-AirWatchOrganizationGroup {
     Param(
         [Parameter(Mandatory=$True)]
         [int]$orgGroupId
-	)
+    )
 
     $headers = Build-AirWatchHeaders
 
@@ -616,11 +676,11 @@ function Build-AirWatchHeaders {
     Base64 Encoding for the AirWatch account credentials to authorize the API request
 #>
 Function Get-BasicUserForAuth {
-	$basicAuthString = $awUsername + ":" + $awPassword
-	$encoding = [System.Text.Encoding]::ASCII.GetBytes($basicAuthString)
-	$encodedString = [Convert]::ToBase64String($encoding)
-	
-	Return "Basic " + $encodedString
+    $basicAuthString = $awUsername + ":" + $awPassword
+    $encoding = [System.Text.Encoding]::ASCII.GetBytes($basicAuthString)
+    $encodedString = [Convert]::ToBase64String($encoding)
+    
+    Return "Basic " + $encodedString
 }
 #endregion
 
@@ -640,6 +700,21 @@ function Build-DeployPackageCSV {
 
     Write-Verbose "Build-DeployPackageCSV filepath = $filepath"
     return $filepath
+}
+
+function Build-InstallPathTXT {
+    $folderPath = "$installPath$([guid]::NewGuid())"
+    $baseInstallPath = "$folderPath\$installSuccessTextFilename"
+    $baseInstallPath | Out-File "$PSScriptRoot\$installPathTextFilename"
+
+    $installPathDetails = New-Object -TypeName psobject -Property @{
+        folderPath = $folderPath
+        installPath = $baseInstallPath
+        filename = $installPathTextFilename
+        filepath = "$PSScriptRoot\$installPathTextFilename"
+    }
+    
+    return $installPathDetails
 }
 #endregion
 
@@ -699,6 +774,7 @@ function MAIN {
     Write-Host "(1) List GPO Backups"
     Write-Host "(2) Capture Local GPO Backup"
     Write-Host "(3) Upload GPO to AirWatch"
+    Write-Host "(4) Build GPO Package"
     Write-Host "(0) END"
     $selection = Read-Host -Prompt "Selection"
 
@@ -735,6 +811,27 @@ function MAIN {
             else {
                 Write-Host "AirWatch API authentication failed - quitting! Check the output for additional details."
             }
+        }
+
+        "4" {
+            [hashtable] $appProperties = @{}
+            $appProperties.Add("IdentifyApplicationByCriteria", $identifyApplicationByCriteria)
+
+            Write-Host "`nBeginning Upload-GPOsToAirWatch. Select the GPO(s) from the popup to upload."
+            $GPOs = Select-GPOBackups
+            if ($GPOs -eq $null) {
+                return Write-Host "No GPO backups were selected to upload - quitting!"
+            }
+    
+            # Build .zip package for GPO(s), LGPO.exe and ps1
+            Write-Progress -Activity "GPO Migration" -Status "Building GPO Package" -PercentComplete 10
+            $gpoPackage = Build-GPOPackage -GPOs $GPOs -appProperties $appProperties
+            if ($gpoPackage -eq $null) {
+                Write-Progress -Activity "GPO Migration" -Completed
+                return Write-Host "An error occurred when attempting to build the GPO zip package - quitting! Check the output for more details."
+            }
+
+            Invoke-Item -Path $gpoPackage.folderpath
         }
 
         "0" { }

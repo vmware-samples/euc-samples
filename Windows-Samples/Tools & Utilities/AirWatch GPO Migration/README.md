@@ -34,11 +34,6 @@ You will need to supply your AirWatch Admin credentials, including the AirWatch 
 ## Known Issues
 The task to upload the GPO package to the AirWatch Console will fail versions of AirWatch prior to 9.2.3.0.  See the EXAMPLE section for a full walkthrough of both processes.
 	
-## Video Walk-through
-Click the below link to see a guided walk-through on how to setup and use this tool.
-
-[![[Deep Dive] AirWatch GPO Migration Tool for Windows 10](https://img.youtube.com/vi/_PSVNd8_af0/0.jpg)](https://www.youtube.com/watch?v=_PSVNd8_af0)
-
 ## EXAMPLE
 
     .\Migrate-GPO-AirWatch.ps1 `
@@ -101,8 +96,8 @@ This is the REST API key that is generated in the AirWatch Console.  You locate 
 
 The groupID is the ID of the Organization Group where the apps will be migrated. The API key and admin credentials need to be authenticated at this Organization Group. 
 
-The shorcut to getting this value is to navigate to **https://[HOST]/AirWatch/#/AirWatch/OrganizationGroup/Details**.
-The ID you are redirected to appears in the URL (7 in the following example). **https://[HOST]/AirWatch/#/AirWatch/OrganizationGroup/Details/Index/7**
+The shorcut to getting this value is to navigate to **https://<YOUR HOST>/AirWatch/#/AirWatch/OrganizationGroup/Details**.
+The ID you are redirected to appears in the URL (7 in the following example). **https://<YOUR HOST>/AirWatch/#/AirWatch/OrganizationGroup/Details/Index/7**
 
 ## Additional Information
 

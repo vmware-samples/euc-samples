@@ -8,9 +8,6 @@
     
     $logDate = Get-Date -UFormat "%Y-%m-%d"
     $datetime = (Get-Date).ToString()
-
-    #$logPath = "$([environment]::GetFolderPath("MyDocuments"))\AirWatch GPO\logs"
-    #$logPath = "$PSScriptRoot\logs"
     $logPath = "$($env:ProgramData)\AirWatch\GPOs"
     if (!(Test-Path -Path $logPath)) { New-Item -Path $logPath -ItemType Directory | Out-Null }
      
