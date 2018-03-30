@@ -1,18 +1,33 @@
 ﻿<#
 .Synopsis
-   Short description
+  This Powershell script allows you to make a server side change to a device record in AirWatch.
+  This script changes the record in AirWatch from the Staging User to the desired End User.
+  This script can be used to make server side management of devices easier if devices have been
+  enrolled to one user.
 .DESCRIPTION
-   Long description
+   When run, if command line parameters are not provided, this script will prompt you to select a
+   csv file that contains Device Serial number mapping to desired End User.
 .EXAMPLE
-   Example of how to use this cmdlet
+  .\Change-EnrollmentUser.ps1 `
+    -awServer "https://YourTenant.com" `
+    -awTenantAPIKey "YourAPIKey" `
+    -awAPIUsername "YourUserName" `
+    -awAPIPassword "YourPassword" `
+    -Verbose
+
 .EXAMPLE
-   Another example of how to use this cmdlet
+  .\Change-EnrollmentUser.ps1 `
+    -awServer "https://YourTenant.com" `
+    -awTenantAPIKey "YourAPIKey" `
+    -awAPIUsername "YourUserName" `
+    -awAPIPassword "YourPassword" `
+    -csvFile ".\Template.csv"
 #>
 
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$False)]
-    [string]$awServer = "https://YourURL.com",
+    [string]$awServer = "https://YourTenant.com",
 
     [Parameter(Mandatory=$False)]
     [string]$awTenantAPIKey = "YourAPIKey",
@@ -24,11 +39,17 @@ Param(
     [string]$awAPIPassword = "YourPassword",
 
     [Parameter(Mandatory=$False)]
+    [string]$csvFile,
+
+    [Parameter(Mandatory=$False)]
     [string]$serialNum,
 
     [Parameter(Mandatory=$False)]
     [string]$uName
 )
+
+# Global var to see if we are in verbose mode or not - default to false
+$global:isVerbose = $false
 
 <#
   This implementation uses Basic authentication.  See "Client side" at https://en.wikipedia.org/wiki/Basic_access_authentication for a description
@@ -63,7 +84,6 @@ Function Create-Headers {
 		[Parameter(Mandatory=$True)]
         [string]$acceptType
     )
-
 
     $header = @{"Authorization" = $authString; "aw-tenant-code" = $tenantCode; "Accept" = $acceptType.ToString()}
 
@@ -106,7 +126,9 @@ function Write-Log {
     $dateTime = (Get-Date).toString()
     $logPath = "$($OutputFolder)\Logs"
 
-    if(!(Test-Path -Path $logPath)) { New-Item -Path $logPath -ItemType Directory | Out-Null }
+    if (!(Test-Path -Path $logPath)) {
+      New-Item -Path $logPath -ItemType Directory | Out-Null
+    }
 
     $logFile = "$($logPath)\log-$($logDate).txt"
     "$($dateTime) | $($logString)" | Out-File -FilePath $logFile -Append
@@ -141,7 +163,13 @@ Function Invoke-AirWatchAPIRequest {
         $awURL
     )
 
-    $response = Invoke-RestMethod -Method $Verb -Uri $awURL -Headers $headers -Verbose
+    # If we are in verbose mode
+    if ($global:isVerbose) {
+        $response = Invoke-RestMethod -Method $Verb -Uri $awURL -Headers $headers -Verbose
+    }
+    else {
+        $response = Invoke-RestMethod -Method $Verb -Uri $awURL -Headers $headers
+    }
 
     Return $response
 }
@@ -221,7 +249,6 @@ Function Get-EnrollmentUserID {
     Return -1
 }
 
-
 Function Change-EnrollmentUser
 {
     [CmdletBinding()]
@@ -253,9 +280,12 @@ Function Change-EnrollmentUser
     Return $response
 }
 
-
-
 Function Main {
+
+    # If they passed the verbose arg, set the global var
+    if ($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent) {
+      $global:isVerbose = $true
+    }
 
     # Build API Headers
     $authString = Create-BasicAuthHeader -username $awAPIUsername -password $awAPIPassword
@@ -278,10 +308,18 @@ Function Main {
     }
     # They did not pass both args, prompt for the csv
     else {
-      # Fetch Mapping Info
-      Write-Host "Prompting User for Mapping CSV"
-      $csv = Get-CSVFilePath
-      $DeviceMapping = Import-Csv -Path $csv
+      # If they did not pass in the CSV file, prompt for them to select it
+      if (!$csvFile) {
+        Write-Host "Prompting User for Mapping CSV"
+        $csvFile = Get-CSVFilePath
+        # Make sure they selected a CSV File
+        if (!$csvFile) {
+          Write-Host "No CSV file was selected, cannot continue" -ForegroundColor Red
+          exit
+        }
+      }
+      # Process the CSV file (provided via command line or selected)
+      $DeviceMapping = Import-Csv -Path $csvFile
     }
 
     Write-Host "Processing $($DeviceMapping.count) records"
@@ -292,12 +330,23 @@ Function Main {
         $deviceID = Get-DeviceID -headers $headers -serialNumber $Device.SerialNumber
         Write-Host "Device ID is $($deviceID)"
 
+        # If we don't have a device ID, no need to continue processing
+        if (!$deviceID) {
+          Write-Host "Device '$($Device.SerialNumber)' was not found, cannot process" -ForegroundColor Red
+          continue
+        }
+
         # Get Enrollment User ID
         Write-Host "Fetching Enrollment User ID from AirWatch for $($Device.UserName)"
         $userID = Get-EnrollmentUserID -headers $headers -enrollmentUser $Device.UserName
         Write-Host "User ID is $($userID)"
 
-        if($deviceID -ne $null -and $userID -ne -1) {
+        # If we don't have a valid user ID, display an error
+        if ($userID -eq -1) {
+          Write-Host "User '$($Device.UserName)' was not found" -ForegroundColor Red
+        }
+
+        if ($deviceID -ne $null -and $userID -ne -1) {
             # Make Switch
             Write-Host "Switching device to Enrollment user"
             $response = Change-EnrollmentUser -headers $headers -deviceID $deviceID -userID $userID
@@ -305,9 +354,10 @@ Function Main {
             # Confirm Switch
             $serverUser = Verify-UserChange -headers $headers -serialNumber $Device.SerialNumber
 
-            if($serverUser -eq $Device.UserName) {
+            if ($serverUser -eq $Device.UserName) {
                 Write-Host "$($Device.UserName) is now associated with $($Device.SerialNumber)"
-            } else {
+            }
+            else {
                 Write-Host "Mapping failed for $($Device.UserName)" -ForegroundColor Red
             }
         }

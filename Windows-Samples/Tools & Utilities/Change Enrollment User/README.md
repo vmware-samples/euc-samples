@@ -16,22 +16,21 @@ This Powershell script allows you to make a server side change to a device recor
 - Must be targeting devices enrolled to a Staging user for Single Staging. Multi-User staging is Not Supported.
 
 ## DESCRIPTION
-When run, this script will prompt you to select a csv file that contains Device Serial number mapping to desired End User.
+When run, if command line parameters are not provided, this script will prompt you to select a csv file that contains Device Serial number mapping to desired End User.
 
 ## Modifications Required
 
-1. The template CSV needs to be filled out with the appropriate device and user mapping.
-1. You will need to supply your AirWatch Admin credentials, including the AirWatch API Key, when prompted.
+1. The template CSV needs to be filled out with the appropriate device and user mapping or those items can be provided via arguments.
+2. You will need to supply your AirWatch Admin credentials, including the AirWatch API Key.
 
 ## EXAMPLE
 
     .\Change-EnrollmentUser.ps1 `
-        -awServer "https://mondecorp.ssdevrd.com" `
-        -awTenantAPIKey "iVvHQnSXpX5elicaZPaIlQ8hCe5C/kw21K3glhZ+g/g=" `
-        -awAPIUsername "tkent" `
-        -awAPIPassword "SecurePassword" `
+        -awServer "https://YourTenant.com" `
+        -awTenantAPIKey "YourAPIKey" `
+        -awAPIUsername "YourUserName" `
+        -awAPIPassword "YourPassword" `
         -Verbose
-
 
 ## Parameters
 
@@ -51,10 +50,14 @@ The password of the AirWatch account specified by the awUsername parameter.
 
 This is the REST API key that is generated in the AirWatch Console.  You locate this key at All Settings -> Advanced -> API -> REST, and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access, which is available at Customer type Organization Groups.
 
+**csvFile**
+
+The path and name of the CSV to process. If neither this argument nor the serialNum and uName arguments are provided, you will be prompted to select a CSV file.
+
 **serialNum**
 
-The serial number of the device to work with.
+The serial number of the device to work with. Must also provide the uName when using this argument.
 
 **uName**
 
-The targeted enrollment user.
+The targeted enrollment user. Must also provide the serialNum when using this argument.
