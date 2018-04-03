@@ -1,0 +1,45 @@
+<Replace>
+  <CmdID>4</CmdID>
+  <Item>
+	<Target>
+	  <LocURI>
+		./Vendor/MSFT/Firewall/MdmStore/PrivateProfile/EnableFirewall
+	  </LocURI>
+	</Target>
+	<Meta>
+	  <Format xmlns="syncml:metinf">bool</Format>
+	  <Type>text/plain</Type>
+	</Meta>
+	<Data>true</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>5</CmdID>
+  <Item>
+	<Target>
+	  <LocURI>
+		./Vendor/MSFT/Firewall/MdmStore/PrivateProfile/DefaultOutboundAction
+	  </LocURI>
+	</Target>
+	<Meta>
+	  <Format xmlns="syncml:metinf">int</Format>
+	  <Type>text/plain</Type>
+	</Meta>
+	<Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>6</CmdID>
+  <Item>
+	<Target>
+	  <LocURI>
+		./Vendor/MSFT/Firewall/MdmStore/PrivateProfile/DefaultInboundAction
+	  </LocURI>
+	</Target>
+	<Meta>
+	  <Format xmlns="syncml:metinf">int</Format>
+	  <Type>text/plain</Type>
+	</Meta>
+	<Data>1</Data>
+  </Item>
+</Replace>
