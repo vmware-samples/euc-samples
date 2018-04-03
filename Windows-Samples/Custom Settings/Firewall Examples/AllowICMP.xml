@@ -1,0 +1,90 @@
+<Replace>
+ <CmdID>1</CmdID>
+ <Item>
+    <Target>
+      <LocURI>
+        ./Vendor/MSFT/Firewall/MdmStore/FirewallRules/AllowICMPv4/Name
+      </LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>AllowICMPv4</Data>
+ </Item>
+</Replace>
+<Replace>
+ <CmdID>2</CmdID>
+ <Item>
+    <Target>
+      <LocURI>
+        ./Vendor/MSFT/Firewall/MdmStore/FirewallRules/AllowICMPv4/Enabled
+      </LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">bool</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>true</Data>
+ </Item>
+</Replace>
+<Replace>
+ <CmdID>3</CmdID>
+ <Item>
+    <Target>
+      <LocURI>
+        ./Vendor/MSFT/Firewall/MdmStore/FirewallRules/AllowICMPv4/Action/Type
+      </LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+ </Item>
+</Replace>
+<Replace>
+ <CmdID>4</CmdID>
+ <Item>
+    <Target>
+      <LocURI>
+        ./Vendor/MSFT/Firewall/MdmStore/FirewallRules/AllowICMPv4/Direction
+      </LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>IN</Data>
+ </Item>
+</Replace>
+<Replace>
+ <CmdID>5</CmdID>
+ <Item>
+    <Target>
+      <LocURI>
+        ./Vendor/MSFT/Firewall/MdmStore/FirewallRules/AllowICMPv4/EdgeTraversal
+      </LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">bool</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>True</Data>
+ </Item>    
+</Replace>
+<Replace>
+ <CmdID>6</CmdID>
+ <Item>
+    <Target>
+      <LocURI>
+        ./Vendor/MSFT/Firewall/MdmStore/FirewallRules/AllowICMPv4/Protocol
+      </LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+ </Item>    
+</Replace>
