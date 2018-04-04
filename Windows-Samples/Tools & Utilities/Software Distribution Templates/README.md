@@ -4,7 +4,7 @@
 - **Author**: Josue Negron
 - **Email**: jnegron@vmware.com
 - **Date Created**: 11/10/2017
-- **Updated**: 1/24/2018
+- **Updated**: 4/4/2018
 - **Tested on**: Various Windows 10 1607-1709
 
 ## SYNOPSIS
@@ -30,6 +30,7 @@ These are simply templates, you will have to modify some values for your use-cas
 - 11/10/17 Created
 - 11/29/17 Added Adobe AIR, Lenovo System Update, Password Safe 3.37.1 for Windows, PulseSecure VPN Client, Symantec Endpoint Encryption Client, Symantec Endpoint Protection, Veritas Enterprise Vault Outlook Add-In, Veritas System Recovery 16, WebEx Productivity Tools
 - 1/24/18 Added Microsoft Teams 
+- 4/4/2018 Added Dell Command | Update
 
 
 
