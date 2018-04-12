@@ -762,6 +762,7 @@ function MAIN {
         $initialized = Initialize
         if (!$initialized) { 
             Write-Host "Initialization Failed!  Check the output for details!"
+            Read-Host
             return 
         }
         
