@@ -325,6 +325,8 @@ Function Main {
     Write-Host "Processing $($DeviceMapping.count) records"
 
     Foreach($Device in $DeviceMapping) {
+        
+
         # Get Device ID
         Write-Host "Fetching Device ID from AirWatch for $($Device.SerialNumber)"
         $deviceID = Get-DeviceID -headers $headers -serialNumber $Device.SerialNumber
@@ -360,6 +362,9 @@ Function Main {
             else {
                 Write-Host "Mapping failed for $($Device.UserName)" -ForegroundColor Red
             }
+
+            #Update headers to remove version from previous device migrations
+            $headers["Accept"] = "application/json;"
         }
     }
 }
