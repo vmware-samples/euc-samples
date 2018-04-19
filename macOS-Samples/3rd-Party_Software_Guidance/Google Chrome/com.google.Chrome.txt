@@ -1,0 +1,84 @@
+# Add the following dictionary into a Custom XML profile
+
+<dict>
+    <key>PayloadDisplayName</key>
+    <string>Google Chrome Settings</string>
+    <key>PayloadEnabled</key>
+    <true/>
+    <key>PayloadIdentifier</key>
+    <string>com.google.Chrome.4F720473-6832-4CE0-A895-E9C3FC6F8CBD</string>
+    <key>PayloadType</key>
+    <string>com.google.Chrome</string>
+    <key>PayloadUUID</key>
+    <string>4F720473-6832-4CE0-A895-E9C3FC6F8CBD</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>HomepageLocation</key>
+    <string>https://www.vmware.com</string>
+    <key>HomepageIsNewTabPage</key>
+    <false/>
+    <key>NewTabPageLocation</key>
+    <string>https://www.dell.com</string>
+    <key>PasswordManagerEnabled</key>
+    <false/>
+    <key>RestoreOnStartup</key>
+    <integer>4</integer>
+    <key>RestoreOnStartupURLs</key>
+    <array>
+        <string>https://www.vmware.com</string>
+        <string>https://www.dell.com</string>
+    </array>
+    <key>ManagedBookmarks</key>
+    <array>
+      <dict>
+        <key>toplevel_name</key>
+        <string>My managed bookmarks folder</string>
+      </dict>
+      <dict>
+        <key>name</key>
+        <string>Google</string>
+        <key>url</key>
+        <string>google.com</string>
+      </dict>
+      <dict>
+        <key>name</key>
+        <string>Youtube</string>
+        <key>url</key>
+        <string>youtube.com</string>
+      </dict>
+      <dict>
+        <key>children</key>
+        <array>
+          <dict>
+            <key>name</key>
+            <string>Chromium</string>
+            <key>url</key>
+            <string>chromium.org</string>
+          </dict>
+          <dict>
+            <key>name</key>
+            <string>Chromium Developers</string>
+            <key>url</key>
+            <string>dev.chromium.org</string>
+          </dict>
+        </array>
+        <key>name</key>
+        <string>Chrome links</string>
+      </dict>
+    </array>
+    <key>MaxConnectionsPerProxy</key>
+    <integer>99</integer>
+    <key>SafeBrowsingEnabled</key>
+    <true/>
+    <key>ExtensionInstallForcelist</key>
+    <array>
+      <string>noondiphcddnnabmjcihcjfbhfklnnep;https://clients2.google.com/service/update2/crx</string>
+      <string>djflhoibgkdhkhhcedjiklpkjnoahfmg;https://clients2.google.com/service/update2/crx</string>
+    </array>
+    <key>EnableMemoryInfo</key>
+    <true/>
+    <key>AllowOutdatedPlugins</key>
+    <false/>
+    <key>MetricsReportingEnabled</key>
+    <true/>
+</dict>
