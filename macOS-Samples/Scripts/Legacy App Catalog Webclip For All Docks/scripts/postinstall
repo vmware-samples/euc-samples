@@ -1,0 +1,89 @@
+#!/usr/bin/python
+#
+# This script creates a webloc file pointing to the device-specific App Catalog
+# URL. This url is generated using the UUID of the device.
+#
+# The webloc file is created in /Users/Shared/VMware with full permissions
+# so that all users can access it for their Dock.
+
+import os
+import plistlib
+import subprocess
+import sys
+from SystemConfiguration import SCDynamicStoreCopyConsoleUser
+
+# CHANGE ME!
+consoleurl = 'https://console.awmdm.com'
+
+webloc_filepath = '/Users/Shared/VMware/Catalog.webloc'
+logpath = '/Users/Shared/VMware/catalogtodock.log'
+
+def getconsoleuser():
+    cfuser = SCDynamicStoreCopyConsoleUser(None, None, None)
+    return cfuser
+
+def getuuid():
+    p = subprocess.check_output(['system_profiler', 'SPHardwareDataType'])
+    return p[p.find('Hardware UUID:'):].split()[2]
+
+def touch(path):
+    try:
+        print 'Creating file: %s' % path
+        touchfile = ['/usr/bin/touch', path]
+        proc = subprocess.Popen(touchfile, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        touchfileoutput, err = proc.communicate()
+        os.chmod(path, 0666)
+        return touchfileoutput
+    except Exception as e:
+        print 'Error creating file: %s' % e
+        sys.exit(1)
+
+def launchctl(*arg):
+    # Use *arg to pass unlimited variables to command.
+    cmd = arg
+    run = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, err = run.communicate()
+    return output
+
+def main():
+    # Create log file and open permissions so that all users can write logs
+    touch(logpath)
+
+    # create the webloc file with permissions readable by all
+    touch(webloc_filepath)
+
+    # generate uuid specific url for device app catalog
+    catalogurl = consoleurl + '/Catalog/ViewCatalog/' + getuuid() + '/AppleOsX'
+    webloc_content = dict(URL=catalogurl) #webloc plist dict
+
+    # write plist to webloc file
+    try:
+        plistlib.writePlist(webloc_content, webloc_filepath)
+    except Exception as e:
+        print 'Error writing to webloc plist file: %s' % e
+        sys.exit(1)
+
+    # Start LaunchAgent for current logged in user
+    # Code below modified from Erik Gomez's InstallApplications tool
+    lapath = os.path.join('/Library', 'LaunchAgents',
+                          'com.vmware.catalogtodock.plist')
+
+    if os.path.isfile(lapath):
+        pass
+    else:
+        print 'File does not exist: %s' % file
+        sys.exit(1)
+
+    currentuseruid = getconsoleuser()
+    if (currentuseruid[0] is None or currentuseruid[0] == u'loginwindow'
+            or currentuseruid[0] == u'_mbsetupuser'):
+        pass
+    else:
+        launchctl('/bin/launchctl', 'asuser', str(currentuseruid[1]),
+                  '/bin/launchctl', 'load', lapath)
+
+
+
+if __name__ == '__main__':
+    main()
