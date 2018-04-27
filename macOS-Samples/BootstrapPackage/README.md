@@ -141,7 +141,7 @@ If you are experiencing issues where it appears the package is not installing af
 
 
 ## Recommended Deployment - InstallApplications Tool
-To have greater control over what packages are installed on enrollment, and also to work around Apple bugs on pre-10.12.6 devices, we advise using the open source tool, [InstallApplications](https://github.com/erikng/installapplications) created by Erik Gomez. This tool was created *specifically for this feature*, to enhance the capabilities of `InstallApplication` and work around the OS platform issues & limitations.
+To have greater control over what packages are installed on enrollment, and also to work around the macOS bug stated in the Caveats section, we advise using the open source tool, [InstallApplications](https://github.com/erikng/installapplications) created by Erik Gomez. This tool was created *specifically for this feature*, to enhance the capabilities of `InstallApplication` and work around the OS platform issues & limitations.
 
 #### How does the tool work?  
 Pkgs are stored on an external file server, such as AWS S3. A JSON Manifest should be created that defines the location, name, SHA256 hash of each file, and also stored on a file server. The InstallApplications tool will look at this manifest to download and install the packages in the defined order, validating the hash before installation for security.  
@@ -153,7 +153,7 @@ Due to the [caveats and limitations](https://github.com/vmwaresamples/AirWatch-s
 
 1. The tool handles installing packages during Setup Assistant in a DEP enrollment during "PreStage". Packages defined in "Stage 1" or "Stage 2" will not install until a user session is active. This allows the admin to install critical tools first, before the user even gets to the desktop, then install user-context tools and UI windows once the user is in their session. With this model of deployment, the admin can create any custom installation deployment flow they want.
 2. The InstallApplications tool also provides detailed verbose logging that can be used for troubleshooting issues with individual installer packages. Native MDMClient logging is sparse and is harder to sift through when issues arise (see [Troubleshooting section](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage#troubleshooting)).
-3. For Mac fleets that are not all updated to 10.12.6+, and the admin wants to push Bootstrap + AirWatch Agent on enrollment, this tool will be required to ensure all packages install (see [Caveats](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage#caveats))
+3. For Mac fleets where the admin wants to push Bootstrap + AirWatch Agent + possibly additional packages on enrollment, this tool will be required to ensure all packages install (see [Caveats](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage#caveats))
 4. The Admin wants to use DEP+Bootstrap to replace their imaging workflow to provision devices with multiple softwares automatically
 
 
