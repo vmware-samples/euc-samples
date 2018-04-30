@@ -27,4 +27,3 @@ None
 ## Additional Resources
 - [List of Policy Keys for Chrome](https://www.chromium.org/administrators/policy-list-3)
 - [Chrome Browser for Enterprise -- Google](https://enterprise.google.com/chrome/chrome-browser)
-- [Deploy and manage Chrome browser on macOS](https://support.google.com/chrome/a/answer/7550274)
