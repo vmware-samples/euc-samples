@@ -2,8 +2,8 @@
 <# SCCM to Airwatch Device Registration Script
 
 #Author:  Chris Halstead - chalstead@vmware.com
-#February 2018
-#Version 1.0
+#May 2018
+#Version 2.0
 
   .SYNOPSIS
     This Powershell script allows you to automatically create device registrations in Airwatch for members of an SCCM collection.
@@ -18,12 +18,16 @@
   .EXAMPLE
 
     .\Register-SCCM-Devices.ps1 `
+        -SCCMServer "sccmserver.company.com"
         -SCCMCollectionName "Win10"
         -AirwatchServer "https://airwatch.company.com" `
         -AirwatchUser "Username" `
         -AirwatchPW "SecurePassword" `
         -AirwatchAPIKey "iVvHQnSXpX5elicaZPaIlQ8hCe5C/kw21K3glhZ+g/g=" `
         -OrganizationGroupName "chalstead" `
+
+    .PARAMETER SCCMServer
+    The name of the SCCM Server 
 
     .PARAMETER SCCMCollectionName
     The name of the SCCM Collection which contains devices you want to register in Airwatch.
@@ -46,10 +50,12 @@
 
 #>
 
-
 [CmdletBinding()]
     Param(
    
+        [Parameter(Mandatory=$True)]
+        [string]$SCCMServer,
+
         [Parameter(Mandatory=$True)]
         [string]$SCCMCollectionName,
 
@@ -69,7 +75,6 @@
         [string]$OrganizationGroupName
 
 )
-
 
 Function Get-OrganizationGroupID {
 
@@ -99,16 +104,14 @@ $cred = [Convert]::ToBase64String($encoding)
 $SCCMSiteCode = ""
 
 #Retrieve the side code of the local SCCM Server
-get-WMIObject -ComputerName "." -Namespace "root\SMS" -Class "SMS_ProviderLocation" | foreach-object{ 
+get-WMIObject -ComputerName $SCCMServer -Impersonation 3 -Namespace "root\SMS" -Class "SMS_ProviderLocation" | foreach-object{ 
     if ($_.ProviderForLocalSite -eq $true){$SCCMSiteCode=$_.sitecode} 
     write-host("Local SCCM Site Code: $($SCCMSiteCode)")
 } 
-
-
   
 #Retrieve SCCM collection by name 
-$Collection = get-wmiobject -NameSpace "ROOT\SMS\site_$SCCMSiteCode" -Class SMS_Collection  | where {$_.Name -eq "$SCCMCollectionName"}  
-$SMSMembers = Get-WmiObject -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "SELECT * FROM SMS_FullCollectionMembership WHERE CollectionID='$($Collection.CollectionID)' order by name" | select Name
+$Collection = get-wmiobject -ComputerName  $SCCMServer -Impersonation 3 -NameSpace "ROOT\SMS\site_$SCCMSiteCode" -Class SMS_Collection  | where {$_.Name -eq "$SCCMCollectionName"}  
+$SMSMembers = Get-WmiObject -ComputerName $SCCMServer -Impersonation 3 -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "SELECT * FROM SMS_FullCollectionMembership WHERE CollectionID='$($Collection.CollectionID)' order by name" | select Name
 
 #Check if the Collection Exists
 $m =  $SMSMembers | Measure-Object
@@ -135,10 +138,10 @@ else
 ForEach ($pc In $SMSMembers)
     {
         #Check for Primary User
-        $sprimaryuser = Get-WmiObject -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select * from SMS_UserMachineRelationship where ResourceName = '$($pc.name)' and Types = '1'"
+        $sprimaryuser = Get-WmiObject -ComputerName $SCCMServer -Impersonation 3 -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select * from SMS_UserMachineRelationship where ResourceName = '$($pc.name)' and Types = '1'"
         $theprimaryuser = $sprimaryuser.UniqueUserName
         #Retrieve the user information associate with this device        
-        $sgetuser = Get-WmiObject -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select * from SMS_R_System where name = '$($pc.name)'"
+        $sgetuser = Get-WmiObject -ComputerName $SCCMServer -Impersonation 3 -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select * from SMS_R_System where name = '$($pc.name)'"
  
         #Use primary user if it exists        
         if($theprimaryuser -eq $null)
@@ -158,7 +161,7 @@ ForEach ($pc In $SMSMembers)
         }
         
         #Get machine details from SCCM
-        $sMachine = Get-WmiObject -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select SMS_G_System_PC_BIOS.SerialNumber from  SMS_R_System inner join SMS_G_System_PC_BIOS on SMS_G_System_PC_BIOS.ResourceId = SMS_R_System.ResourceId inner join SMS_G_System_SYSTEM on SMS_G_System_SYSTEM.ResourceId = SMS_R_System.ResourceId where SMS_G_System_SYSTEM.Name = '$($pc.name)'"
+        $sMachine = Get-WmiObject -ComputerName $SCCMServer -Impersonation 3 -Namespace  "ROOT\SMS\site_$SCCMSiteCode" -Query "select SMS_G_System_PC_BIOS.SerialNumber from  SMS_R_System inner join SMS_G_System_PC_BIOS on SMS_G_System_PC_BIOS.ResourceId = SMS_R_System.ResourceId inner join SMS_G_System_SYSTEM on SMS_G_System_SYSTEM.ResourceId = SMS_R_System.ResourceId where SMS_G_System_SYSTEM.Name = '$($pc.name)'"
         #Retrieve the BIOS Serial Number
         $sn = $smachine.SerialNumber
                                     
