@@ -100,8 +100,9 @@ The reason this command has not been implemented until now is due a few historic
 * This MDM command is designed for a signed distribution .pkg only
 	* An .app file should be bundled in a .pkg if the admin wants to deploy using this method
 * The Console will only show the status of the command. But will not be able to show download or install statuses. [*Please see the "How does it work?" section for the command for more details.*](https://github.com/vmwaresamples/AirWatch-samples/tree/master/macOS-Samples/BootstrapPackage#how-does-it-work)
-* From 10.9 to 10.13.4, only one `InstallApplication` command may be sent at a time (https://openradar.appspot.com/32654662). If multiple are sent around the same time, the commands will be `Acknowledged`, but only 1 will download and install, or none will at all - the behavior is inconsistent. Since the MDM server will not have visibility of the download & install statuses, this particular issue is tricky to troubleshoot (and detect) without having a device (or VM) in-hand.
+* From 10.9 to 10.13.5, only one `InstallApplication` command may be sent at a time (https://openradar.appspot.com/32654662). If multiple are sent around the same time, the commands will be `Acknowledged`, but only 1 will download and install, or none will at all - the behavior is inconsistent. Since the MDM server will not have visibility of the download & install statuses, this particular issue is tricky to troubleshoot (and detect) without having a device (or VM) in-hand.
 	* macOS devices will run into this issue if they are assigned a Bootstrap pkg and also the console setting is enabled to install the AirWatch Agent after enrollment (Settings > Devices & Users > Apple > Apple macOS > Agent Application). To workaround this, we advise turning off the Agent setting, and using a tool such as [InstallApplications](https://github.com/erikng/installapplications), to install & download both the desired Bootstrap pkg and the Agent.
+* Sometimes an `InstallApplication` command will return `Acknowledged` but result in a non-download, even if no other commands were sent (https://openradar.appspot.com/30750585)
 * The Bootstrap pkg cannot be "removed" once installed. Admins will need to create an additional uninstaller script or pkg if this needs to be done.
 
 
@@ -141,7 +142,7 @@ If you are experiencing issues where it appears the package is not installing af
 
 
 ## Recommended Deployment - InstallApplications Tool
-To have greater control over what packages are installed on enrollment, and also to work around the macOS bug stated in the Caveats section, we advise using the open source tool, [InstallApplications](https://github.com/erikng/installapplications) created by Erik Gomez. This tool was created *specifically for this feature*, to enhance the capabilities of `InstallApplication` and work around the OS platform issues & limitations.
+To have greater control over what packages are installed on enrollment, and also to work around the macOS bugs stated in the Caveats section, we advise using the open source tool, [InstallApplications](https://github.com/erikng/installapplications) created by Erik Gomez. This tool was created *specifically for this feature*, to enhance the capabilities of `InstallApplication` and work around the OS platform issues & limitations.
 
 #### How does the tool work?  
 Pkgs are stored on an external file server, such as AWS S3. A JSON Manifest should be created that defines the location, name, SHA256 hash of each file, and also stored on a file server. The InstallApplications tool will look at this manifest to download and install the packages in the defined order, validating the hash before installation for security.  
