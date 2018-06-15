@@ -18,6 +18,10 @@ This Powershell script allows you to capture and upload both new or existing GPO
 ## DESCRIPTION
 When run, this script will prompt you to view, capture, or upload GPO backups to AirWatch.
 
+**Video Walk-through**
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_PSVNd8_af0/0.jpg)](https://www.youtube.com/watch?v=_PSVNd8_af0)
+
 **Viewing & Capturing GPOs:**
 
 GPO backups are captured and stored within the GPO Backups folder in the project files.  In addition to capturing GPO backups, you can
