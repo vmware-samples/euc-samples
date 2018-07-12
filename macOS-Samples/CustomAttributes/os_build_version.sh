@@ -1,4 +1,4 @@
 #!/bin/bash
 
-buildv=$(/usr/bin/sw_vers -buildVersion`)
+buildv=$(/usr/bin/sw_vers -buildVersion)
 echo $buildv
