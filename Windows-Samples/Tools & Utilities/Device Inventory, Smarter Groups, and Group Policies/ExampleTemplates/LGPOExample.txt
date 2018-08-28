@@ -1,0 +1,12 @@
+; ----------------------------------------------------------------------
+; PARSING Computer POLICY
+; Source file:  C:\WINDOWS\System32\GroupPolicy\Machine\Registry.pol
+
+Computer
+Software\Policies\Microsoft\Windows\System
+DontDisplayNetworkSelectionUI
+SZ:1
+
+; PARSING COMPLETED.
+; ----------------------------------------------------------------------
+

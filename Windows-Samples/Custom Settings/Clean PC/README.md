@@ -13,9 +13,12 @@ The [CleanPC CSP](https://docs.microsoft.com/en-us/windows/client-management/mdm
 ## Details
 The [CleanPC CSP ](https://docs.microsoft.com/en-us/windows/client-management/mdm/cleanpc-csp) is the ability to remotely execute a PC Refresh (via MDM) which users can do manually on their device by going to **Settings > Update & Security > Recovery > Reset this PC > Get Started**, then you are presented with **Keep my Files** or **Remove Everything**. This best explains the differences between Retaining User Data and without Retaining User Data. 
 
+**Note:** Calling these CSPs will un-enroll your device. If you are using the AirWatch Agent this will also be removed when calling retaining user data option. When the AirWatch Agent is removed this will un-enroll your device. 
+
 
 ## Change Log
 - 7/11/2017: Created Samples for CleanPC CSP
+- 11/10/2017: Added warning about using User Retain option
 
 
 ## Additional Resources

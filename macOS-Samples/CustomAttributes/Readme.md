@@ -16,6 +16,7 @@ None
 ## Change Log
 - 6/8/2017: Created Initial File
 - 7/20/2017: Cleanup and added more CA's
+- 2/1/2018: Added more CA's
 
 
 ## Additional Resources

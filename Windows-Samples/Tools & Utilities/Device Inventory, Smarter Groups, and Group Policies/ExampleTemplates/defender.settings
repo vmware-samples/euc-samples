@@ -1,0 +1,72 @@
+{"Systems": [{
+			"Name": "DefenderStatus",
+			"CmndletMappings": [{
+				"Name": "DefenderStatus",
+				"Cmdlet": "Get-MpComputerStatus",
+				"Attributes": "*",
+				"FormattedAttributes": {
+					"QuickScanAgeFormatted": "'{0:N2}' -f ($_.QuickScanAge * 8)"
+				}
+			},
+			{
+				"Name": "ActiveThreat#",
+				"Cmdlet": "Get-MpThreatDetection | Select-Object -Property *,@{Name='ThreatName';Expression={(Get-MpThreat -ThreatID $_.ThreatID).ThreatName}},
+@{Name='IsActive';Expression={(Get-MpThreat -ThreatID $_.ThreatID).IsActive}},@{Name='DidThreatExecute';Expression={(Get-MpThreat -ThreatID $_.ThreatID).DidThreatExecute}},
+@{Name='SeverityID';Expression={(Get-MpThreat -ThreatID $_.ThreatID).SeverityID}} | where IsActive -EQ 'True'",
+				"Attributes": "*",
+				"MappedValues": {
+					"ThreatStatusID": {
+						"0": "Detected",
+						"1": "Detected",
+						"2": "Cleaned",
+						"3": "Quarantined",
+						"5": "Allowed",
+						"6": "Blocked",
+						"Blocked": "CleanFailed",
+						"102": "QuarantineFailed",
+						"103": "RemoveFailed",
+						"104": "AllowFailed",
+						"105": "Abondoned",
+						"107": "BlockedFailed"
+					},
+						"AdditionalActionsBitMask": {
+							"0": "None",
+							"4": "FullScanRequired",
+							"8": "RebootRequired",
+							"12": "FullScanAndRebootRequired",
+							"16": "ManualStepsRequired",
+							"20": "FullScanAndManualStepsRequired",
+							"24": "RebootAndManualStepsRequired",
+							"28": "FullScanAndRebootAndManualStepsRequired",
+							"32768": "OfflineScanRequired",
+							"32772": "FullScanAndOfflineScanRequired",
+							"32776": "RebootAndOfflineScanRequired",
+							"32780": "FullScanAndRebootAndOfflineScanRequired",
+							"32784": "ManualStepsAndOfflineScanRequired",
+							"32788": "FullScanAndManualStepsAndOfflineScanRequired",
+							"32792": "RebootAndManualStepsAndOfflineScanRequired",
+							"32796": "FullScanAndRebootAndManualStepsAndOfflineScanRequired"
+						},
+						"DetectionSourceTypeId": {
+							"0": "Unknown",
+							"1": "User",
+							"2": "System",
+							"3": "Real-time",
+							"4": "IOAV",
+							"5": "NRI",
+							"7": "ELAM",
+							"8": "LocalAttestation",
+							"9": "RemoteAttestation"
+						},
+						"CurrentThreatExecutionStatusId": {
+							"0": "Unknown",
+							"1": "Blocked",
+							"2": "Allowed",
+							"3": "Executing",
+							"4": "NotExecuting"
+						}
+					}
+			}
+		]
+	}]
+}

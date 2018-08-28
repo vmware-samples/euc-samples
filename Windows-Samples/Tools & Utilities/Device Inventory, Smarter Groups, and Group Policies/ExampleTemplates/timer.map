@@ -1,0 +1,15 @@
+{"TagMaps":[
+	{
+	 "Type":"AirWatch",
+	 "Triggers":[
+		{"Type":"Timer",
+			"TimerName":"Timer0",
+			"StartTime":"Now",
+			"EndTime":"10m",
+			"Active":"After"
+		}
+	 ],
+	 "NewOrganizationGroup":"David"
+	}
+  ]
+}

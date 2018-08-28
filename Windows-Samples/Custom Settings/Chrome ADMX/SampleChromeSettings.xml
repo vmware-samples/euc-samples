@@ -1,0 +1,3 @@
+<Replace><CmdID>2</CmdID><Item><Meta><Format>chr</Format><Type>text/plain</Type></Meta><Target><LocURI>./Device/Vendor/MSFT/Policy/Config/Google~Policy~googlechrome~Homepage/HomepageLocation</LocURI></Target><Data>&lt;enabled/&gt;&lt;data id=&quot;HomepageLocation&quot; value=&quot;https://google.com&quot;/&gt;</Data></Item></Replace>
+
+<Replace><CmdID>3</CmdID><Item><Target><LocURI>./Device/Vendor/MSFT/Policy/Config/Google~Policy~googlechrome/ShowHomeButton</LocURI></Target><Data>&lt;enabled/&gt;</Data></Item></Replace>

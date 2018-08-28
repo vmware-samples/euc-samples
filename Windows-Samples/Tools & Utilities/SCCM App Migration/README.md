@@ -7,19 +7,18 @@
 - **Tested on SCCM 1702**: Completed
 
 ## SYNOPSIS
-    This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
+This Powershell script allows you to automatically migrate SCCM applications over to AirWatch for management from the AirWatch console.
+
+[![SCCM App Migration to Workspace ONE Tool](https://img.youtube.com/vi/aQ_tJGR9e8g/0.jpg)](https://www.youtube.com/watch?v=aQ_tJGR9e8g)
         
 ## DESCRIPTION
-    When run, this script will prompt you to select an application for migration. It then parses through the deployment details of the 
-    application and pushes the application package to AirWatch. The script then maps all the deployment commands and settings over to the 
-    AirWatch application record. MSIs are ported over as-is. Script deployments are ported over as ZIP folders with the correct execution 
-    commands to unpack and apply them.
+When run, this script will prompt you to select an application for migration. It then parses through the deployment details of the application and pushes the application package to AirWatch. The script then maps all the deployment commands and settings over to the AirWatch application record. MSIs are ported over as-is. Script deployments are ported over as ZIP folders with the correct execution commands to unpack and apply them.
 	
 ## Modifications Required
-	This script must be run as an admin
+This script must be run as an admin
 
 ## Known Issues
-	One some screens the form that shows the SCCM Apps does not render correctly. You can still select an app and hit Enter.
+One some screens the form that shows the SCCM Apps does not render correctly. You can still select an app and hit Enter.
 	
 ## EXAMPLE
 
@@ -36,7 +35,7 @@
 
 **SCCMSiteCode**
 
-The Site Code of the SCCM Server that the script can set the location to.
+The Site Code of the SCCM Server that the script can set the location to. Ensure you enter in the 3 character site code followed by a colon. 
 
 **AWServer**
 
@@ -56,8 +55,7 @@ This is the REST API key that is generated in the AirWatch Console.  You locate 
 
 **groupID**
 
-The groupID is the ID of the Organization Group where the apps will be migrated. The API key and admin credentials need to be authenticated
-    at this Organization Group. 
+The groupID is the ID of the Organization Group where the apps will be migrated. The API key and admin credentials need to be authenticated at this Organization Group. 
 
 The shorcut to getting this value is to navigate to **https://<YOUR HOST>/AirWatch/#/AirWatch/OrganizationGroup/Details**.
 The ID you are redirected to appears in the URL (7 in the following example). **https://<YOUR HOST>/AirWatch/#/AirWatch/OrganizationGroup/Details/Index/7**

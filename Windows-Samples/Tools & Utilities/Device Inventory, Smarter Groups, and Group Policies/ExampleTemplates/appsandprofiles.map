@@ -1,0 +1,24 @@
+{"TagMaps":[
+	{
+	 "Type":"AirWatch",
+	 "Triggers":[
+		{"Type":"Profile",
+			"Name":"Disable Cortana",
+			"Status":"Installed"
+		},
+		{"Type":"Application",
+			"ApplicationName":"*Microsoft Visual*",
+			"Version":"*",
+			"Status":"Installed"
+		},
+		{"Type":"Application",
+			"ApplicationName":"AirWatchMDM Agent",
+			"Version":">=3.0.0",
+			"Status":"Installed"
+		}
+	 ],
+	 "TagName":"WinStage1",
+	 "Static":1
+	}
+  ]
+}
