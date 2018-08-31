@@ -28,9 +28,14 @@ The following describes the basic process for deploying an Adobe Creative Cloud 
     8. Select Language (if necessary)
     9. Select Package(s)
     10. Build
+
 2. From within the "Build" folder of the CCP output, take the installer PKG file and parse it with the VMware AirWatch Admin Assistant app.   The Admin Assistant should generate a folder in Documents: `~/Documents/VMware AirWatch Admin Assistant/AdobePhotoshop-19.1.6.398`
 
-    *__NOTE: Not all of the Adobe packages (ex. Acrobat DC) include the necessary information for the pkginfo and will produce a folder with "(Please edit me!)__*
+    *__NOTE: Not all of the Adobe packages (ex. Acrobat DC) include the necessary information for the pkginfo and will produce a folder with "(Please edit me!).  If this happens, you may need to edit the string value for the `<key>version</key>` key as follows:__*
+    ```xml
+        <key>version</key>
+        <string>18.011.20055</string>
+    ```
 
 3. Modify the metadata plist file as follows:
    1. Set "Uninstallable" to `<true/>`
