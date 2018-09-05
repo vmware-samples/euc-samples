@@ -1,5 +1,9 @@
 ##  Custom XML for Safari Preference Control to enforce private browsing all the time.  Tested in AirWatch 9.0 with macOS 10.12.1 ##
 
+
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
+
+```xml
 <dict>
 			<key>PayloadContent</key>
 			<dict>
@@ -172,3 +176,4 @@
 			<key>PayloadVersion</key>
 			<integer>1</integer>
 		</dict>
+```

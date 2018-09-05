@@ -1,3 +1,8 @@
+## Block Apple Watch Unlock for macOS ##
+
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
+
+```xml
 <dict>
     <key>PayloadDisplayName</key>
     <string>Disable Apple Watch Unlock</string>
@@ -14,3 +19,4 @@
     <key>allowAutoUnlock</key>
     <false/>
 </dict>
+```

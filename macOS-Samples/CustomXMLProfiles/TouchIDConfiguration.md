@@ -1,3 +1,8 @@
+## Control TouchID settings in macOS ##
+
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
+
+```xml
 <dict>
     <key>PayloadDisplayName</key>
     <string>TouchID Configuration</string>
@@ -16,3 +21,4 @@
     <key>allowTouchIDForUnlock</key>
     <false/>
 </dict>
+```

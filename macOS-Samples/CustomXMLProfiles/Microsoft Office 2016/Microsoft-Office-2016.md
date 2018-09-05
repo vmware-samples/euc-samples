@@ -1,13 +1,15 @@
-# Author Name:  Robert Terakedis (rterakedis@vmware.com)
-# Date:  11/30/2016 
-# Minimal/High Level Description:    Custom XML Payloads to customize the Microsoft Office 2016 Experience.  Paste each individual section into a separate Custom XML payload.  Adapted from information available at https://docs.google.com/spreadsheets/d/1ESX5td0y0OP3jdzZ-C2SItm-TUi-iA_bcHCBvaoCumw/edit#gid=0
-# Tested Version:   AirWatch version 9.0
+* Author Name:  Robert Terakedis (rterakedis@vmware.com)
+* Date:  11/30/2016 
+*  Minimal/High Level Description:    Custom XML Payloads to customize the Microsoft Office 2016 Experience.  Paste each individual section into a separate Custom XML payload.  Adapted from information available at https://docs.google.com/spreadsheets/d/1ESX5td0y0OP3jdzZ-C2SItm-TUi-iA_bcHCBvaoCumw/edit#gid=0
+* Tested Version:   AirWatch version 9.0
 
 
-# REMOVE FIRST-RUN SPLASH SCREENS #
+## REMOVE FIRST-RUN SPLASH SCREENS ##
 
-## EXCEL: ##
+### EXCEL: ###
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
 
+```xml
     <dict>
         <key>PayloadType</key>
         <string>com.microsoft.Excel</string>
@@ -24,11 +26,13 @@
         <key>kSubUIAppCompletedFirstRunSetup1507</key>
         <true />
     </dict>
+```
 
 
+### ONENOTE: ###
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
 
-## ONENOTE: ## 
-
+```xml
     <dict>
         <key>PayloadType</key>
         <string>com.microsoft.onenote.mac</string>
@@ -63,11 +67,13 @@
         <key>kSubUIAppCompletedFirstRunSetup1507</key>
         <true />
     </dict>
+```
 
 
+### OUTLOOK: ### 
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
 
-## OUTLOOK: ## 
-
+```xml
     <dict>
         <key>PayloadType</key>
         <string>com.microsoft.Outlook</string>
@@ -86,11 +92,13 @@
         <key>FirstRunExperienceCompletedO15</key>
         <true />
     </dict>
+```
 
 
+### POWERPOINT: ### 
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
 
-## POWERPOINT: ## 
-
+```xml
     <dict>
         <key>PayloadType</key>
         <string>com.microsoft.PowerPoint</string>
@@ -107,11 +115,13 @@
         <key>kSubUIAppCompletedFirstRunSetup1507</key>
         <true />
     </dict>
+```
 
 
+### WORD: ### 
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
 
-## WORD: ## 
-
+```xml
     <dict>
         <key>PayloadType</key>
         <string>com.microsoft.Word</string>
@@ -128,12 +138,16 @@
         <key>kSubUIAppCompletedFirstRunSetup1507</key>
         <true />
     </dict>
+```
 
 
+## FORCE AUTOMATIC AUTOUPDATES ##
 
-# FORCE AUTOMATIC AUTOUPDATES #
+### AUTOUPDATE: ###
 
-## AUTOUPDATE: ##
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
+
+```xml
     <dict>
         <key>PayloadContent</key>
         <dict>
@@ -166,3 +180,4 @@
         <key>PayloadVersion</key>
         <integer>1</integer>
     </dict>
+```
