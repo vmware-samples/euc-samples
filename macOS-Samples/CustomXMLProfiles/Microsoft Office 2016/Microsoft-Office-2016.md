@@ -4,6 +4,34 @@
 * Tested Version:   AirWatch version 9.0
 
 
+
+
+## CUSTOMIZE OFFICE SIGN-IN CONFIGURATION ##
+
+```xml
+    <dict>
+        <key>PayloadType</key>
+        <string>com.microsoft.office</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>PayloadIdentifier</key>
+        <string>com.microsoft.office.FF71692A-A039-4354-AFAA-123BEE444F56</string>
+        <key>PayloadEnabled</key>
+        <true />
+        <key>PayloadUUID</key>
+        <string>FF71692A-A039-4354-AFAA-123BEE444F56</string>
+        <key>PayloadDisplayName</key>
+        <string>Office Sign-In Configuration</string>
+        <key>OfficeAutoSignIn</key>
+        <true />
+        <key>OfficeActivationEmailAddress</key>
+        <string>{EmailAddress}</string>
+        <key>DefaultEmailAddressOrDomain</key>
+        <string>{EmailAddress}</string>
+    </dict>
+```
+
+
 ## REMOVE FIRST-RUN SPLASH SCREENS ##
 
 ### EXCEL: ###
@@ -71,7 +99,7 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in
 
 
 ### OUTLOOK: ### 
-Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.   This snippet removes first run screens and ALSO locks down the import/export functionality in the app.
 
 ```xml
     <dict>
@@ -80,19 +108,26 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in
         <key>PayloadVersion</key>
         <integer>1</integer>
         <key>PayloadIdentifier</key>
-        <string>com.apple.mdm.20EX23025-MAC.local.4d89f680-c87b-0133-5bc4-245e60d6b66b.alacarte.macosxrestrictions.5b4135a0-c87c-0133-5bc5-245e60d6b66b.systemuiserver</string>
+        <string>com.apple.mdm.58506E2D-BF2D-4169-8CCD-83095654C4E2</string>
         <key>PayloadEnabled</key>
         <true />
         <key>PayloadUUID</key>
-        <string>0144d2d8-48c3-039f-e1dd-d1587cf8b0f5</string>
+        <string>58506E2D-BF2D-4169-8CCD-83095654C4E2</string>
         <key>PayloadDisplayName</key>
         <string>Outlook First Launch</string>
         <key>kSubUIAppCompletedFirstRunSetup1507</key>
         <true />
         <key>FirstRunExperienceCompletedO15</key>
         <true />
+        <key>DisableImport</key>
+        <true />
+        <key>DisableExport</key>
+        <true />
+        <key>HideFoldersOnMyComputerRootInFolderList</key>
+        <true />
     </dict>
 ```
+
 
 
 ### POWERPOINT: ### 
