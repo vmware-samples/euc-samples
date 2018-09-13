@@ -3,7 +3,7 @@
 
 #Author:  Chris Halstead - chalstead@vmware.com
 #May 2018
-#Version 2.0
+#Version 2.1
 
   .SYNOPSIS
     This Powershell script allows you to automatically create device registrations in Airwatch for members of an SCCM collection.
@@ -21,7 +21,7 @@
         -SCCMServer "sccmserver.company.com"
         -SCCMCollectionName "Win10"
         -AirwatchServer "https://airwatch.company.com" `
-        -AirwatchUser "Username" `
+        -AirWatchAdmin "Username" `
         -AirwatchPW "SecurePassword" `
         -AirwatchAPIKey "iVvHQnSXpX5elicaZPaIlQ8hCe5C/kw21K3glhZ+g/g=" `
         -OrganizationGroupName "chalstead" `
@@ -35,11 +35,11 @@
     .PARAMETER AirwatchServer
     Server URL for the AirWatch API Server
 
-    .PARAMETER AirwatchUser
-    An AirWatch account in the tenant is being queried.  This user must have the API role at a minimum.
+    .PARAMETER AirWatchAdmin
+    An AirWatch admin account in the tenant that is being queried.  This admin must have the API role at a minimum.
 
     .PARAMETER AirwatchPW
-    The password that is used by the user specified in the username parameter
+    The password that is used by the admin specified in the username parameter
 
     .PARAMETER AirwatchAPIKey
     This is the REST API key that is generated in the AirWatch Console.  You locate this key at All Settings -> Advanced -> API -> REST,
@@ -63,7 +63,7 @@
         [string]$AirwatchServer,
 
         [Parameter(Mandatory=$True)]
-        [string]$AirwatchUser,
+        [string]$AirWatchAdmin,
 
         [Parameter(Mandatory=$True)]
         [string]$AirwatchPW,
@@ -97,7 +97,7 @@ Function Get-OrganizationGroupID {
 $URL = $AirwatchServer + "/api"
 
 #Base64 Encode AW Username and Password
-$combined = $AirwatchUser + ":" + $AirwatchPW
+$combined = $AirWatchAdmin + ":" + $AirwatchPW
 $encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
 $cred = [Convert]::ToBase64String($encoding)
 

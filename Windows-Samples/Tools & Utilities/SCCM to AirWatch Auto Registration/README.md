@@ -6,7 +6,7 @@
 - **Date Created**: 2/20/2018
 - **Updated:** 9/13/2018
 - **Tested on**: SCCM 2012 R2 & SCCM 1806 and AirWatch 9.3-9.7
-- **Version**: 2.0
+- **Version**: 2.1
 
 ## Introducing VMware Workspace ONE AirLift
 The main purpose and goal of VMware {code} is to share code samples and collaborate with our development community. We actively watch and listen to customer feedback and sometimes take some of the open-source projects and convert them into fully supported versions. We have recently released Workspace ONE AirLift, a server-side connector that simplifies and speeds the customers journey to modern management. Workspace ONE AirLift bridges administrative frameworks between Microsoft System Center Configuration Manager (SCCM) and Workspace ONE UEM. 
@@ -39,13 +39,13 @@ Name of a Collection in the SCCM site which you want to query devices from
 
 Server URL for the AirWatch API Server
   
-**AirwatchUser**
+**AirwatchAdmin**
 
-An AirWatch account in the tenant is being queried.  This user must have the API role at a minimum.
+An AirWatch admin account in the tenant that is being queried.  This admin must have the API role at a minimum.
 
 **AirwatchPW**
 
-The password that is used by the user specified in the username parameter
+The password that is used by the admin specified in the username parameter
 
 **AirwatchAPIKey**
 
@@ -55,22 +55,21 @@ This is the REST API key that is generated in the AirWatch Console.  You locate 
 
 The name of the Organization Group where the devices will be registered. The API key and admin credentials need to be authenticated at this Organization Group. 
 
-## Resources
-
-Prerequisites:
+## Prerequisites
 
 SCCM 2012 R2 or later and Airwatch 9.x
 
 Must be run with an account that has access to SCCM WMI Provider
 
-Airwatch account with at least API privileges needed
+Airwatch admin account with at least API privileges needed
 
 
 ##Change Log
 
-2/20/2018 - Published
-5/1/2018 - Version 2.0 - Changed script so it will connect via remote WMI to the SCCM Server.  It no longer needs to be run locally on the SCCM Server
-9/13/2018 - Added AirLift reference in README
+- 2/20/2018 Published
+- 5/1/2018 Version 2.0 Changed script so it will connect via remote WMI to the SCCM Server.  It no longer needs to be run locally on the SCCM Server
+- 9/13/2018 Added AirLift reference in README
+- 9/13/2018 - Version 2.1 Changed script's AirWatchUser reference to AirWatchAdmin. 
 
 
 
