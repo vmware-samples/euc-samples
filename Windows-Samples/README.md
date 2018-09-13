@@ -4,9 +4,10 @@
 This section of the **AirWatch-samples** repository contains samples relating to Microsoft Windows endpoint management.
 
 Some examples of items to submit for consideration and use by the community:
-* Custom XML Profile Payloads
-* Scripts for Product Provisioning
-* Scripts to use as helpful tools
+
+- Custom XML Profile Payloads (use [VMware Policy Builder](https://VMwarePolicyBuilder.com) for easy Windows 10 Custom XML generation)
+- Scripts for Product Provisioning
+- Scripts to use as helpful tools
 
 
 
@@ -14,6 +15,7 @@ Some examples of items to submit for consideration and use by the community:
 
 ### Required Information
 The following information must be included in the README.md or in the sample docstring in case README already exists in same folder.
+
 * Author Name
   * This can include full name, email address or other identifiable piece of information that would allow interested parties to contact author with questions.
 * Date
@@ -24,6 +26,7 @@ The following information must be included in the README.md or in the sample doc
 
 ### Suggested Information
 The following information should be included when possible. Inclusion of information provides valuable information to consumers of the resource.
+
 * VMWare Airwatch version against which the sample was developed/tested
 * Client Operating System version against which the sample was developed/tested (e.g. Windows Build number, or macOS Version and Build Number)
 * Language (Bash/Python/Powershell) version against which the sample was developed/tested
@@ -31,6 +34,7 @@ The following information should be included when possible. Inclusion of informa
 ### Contribution Process
 
 Follow the [GitHub process](https://help.github.com/articles/fork-a-repo)
+
 * Please use one branch per sample or change-set
 * Please use one commit and pull request per sample
 * Please post the sample output along with the pull request
@@ -39,6 +43,7 @@ Follow the [GitHub process](https://help.github.com/articles/fork-a-repo)
 ### Code Style
 
 We won't actively enforce any "official" style guides, but do ask that you do what you can to:
+
 * Make your samples easily readable
 * Make your samples easily reusable
 * Include in-line comments to help with readability
