@@ -5,17 +5,17 @@
 - **Email**: bpeppin@vmware.com
 - **Date Created**: 10/8/2018
 
-##Introducing Dell Factory Provisioning
+## Introducing Dell Factory Provisioning
 At VMworld 2018, [Dell announced ](https://blogs.vmware.com/euc/2018/08/dell-provisioning-workspaceone.html)a new PC configuration service, which allows organizations to ship devices preconfigured with company apps and settings directly from the factory to their users. This new service, called Dell Provisioning for VMware Workspace ONE, dramatically reduces the amount of time IT spends staging devices and minimizes end user downtime. 
-This service works by enabling a new “PPKG Export” function in the Workspace ONE console. This allows you as the admin to upload any of your apps (ideally the same ones you put into the gold image). Once exported, you need build a configuration file with the VMware Workspace ONE configuration tool. Send both of these to Dell and they will apply them in the factory.
+This service works by enabling a new "PPKG Export" function in the Workspace ONE console. This allows you as the admin to upload any of your apps (ideally the same ones you put into the gold image). Once exported, you need build a configuration file with the VMware Workspace ONE configuration tool. Send both of these to Dell and they will apply them in the factory.
 
-##SYNOPSIS
+## SYNOPSIS
 This utility allows you to test and validate both your PPKG and XML on a test VM before sending to the Dell factory. 
 
-##DESCRIPTION
+## DESCRIPTION
 When run, the script will tool will prompt you to select your PPKG and your configuration file (XML). You can then choose to deploy PPKG only (i.e. just your apps exported from WS1 console) or deploy the whole process (PPKG, XML, and Sysprep). This 2nd button will also pre-stage the correct Workpace ONE content on the client in order to complete enrollment after the system Syspreps and reboots so internet connectivity is required. 
 
-##Recommended Workflow
+## Recommended Workflow
 1.	Download Windows 10 Pro x64 from MSDN or MS volume license site
 2.	Install on a fresh Virtual Machine
 3.	Once the system gets to the out of box screen (OOBE), hit CTRL-SHIFT-F3 to enter “Audit Mode”. 
@@ -24,10 +24,10 @@ When run, the script will tool will prompt you to select your PPKG and your conf
 6.	Click “Apply PPKG Only” to only install apps
 7.	Click “Apply PPKG, XML, and Sysprep” to initiate the end to end process, mimicking what Dell is doing in the factory. 
 
-##Modifications Required
+## Modifications Required
 This script must be run as an admin and from Windows 10 “Audit Mode”. 
 
-##Known Issues
+## Known Issues
 •	If you are not connected to the internet or are behind a proxy, downloading the correct Workspace ONE content to enable enrollment might fail
 
-##Changelog
+## Changelog
