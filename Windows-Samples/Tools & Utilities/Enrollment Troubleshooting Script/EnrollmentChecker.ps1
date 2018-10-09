@@ -168,7 +168,14 @@ if(!(Test-Path -Path $outputFolder)) {
 }
 
 
-$services = @("dmwappushsvc", "DmEnrollmentSvc", "DiagTrack", "Schedule")
+#Check for WindowsVersion to identify required Services
+$winver = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseID
+if ($winver -gt 1803){
+	$services = @("dmwappushservice", "DmEnrollmentSvc", "DiagTrack", "Schedule")
+}
+else {
+	$services = @("dmwappushsvc", "DmEnrollmentSvc", "DiagTrack", "Schedule")
+}
 
 # Not working connections
 # Not doing for now https://ekop.intel.com/ekcertservice fails - ekop.intel.com works # notify.live.net # notify.windows.com
