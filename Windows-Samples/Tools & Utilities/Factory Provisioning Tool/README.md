@@ -4,7 +4,7 @@
 - **Author**: Brooks Peppin
 - **Email**: bpeppin@vmware.com
 - **Date Created**: 10/8/2018
-- **Updated**: 11/2/2018
+- **Updated**: 11/12/2018
 
 ## Introducing Dell Factory Provisioning
 At VMworld 2018, [Dell announced ](https://blogs.vmware.com/euc/2018/08/dell-provisioning-workspaceone.html)a new PC configuration service, which allows organizations to ship devices preconfigured with company apps and settings directly from the factory to their users. This new service, called Dell Provisioning for VMware Workspace ONE, dramatically reduces the amount of time IT spends staging devices and minimizes end user downtime. 
@@ -32,13 +32,18 @@ This script must be run as an admin and from Windows 10 "Audit Mode".
 •	If you are not connected to the internet or are behind a proxy, downloading the correct Workspace ONE content to enable enrollment might fail
 
 ## Changelog
-Updated 11/2/2018 to v1.6
+Updated 11/12/2018 to **v1.7**
+
+- Bug fixes
+- Adds support for shutdown or restart behavior after sysprep
+
+Updated 11/2/2018 to **v1.6**
 
 - Added new button for "Apply XML and Sysprep only"
 - Added shutdown/restart option when sysprepping
 - Improved app install status text
 
-Updated 10/17/2018 to v1.5
+Updated 10/17/2018 to **v1.5**
 
 - Improved status messages of installing apps
 - Fixed Workspace ONE App download issue
