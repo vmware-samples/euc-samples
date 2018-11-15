@@ -1,23 +1,20 @@
-# Custom Attributes
+# Workspace ONE Sensors
 
 ## Overview
-- **Authors**: Robert Terakedis, John Richards
-- **Email**: rterakedis@vmware.com, jrichards@vmware.com
-- **Date Created**: 6/8/2017
-- **Supported Platforms**: AirWatch version 9.0
-- **Tested on macOS Versions**: macOS El Capitan, macOS Sierra
+- **Authors**: Varun Murthy, Josue Negron
+- **Email**: vmurthy@vmware.com, jnegron@vmware.com
+- **Date Created**: 11/14/2018
+- **Supported Platforms**: Workspace ONE 1811
+- **Tested on**: Windows 10 Pro/Enterprise 1803+
 
 ## Purpose
-These sample custom attributes contain command lines or scripts that can be used in a Custom Attribute payload to report back information about macOS to AirWatch.
+These Workspace ONE Sensor samples contain PowerShell command lines or scripts that can be used in a **Provisioning > Custom Attributes > Sensors** payload to report back information about the Windows 10 device back to Workspace ONE.
 
 ## Required Changes/Updates
 None
 
 ## Change Log
-- 6/8/2017: Created Initial File
-- 7/20/2017: Cleanup and added more CA's
-- 2/1/2018: Added more CA's
-
+- 11/14/2018 - Uploaded README file
 
 ## Additional Resources
 None
