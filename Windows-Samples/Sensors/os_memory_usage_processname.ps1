@@ -4,5 +4,5 @@
 # change mcshield to your process name
 $PM = get-process mcshield |Measure-object -property PM -Average|Select-Object -ExpandProperty Average
 $NPM = get-process mcshield |Measure-object -property NPM -Average|Select-Object -ExpandProperty Average
-echo [System.Math]::Round(($PM+$NPM)/1KB)
+write-output [System.Math]::Round(($PM+$NPM)/1KB)
 

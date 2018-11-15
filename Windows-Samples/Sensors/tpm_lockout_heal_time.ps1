@@ -2,4 +2,4 @@
 # Return Type: String
 # Execution Context: Admin
 $tpm=get-tpm
-echo $tpm.LockoutHealTime
+write-output $tpm.LockoutHealTime

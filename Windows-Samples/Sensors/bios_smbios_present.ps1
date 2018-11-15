@@ -2,4 +2,4 @@
 # Return Type: Boolean
 # Execution Context: User
 $bios=Get-WmiObject Win32_bios -ComputerName $env:computername -ea silentlycontinue
-echo $bios.SMBIOSPresent
+write-output $bios.SMBIOSPresent

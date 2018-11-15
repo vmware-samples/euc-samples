@@ -2,5 +2,5 @@
 # Return Type: Boolean
 # Execution Context: Admin
 $bios = Confirm-SecureBootUEFI
-echo $bios
+write-output $bios
 

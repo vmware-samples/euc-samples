@@ -2,5 +2,5 @@
 # Return Type: Integer
 # Execution Context: User
 $Total_bytes=Get-WmiObject -class Win32_PerfFormattedData_Tcpip_NetworkInterface |Measure-Object -property BytesTotalPersec -Average |Select-Object -ExpandProperty Average
-echo ([System.Math]::Round($Total_bytes))
+write-output ([System.Math]::Round($Total_bytes))
 

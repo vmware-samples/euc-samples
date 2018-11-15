@@ -3,5 +3,5 @@
 # Execution Context: User
 $properties = @(‘Name’,’InterfaceDescription’)
 $physical_adapter = get-netadapter -physical | where status -eq "up" |select-object -Property $properties
-echo $physical_adapter.InterfaceDescription
+write-output $physical_adapter.InterfaceDescription
 

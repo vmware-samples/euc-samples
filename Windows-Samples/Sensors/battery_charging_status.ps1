@@ -5,7 +5,7 @@ $charge_status = (Get-CimInstance win32_battery).batterystatus
 $charging = @(2,6,7,8,9)
 if($charging -contains $charge_status[0] -or $charging -contains $charge_status[1] )
 {
-	echo "Charging"
+	write-output "Charging"
 	}else{  
-	echo "Not Charging"
+	write-output "Not Charging"
 }

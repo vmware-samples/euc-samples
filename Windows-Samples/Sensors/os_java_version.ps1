@@ -2,4 +2,4 @@
 # Return Type: String
 # Execution Context: User
 $javaver=(Get-Command java | Select-Object -ExpandProperty Version).toString()
-echo $javaver
+write-output $javaver

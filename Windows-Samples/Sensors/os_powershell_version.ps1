@@ -2,5 +2,5 @@
 # Return Type: String
 # Execution Context: User
 $ps = $PSVersionTable.PSVersion
-echo "$($ps.Major).$($ps.Minor).$($ps.Build).$($ps.Revision)"
+write-output "$($ps.Major).$($ps.Minor).$($ps.Build).$($ps.Revision)"
 

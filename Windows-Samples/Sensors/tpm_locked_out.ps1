@@ -2,4 +2,4 @@
 # Return Type: Boolean
 # Execution Context: Admin
 $tpm=get-tpm
-echo $tpm.LockedOut
+write-output $tpm.LockedOut

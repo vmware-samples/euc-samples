@@ -2,4 +2,4 @@
 # Return Type: Boolean
 # Execution Context: Admin
 $tpm=get-tpm
-echo $tpm.TpmPresent
+write-output $tpm.TpmPresent

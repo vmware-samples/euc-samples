@@ -4,8 +4,8 @@
 # change mcshield to your process name
 $process = Get-Process mcshield -ea SilentlyContinue
 if($process){
-	echo $true
+	write-output $true
 	}else{
-	echo $false
+	write-output $false
 }
 

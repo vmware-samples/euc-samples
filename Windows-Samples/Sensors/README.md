@@ -1,8 +1,8 @@
 # Workspace ONE Sensors
 
 ## Overview
-- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron
-- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com
+- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin
+- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com
 - **Date Created**: 11/14/2018
 - **Supported Platforms**: Workspace ONE 1811
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
@@ -15,6 +15,7 @@ None
 
 ## Change Log
 - 11/14/2018 - Uploaded README file
+- 11/15/2018 - changed echo to write-output in all samples
 
 ## Additional Resources
 None

@@ -3,5 +3,5 @@
 # Execution Context: User
 $os=Get-WmiObject win32_OperatingSystem
 $used_memory=$os.totalvirtualmemorysize - $os.freevirtualmemory
-echo $used_memory
+write-output $used_memory
 

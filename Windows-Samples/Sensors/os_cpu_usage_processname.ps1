@@ -3,5 +3,5 @@
 # Execution Context: User
 # change mcshield to your process name
 $cpu_usage=get-process mcshield |measure-object -property CPU -Average |select-object -ExpandProperty Average
-echo ([System.Math]::Round($cpu_usage))
+write-output ([System.Math]::Round($cpu_usage))
 
