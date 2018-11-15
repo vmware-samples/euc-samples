@@ -6,6 +6,7 @@ This section of the **AirWatch-samples** repository contains samples relating to
 Some examples of items to submit for consideration and use by the community:
 
 - Custom XML Profile Payloads (use [VMware Policy Builder](https://VMwarePolicyBuilder.com) for easy Windows 10 Custom XML generation)
+- Workspace ONE Sensors Samples
 - Scripts for Product Provisioning
 - Scripts to use as helpful tools
 
