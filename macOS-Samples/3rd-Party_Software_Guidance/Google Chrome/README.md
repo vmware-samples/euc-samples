@@ -15,6 +15,15 @@ Manage Google Chrome Settings as Supported by Google via Workspace ONE:
 3) The Custom XML file in this folder is derived from the *com.google.Chrome.plist* file in the Enterprise Bundle (GoogleChromeEnterpriseBundle64/Configuration/com.google.Chrome.plist).  Review and modify as needed for your organization as based on the Chrome Policy List
 4) Deploy the Chrome Browser for Enterprise app in order to leverage the policies configured in the preferences (via Custom XML)
 
+To manage the Certicficate Picker, use the **AutoSelectCertificateForUrls** key and set the Pattern URL to the CAS URL of your Identity Manager Instance:
+
+* *.vmwareidentity.com = https://cas-aws.vmwareidentity.com/
+* *.vmwareidentity.eu = https://cas-aws.vmwareidentity.eu/
+* *.vidmpreview.com = https://cas.vidmpreview.com/
+
+The Issuer needs to be the Issuer of your CA. So if your Issuer is CA is **CN=lab-ad01-CA** use **lab-ad01-CA**. 
+
+
 
 ## Required Changes/Updates
 None

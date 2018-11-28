@@ -44,6 +44,10 @@
 	<false/>
 	<key>ImportSearchEngine</key>
 	<false/>
+	<key>AutoSelectCertificateForUrls</key>
+<array>
+ <string>{"pattern":"https://cas.vidmpreview.com/","filter":{"ISSUER":{"CN":"your-domain-AD01-CA"}}}</string>
+</array>
 	<key>PayloadEnabled</key>
 	<true/>
     	<key>PayloadDisplayName</key>
