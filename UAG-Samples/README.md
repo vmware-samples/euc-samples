@@ -4,7 +4,7 @@
 This section of the **AirWatch-samples** repository contains samples relating to Unified Access Gateway.
 
 Some examples of items to submit for consideration and use by the community:
-* Scripts - automation scripts for Unified Access Gateway
+* Scripts - automation scripts for Unified Access Gateway 
 
 
 ## Submitting samples
