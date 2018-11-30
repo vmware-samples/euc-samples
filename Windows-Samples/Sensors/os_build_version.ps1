@@ -2,4 +2,4 @@
 # Return Type: String
 # Execution Context: User
 $os=Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion"
-write-host $os.ReleaseId
+write-output $os.ReleaseId

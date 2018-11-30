@@ -2,4 +2,4 @@
 # Return Type: String
 # Execution Context: Admin
 $os=Get-WindowsEdition -online
-write-host $os.Edition
+write-output $os.Edition

@@ -2,4 +2,4 @@
 # Return Type: String
 # Execution Context: User
 $os=Get-WmiObject Win32_OperatingSystem
-write-host $os.BuildNumber
+write-output $os.BuildNumber

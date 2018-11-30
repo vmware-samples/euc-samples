@@ -7,4 +7,4 @@ $WinVer | Add-Member -MemberType NoteProperty -Name Minor -Value $(Get-ItemPrope
 $WinVer | Add-Member -MemberType NoteProperty -Name Build -Value $(Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion' CurrentBuild).CurrentBuild
 $WinVer | Add-Member -MemberType NoteProperty -Name Revision -Value $(Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion' UBR).UBR
 $WinVer=$WinVer.Major.ToString() + "." + $WinVer.Minor.ToString() + "." + $WinVer.Build.ToString() + "." + $WinVer.Revision.ToString()
-write-host $WinVer
+write-output $WinVer

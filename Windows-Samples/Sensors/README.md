@@ -14,7 +14,7 @@ These Workspace ONE Sensor samples contain PowerShell command lines or scripts t
 None
 
 ## Change Log
-- 11/30/2018 - added os_verison, os_build_version, os_build_number, os_architecture, os_edition, system_timezone, bitlocker_encryption_method, horizon_broker_url, horizon_protocol
+- 11/30/2018 - added os_verison, os_build_version, os_build_number, os_architecture, os_edition, system_timezone, bitlocker_encryption_method, horizon_broker_url, horizon_protocol, template_get_wmi_object, template_get_registry_value
 - 11/21/2018 - updated bios_secure_boot and bios_serial_number
 - 11/15/2018 - changed echo to write-output in all samples
 - 11/14/2018 - Uploaded README file
