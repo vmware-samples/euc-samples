@@ -43,4 +43,4 @@ Example:
 
 
 ## Additional Resources
-* [Unified Access Gateway Deployment Guide for Amazon Web Services](http://aka.ms/CSPList)
+* [Unified Access Gateway Documentation](https://docs.vmware.com/en/Unified-Access-Gateway/)
