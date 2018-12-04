@@ -14,7 +14,7 @@ it leverage the Unified Access Gateway REST API to obtain the High Availability 
  
 In order to execute this script successfully you need to:
 1. Unified Access Gateway Admin credentials
-2. List of FQDN or IP address (Management NIC) for the Unified Access Gateways appliances.  rename the file extension from .ova file to .zip to easily unzip the file)
+2. List of FQDN or IP address (Management NIC) for the Unified Access Gateways appliances.
 
 ## How to execute the script
 
@@ -22,7 +22,7 @@ Execute searchUAGMaster.ps1 using the following parameters:
 
 - **–username** – Username for the admin user authorized to login into the Appliances
 - **-password** – Password of the given username
-- **-UAGAppliancesFQDNorIP** – List of Unified Access Gateways FQDN or IP used by the Management NIC
+- **-UAGAppliancesFQDNorIP** – List of Unified Access Gateways FQDN or IP address used by the Management NIC, all separated by comma
 
 Notes:
 
