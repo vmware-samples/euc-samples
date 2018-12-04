@@ -31,9 +31,9 @@ Notes:
 
 Example:
 
-.\searchUAGMaster.ps1 -username admin -password 4jd9nf9fj -UAGAppliancesFQDNorIP uag1.company.com uag2.company.com uag3.company.com uag4.company.com
+.\searchUAGMaster.ps1 -username admin -password 4jd9nf9fj -UAGAppliancesFQDNorIP uag1.company.com, uag2.company.com, uag3.company.com, uag4.company.com
 
-.\searchUAGMaster.ps1 -username admin -password 4jd9nf9fj -UAGAppliancesFQDNorIP 192.168.100.11 192.168.100.12 192.168.100.13 192.168.100.14
+.\searchUAGMaster.ps1 -username admin -password 4jd9nf9fj -UAGAppliancesFQDNorIP 192.168.100.11, 192.168.100.12, 192.168.100.13, 192.168.100.14
 
 ## Change Log
 
