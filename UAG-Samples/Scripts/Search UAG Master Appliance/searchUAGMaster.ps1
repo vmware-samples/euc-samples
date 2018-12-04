@@ -11,7 +11,7 @@ $authheader = "Basic " + $encodedlogin
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization",$authheader)
 
-Write-Host "Search for Unified Access Gateway Appliance in Master state"
+Write-Host "Search for the Unified Access Gateway appliance in Master state"
 Write-Host ""
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -34,7 +34,7 @@ foreach ($element in $UAGAppliancesFQDNorIP) {
 }
 
 Write-Host ""
-Write-Host "Found $i Unified Access Gateway Appliance in Master state"
+Write-Host "Found $i Unified Access Gateway appliance in Master state"
 
 
 
