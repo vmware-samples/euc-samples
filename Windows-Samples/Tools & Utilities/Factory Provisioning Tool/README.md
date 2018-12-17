@@ -10,6 +10,7 @@
 At VMworld 2018, [Dell announced ](https://blogs.vmware.com/euc/2018/08/dell-provisioning-workspaceone.html)a new PC configuration service, which allows organizations to ship devices preconfigured with company apps and settings directly from the factory to their users. This new service, called Dell Provisioning for VMware Workspace ONE, dramatically reduces the amount of time IT spends staging devices and minimizes end user downtime. 
 This service works by enabling a new "PPKG Export" function in the Workspace ONE console. This allows you as the admin to upload any of your apps (ideally the same ones you put into the gold image). Once exported, you need build a configuration file with the VMware Workspace ONE configuration tool. Send both of these to Dell and they will apply them in the factory.
 
+
 ## SYNOPSIS
 This utility allows you to test and validate both your PPKG and XML on a test VM before sending to the Dell factory. 
 
