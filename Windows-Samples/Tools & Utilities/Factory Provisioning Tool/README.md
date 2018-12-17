@@ -36,7 +36,7 @@ This script must be run as an admin and from Windows 10 "Audit Mode".
 Updated 12/17/18 to **v1.8**
 
 - Bug fixes
-
+- Updated UI
 
 Updated 11/12/2018 to **v1.7**
 
