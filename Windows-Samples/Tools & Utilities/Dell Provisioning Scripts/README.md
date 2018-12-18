@@ -1,7 +1,7 @@
 # Dell Provisioning for VMware Workspace ONE Scripts
 
 ## Overview
-- **Authors**:Josue Negron, Brooks Peppin
+- **Authors**: Josue Negron, Brooks Peppin
 - **Email**: jnegron@vmware.com, bpeppin@vmware.com
 - **Date Created**: 12/18/2018
 - **Supported Platforms**: Workspace ONE 1811
