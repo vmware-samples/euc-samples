@@ -9,12 +9,12 @@ the rest of the characters up to the 15 character maximum. #>
 # Ensure your output generates at least 15 characters or modify the command line to only take a smaller number of characters. 
 
 # Base Rename Computer Command
-PowerShell Rename-Computer -NewName "New_Computer_Name_Less_Than_15_Characters" -Force -Confirm:$false
+PowerShell Rename-Computer -NewName "New_Computer_Name_Less_Than_15_Characters" -Force
 
 #Example - using company name + serial number
-PowerShell Rename-Computer -NewName "VMware-$((gwmi Win32_BIOS).SerialNumber)".Substring(0,15) -Force -Confirm:$false
+PowerShell Rename-Computer -NewName "VMware-$((gwmi Win32_BIOS).SerialNumber)".Substring(0,15) -Force
 #Output - VMware-01333227
 
 #Example - using 2 characters + serial number
-PowerShell Rename-Computer -NewName "VM-$((gwmi Win32_BIOS).SerialNumber)".Substring(0,15) -Force -Confirm:$false
+PowerShell Rename-Computer -NewName "VM-$((gwmi Win32_BIOS).SerialNumber)".Substring(0,15) -Force
 #Output - VM-013332272458
