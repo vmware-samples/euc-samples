@@ -7,7 +7,7 @@
 - **Updated**: 11/12/2018
 
 ## Introducing Dell Factory Provisioning
-A [new tool] (https://labs.vmware.com/flings/vmware-workspace-one-provisioning-tool) is now available for customers on Workspace ONE Version 1811 or newer: 
+A [new tool] (https://labs.vmware.com/flings/vmware-workspace-one-provisioning-tool) is now available for customers on Workspace ONE Version 1811 or newer.
 For older Workspace ONE versions, this tool is still available. 
 
 At VMworld 2018, [Dell announced ](https://blogs.vmware.com/euc/2018/08/dell-provisioning-workspaceone.html)a new PC configuration service, which allows organizations to ship devices preconfigured with company apps and settings directly from the factory to their users. This new service, called Dell Provisioning for VMware Workspace ONE, dramatically reduces the amount of time IT spends staging devices and minimizes end user downtime. 
