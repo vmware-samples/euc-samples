@@ -3,7 +3,7 @@
 	===========================================================================
 	 Created with: 	SAPIEN Technologies, Inc., PowerShell Studio 2018 v5.5.155
 	 Created on:   	1/5/2019 4:09 PM
-	 Created by:   	Brooks Peppin, www.brookspeppin.com
+	 Created by:   	Brooks Peppin, www.brookspeppin.com, bpeppin@vmware.com
 	 Organization: 	
 	 Filename:     	Create-Win10-Media
 	===========================================================================
@@ -16,45 +16,6 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 	Start-Process powershell.exe "-File", ('"{0}"' -f $MyInvocation.MyCommand.Path) -Verb RunAs
 	exit
 }
-<## Get the ID and security principal of the current user account
-$myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-$myWindowsPrincipal = new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
-
-# Get the security principal for the Administrator role
-$adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
-
-# Check to see if we are currently running "as Administrator"
-if ($myWindowsPrincipal.IsInRole($adminRole))
-{
-	# We are running "as Administrator" - so change the title and background color to indicate this
-	$Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Elevated)"
-	#$Host.UI.RawUI.BackgroundColor = "DarkBlue"
-	clear-host
-}
-else
-{
-	# We are not running "as Administrator" - so relaunch as administrator
-	
-	# Create a new process object that starts PowerShell
-	$newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
-	
-	# Specify the current script path and name as a parameter
-	$Script = $myInvocation.MyCommand.Definition
-	Write-Host $script
-	Start-Process powershell -ArgumentList '-noprofile -file $script' -verb RunAs
-
-	# Indicate that the process should be elevated
-	#$newProcess.Verb = "runas";
-	
-	# Start the new process
-	#[System.Diagnostics.Process]::Start($newProcess);
- pause
-	# Exit from the current, unelevated, process
-	exit
-}#>
-
-
-	#Start-Transcript -Path "$env:TEMP\Win10SetupMedia.log" -IncludeInvocationHeader
 
 
 Write-Host "==================================================================="
@@ -116,17 +77,17 @@ assign
 exit
 "@
 	$command | Diskpart
-	
-	$USB_Boot = ((Get-Volume).where({ $_.FileSystemLabel -eq "USB-Boot" })).DriveLetter + ":"
-	$usb_source = ((Get-Volume).where({ $_.FileSystemLabel -eq "USB-Source" })).DriveLetter + ":"
-	
-	Write-Host "Copying boot files to USB-Boot (Fat32) partition"
-	robocopy $iso $USB_Boot /mir /xd sources "system volume information" $recycle.bin /njh /njs
-	robocopy $iso\sources $usb_boot\sources boot.wim /njh /njs
-	Write-Host "Copying sources directory to USB-Source (NTFS) partition"
-	robocopy $iso\sources $usb_source\sources /mir /njh /njs
-	
-	Add-Content -Path $usb_source\sources\ei.cfg -Value "[CHANNEL]"
-	Add-Content -Path $usb_source\sources\ei.cfg -Value "Retail"
 
-	
+$USB_Boot = ((Get-Volume).where({ $_.FileSystemLabel -eq "USB-Boot" })).DriveLetter + ":"
+$usb_source = ((Get-Volume).where({ $_.FileSystemLabel -eq "USB-Source" })).DriveLetter + ":"
+
+Write-Host "Copying boot files to USB-Boot (Fat32) partition"
+robocopy $iso $USB_Boot /mir /xd sources "system volume information" $recycle.bin /njh /njs
+robocopy $iso\sources $usb_boot\sources boot.wim /njh /njs
+Write-Host "Copying sources directory to USB-Source (NTFS) partition"
+robocopy $iso\sources $usb_source\sources /mir /njh /njs
+
+Add-Content -Path $usb_source\sources\ei.cfg -Value "[CHANNEL]"
+Add-Content -Path $usb_source\sources\ei.cfg -Value "Retail"
+
+Invoke-WebRequest -Uri https://github.com/vmwaresamples/AirWatch-samples/blob/master/Windows-Samples/Tools%20%26%20Utilities/Windows%2010%20Automated%20Setup%20Media/autounattend.xml -OutFile $USB_Boot\autounattend.xml
