@@ -18,13 +18,15 @@ This script creates automated Windows 10 setup on bootable USB media. It takes a
 
 ## Instructions
 
+**Ensure you are on Windows 10 1803 or newer running this script**
 1. Download Windows 10 media (ISO) from MSDN or Microsoft Volume License site.
 2. Mount ISO in Windows Explorer.
 3. Run script (right click powershell script and click "run with powershell"). This script will self-elevate as administrator.
 4. Follow prompts on wizard to input mounted ISO drive letter and drive number of USB.
+5. Place autounattend.xml in root of the "UBS-Boot" partition*
 5. Once complete, put usb into laptop (or VM).
 6. Boot device and hit correct key to bring up boot menu (F12 on Dell machines, ESC on VMs, other devices might be different).
 7. System will boot and automatically format the internal drive and install Windows 10 Professional.
 
-Note: Windows 10 media comes with many different SKUs (Education, Enterprise, etc). If you would like Windows 10 Setup to install a different version, edit the autounattend.xml file in the root of the USB drive and update the name of the SKU you desire in the "ImageInstall" node in the XML. For example, to change from Win10 Pro to Win10 Enterprise you would update the "Value" key to be: <Value>Windows 10 Enterprise</Value>
+*Note: Windows 10 media comes with many different SKUs (Education, Enterprise, etc). If you would like Windows 10 Setup to install a different version, edit the autounattend.xml file in the root of the USB drive and update the name of the SKU you desire in the "ImageInstall" node in the XML. For example, to change from Win10 Pro to Win10 Enterprise you would update the "Value" key to be: <Value>Windows 10 Enterprise</Value>
 
