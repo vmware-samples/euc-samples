@@ -20,7 +20,7 @@
 ## Purpose
 With macOS Mojave, User Consent for Data Access can be managed via MDM through the "Privacy Preferences Policy Control" (PPPC) payload.  The settings established through the PPPC payload affect the Transparency Consent and Control (TCC) database, allowing administrators to grant consent to data on behalf of the user for User-Approved MDM enrollments.  More details about User Consent for Data Access can be found on [VMware's TechZone](https://techzone.vmware.com/blog/vmware-workspace-one-uem-apple-macos-mojave-user-consent-data-access)
 
-Since it's introduction in the macOS Mojave betas, a number of resources have emerged on the Internet aimed at helping macOS admins discover and track the various PPPC rules they may need in their environment.   The goal of this VMware Sample is to bring together those various resources into a single reference point. 
+Since it's introduction in the macOS Mojave betas, a number of resources have emerged on the Internet aimed at helping macOS admins discover and track the various PPPC rules they may need in their environment.   The goal of this VMware Sample is to bring together those various resources into a single reference point.
 
 > **Please feel free to send us pull requests for updates and add any TCC whitelists for apps that you've discovered!**
 
@@ -35,11 +35,11 @@ The following outlines some basic, high-level steps to help you determine what P
     1. `/usr/bin/log show --predicate 'subsystem == "com.apple.TCC"' | grep Prompting`
     2. `/usr/bin/log stream --debug --predicate 'subsystem == "com.apple.TCC" AND eventMessage BEGINSWITH "AttributionChain"'`
     3. `log stream --debug --predicate 'subsystem == "com.apple.TCC" AND eventMessage BEGINSWITH "AttributionChain" OR eventMessage CONTAINS "synchronous to com.apple.tccd.system"'`
-5. Obtain the "Code Requirement" for the app (or receiving app) by running the following command:  `codesign --display -r - /path/to/binary/or/application` 
+5. Obtain the "Code Requirement" for the app (or receiving app) by running the following command:  `codesign --display -r - /path/to/binary/or/application`
 6. Reset the TCC Database Decisions using `/usr/bin/tccutil` (See [TCC DB Reset](#tcc-db-reset) below..)ß
 
 > **NOTE:**  Carl Ashley posted a great blog about [how to read TCC logs in macOS](https://carlashley.com/2018/09/06/reading-tcc-logs-in-macos/).
- 
+
 
 ### TCC DB Reset
 1. Use the `tccutil reset <service name>` command within Terminal.app to reset one (or more) of the affected services (Great write-up on this at [Helping your users reset TCC Privacy Policy Decisions](https://www.macblog.org/post/reset-tcc-privacy/)):
@@ -81,7 +81,7 @@ The following list of binaries should be common for most admins leveraging UEM a
 
 
 | Description | Identifier (Type) | Code Requirement | Relevant Permissions | Apple Event Receivers ++ Code Requirement? |
-| ----------- | ------------------| ---------------- | -------------------- | ------------------------------------------ | 
+| ----------- | ------------------| ---------------- | -------------------- | ------------------------------------------ |
 | **Allow Terminal.app relevant permissions for access and Eventing** | `com.apple.Terminal` (bundle ID) | `identifier “com.apple.Terminal” and anchor apple` | <ul><li>SystemPolicyAllFiles</li><li>Accessibility</li><li>SysAdminFiles</li></ul> | <ul><li>`com.apple.systemuiserver` (bundle id) ++ `identifier “com.apple.systemuiserver” and anchor apple`</li><li>`com.apple.systemevents` (bundle id) ++ `identifier “com.apple.systemevents” and anchor apple`</ul> |
 | **Allow AppleEvents control for osascript (AppleScript)** | `/usr/bin/osascript` (path) | `identifier “com.apple.osascript” and anchor apple` | <ul><li>None</li></ul> | <ul><li>`com.apple.systemuiserver` (bundle id) ++ `identifier “com.apple.systemuiserver” and anchor apple`</li><li>`com.apple.systemevents` (bundle id) ++ `identifier “com.apple.systemevents” and anchor apple`</li><li>`com.apple.finder` (bundle id) ++ `identifier “com.apple.finder” and anchor apple`</li><li>`com.microsoft.Outlook` (bundle id) ++ `identifier "com.microsoft.Outlook" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = UBF8T346G9`</li></ul> |
 | **Allow Events and Access for Installer** | `/usr/bin/installer` (path) | `identifier “com.apple.installer” and anchor apple` | <ul><li>SysAdminFiles</li></ul> | <ul><li>`com.apple.systemevents` (bundle id) ++ `identifier “com.apple.systemevents” and anchor apple`</li></ul> |
@@ -98,6 +98,7 @@ The following list of binaries should be common for most admins leveraging UEM a
 | **Microsoft Skype for Business** | `com.microsoft.SkypeForBusiness` (bundle ID) | `identifier "com.microsoft.SkypeForBusiness" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = AL798K98FX` | -------------------- | <ul><li>`com.microsoft.Outlook` (bundle id) ++ `identifier "com.microsoft.Outlook" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = UBF8T346G9`</li></ul> |
 | **Zoom Client (1 of 2)** | `us.zoom.xos` (bundle ID) | `identifier "us.zoom.xos" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = BJ4HAAB9B3` | <ul><li>Accessibility</li></ul> | ------------------------------------------ |
 | **Zoom Client (2 of 2)** | `us.zoom.pluginagent` (bundle ID) | `identifier "us.zoom.pluginagent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = BJ4HAAB9B3` | -------------------- | <ul><li>`com.microsoft.Outlook` (bundle id) ++ `identifier "com.microsoft.Outlook" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = UBF8T346G9`</li></ul> |
+| **Zoom Presence** | `us.zoom.ZoomPresence` (bundle ID) | `identifier "us.zoom.ZoomPresence" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = BJ4HAAB9B3` | <ul><li>SystemPolicyAllFiles</li></ul> | ------------------------------------------ |
 
 
 ## List of Binaries to Verify
