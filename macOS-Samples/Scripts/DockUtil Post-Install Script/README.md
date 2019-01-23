@@ -9,11 +9,12 @@ There are times where it would be useful to add icons to the user's dock after i
 
 CurrentUser=`/usr/bin/stat -f%Su /dev/console`
 
-if [ "$CurrentUser" == "root"  ] || [ "$CurrentUser" == "_mbsetupsuer" ] ; then
+if [ "$CurrentUser" == "root"  ] || [ "$CurrentUser" == "_mbsetupuser" ] ; then
   exit 0
 fi
 
 /usr/bin/su -l $CurrentUser -c "/usr/local/bin/dockutil --add /Applications/Intelligent\ Hub.app/"
+/usr/bin/su -l $CurrentUser -c "/usr/bin/killall cfprefsd"
 /usr/bin/su -l $CurrentUser -c "/usr/bin/killall Dock"
 
 exit 0
@@ -23,6 +24,7 @@ exit 0
 
 * CurrentUser : This is the user currently logged into macOS
 * `/usr/local/bin/dockutil -add` : This is the dockutil utility that modifies the dock plist.
+* `/usr/bin/killall cfprefsd` : This command restarts process that reads preferences for the user - this way when the dock restarts it builds from a current set of preferences.
 * `/usr/bin/killall Dock` : This command restarts the dock to make the changes immediately visible to the user.
 
 
