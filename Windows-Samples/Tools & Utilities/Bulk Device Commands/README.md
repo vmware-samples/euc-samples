@@ -1,4 +1,4 @@
-# Change Enrollment User Tool
+# Bulk Command Script
 
 ## Overview
 - **Author**: Mike Nelson
