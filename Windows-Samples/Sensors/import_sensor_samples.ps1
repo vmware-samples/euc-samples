@@ -261,7 +261,7 @@ $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replac
 # USER, SYSTEM, ADMIN
 $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
 # Encode Script
-$Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[0].Filename.ToString()) -Encoding UTF8 -Raw
+$Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
 $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
 $Script = [Convert]::ToBase64String($Bytes)
 Set-Sensors $Description $Context $SensorName $ResponseType $Script
