@@ -20,8 +20,9 @@
         -WorkspaceONEServer "https://as###.awmdm.com" `
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
-        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "techzone"
+        -WorkspaceONEAPIKey "7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=" `
+        -OrganizationGroupName "techzone" '
+        -SmartGroupID "41"
 
     .PARAMETER WorkspaceONEServer
     Server URL for the Workspace ONE UEM API Server
@@ -140,7 +141,7 @@ Function Check-ConsoleVersion {
     $ProductVersion = $webReturn.ProductVersion
     $Version = $ProductVersion -replace '[\.]'
     $Version = [int]$Version
-    if ($Version -ge 181100) {
+    if ($Version -ge 18110) {
         Return $Version
         Write-Host("Console Version " + $ProductVersion)
     }else{
@@ -155,7 +156,10 @@ Function Get-Sensors {
     $endpointURL = $URL + "/mdm/devicesensors/list/" + $WorkspaceONEGroupUUID
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
     $Sensors = $webReturn
-    Write-Host($Sensors.total_results.toString() + " Sensors Found")
+    if($Sensors){
+        Write-Host($Sensors.total_results.toString() + " Sensors Found in Console")
+    }ELSE{
+        Write-Host("No Sensors Found in Console")}
     Return $Sensors
 }
 
@@ -207,6 +211,7 @@ Function Get-PowerShellSensors {
 # Check for Duplicates
 Function Check-Duplicate-Sensor($SensorName) {
     $ExisitingSensors = Get-Sensors
+    if($ExisitingSensors){
     $Num = $ExisitingSensors.total_results -1
     $CurrentSensors = $ExisitingSensors.result_set
     $Duplicate = $False
@@ -216,6 +221,7 @@ Function Check-Duplicate-Sensor($SensorName) {
         if($Result){$Duplicate = $TRUE}
         $Num--
     } while ($Num -ge 0)
+    }
     Return $Duplicate
 }
 
@@ -231,7 +237,7 @@ if ($WorkspaceONEGroupID -eq $null){$WorkspaceONEGroupID = Get-OrganizationGroup
 $WorkspaceONEGroupUUID = Get-OrganizationGroupUUID($WorkspaceONEGroupID)
 
 # Checking for Supported Console Version and if Sensors is Enabled
-Check-ConsoleVersion
+# Check-ConsoleVersion
 Check-SensorsEnabled($WorkspaceONEGroupUUID)
 
 # Pull in PS Samples
@@ -255,10 +261,9 @@ $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replac
 # USER, SYSTEM, ADMIN
 $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
 # Encode Script
-$Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[0].Filename.ToString())
+$Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[0].Filename.ToString()) -Encoding UTF8 -Raw
 $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
 $Script = [Convert]::ToBase64String($Bytes)
-# Upload Sensor Sample to Workspace ONE UEM
 Set-Sensors $Description $Context $SensorName $ResponseType $Script
 }
 $NumSensors--
