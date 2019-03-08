@@ -351,6 +351,7 @@ function Map-AppDetailsJSON {
         }
     }
 
+	
     $json = $body | ConvertTo-Json -Depth 10
     return $json
 }
