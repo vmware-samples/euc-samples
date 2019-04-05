@@ -22,7 +22,8 @@ Write-Host "==================================================================="
 Write-Host "================ Windows 10 x64 USB Media Creator ================="
 Write-Host "============== By Brooks Peppin (bpeppin@vmware.com) =============="
 Write-Host "=================== www.brookspeppin.com =========================="
-Write-Host "==================================================================="
+Write-Host "====================Updated Apr, 5 2019============================"
+Write-Host "==================================================================="`n
 Write-Host "This script creates automated Windows 10 setup media that installs "
 Write-Host "via autounattend.xml. It supports both UEFI with Secure Boot on"
 Write-Host "and legacy boot modes. It will create 2 partitions (1 FAT32 and 1 NTFS)"
@@ -87,7 +88,11 @@ robocopy $iso\sources $usb_boot\sources boot.wim /njh /njs
 Write-Host "Copying sources directory to USB-Source (NTFS) partition"
 robocopy $iso\sources $usb_source\sources /mir /njh /njs
 
-Add-Content -Path $usb_source\sources\ei.cfg -Value "[CHANNEL]"
-Add-Content -Path $usb_source\sources\ei.cfg -Value "Retail"
+Remove-Item $usb_source\sources\ei.cfg -Force
+Add-Content -Path $usb_source\sources\ei.cfg -Value "[CHANNEL]" -Force
+Add-Content -Path $usb_source\sources\ei.cfg -Value "Retail" -Force
 
-Invoke-WebRequest -Uri https://github.com/vmwaresamples/AirWatch-samples/blob/master/Windows-Samples/Tools%20%26%20Utilities/Windows%2010%20Automated%20Setup%20Media/autounattend.xml -OutFile $USB_Boot\autounattend.xml
+Write-host "To enable this USB to install Windows 10 zero touch, download autounattend.xml and place on the root of the USB (same location setup.exe is located). Download from:" -foreground "yellow"
+Write-Host 'https://github.com/vmwaresamples/AirWatch-samples/blob/master/Windows-Samples/Tools%20%26%20Utilities/Windows%2010%20Automated%20Setup%20Media/autounattend.xml -OutFile $USB_Boot\autounattend.xml' -foreground "yellow"
+
+pause
