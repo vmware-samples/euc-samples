@@ -88,7 +88,8 @@ robocopy $iso\sources $usb_boot\sources boot.wim /njh /njs
 Write-Host "Copying sources directory to USB-Source (NTFS) partition"
 robocopy $iso\sources $usb_source\sources /mir /njh /njs
 
-Remove-Item $usb_source\sources\ei.cfg -Force
+
+Remove-Item $usb_source\sources\ei.cfg -Force -ErrorAction SilentlyContinue
 Add-Content -Path $usb_source\sources\ei.cfg -Value "[CHANNEL]" -Force
 Add-Content -Path $usb_source\sources\ei.cfg -Value "Retail" -Force
 
