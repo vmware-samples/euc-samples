@@ -65,7 +65,7 @@ Write-Host  "Please ensure this is correct as the drive will be completely forma
 select disk $drivenumber
 clean
 convert mbr
-create partition primary size=1000
+create partition primary size=500
 create partition primary
 select partition 1
 online volume
