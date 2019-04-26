@@ -21,7 +21,7 @@
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=" `
-        -OrganizationGroupName "techzone" '
+        -OrganizationGroupName "techzone" `
         -SmartGroupID "41"
 
     .PARAMETER WorkspaceONEServer
@@ -71,8 +71,11 @@
         [string]$SensorsDirectory, 
 
         [Parameter(Mandatory=$False)]
-        [string]$SmartGroupID
+        [string]$SmartGroupID        
 )
+
+# Forces the use of TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $URL = $WorkspaceONEServer + "/api"
 

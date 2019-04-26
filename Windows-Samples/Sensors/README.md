@@ -1,10 +1,11 @@
 # Workspace ONE Sensors
 
 ## Overview
-- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson
-- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com
+- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets
+- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com
 - **Date Created**: 11/14/2018
-- **Supported Platforms**: Workspace ONE 1811
+- **Updated**: 4/26/2019
+- **Supported Platforms**: Workspace ONE 1811+
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
 
 ## Purpose
@@ -86,6 +87,7 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 
 ## Change Log
+- 4/26/2019 - Force use of TLS 1.2 for REST API Calls; fixed minor issues
 - 12/6/2018 - Added more details on how to use import_sensor_samples.ps1
 - 12/5/2018 - Added import_sensor_samples.ps1 and updated system_type, system_status, system_date, templates, system_family
 - 12/3/2018 - added system_pc_type, system_status, system_family, system_type, system_thermal_state, system_wakeup_type, system_model, system_manufacturer, system_hypervisor_present, system_dns_hostname, system_username, system_name, system_domain_role, system_domain_membership, system_domain_name
