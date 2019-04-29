@@ -52,7 +52,7 @@ BOOL *sandbox;
     if (appIDString && [appIDString isKindOfClass:[NSString class]]) {
         appID = appIDString;
     } else {
-        appID = @"644fc3fbd22f49958679b434a92d46dc00555300";
+        appID = @"HARD CODE YOUR KEY IN CASE YOU DON''T USE APP CONFIG";
     }
     
 }
