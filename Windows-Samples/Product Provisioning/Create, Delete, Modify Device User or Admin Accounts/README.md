@@ -23,5 +23,6 @@ Deploy the .bat file via AirWatch's Product Provisioning.
 ## Change Log
 - 8/1/2017: Created Samples for creating/deleting/modifying users and their permissions
 
+
 ## Additional Resources
 * [Net User Reference](https://technet.microsoft.com/en-us/library/cc771865(v=ws.11).aspx)
