@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JavaScript Test</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <style>
+      body {background-color:rgb(200,225,255);}
+      h1 {width:100%;height:35px;font-family:verdana;font-size:192%;font-weight:bold;}
+      a {width:100%;height:29px;font-size:128%;}
+      input[type="button"] {width:100%;height:29px;font-size:128%;background-color:rgb(0,255,255);}
+    </style>
+  </head>
+  <body id="critter">
+  <script type="text/javascript">
+    ////////////////////////////////////////////////////////////////
+    // Developer's JavaScript Code
+    ////////////////////////////////////////////////////////////////
+    function crash() {
+      crash123;       // ridiculous nonsense that causes a crash
+    }
+    function customError() {
+      throw {
+        name: "Critter Food",
+        level: "Price Increase"
+      };
+    }
+    function domError() {
+      // SEE: https://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#error-names-0
+      // IndexSizeError inspired by http://reference.sitepoint.com/javascript/DOMException
+      var text = document.getElementById('critter').firstChild;
+      var node = document.getElementById('critter');
+      text.appendChild(node);
+    }
+    function javaScriptError() {
+      garbage();
+    }
+    function rangeError() {
+      document.createRange().setStartAfter(document, 0);
+    }
+    function crash() {
+      Critter(10);
+    }
+    function Gerbil(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Squirrel(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Robin(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Sparrow(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Critter(n) {
+      if (n <= 0) {
+        throw ("Critter " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function endsWith(s, suffix) {
+      return (s.substring(s.length - suffix.length) == suffix);
+    }
+    function constructorName(e) {
+      // Return e.constructor's name extracted from .toString()
+      // Tested on Chrome, FireFox, Safari .
+      var answer = e.constructor.toString();
+      var p1 = answer.indexOf(" ");
+      var answer = answer.substring(p1 + 1);
+      var p2 = answer.search(/\W/);
+      var answer = answer.substring(0, p2);
+      if (navigator.userAgent.search("Safari") > 0) {
+        // Drop "Constructor" suffix.
+        var c = "Constructor";
+        if (endsWith(answer, c)) {
+          answer = answer.substring(0, answer.length - c.length);
+        }
+      }
+      return answer;
+    }
+    function dictString(e) {
+      var answer = "{";
+      for (var propertyName in e) {
+        var value = "???";
+        try {
+          value = "" + e[propertyName];
+        } catch (ignore) {
+        }
+        var name = "???";
+        try {
+          name = "" + propertyName;
+        } catch (ignore) {
+        }
+        answer = answer + name + ":" + value + "\n";
+      }
+      answer = answer + "}";
+      return answer;
+    }
+    function truncateString(s) {
+      var answer = s;
+      var maxLength = 800;
+      if (s.length > maxLength) {
+        answer = s.substring(0, maxLength) + "...";
+      }
+      return answer;
+    }
+    function showWebCoreObject(e) {
+      var message = truncateString(constructorName(e) + "\n" + dictString(e));
+      alert(message);
+    }
+    function displayNavigator() {
+      showWebCoreObject(navigator);
+    }
+    function randomNext(m, n) {
+      // Random integer in [m, n), half open interval including m, excluding n .
+      return Math.floor(Math.random() * (n - m - 1)) + m;
+    }
+    var urls = ["http://www.hearst.com",
+      "http://www.urbanoutfitters.com",
+      "http://www.pinterest.com",
+      "http://www.docusign.com",
+      "http://www.netflix.com",
+      "http://www.paypal.com",
+      "http://www.groupon.com",
+      "http://www.ebay.com",
+      "http://www.yahoo.com",
+      "http://www.linkedin.com",
+      "http://www.bloomberg.com",
+      "http://www.hoteltonight.com",
+      "http://www.npr.org",
+      "http://www.samsclub.com",
+      "http://www.postmates.com",
+      "http://www.teslamotors.com",
+      "http://www.bhphotovideo.com",
+      "http://www.getkeepsafe.com",
+      "http://www.boltcreative.com",
+      "http://www.crittercism.com/customers/"
+    ];
+    function networkRequest() {
+      var methods = ["GET", "POST", "HEAD", "PUT"];
+      var method = methods[randomNext(0, methods.length)];
+      var url = urls[randomNext(0, urls.length)];
+      if (randomNext(0, 2) == 1) {
+        url = url + "?doYouLoveCrittercism=YES";
+      }
+      // latency in milliseconds
+      var latency = Math.floor(4000.0 * Math.random());
+      var bytesRead = randomNext(0, 10000);
+      var bytesSent = randomNext(0, 10000);
+      var responseCode = 200;
+      if (randomNext(0, 5) == 0) {
+        // Some common response other than 200 == OK .
+        var responseCodes = [301, 308, 400, 401, 402, 403, 404, 405, 408, 500, 502, 503];
+        responseCode = responseCodes[randomNext(0, responseCodes.length)];
+      }
+      var errorCode = 0;
+      Crittercism.logNetworkRequest(method, url, latency, bytesRead, bytesSent, responseCode, errorCode);
+    }
+    function truncateString(s) {
+      var answer = s;
+      var maxLength = 400;
+      if (s.length > maxLength) {
+        answer = s.substring(0, maxLength) + "...";
+      }
+      return answer;
+    }
+    function xmlHttpRequest() {
+      var request = new XMLHttpRequest();
+      var url = urls[randomNext(0, urls.length)];
+      request.onreadystatechange = function () {
+        if (request.readyState == 4) {
+          alert(("\nURL: " + url)
+                  + ("\nRESPONSE CODE: " + request.status)
+                  + ("\n" + truncateString(request.responseText)));
+        }
+      };
+      request.open("GET", url, true);
+      request.send();
+    }
+    //alert("Hello");
+  </script>
+    <table align="center" width="80%" border="0" cellspacing="0" cellpadding="8">
+      <tr>
+        <td align="center">
+          <input type="button" value="Crash" onclick="crash()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Custom Error" onclick="customError()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">&nbsp;</td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="JavaScript Error" onclick="javaScriptError()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="DOM Error" onclick="domError()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Range Error" onclick="rangeError()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Deep Error" onclick="Critter(10)" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="XMLHttpRequest" onclick="xmlHttpRequest()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">&nbsp;</td>
+      </tr>
+      <tr>
+        <td align="center">
+          <a href="http://www.google.com">GOOGLE.COM</a>
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Navigator" onclick="displayNavigator()" />
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

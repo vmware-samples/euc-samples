@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <style>
+      body {background-color:rgb(200,225,255);}
+      h1 {width:100%;height:35px;font-family:verdana;font-size:192%;font-weight:bold;}
+      a {width:100%;height:29px;font-size:128%;}
+      input[type="button"] {width:100%;height:29px;font-size:128%;background-color:rgb(0,255,255);}
+    </style>
+  </head>
+  <body id="critter">
+    <script type="text/javascript" src="http://crittercism-html5.s3.amazonaws.com/v2/23/crittercismClientLibraryMin.js"></script>
+    <script type="text/javascript">
+    ////////////////////////////////////////////////////////////////
+    // Developer's JavaScript Code
+    ////////////////////////////////////////////////////////////////
+    function randomNext(m, n) {
+      // Random integer in [m, n), half open interval including m, excluding n .
+      return Math.floor(Math.random() * (n - m - 1)) + m;
+    }
+    function setUsername() {
+      var names = ["Blue Jay", "Chinchilla", "Chipmunk", "Gerbil", "Hamster", "Parrot", "Robin", "Squirrel", "Turtle"];
+      var name = names[randomNext(0, names.length)];
+      Crittercism.setUsername("Critter " + name);
+    }
+    function attachMetadata() {
+      // Crittercism.setValue(value, key)
+      Crittercism.setValue("" + Math.floor(100 * Math.random()), "Size");
+    }
+    function leaveBreadcrumb() {
+      //alert("Developer leaveBreadcrumb");
+      var names = ["Breadcrumb", "Strawberry", "Seed", "Grape", "Lettuce"];
+      //alert(names);
+      var name = names[randomNext(0, names.length)];
+      //alert("Developer leaveBreadcrumb " + name);
+      Crittercism.leaveBreadcrumb(name);
+    }
+    function beginTransaction() {
+      Crittercism.beginTransaction("HTML5");
+    }
+    function failTransaction() {
+      Crittercism.failTransaction("HTML5");
+    }
+    function handledException() {
+      try {
+        Critter(10);
+      } catch (e) {
+        Crittercism.logHandledException(e);
+      }
+    }
+    function crash() {
+      Critter(10);
+    }
+    function Gerbil(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Squirrel(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Robin(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Sparrow(n) {
+      if (n <= 0) {
+        throw ("Gerbil " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    function Critter(n) {
+      if (n <= 0) {
+        throw ("Critter " + Math.random());
+      } else {
+        n--;
+        switch (Math.floor(4 * Math.random())) {
+          case 0:
+            Gerbil(n);
+            break;
+          case 1:
+            Squirrel(n);
+            break;
+          case 2:
+            Robin(n);
+            break;
+          case 3:
+            Sparrow(n);
+            break;
+        }
+      }
+    }
+    var urls = ["http://www.hearst.com",
+      "http://www.urbanoutfitters.com",
+      "http://www.pinterest.com",
+      "http://www.docusign.com",
+      "http://www.netflix.com",
+      "http://www.paypal.com",
+      "http://www.groupon.com",
+      "http://www.ebay.com",
+      "http://www.yahoo.com",
+      "http://www.linkedin.com",
+      "http://www.bloomberg.com",
+      "http://www.hoteltonight.com",
+      "http://www.npr.org",
+      "http://www.samsclub.com",
+      "http://www.postmates.com",
+      "http://www.teslamotors.com",
+      "http://www.bhphotovideo.com",
+      "http://www.getkeepsafe.com",
+      "http://www.boltcreative.com",
+      "http://www.crittercism.com/customers/"
+    ];
+    function networkRequest() {
+      var methods = ["GET", "POST", "HEAD", "PUT"];
+      var method = methods[randomNext(0, methods.length)];
+      var url = urls[randomNext(0, urls.length)];
+      if (randomNext(0, 2) == 1) {
+        url = url + "?doYouLoveCrittercism=YES";
+      }
+      // latency in milliseconds
+      var latency = Math.floor(4000.0 * Math.random());
+      var bytesRead = randomNext(0, 10000);
+      var bytesSent = randomNext(0, 10000);
+      var responseCode = 200;
+      if (randomNext(0, 5) == 0) {
+        // Some common response other than 200 == OK .
+        var responseCodes = [301, 308, 400, 401, 402, 403, 404, 405, 408, 500, 502, 503];
+        responseCode = responseCodes[randomNext(0, responseCodes.length)];
+      }
+      var errorCode = 0;
+      Crittercism.logNetworkRequest(method, url, latency, bytesRead, bytesSent, responseCode, errorCode);
+    }
+    function truncateString(s) {
+      var answer = s;
+      var maxLength = 400;
+      if (s.length > maxLength) {
+        answer = s.substring(0, maxLength) + "...";
+      }
+      return answer;
+    }
+    function xmlHttpRequest() {
+      var request = new XMLHttpRequest();
+      var url = urls[randomNext(0, urls.length)];
+      request.onreadystatechange = function () {
+        if (request.readyState == 4) {
+          alert(("\nURL: " + url)
+                  + ("\nRESPONSE CODE: " + request.status)
+                  + ("\n" + truncateString(request.responseText)));
+        }
+      };
+      request.open("GET", url, true);
+      request.send();
+    }
+    //alert("Developer");
+  </script>
+    <table align="center" width="80%" border="0" cellspacing="0" cellpadding="8">
+      <tr>
+        <td align="center">
+          <input type="button" value="Set Username" onclick="setUsername()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Attach Metadata" onclick="attachMetadata()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Leave Breadcrumb" onclick="leaveBreadcrumb()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Log Network Request" onclick="networkRequest()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="XMLHttpRequest" onclick="xmlHttpRequest()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Begin Transaction" onclick="beginTransaction()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Fail Transaction" onclick="failTransaction()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Handled Exception" onclick="handledException()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <input type="button" value="Crash" onclick="crash()" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <a href="http://www.google.com">GOOGLE.COM</a>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
