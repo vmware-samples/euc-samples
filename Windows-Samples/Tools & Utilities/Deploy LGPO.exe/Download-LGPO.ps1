@@ -293,7 +293,7 @@ function Map-AppDetailsJSON {
             })
         })
     }
-
+	
     # Build App Details body
     $body = @{
         ApplicationName = $appProperties.ApplicationName
@@ -334,7 +334,7 @@ function Map-AppDetailsJSON {
                         MinorVersion = 0
                         RevisionNumber = 0
                         BuildNumber = 0
-                        ModifiedOn = (Get-Date -UFormat "%Y/%m/%d")
+                        ModifiedOn = "01/01/2017"
                     }
                     LogicalCondition = "End"
                 })
@@ -351,6 +351,7 @@ function Map-AppDetailsJSON {
         }
     }
 
+	
     $json = $body | ConvertTo-Json -Depth 10
     return $json
 }
