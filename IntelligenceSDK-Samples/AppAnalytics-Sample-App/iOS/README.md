@@ -20,7 +20,7 @@ The final binary of this application is not included, which requires to compile 
 In order to compile this app the followin requirements are needed:
 
 1. Xcode 12 and above iOS 8.0
-2. Workspace ONE Intelligence SDK jar file
+2. Workspace ONE Intelligence SDK file
 3. System Configuration Framework and Core Data Framework
 
 
