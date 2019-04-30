@@ -37,5 +37,5 @@ In order to execute this app on your device or an emulator you need to:
 ## Change Log
 
 ## Additional Resources
-[Workspace ONE Intelligence User Guide](https://docs.vmware.com/en/VMware-Workspace-ONE/services/Intelligence/GUID-AWT-WS1INT-OVERVIEW.html)
+[Workspace ONE Intelligence User Guide](https://docs.vmware.com/en/VMware-Workspace-ONE/services/Intelligence/GUID-AWT-WS1INT-OVERVIEW.html)  
 [Apteligent Android Guide](https://docs.apteligent.com/android/android.html)
