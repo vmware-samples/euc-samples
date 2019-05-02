@@ -17,7 +17,7 @@ The final binary of this application is not included, which requires to compile 
 
 ## Requirements
 
-In order to compile this app the followin requirements are needed:
+In order to compile this app the following requirements are needed:
 
 1. Xcode 12 and above iOS 8.0
 2. Workspace ONE Intelligence SDK file
@@ -28,7 +28,7 @@ In order to compile this app the followin requirements are needed:
 
 In order to execute this app on your device or an emulator you need to:
 
-1. Download the source code on your macOS
+1. Download the source code on your Mac
 2. Download the Workspace ONE Intelligence SDK (formely known as Apteligent SDK) from [here](https://docs.apteligent.com/ios/ios.html#guides), and reference to the project source code
 3. Register this App on your Workspace ONE Intelligence Console to obtain the App ID, and the App Key on Apteligent Console
 4. Configure the Crash Symbolication on your XCode project as described [here](https://docs.apteligent.com/ios/ios_dsym.html?_ga=2.246319428.1184518668.1556583277-1732487595.1554733827)

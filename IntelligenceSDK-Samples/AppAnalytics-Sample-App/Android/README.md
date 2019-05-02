@@ -17,7 +17,7 @@ The final binary of this application is not included, which requires to compile 
 
 ## Requirements
 
-In order to compile this app the followin requirements are needed:
+In order to compile this app the following requirements are needed:
 
 1. Android Studio 3.3+
 2. Workspace ONE Intelligence SDK jar file
