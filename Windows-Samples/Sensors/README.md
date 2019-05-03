@@ -64,7 +64,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -OrganizationGroupName "techzone" `
 		-SensorsDirectory "C:\Users\G.P.Burdell\Downloads\Sensors"
 
-- **Assign to Smart Group**: using the `-SmartGroupID` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. *Existing Smart Group memberships will be overwritten!* This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
+- **Assign to Smart Group**: using the `-SmartGroupID` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
 
     	.\import_sensor_samples.ps1 `
         -WorkspaceONEServer "https://as###.awmdm.com" `
@@ -72,7 +72,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
         -OrganizationGroupName "techzone" `
-		-SmartGroupID 14
+		-SmartGroupID "14"
 
 ### Parameters 
 **WorkspaceONEServer**: Server URL for the Workspace ONE UEM API Server e.g. https://as###.awmdm.com without the ending /API. Navigate to **All Settings -> System -> Advanced -> Sites URLs**.
