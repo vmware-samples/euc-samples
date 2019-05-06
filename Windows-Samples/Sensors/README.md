@@ -95,9 +95,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
 		-UpdateSensors
 
 ### Parameters 
-**WorkspaceONEServer**: Server URL for the Workspace ONE UEM API Server e.g. https://as###.awmdm.com without the ending /API. Navigate to **All Settings -> System -> Advanced -> Sites URLs**.
-![](https://i.imgur.com/et8Tm5h.png)
-
+**WorkspaceONEServer**: Server URL for the Workspace ONE UEM API Server e.g. https://as###.awmdm.com without the ending /API. Navigate to **All Settings -> System -> Advanced -> API -> REST API**.
 
 **WorkspaceONEAdmin**: An Workspace ONE UEM admin account in the tenant that is being queried.  This admin must have the API role at a minimum.
 
@@ -105,7 +103,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
 
 **WorkspaceONEAPIKey**: This is the REST API key that is generated in the Workspace ONE UEM Console.  You locate this key at **All Settings -> System -> Advanced -> API -> REST API**,
 and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access. 
-![](https://i.imgur.com/tQqsyzw.png)
+![](https://i.imgur.com/CjiC2Qt.png)
 
 **OrganizationGroupName**: The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console.
 ![](https://i.imgur.com/lWjWBsF.png)
