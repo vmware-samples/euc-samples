@@ -12,7 +12,8 @@
 
   .DESCRIPTION
     Place this PowerShell script in the same directory of all of your samples (.ps1 files) or use the -SensorsDirectory parameter to specify your directory. 
-    This script when run will parse the PowerShell sample scripts, check if they already exist, then upload to Workspace ONE UEM via the REST API. 
+    This script when run will parse the PowerShell sample scripts, check if they already exist, then upload to Workspace ONE UEM via the REST API. You can 
+    leverage the optional switch parameters to update Sensors or delete all sensors. 
 
   .EXAMPLE
 
@@ -23,6 +24,7 @@
         -WorkspaceONEAPIKey "7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=" `
         -OrganizationGroupName "techzone" `
         -SmartGroupID "41"
+        -UpdateSensors
 
     .PARAMETER WorkspaceONEServer
     Server URL for the Workspace ONE UEM API Server
@@ -45,6 +47,12 @@
 
     .PARAMETER SmartGroupID
     OPTIONAL: If provided, all sensors in your environment will be assigned to this Smart Group. Exisiting assignments will be overwritten. 
+    
+    .PARAMETER DeleteSensors
+    OPTIONAL: If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
+    
+    .PARAMETER UpdateSensors
+    OPTIONAL: If enabled, all sensors that match will be updated with the version in the PowerShell samples. 
 
 #>
 
@@ -71,13 +79,20 @@
         [string]$SensorsDirectory, 
 
         [Parameter(Mandatory=$False)]
-        [string]$SmartGroupID        
+        [string]$SmartGroupID, 
+
+        [Parameter(Mandatory=$False)]
+        [switch]$UpdateSensors, 
+
+        [Parameter(Mandatory=$False)]
+        [switch]$DeleteSensors
 )
 
 # Forces the use of TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $URL = $WorkspaceONEServer + "/api"
+$global:CurrentSensorUUID = ""
 
 # If a custom sensors directory is not provided then use current directory of import_sensor_samples.ps1 
 if (!$SensorsDirectory) {$SensorsDirectory = Get-Location}
@@ -187,6 +202,28 @@ Function Set-Sensors($Description, $Context, $SensorName, $ResponseType, $Script
     Return $Status
 }
 
+# Updates Exisiting Sensors
+Function Update-Sensors($Description, $Context, $SensorName, $ResponseType, $Script) {
+    Write-Host("Creating new Sensor " + $SensorName)
+    $endpointURL = $URL + "/mdm/devicesensors/" + $CurrentSensorUUID
+    $body = @{
+        'description'             = "$Description";
+        'execution_context'	      = "$Context";
+        'name'	                  = "$SensorName";
+        'organization_group_uuid' =	"$WorkspaceONEGroupUUID";
+        'platform'	              = "WIN_RT";
+        'query_response_type'	  = "$ResponseType";
+        'query_type'	          = "POWERSHELL";
+        'script_data'	          = "$Script";
+        'trigger_type'	          = "SCHEDULE";
+        'uuid'                    = "$CurrentSensorUUID";
+            }
+    $json = $body | ConvertTo-Json
+    $webReturn = Invoke-RestMethod -Method Put -Uri $endpointURL -Headers $header -Body $json
+    $Status = $webReturn
+    Return $Status
+}
+
 # Assigns Sensors
 Function Assign-Sensors($SensorUUID, $SmartGroupUUID) {
     $endpointURL = $URL + "/mdm/devicesensors/assign"
@@ -207,7 +244,7 @@ Function Assign-Sensors($SensorUUID, $SmartGroupUUID) {
 Function Get-PowerShellSensors {
     Write-Host("Parsing PowerShell Scripts")
     $PSSensors = Select-String -Path $SensorsDirectory\*.ps1 -Pattern 'Return Type' -Context 10000000
-    Write-Host("Found " + $PSSensors.Count + " Samples")
+    Write-Host("Found " + $PSSensors.Count + " PowerShell Samples")
     Return $PSSensors
 }
 
@@ -221,11 +258,44 @@ Function Check-Duplicate-Sensor($SensorName) {
     DO
     {
         $Result = $CurrentSensors[$Num].Name -match $SensorName
-        if($Result){$Duplicate = $TRUE}
+        if($Result){
+            $Duplicate = $TRUE
+            $global:CurrentSensorUUID = $CurrentSensors[$Num].UUID
+        }
         $Num--
     } while ($Num -ge 0)
     }
     Return $Duplicate
+}
+
+# Delete all Sensors
+Function Delete-Sensors() {
+    $ExisitingSensors = Get-Sensors
+    if($ExisitingSensors){
+    $Num = $ExisitingSensors.total_results -1
+    $CurrentSensors = $ExisitingSensors.result_set
+    DO
+    {
+        $SensorUUID = $CurrentSensors[$Num].UUID
+        $SensorName = $CurrentSensors[$Num].Name
+        if($SensorUUID){
+            Write-Host("Deleting Sensor " + $SensorName)
+            $endpointURL = $URL + "/mdm/devicesensors/bulkdelete"
+            $SensorBody = @()
+            $SensorBody += "$SensorUUID"
+            $body = [pscustomobject]@{
+                'organization_group_uuid' = "$WorkspaceONEGroupUUID";
+                'Sensor_uuids'	          = $SensorBody;
+            }
+            $json = $body | ConvertTo-Json
+            $webReturn = Invoke-RestMethod -Method Post -Uri $endpointURL -Headers $header -Body $json
+            $Status = $webReturn
+            Return $Status
+        }
+        $Num--
+    } while ($Num -ge 0)
+    }
+    Return $Status
 }
 
 # Contruct REST HEADER
@@ -251,23 +321,41 @@ DO
 {
 # Removes .ps1 from filename, convert to lowercase, replace spaces with underscores
 $SensorName = ($PSSensors)[$NumSensors].Filename.ToLower() -replace ".ps1","" -replace “ “,”_”
-# Check if Sensor Already Exists
-if (Check-Duplicate-Sensor $SensorName) {
-    Write-Host($SensorName + " already exists in this tenant.")
+# If DeleteSensors switch is called, then deletes all Sensor samples
+if ($DeleteSensors) {
+    Delete-Sensors($WorkspaceONEGroupID)
+    Break
+}elseif (Check-Duplicate-Sensor $SensorName) {
+    if($UpdateSensors){
+    # Check if Sensor Already Exists
+    Write-Host($SensorName + " already exists in this tenant. Updating Sensor now!")
+    # Removes Comment # and Quotes
+    $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
+    # INTEGER, BOOLEAN, STRING, DATETIME
+    $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
+    # USER, SYSTEM, ADMIN
+    $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
+    # Encode Script
+    $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
+    $Script = [Convert]::ToBase64String($Bytes)
+    Update-Sensors $Description $Context $SensorName $ResponseType $Script
+    }
+    # Skips Tempalte files
 }elseif ($SensorName -match "template_get_registry_value|template_get_wmi_object|import_sensor_samples"){
     Write-Host($SensorName + " is a template. Skipping Templates.")
-}else{
-# Removes Comment # and Quotes
-$Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
-# INTEGER, BOOLEAN, STRING, DATETIME
-$ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
-# USER, SYSTEM, ADMIN
-$Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
-# Encode Script
-$Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
-$Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
-$Script = [Convert]::ToBase64String($Bytes)
-Set-Sensors $Description $Context $SensorName $ResponseType $Script
+}else{ # Adds new Sensors
+    # Removes Comment # and Quotes
+    $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
+    # INTEGER, BOOLEAN, STRING, DATETIME
+    $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
+    # USER, SYSTEM, ADMIN
+    $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
+    # Encode Script
+    $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
+    $Script = [Convert]::ToBase64String($Bytes)
+    Set-Sensors $Description $Context $SensorName $ResponseType $Script
 }
 $NumSensors--
 } While ($NumSensors -ge 0)

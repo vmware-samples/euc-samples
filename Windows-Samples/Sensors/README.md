@@ -4,7 +4,7 @@
 - **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets, Andreano Lanusse
 - **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com
 - **Date Created**: 11/14/2018
-- **Updated**: 5/2/2019
+- **Updated**: 5/6/2019
 - **Supported Platforms**: Workspace ONE 1811+
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
 
@@ -74,6 +74,26 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -OrganizationGroupName "techzone" `
 		-SmartGroupID "14"
 
+- **Delete All Sensors**: using the `-DeleteSensors` switch parameter will delete ALL Sensors which were uploaded and that already exist to that chosen Organization Group. ***All Sensors will be deleted, including the Sensors which were manually added!*** 
+
+    	.\import_sensor_samples.ps1 `
+        -WorkspaceONEServer "https://as###.awmdm.com" `
+        -WorkspaceONEAdmin "administrator" `
+        -WorkspaceONEAdminPW "P@ssw0rd" `
+        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
+        -OrganizationGroupName "techzone" `
+		-DeleteSensors
+
+- **Update Sensors or Overwrite Existing Sensors**: using the `-UpdateSensors` switch parameter will update ALL Sensors that already exist which the version in the PowerShell samples. This is best used when updates and fixes are published to the source PowerShell samples.
+
+    	.\import_sensor_samples.ps1 `
+        -WorkspaceONEServer "https://as###.awmdm.com" `
+        -WorkspaceONEAdmin "administrator" `
+        -WorkspaceONEAdminPW "P@ssw0rd" `
+        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
+        -OrganizationGroupName "techzone" `
+		-UpdateSensors
+
 ### Parameters 
 **WorkspaceONEServer**: Server URL for the Workspace ONE UEM API Server e.g. https://as###.awmdm.com without the ending /API. Navigate to **All Settings -> System -> Advanced -> Sites URLs**.
 ![](https://i.imgur.com/et8Tm5h.png)
@@ -95,8 +115,13 @@ and you will find the key in the API Key field.  If it is not there you may need
 **SmartGroupID**: (OPTIONAL) If provided, all sensors in your environment will be assigned to this Smart Group. Existing assignments will be overwritten. Navigate to **Groups & Settings > Groups > Assignment Groups**. Hover over the Smart Group, then look for the number at the end of the URL, this is your Smart Group ID. 
 ![](https://i.imgur.com/IjvkoGC.png)
 
+**DeleteSensors**: (OPTIONAL) If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
+
+**UpdateSensors** (OPTIONAL) If enabled, all sensors that match will be updated with the version in the PowerShell samples.
+
 
 ## Change Log
+- 5/6/2019 - Added switch parameters for overwriting/updating and deleting Sensors. 
 - 5/2/2019 - Added Hash, Folder Size samples and templates
 - 4/26/2019 - Force use of TLS 1.2 for REST API Calls; fixed minor issues
 - 12/6/2018 - Added more details on how to use import_sensor_samples.ps1
