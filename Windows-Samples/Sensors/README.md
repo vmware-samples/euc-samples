@@ -119,6 +119,7 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 
 ## Change Log
+- 5/6/2019 - Added battery health percentage
 - 5/6/2019 - Added switch parameters for overwriting/updating and deleting Sensors. 
 - 5/2/2019 - Added Hash, Folder Size samples and templates
 - 4/26/2019 - Force use of TLS 1.2 for REST API Calls; fixed minor issues
