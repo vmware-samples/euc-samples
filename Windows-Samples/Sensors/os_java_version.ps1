@@ -9,7 +9,7 @@ if ($err.Count -eq 0) {
 }
 else
 {
- $javaver = “JAVA not found”
+ $javaver = "JAVA not found"
 }
 
 write-output $javaver.ToString()
