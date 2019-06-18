@@ -16,9 +16,9 @@ When selecting the "On-Premise Active Directory Join", the system automatically 
 3. Complete the wizard and ensure the command is formatted properly. If any of the special characters don't render properly, simply manually edit the XML file to correct. 
 
 ## Commands
-# Additional Synchronous Command
+### Additional Synchronous Command
 reg add HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer /v AsyncRunOnce /t REG_DWORD /d 0 /f
-# First Logon Command 1
+### First Logon Command 1
 powershell while(-not $completed){if((get-itemproperty -path HKLM:\SOFTWARE\AIRWATCH\EnrollmentStatus -ErrorAction SilentlyContinue).status -eq 'Completed'){$Completed = $true; shutdown /r /t 0}else{start-sleep 3}}
-# First Logon Command 2
+### First Logon Command 2
 reg add HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer /v AsyncRunOnce /t REG_DWORD /d 1 /f
