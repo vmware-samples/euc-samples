@@ -3,7 +3,7 @@
 ## Overview
 - **Author**: Brooks Peppin
 - **Email**: bpeppin@vmware.com
-- **Date Created**: 3/21/2018
+- **Date Updated**: 6/18/2018
 - **Supported Platforms**: Workspace ONE 1811 or newer
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
 
@@ -12,8 +12,7 @@ When selecting the "On-Premise Active Directory Join", the system automatically 
 
 ## Steps to Implement
 1. In the Workspace ONE console, create a new provisioning package by going to Devices > Lifecycle > Staging > Windows > New.
-2. On Configurations page, copy and paste the command specified below into the "First Logon Commands" section.
-3. Complete the wizard and ensure the command is formatted properly. If any of the special characters don't render properly, simply manually edit the XML file to correct. 
+2. On Configurations page, copy and paste the command specified below into the correction section. It's important you add them to either the "Additional Synchronous Command" section or the "First Logon Command" section
 
 ## Commands
 ### Additional Synchronous Command
