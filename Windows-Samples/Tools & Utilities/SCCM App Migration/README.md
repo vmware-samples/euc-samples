@@ -1,3 +1,7 @@
+> ## This Sample has been Productized as VMware Workspace ONE AirLift
+> ### VMWare recommends customers implement Workspace ONE AirLift to achieve the functionality in this sample 
+> The main purpose and goal of VMware {code} is to share code samples and collaborate with our development community. We actively watch and listen to customer feedback and sometimes take some of the open-source projects and convert them into fully supported versions. We have recently released Workspace ONE AirLift, a server-side connector that simplifies and speeds the customers journey to modern management. Workspace ONE AirLift bridges administrative frameworks between Microsoft System Center Configuration Manager (SCCM) and Workspace ONE UEM. 
+
 # SCCM App Migration Tool
 
 ## Overview
@@ -6,18 +10,6 @@
 - **Date Created**: 08/07/2017
 - **Date Updated**: 09/13/2018
 - **Tested on SCCM 1702-1806**: Completed
-
-## Introducing VMware Workspace ONE AirLift
-The main purpose and goal of VMware {code} is to share code samples and collaborate with our development community. We actively watch and listen to customer feedback and sometimes take some of the open-source projects and convert them into fully supported versions. We have recently released Workspace ONE AirLift, a server-side connector that simplifies and speeds the customers journey to modern management. Workspace ONE AirLift bridges administrative frameworks between Microsoft System Center Configuration Manager (SCCM) and Workspace ONE UEM. 
-Workspace ONE AirLift provides the following features: 
-1. Maps SCCM Device Collections to Workspace ONE UEM (AirWatch) Smart Groups via Tags
-2. Automatically creates the Workspace ONE Enrollment app to Onboard SCCM Managed Devices
-3. Migrate SCCM applications to Workspace ONE UEM and provides helpful validation warnings before Migration
-4. Co-Management Dashboard to Track Progress and Activity Logging
-
-- **Admin Guide:** https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.7/ws1_airlift.pdf
-- **Installer:** https://resources.workspaceone.com/view/q3gx2btk3n4tltcc7nl4/en
-- **Hands-on Lab (Modules 5 & 6):** http://labs.hol.vmware.com/hol/catalogs/lab/4680
 
 ## SYNOPSIS
 This Powershell script allows you to create a report of the applications in SCCM with related meta-data and automatically migrate SCCM applications over to Workspace ONE UEM (AirWatch) for management from the Workspace ONE UEM (AirWatch) console.
