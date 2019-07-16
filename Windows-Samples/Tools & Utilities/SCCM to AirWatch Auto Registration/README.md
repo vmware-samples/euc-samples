@@ -1,3 +1,8 @@
+> ## This Sample has been Productized as VMware Workspace ONE AirLift
+> ### VMWare recommends customers implement Workspace ONE AirLift to achieve the functionality in this sample 
+> The main purpose and goal of VMware {code} is to share code samples and collaborate with our development community. We actively watch and listen to customer feedback and sometimes take some of the open-source projects and convert them into fully supported versions. We have recently released Workspace ONE AirLift, a server-side connector that simplifies and speeds the customers journey to modern management. Workspace ONE AirLift bridges administrative frameworks between Microsoft System Center Configuration Manager (SCCM) and Workspace ONE UEM. 
+
+
 # SCCM to Airwatch Device Registration
 
 ## Overview
@@ -7,18 +12,6 @@
 - **Updated:** 9/13/2018
 - **Tested on**: SCCM 2012 R2 & SCCM 1806 and AirWatch 9.3-9.7
 - **Version**: 2.1
-
-## Introducing VMware Workspace ONE AirLift
-The main purpose and goal of VMware {code} is to share code samples and collaborate with our development community. We actively watch and listen to customer feedback and sometimes take some of the open-source projects and convert them into fully supported versions. We have recently released Workspace ONE AirLift, a server-side connector that simplifies and speeds the customers journey to modern management. Workspace ONE AirLift bridges administrative frameworks between Microsoft System Center Configuration Manager (SCCM) and Workspace ONE UEM. 
-Workspace ONE AirLift provides the following features: 
-1. Maps SCCM Device Collections to Workspace ONE UEM (AirWatch) Smart Groups via Tags
-2. Automatically creates the Workspace ONE Enrollment app to Onboard SCCM Managed Devices
-3. Migrate SCCM applications to Workspace ONE UEM and provides helpful validation warnings before Migration
-4. Co-Management Dashboard to Track Progress and Activity Logging
-
-- **Admin Guide:** https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.7/ws1_airlift.pdf
-- **Installer:** https://resources.workspaceone.com/view/q3gx2btk3n4tltcc7nl4/en
-- **Hands-on Lab (Modules 5 & 6):** http://labs.hol.vmware.com/hol/catalogs/lab/4680
 
 ## SYNOPSIS
 In order to silently onboard Windows 10 devices into AirWatch and have them automatically assigned to the primary user, you will have to first preregister devices via a batch import. You can use the attached script to perform a batch import of these device records into AirWatch.  
