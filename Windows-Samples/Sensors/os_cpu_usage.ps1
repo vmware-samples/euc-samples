@@ -2,5 +2,4 @@
 # Return Type: Integer
 # Execution Context: User
 $cpu_usage=Get-WmiObject win32_processor | Select-Object -ExpandProperty LoadPercentage
-write-output $cpu_usage
-
+write-output ([System.Math]::Round($cpu_usage))

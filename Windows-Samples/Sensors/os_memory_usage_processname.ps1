@@ -6,4 +6,4 @@
 $PM = get-process TaskScheduler |Measure-object -property PM -Average -ErrorVariable err -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Average
 $NPM = get-process TaskScheduler |Measure-object -property NPM -Average -ErrorVariable err -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Average
 $memory = [System.Math]::Round(($PM+$NPM)/1KB)
-Write-Output = [System.Math]::Round($memory)
+write-output ([System.Math]::Round($memory))
