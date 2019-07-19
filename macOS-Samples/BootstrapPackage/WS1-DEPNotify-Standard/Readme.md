@@ -1,6 +1,8 @@
+# Workspace ONE - DEPNotify Standard Deployment Package
+
 This sample package can be used to easily set up a custom onboarding flow for new macOS devices in WS1 leveraging the DEPNotify app.  The package is customized to handle standard deployment flows where apps and packages are automatically deployed to devices through Workspace ONE.  The included signed .pkg build can be used as-is, and the flow can be customized using a "Custom Attributes" profile in the Workspace ONE UEM Console as shown in this document.
 
-##Preparing the Workspace ONE UEM environment
+## Preparing the Workspace ONE UEM environment
 
 * If you will be testing DEP enrollment, in the WS1 UEM Admin Console navigate to Settings > Devices & Users > Apple > Apple macOS > Intelligent Hub Settings.  Make sure that the option to "Install Hub after Enrollment" is Enabled.  The WS1 Hub is required to deploy software post-enrollment.
 
@@ -8,7 +10,7 @@ This sample package can be used to easily set up a custom onboarding flow for ne
 
 * Make sure macOS Software Management is enabled.  Navigate to Settings > Devices & Users > Apple > Apple macOS > Software Management.  Select Override and make sure “Enable Software Management” is enabled.
 
-##Uploading the Bootstrap Package
+## Uploading the Bootstrap Package
 
 1. In the AirWatch Console, navigate to Apps & Books > Applications > Native.
 2. Make sure Internal is selected and select Add Application.
@@ -24,7 +26,7 @@ This sample package can be used to easily set up a custom onboarding flow for ne
 12. Select Save & Publish.
 13. Select Publish.
 
-##Preparing the Other Apps
+## Preparing the Other Apps
 
 1. This Bootstrap Package is configured to deploy multiple applications (.dmg, .pkg, .mpkg, or .app) in addition to itself.
 2. Choose any applications that you want to demo and download them onto your computer.
@@ -33,7 +35,7 @@ This sample package can be used to easily set up a custom onboarding flow for ne
 5. Verify that in the VMware AirWatch Admin Assistant folder in Finder you have the app file, a .plist file, and (usually) an image file for the icon.
 6. Repeat this process for all other applications.
 
-##Configuring up the Other Apps in Workspace ONE UEM
+## Configuring up the Other Apps in Workspace ONE UEM
 
 1. In the AirWatch Console, navigate to Apps & Books > Applications > Native.
 2. Make sure Internal is selected and select Add Application.
@@ -59,9 +61,9 @@ This sample package can be used to easily set up a custom onboarding flow for ne
 16. Select Publish.
 17. Repeat this process with the other apps you will be deploying.
 
-##Customize the DEPNotify Settings
+## Customize the DEPNotify Settings
 
-    If you want to brand the DEPNotify splash screen, find a small, square-ish image to use as a company logo.  Preferably, keep the size less than 200x200 pixels or so.  On a Mac, use the following command to convert the file into a hexadecimal string.  Make sure tthe image.png points to your image.  Copy the (very long) string that is output, you will need it shortly.     
+If you want to brand the DEPNotify splash screen, find a small, square-ish image to use as a company logo.  Preferably, keep the size less than 200x200 pixels or so.  On a Mac, use the following command to convert the file into a hexadecimal string.  Make sure tthe image.png points to your image.  Copy the (very long) string that is output, you will need it shortly.     
 
     xxd -ps image.png 
 
