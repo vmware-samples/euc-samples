@@ -63,7 +63,7 @@ This sample package can be used to easily set up a custom onboarding flow for ne
 
 ## Customize the DEPNotify Settings
 
-If you want to brand the DEPNotify splash screen, find a small, square-ish image to use as a company logo.  Preferably, keep the size less than 200x200 pixels or so.  On a Mac, use the following command to convert the file into a hexadecimal string.  Make sure tthe image.png points to your image.  Copy the (very long) string that is output, you will need it shortly.     
+If you want to brand the DEPNotify splash screen, find a small, square-ish image to use as a company logo.  Preferably, keep the size less than 200x200 pixels or so.  On a Mac, use the following command to convert the file into a hexadecimal string.  Make sure the image.png points to your image.  Copy the (very long) string that is output, you will need it shortly.     
 
 ```shell
 xxd -ps image.png 
