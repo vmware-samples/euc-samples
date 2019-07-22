@@ -4,6 +4,8 @@ This sample package can be used to easily set up a custom onboarding flow for ne
 
 You can use the already built and signed WS1_DEPNotify_CustomNoAgent.pkg in the build folder, or further customize the onboarding experience by using this as a template to create your own Bootstrap Package that you will build and sign yourself.
 
+A demo video is available of an onboarding flow that was built using the instructions below.  You can find it in the bin folder.
+
 ## Preparing the Workspace ONE UEM environment
 
 * If you will be testing DEP enrollment, in the WS1 UEM Admin Console navigate to Settings > Devices & Users > Apple > Apple macOS > Intelligent Hub Settings.  Make sure that the option to "Install Hub after Enrollment" is Enabled.  The WS1 Hub is required to deploy software post-enrollment.
