@@ -1,6 +1,6 @@
 # Workspace ONE - DEPNotify Standard Deployment Package
 
-This sample package can be used to easily set up a custom onboarding flow for new macOS devices in WS1 leveraging the DEPNotify app.  The package is customized to handle standard deployment flows where apps and packages are automatically deployed to devices through Workspace ONE.  The included signed .pkg build can be used as-is, and the flow can be customized using a "Custom Attributes" profile in the Workspace ONE UEM Console as shown in this document.
+This sample package can be used to easily set up a custom onboarding flow for new macOS devices in WS1 leveraging the [DEPNotify](https://gitlab.com/Mactroll/DEPNotify) app.  The package is customized to handle standard deployment flows where apps and packages are automatically deployed to devices through Workspace ONE.  The included signed .pkg build can be used as-is, and the flow can be customized using a "Custom Attributes" profile in the Workspace ONE UEM Console as shown in this document.
 
 ## Preparing the Workspace ONE UEM environment
 
