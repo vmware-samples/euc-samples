@@ -125,7 +125,7 @@ After enrollment is complete, your device will download and install the applicat
 
 Note:  When DEPNotify first launches, you will see a message indicating that custom settings are being initialized, and this may take 1-2 minutes.  This step is required to initialize the WS1 Hub and to apply the Custom Settings profile configured above.  In a production environment, this step would not be necessary as the Bootstrap Package would be directly built with the appropriate settings.
 
-![DEPNotify_WS1_initialize.png](/bin/DEPNotify_WS1_initialize.png)
+![DEPNotify_WS1_initialize.png?raw=true](/macOS-Samples/BootstrapPackage/WS1-DEPNotify-Standard/bin/DEPNotify_WS1_initialize.png)
 
 When all applications are installed, the DEPNotify window should update with an alert showing that the device is configured and give the user the option to close the window.
 
