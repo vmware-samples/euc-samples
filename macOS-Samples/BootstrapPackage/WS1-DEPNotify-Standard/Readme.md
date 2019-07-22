@@ -89,7 +89,9 @@ xxd -ps image.png
   
   hexData="89504e470d0a1a0a0000000d49484452000000d2000000ca0806000000d0
   1c1eb4000000017352474200aece1ce9000000097048597300000b130000
-  …
+  ...
+  ...
+  ...
   99342af20ba2bd718c110539e9e2d286fc8f9696970f202e26373638f350
   49dfff0fca6e42415bdcffb40000000049454e44ae426082"
 
@@ -122,6 +124,8 @@ If you are enrolling a DEP device, factory reset it to return it to the Setup Wi
 After enrollment is complete, your device will download and install the applications that you configured in the AirWatch Console.  The DEPNotify splash screen will update the status each time an application file is downloaded, as well as when each application installs.   
 
 Note:  When DEPNotify first launches, you will see a message indicating that custom settings are being initialized, and this may take 1-2 minutes.  This step is required to initialize the WS1 Hub and to apply the Custom Settings profile configured above.  In a production environment, this step would not be necessary as the Bootstrap Package would be directly built with the appropriate settings.
+
+![DEPNotify_WS1_initialize.png](/bin/DEPNotify_WS1_initialize.png)
 
 When all applications are installed, the DEPNotify window should update with an alert showing that the device is configured and give the user the option to close the window.
 
