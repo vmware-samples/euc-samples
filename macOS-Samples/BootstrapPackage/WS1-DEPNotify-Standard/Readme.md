@@ -65,102 +65,82 @@ This sample package can be used to easily set up a custom onboarding flow for ne
 
 If you want to brand the DEPNotify splash screen, find a small, square-ish image to use as a company logo.  Preferably, keep the size less than 200x200 pixels or so.  On a Mac, use the following command to convert the file into a hexadecimal string.  Make sure tthe image.png points to your image.  Copy the (very long) string that is output, you will need it shortly.     
 
-    xxd -ps image.png 
+```shell
+xxd -ps image.png 
+```
 
+1. Create a new macOS > Device Profile in the WS1 Administrator Console.
+2. Name the profile “DEPNotify Config”
+3. Assign this profile to your Organization Group or Smart Group
+4. Add a “Custom Attributes” payload
+5. Name the Custom Attribute “DEPNotifyConfig”
+6. Paste the following script in the Script/Command section.  Note the five fields that may be modified:
+ * The numberOfApps=4 field should reflect the total number of apps deployed in addition to DEPNotify
+ * The hexData="…" field should be updated to include the hex data from your chosen logo image file from step 1.  Make sure the quotes are included in this line, and that the entire data string is replaced.  Note that, depending on the size of the image file, this line may be very long.
+ * BOTH /tmp/Workspace ONE/DEPNotify/newlogo.png lines should have the filetype changed to match the filetype of the original logo image (ie: png, jpg, etc).
+ * The "Command: Main Text" line that will set up the main text displayed in DEPNotify throughout the onboarding process.
+ * The "Status:" line will set up the initial status message displayed before the apps start downloading.
+ * Note: removing the "Command: Image:" line will have DEPNotify use a default WS1 logo.   
 
-    Create a new macOS > Device Profile in the WS1 Administrator Console.
-    Name the profile “DEPNotify Config”
-    Assign this profile to your Organization Group or Smart Group
-    Add a “Custom Attributes” payload
-    Name the Custom Attribute “DEPNotifyConfig”
-    Paste the following script in the Script/Command section.  Note the five fields that may be modified:
-        The numberOfApps=4 field should reflect the total number of apps deployed in addition to DEPNotify
-        The hexData="…" field should be updated to include the hex data from your chosen logo image file from step 1.  Make sure the quotes are included in this line, and that the entire data string is replaced.  Note that, depending on the size of the image file, this line may be very long.
-        BOTH /tmp/Workspace ONE/DEPNotify/newlogo.png lines should have the filetype changed to match the filetype of the original logo image (ie: png, jpg, etc).
-        The "Command: Main Text" line that will set up the main text displayed in DEPNotify throughout the onboarding process.
-        The "Status:" line will set up the initial status message displayed before the apps start downloading.
+  ```shell
+  #!/bin/sh
+  
+  numberOfApps=4
+  
+  hexData="89504e470d0a1a0a0000000d49484452000000d2000000ca0806000000d0
+  1c1eb4000000017352474200aece1ce9000000097048597300000b130000
+  …
+  99342af20ba2bd718c110539e9e2d286fc8f9696970f202e26373638f350
+  49dfff0fca6e42415bdcffb40000000049454e44ae426082"
 
-        Note: removing the "Command: Image:" line will have DEPNotify use a default WS1 logo.   
+  echo "$hexData" | xxd -r -p > "/tmp/Workspace ONE/DEPNotify/newlogo.png"
+  
+  notifylog="/private/var/tmp/depnotify.log"
+  touch $notifylog
+  chmod 777 $notifylog
+  let a=$numberOfApps*2+2
+  
+  echo "Command: Image: /tmp/Workspace ONE/DEPNotify/newlogo.png" >> $notifylog
+  echo "Command: Determinate: $a" >> $notifylog
+  echo "Command: MainText: Thank you for enrolling your Mac!  Please be patient while your applications are installed.  This may take several minutes." >> $notifylog
+  echo "Status: Configuring Device and Checking for Software..." >> $notifylog
+  
+  chmod 777 "/tmp/Workspace ONE/DEPNotify/DEPNotifyTotalSteps.txt"
+  echo "$numberOfApps" > "/tmp/Workspace ONE/DEPNotify/DEPNotifyTotalSteps.txt"
+  return "Success"
+  ```
 
+7. Select Save and Publish.
+8. Select Publish.
 
-        #!/bin/sh
+## Enroll your Device
 
+Once all the apps are uploaded and configured, you are ready to enroll a test device.  Make sure an AirWatch Enrollment User is created and has the Enrollment Organization Group set to the Organization Group where you have configured this demo. 
 
-        numberOfApps=4
+If you are enrolling a DEP device, factory reset it to return it to the Setup Wizard.  The DEPNotify bootstrap package should deploy as soon as the user is logged in after the Setup Wizard.  For normal enrollment, download and install the AirWatch Agent manually, and then enroll your device through the AirWatch Agent.  The DEPNotify bootstrap package should deploy soon after enrollment is complete. 
 
+After enrollment is complete, your device will download and install the applications that you configured in the AirWatch Console.  The DEPNotify splash screen will update the status each time an application file is downloaded, as well as when each application installs.   
 
-        hexData="89504e470d0a1a0a0000000d49484452000000d2000000ca0806000000d0
+Note:  When DEPNotify first launches, you will see a message indicating that custom settings are being initialized, and this may take 1-2 minutes.  This step is required to initialize the WS1 Hub and to apply the Custom Settings profile configured above.  In a production environment, this step would not be necessary as the Bootstrap Package would be directly built with the appropriate settings.
 
-        1c1eb4000000017352474200aece1ce9000000097048597300000b130000
+When all applications are installed, the DEPNotify window should update with an alert showing that the device is configured and give the user the option to close the window.
 
-        …
-
-        99342af20ba2bd718c110539e9e2d286fc8f9696970f202e26373638f350
-
-        49dfff0fca6e42415bdcffb40000000049454e44ae426082"
-
-
-        echo "$hexData" | xxd -r -p > "/tmp/Workspace ONE/DEPNotify/newlogo.png"
-
-
-        notifylog="/private/var/tmp/depnotify.log"
-
-        touch $notifylog
-
-        chmod 777 $notifylog
-
-        let a=$numberOfApps*2+2
-
-
-        echo "Command: Image: /tmp/Workspace ONE/DEPNotify/newlogo.png" >> $notifylog
-
-        echo "Command: Determinate: $a" >> $notifylog
-
-        echo "Command: MainText: Thank you for enrolling your Mac!  Please be patient while your applications are installed.  This may take several minutes." >> $notifylog
-
-        echo "Status: Configuring Device and Checking for Software..." >> $notifylog
-
-
-        chmod 777 "/tmp/Workspace ONE/DEPNotify/DEPNotifyTotalSteps.txt"
-
-        echo "$numberOfApps" > "/tmp/Workspace ONE/DEPNotify/DEPNotifyTotalSteps.txt"
-
-
-        return "Success"
-
-
-
-    Select Save and Publish.
-    Select Publish.
-
-Enroll your Device
-
-    Once all the apps are uploaded and configured, you are ready to enroll a test device.  Make sure an AirWatch Enrollment User is created and has the Enrollment Organization Group set to the Organization Group where you have configured this demo. 
-
-    If you are enrolling a DEP device, factory reset it to return it to the Setup Wizard.  The DEPNotify bootstrap package should deploy as soon as the user is logged in after the Setup Wizard.  For normal enrollment, download and install the AirWatch Agent manually, and then enroll your device through the AirWatch Agent.  The DEPNotify bootstrap package should deploy soon after enrollment is complete. 
-
-    After enrollment is complete, your device will download and install the applications that you configured in the AirWatch Console.  The DEPNotify splash screen will update the status each time an application file is downloaded, as well as when each application installs.   
-
-    Note:  When DEPNotify first launches, you will see a message indicating that custom settings are being initialized, and this may take 1-2 minutes.  This step is required to initialize the WS1 Hub and to apply the Custom Settings profile configured above.  In a production environment, this step would not be necessary as the Bootstrap Package would be directly built with the appropriate settings.
-    When all applications are installed, the DEPNotify window should update with an alert showing that the device is configured and give the user the option to close the window.
-
-
-Extra: Updating the macOS Dock as your Apps Install
+## Extra: Updating the macOS Dock as your Apps Install
 
 If your macOS deployment includes deploying a Dock profile to devices, you can use the killall Dock command in the Post Install Script section of the AirWatch configuration for your applications.  This will cause the Dock to reload and will now show the installed app's icon (as long as your Dock profile is adding these apps to the user's Dock).
 
-    Create a Dock profile.  In the AirWatch Console navigate to Devices > Profiles & Resources > Profiles and select Add, and then Add Profile.
-    Select your platform as Apple macOS.
-    Select User Profile or Device Profile.
-    Select the Dock payload on the left.
-    Select the Items tab.  Add each application to the Application Path section.  Note that you should configure the path to each installed application.
-    Under the Options tab, you can enable or disable the Merge with User's Dock option.  This will determine if your apps will be appended to the existing Dock, or if your configured Application Path apps will replace the existing Dock entirely.
-    Update the Post Install Script section of each application to include the killall Dock command.  Each time an app is installed, the Dock will automatically refresh to show that app's installed state.  The full section should be as follows, unless you are doing any additional scripting:
+1. Create a Dock profile.  In the AirWatch Console navigate to Devices > Profiles & Resources > Profiles and select Add, and then Add Profile.
+2. Select your platform as Apple macOS.
+3. Select User Profile or Device Profile.
+4. Select the Dock payload on the left.
+5. Select the Items tab.  Add each application to the Application Path section.  Note that you should configure the path to each installed application.
+6. Under the Options tab, you can enable or disable the Merge with User's Dock option.  This will determine if your apps will be appended to the existing Dock, or if your configured Application Path apps will replace the existing Dock entirely.
+7. Update the Post Install Script section of each application to include the killall Dock command.  Each time an app is installed, the Dock will automatically refresh to show that app's installed state.  The full section should be as follows, unless you are doing any additional scripting:
 
-     #!/bin/sh
-
-     ./tmp/Workspace\ ONE/DEPNotify/DEPNotifyCompletionCheck.sh 
-
-     killall Dock
+  ```shell
+  #!/bin/sh
+  ./tmp/Workspace\ ONE/DEPNotify/DEPNotifyCompletionCheck.sh 
+  killall Dock
+  ```
 
 
