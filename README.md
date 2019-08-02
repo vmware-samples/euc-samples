@@ -1,4 +1,4 @@
-# AirWatch-samples
+# EUC-samples (previously AirWatch-Samples)
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -17,13 +17,14 @@
 
 
 ## Introduction
-Welcome to the **Airwatch-samples** repository.  This project is intended for the community and VMware to share commonly used code snippets that can aid VMWare Airwatch device administrators. 
+Welcome to the **EUC-samples** repository.  This project is intended for the community and VMware to share commonly used code snippets that can aid VMWare Workspace ONE and Horizon administrators. 
 
 Some examples of items to submit for consideration and use by the community:
 * Custom XML Profile Payloads
 * Script content for Custom Attributes
 * Scripts to be leveraged via Products  (Bash/shell, Python, Powershell, Batch, etc)
-* Scripts to assist with automation against the AirWatch Rest API
+* Scripts to assist with automation against the various VMware REST API's
+* Markdown Documents describing suggested best practices or procedures that may be outside the realm of typical documentation
 
 
 ## Submitting samples
@@ -40,7 +41,7 @@ The following information must be included in the README.md or in the sample doc
 
 ### Suggested Information
 The following information should be included when possible. Inclusion of information provides valuable information to consumers of the resource.
-* VMWare Airwatch version against which the sample was developed/tested
+* VMWare Product version against which the sample was developed/tested
 * Client Operating System version against which the sample was developed/tested (e.g. Windows Build number, or macOS Version and Build Number)
 * Language (Bash/Python/Powershell) version against which the sample was developed/tested
 
@@ -81,5 +82,7 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 ## VMware Resources
 * [VMware Code](https://code.vmware.com/home)
+* [VMware Tech Zone](https://techzone.vmware.com)
 * [VMware Developer Community](https://communities.vmware.com/community/vmtn/developer)
-* [VMware End User Computing Blog - AirWatch](https://blogs.vmware.com/euc/products/airwatch)
+* [VMware End-User Computing Blog](https://blogs.vmware.com/euc)
+
