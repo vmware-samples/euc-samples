@@ -1,7 +1,7 @@
-# AirWatch-samples
+# EUC-samples
 
 ## Windows-Samples
-This section of the **AirWatch-samples** repository contains samples relating to Microsoft Windows endpoint management.
+This section of the **EUC-samples** repository contains samples relating to Microsoft Windows endpoint management.
 
 Some examples of items to submit for consideration and use by the community:
 
@@ -28,7 +28,7 @@ The following information must be included in the README.md or in the sample doc
 ### Suggested Information
 The following information should be included when possible. Inclusion of information provides valuable information to consumers of the resource.
 
-* VMWare Airwatch version against which the sample was developed/tested
+* VMWare Workspace ONE UEM version against which the sample was developed/tested
 * Client Operating System version against which the sample was developed/tested (e.g. Windows Build number, or macOS Version and Build Number)
 * Language (Bash/Python/Powershell) version against which the sample was developed/tested
 
@@ -67,7 +67,6 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 
 ## VMware Resources
-* [Airwatch-Samples GitHub Repository](https://github.com/vmwaresamples/AirWatch-samples)
+* [EUC-Samples GitHub Repository](https://github.com/vmwaresamples/EUC-samples)
 * [VMware Code](https://code.vmware.com/home)
 * [VMware Developer Community](https://communities.vmware.com/community/vmtn/developer)
-* [VMware End User Computing Blog - AirWatch](https://blogs.vmware.com/euc/products/airwatch)
