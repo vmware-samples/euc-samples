@@ -1,7 +1,7 @@
-# AirWatch-samples
+# EUC-samples
 
-## macOS-Samples
-This section of the **AirWatch-samples** repository contains samples and guides relating to 3rd-Party software management.
+## macOS-Samples / 3rd-Party_Software_Guidance
+This section of the **EUC-samples** repository contains samples and guides relating to 3rd-Party software management.
 
 Some examples of items to submit for consideration and use by the community:
 * Configuration Files (JSON, XML, etc) for software that doesn't leverage cfprefs domains (e.g. can't be managed via Custom XML Profile Payload)
@@ -60,8 +60,8 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 
 ## VMware Resources
-* [Airwatch-Samples GitHub Repository](https://github.com/vmwaresamples/AirWatch-samples)
-* [WHITEPAPER - Product Provisioning Best Practices](https://blogs.vmware.com/euc/2017/05/vmware-airwatch-office-2016-macos-product-deployment-best-practices.html)
+* [Tech Zone macOS Activity Path](https://techzone.vmware.com/understanding-macos-management)
 * [VMware Code](https://code.vmware.com/home)
+* [VMware Tech Zone](https://techzone.vmware.com)
+* [VMware End-User Computing Blog](https://blogs.vmware.com/euc)
 * [VMware Developer Community](https://communities.vmware.com/community/vmtn/developer)
-* [VMware End User Computing Blog - AirWatch](https://blogs.vmware.com/euc/products/airwatch)

@@ -1,7 +1,10 @@
 # EUC-samples
 
-## macOS-Samples \ Scripts
-This section of the **EUC-samples** repository contains samples relating to macOS endpoint management via scripts.   Please feel free to submit any scripts you wish to share with the community!
+## macOS-Samples \ CustomXMLProfiles
+This section of the **EUC-samples** repository contains samples relating to profile snippets which can be used in the "Custom XML" payload in Workspace ONE UEM for macOS management.  Custom XML samples are typically used to manage key-value pairs in macOS preference domains.  For more information on Custom XML, refer to [Custom XML Preferences - VMware EUC Blog](https://blogs.vmware.com/euc/2017/06/xml-preferences.html).
+
+
+Please feel free to submit any scripts you wish to share with the community!
 
 
 ## Submitting samples
@@ -55,6 +58,7 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 
 ## VMware Resources
+* [Custom XML Preferences - VMware EUC Blog](https://blogs.vmware.com/euc/2017/06/xml-preferences.html)
 * [Tech Zone macOS Activity Path](https://techzone.vmware.com/understanding-macos-management)
 * [VMware Code](https://code.vmware.com/home)
 * [VMware Tech Zone](https://techzone.vmware.com)
