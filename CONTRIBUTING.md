@@ -1,4 +1,4 @@
-#Contributing to EUC-Samples
+# Contributing to EUC-Samples
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
@@ -7,7 +7,7 @@
 
 [How to contribute to EUC-Samples ](#How-to-contribute-to-EUC-Samples )
 
-##Getting started with Git and VMware-Samples 
+## Getting started with Git and VMware-Samples 
 
 1. Create your own [git account](https://github.com/join) & sign in 
 1. Get your own copy of the VMware-Samples repo ([https://help.github.com/articles/fork-a-repo/](https://help.github.com/articles/fork-a-repo/)) 
@@ -40,7 +40,7 @@
 	1. This will now list 4 records, 2 pointing to your Remote, and 2 pointing to Main, nicknamed 'Upstream'. Now you can reference the Remote without listing the whole URL, but simply by saying 'origin' in your commands.
 2. Now you're all set to begin making your changes 
 
-##How to contribute to EUC-Samples 
+## How to contribute to EUC-Samples 
 
 
 1. If you already have forked from Main and created a Local copy, fetch from upstream to merge latest changes to your local master branch. You can do this by running: 
