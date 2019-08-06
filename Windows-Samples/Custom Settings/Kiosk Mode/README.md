@@ -4,8 +4,9 @@
 - **Author**: Josue Negron
 - **Email**: jnegron@vmware.com
 - **Date Created**: 6/8/2017
+- **Date Updated**: 8/6/2019, Bpeppin
 - **Supported Platforms**: Windows 10 Enterprise and Education
-- **Tested on Windows 10**: 1511, 1607, 1703
+- **Tested on Windows 10**: 1511, 1607, 1703, 1803, 1809
 
 ## Purpose 
 The AssignedAccess CSP is used to enable single app kiosk mode on Windows 10 devices for Universal Windows Platform (UWP) apps. For Win32 apps you can use Shell Launcher; more information can be found in the Additional Resources section below.
