@@ -9,7 +9,6 @@
                 <AllowedApps>
 					<App DesktopAppPath="C:\Program Files (x86)\VMware\VMware Horizon View Client\vmware-view.exe"/>
 					<App DesktopAppPath="C:\Program Files (x86)\VMware\VMware Horizon View Client\x64\vmware-remotemks.exe"/>
-					<App DesktopAppPath="C:\Program Files\internet explorer\iexplore.exe"/>
 					<App AppUserModelId="Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge" />
 			</AllowedApps>
             </AllAppsList>         
