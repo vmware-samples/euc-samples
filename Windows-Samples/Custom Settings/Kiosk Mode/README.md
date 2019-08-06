@@ -21,6 +21,6 @@ You must update the data under **Account** using the *username* of the local use
 ## Additional Resources
 * [Setup Multi-App Kiosk ](https://docs.microsoft.com/en-us/windows/configuration/lock-down-windows-10-to-specific-apps)
 * [Setup Single-App Kiosk ](https://docs.microsoft.com/en-us/windows/configuration/kiosk-single-app)
-* [Edge Settings CSP] (https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser)
-* [AssignedAccess CSP] (https://docs.microsoft.com/en-us/windows/client-management/mdm/assignedaccess-csp)
+* [Edge Settings CSP](https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser)
+* [AssignedAccess CSP](https://docs.microsoft.com/en-us/windows/client-management/mdm/assignedaccess-csp)
 * [How to Find an App's AUMID](https://docs.microsoft.com/en-us/windows-hardware/customize/enterprise/find-the-application-user-model-id-of-an-installed-app)
