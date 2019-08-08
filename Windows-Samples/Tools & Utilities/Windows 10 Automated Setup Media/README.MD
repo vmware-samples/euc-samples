@@ -11,8 +11,8 @@
 ## Latest Updates
 8/8/19
 * Added logic to automatically detect and use an already mounted ISO
-* It will now automatically add the autounattend.xml file at the end
-* 
+* Automatically add the autounattend.xml file at the end of the script
+* Update autounattend.xml file to install the version of Windows 10 you selected (i.e. professional or education, etc)
 
 ## Description
 This script creates automated Windows 10 setup on bootable USB media. It takes any Windows 10 ISO, formats USB to support UEFI NTFS booting, and places autounattend.xml in the root of the drive in order to make it a zero touch setup process.
