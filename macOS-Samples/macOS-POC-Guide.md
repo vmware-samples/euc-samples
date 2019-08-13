@@ -31,4 +31,9 @@ AWCM provides notifications to the VMware Intelligent Hub for macOS, allowing va
 * Navigate to *Settings > System > Advanced > Secure Channel Certificate*
 * Download and Install **AWCM Secure Channel Certificate Installer** on AWCM Servers
 
-### 
+### Hub Services ###
+Hub Services is a cloud-hosted component that drives the Hub-based App catalog.  When combined with Workspace ONE Access integration, Hub Services enable the full digital experience (Unified Catalog, People, Notifications, etc) in the Intelligent Hub app.
+
+### (Optional) Workspace ONE Access ###
+Workspace ONE Access enables SSO and Conditional Access for devices enrolled in Workspace ONE UEM.
+
