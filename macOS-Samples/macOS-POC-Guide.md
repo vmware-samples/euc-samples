@@ -56,8 +56,29 @@ Hub Services are a distinct set of services co-located with, but separate from W
 
 > **NOTE:** Hub Services and Workspace ONE Access are co-located together in a cloud tenant, but a full Workspace ONE Access setup is not required to support Hub Services! 
 
+#### Enable Hub Services ####
+
 1. In Workspace ONE UEM, navigate to *Getting Started > Workspace ONE > Workspace ONE Intelligent Hub*
-2. Enter the Workspace ONE Access tenant URL and Administrator username/password.
+2. Enter the Workspace ONE Access tenant URL and Administrator username/password.  (Optionally, you can *Request Cloud Tenant* if you do not have a Workspace ONE Access tenant provisioned to your organization.)
+3. Click **Test Connection** and validate the test connection succeeds.   Click **Save**.
+4. Access the *Workspace ONE Hub Services* console from the nine-square launchpad menu in the top-right corner or by navigating to *Groups & Settings > Configurations > Intelligent Hub* and clicking **Launch**.
+
+#### Enable Hub Services Branding ####
+
+1. From within Workspace ONE Hub Services, click the **Branding** Tab
+2. Modify the branding settings as appropriate for your organization (Logo, Favicon, Colors and Text).
+3. Click **Save**
+
+#### Customize Intelligent Hub Services ####
+
+1. From within Workspace ONE Hub Services, click the **Customization** Tab
+2. Click the slider to enable the Custom (Home) tab and App Ratings.  Customize the Label/URL/Location for the Home tab.
+3. Click the slider to enable People (the in-Hub directory/org chart) if desired.
+4. Modify the App Catalog display by adding/removing/rearranging catalog sections.
+5. Click **Save**
+> NOTE: Only the Label value "Home" is localized.  If you enter any other word(s) for the label, the words will not be localized into other languages.
+
+> NOTE: People functionality will not be shown in the Intelligent Hub application until Workspace ONE Access integration is configured appropriately.
 
 
 ### 4. (Optional) Workspace ONE Access ###
