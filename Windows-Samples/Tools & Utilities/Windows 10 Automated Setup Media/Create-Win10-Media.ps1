@@ -29,6 +29,7 @@ Windows 10 automatically via an autounattend.xml file. It supports booting with
 either UEFI + Secure Boot or legacy boot modes. However, Windows will be formatted 
 in UEFI mode and so ensure your BIOS is set to boot accordingly. It will create
 2 partitions (1 FAT32 and 1 NTFS) in order to support consistent UEFI booting."`n
+
 pause
 Write-Host "Scanning for mounted ISO..." -ForegroundColor Yellow
 $ISO = (Get-DiskImage -DevicePath \\.\CDROM0 -ErrorAction SilentlyContinue | Get-Volume)
@@ -144,13 +145,19 @@ if ($confirmation -eq 'y')
 	Write-Host "Getting Windows Image information..."
 	
 	
-	$OS_Info = Get-WindowsImage -ImagePath $usb_source\sources\install.wim | select ImageIndex, ImageName
-	$OS_Info
+	$ISO_image = Get-WindowsImage -ImagePath $ISO\sources\install.wim
+	
+	if (!($ISO_image.Imageindex[0] -eq "1"))
+	{
+		Write-Host "Getting Windows Image information again..."
+		$ISO_image = Get-WindowsImage -ImagePath $ISO\sources\install.wim
+	}
+	$ISO_image
 	Write-host "Your image may have more than one index. Enter the index number of the version of Windows you would like to install. 
 This will update the autounattend.xml file to automatically apply the correct image index." -ForegroundColor Yellow
 	$index = Read-Host
 	
-	$OS_Name = ($OS_Info | where { $_.ImageIndex -eq "$index" }).ImageName
+	$OS_Name = ($ISO_image | where { $_.ImageIndex -eq "$index" }).ImageName
 	
 	$xml = New-Object XML
 	$xml.Load("$USB_Boot\autounattend.xml")
