@@ -56,7 +56,7 @@ Hub Services are a distinct set of services co-located with, but separate from W
 
 > **NOTE:** Hub Services and Workspace ONE Access are co-located together in a cloud tenant, but a full Workspace ONE Access setup is not required to support Hub Services! 
 
-#### Enable Hub Services ####
+#### Enable Hub Services Integration ####
 
 1. In Workspace ONE UEM, navigate to *Getting Started > Workspace ONE > Workspace ONE Intelligent Hub*
 2. Enter the Workspace ONE Access tenant URL and Administrator username/password.  (Optionally, you can *Request Cloud Tenant* if you do not have a Workspace ONE Access tenant provisioned to your organization.)
