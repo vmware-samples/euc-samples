@@ -37,3 +37,11 @@ Hub Services is a cloud-hosted component that drives the Hub-based App catalog. 
 ### (Optional) Workspace ONE Access ###
 Workspace ONE Access enables SSO and Conditional Access for devices enrolled in Workspace ONE UEM.
 
+
+### Apple Business (or School) Manager Automated Device Enrollment ###
+Admins should leverage Apple Business Manager (or Apple School Manager) to enable out-of-box automated enrollment.  
+
+
+### Apple Business (or School) Manager Volume-Purchased Applications ###
+
+
