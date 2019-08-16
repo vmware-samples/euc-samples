@@ -150,7 +150,23 @@ Hub Services are a distinct set of services co-located with, but separate from W
 5. Click **Save**
 > NOTE: Only the Label value "Home" is localized.  If you enter any other word(s) for the label, the words will not be localized into other languages.
 
-> NOTE: People functionality will not be shown in the Intelligent Hub application until Workspace ONE Access integration is configured appropriately.
+#### Notes about People Search ####
+People functionality will not be shown in the Intelligent Hub application until Workspace ONE Access integration is configured appropriately.  People leverages the `manager` attribute to display org heirarchy (be sure to map this to `managerDN`), and the thumbnailPhoto attribute to display employee photos.  
+
+For the purposes of a demo, the following script can be useful for populating photos into the thumbnailPhoto attribute:
+```powershell
+# credit to http://woshub.com/how-to-import-user-photo-to-active-directory-using-powershell/
+Import-Module ActiveDirectory
+Import-Csv C:\PS\import.csv | %{Set-ADUser -Identity $_.AD_username -Replace @{thumbnailPhoto=([byte[]](Get-Content $_.Photo -Encoding byte))}}
+```
+It leverages a CSV formatted as follows:
+```
+AD_username,Photo
+asmith,C:\PS\asmith.jpg
+klinton@adatum.com,C:\PS\klinton.jpg
+jkuznetsov,C:\PS\jkuznetso.png
+```
+
 
 #### Enable the Hub Catalog ####
 For legacy compatibility, Workspace ONE UEM does not automatically enable the in-app catalog.   Admins must enable this functionality when they are ready to begin using it.  
@@ -172,9 +188,17 @@ For legacy compatibility, Workspace ONE UEM does not automatically enable the in
 **************************************************************************************************
 
 ### 5. (Optional) Workspace ONE Access ###
-Workspace ONE Access enables SSO and Conditional Access for devices enrolled in Workspace ONE UEM.  Since the breadth and depth of a Workspace ONE Acceess integration varies quite a bit, we'll refer you to the plethora of documents available for common scenarios.  Be sure to check out the Activity Path on TechZone as it contains hands-on labs where you can safely walk through some of these configuration scenarios before you attempt them in your own testing environment.
+Workspace ONE Access enables SSO and Conditional Access for devices enrolled in Workspace ONE UEM.  Since the breadth and depth of a Workspace ONE Acceess integration varies quite a bit, you'll most likely get the most value by reading the documents available for common scenarios.  Be sure to check out the Activity Path on TechZone as it contains hands-on labs where you can safely walk through some of these configuration scenarios before you attempt them in your own testing environment.
+
+From the perspective of a POC or lightweight demo, you can possibly attempt this with a small instance of Office365.  Some guidance as to a typical demo setup:
+
+1. Set up two Domain Controllers with a single domain/forest (you can use one to host the ACC and one to host the IDM Connector)
+2. Set up User Attributes by navigating to *Identity & Access Management > Setup > User Attributes*.  Be sure to mark UserPrincipalName as required.  Add `objectGUID` and `mS-DS-ConsistencyGuid` as additional attributes.  Add any additional attributes you'd like exposed by "People" functionality.
+3. Set up the Identity Manager Connector. In the Workspace ONE Access Admin Console, navigate to *Identity & Access Management > Setup > Connectors*.
+
 
 #### Relevant Documentation: ####
+* [Attributes that can be Enabled for People Search](https://docs.vmware.com/en/VMware-Identity-Manager/3.3/idm-administrator/GUID-F965647F-92BC-4317-92F6-D31D086EB679.html?hWord=N4IghgNiBcIC4AsCuBbARgOzASwgBwQHs5CQBfIA)
 * [Workspace ONE Access (previously Identity Manager) Activity Path](https://techzone.vmware.com/becoming-identity-manager-hero)
 * [VMware Identity Manager Integration with Office 365](https://www.vmware.com/pdf/vidm-office365-saml.pdf)
 * [VMware Identity Manager 19.03: Configuring Certificate Authentication](https://www.youtube.com/watch?v=s4EILnnP98I)
