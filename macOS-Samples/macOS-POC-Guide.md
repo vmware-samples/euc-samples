@@ -197,7 +197,7 @@ From the perspective of a POC or lightweight demo, you can possibly attempt this
 4. Set up the Directory by navigating to *Identity & Access Management > Directories*.  Click **Add Directory**.
 5. Set up People Search by navigating to *Catalog (pull down) > Settings > People Search*.  Enable People Search and map attributes as appropriate.
 6. Add the connector to the Built-In Identity Provider by navigating to *Identity & Access Management > Identity Providers*.  Click the **Built-In** provider and add the AD directory and connector.  Be sure to also select a connector to use and enable *Password (Cloud Deployment)* as a Connector Authentication Method.
-7. Configure the Default Policy Set..
+7. Configure the Default Policy Set by navigating to *Identity & Access Management > Policies*.  Add the *Password (Cloud Deployment)* authentication option to enable login using credentials pulled from the Connector.
 
 #### Notes Regarding Office365 Demo Setups ####
 Just a few notes to help you find your way around the Office365 Integration if you're not overly familiar with Identity/Federation and the Microsoft tools:
