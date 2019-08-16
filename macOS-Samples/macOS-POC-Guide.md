@@ -167,7 +167,6 @@ klinton@adatum.com,C:\PS\klinton.jpg
 jkuznetsov,C:\PS\jkuznetso.png
 ```
 
-
 #### Enable the Hub Catalog ####
 For legacy compatibility, Workspace ONE UEM does not automatically enable the in-app catalog.   Admins must enable this functionality when they are ready to begin using it.  
 
@@ -192,10 +191,28 @@ Workspace ONE Access enables SSO and Conditional Access for devices enrolled in 
 
 From the perspective of a POC or lightweight demo, you can possibly attempt this with a small instance of Office365.  Some guidance as to a typical demo setup:
 
-1. Set up two Domain Controllers with a single domain/forest (you can use one to host the ACC and one to host the IDM Connector)
-2. Set up User Attributes by navigating to *Identity & Access Management > Setup > User Attributes*.  Be sure to mark UserPrincipalName as required.  Add `objectGUID` and `mS-DS-ConsistencyGuid` as additional attributes.  Add any additional attributes you'd like exposed by "People" functionality.
-3. Set up the Identity Manager Connector. In the Workspace ONE Access Admin Console, navigate to *Identity & Access Management > Setup > Connectors*.
+1. Set up two Domain Controllers (prefer Windows Server 2016/2019) with a single domain/forest (you can use one to host the ACC and one to host the IDM Connector)
+2. In the Workspace ONE Access console, set up User Attributes by navigating to *Identity & Access Management > Setup > User Attributes*.  Be sure to mark UserPrincipalName as required.  Add `objectGUID` and `mS-DS-ConsistencyGuid` as additional attributes.  Add any additional attributes you'd like exposed by "People" functionality (such as managerDN and thumbnailPhoto).
+3. Set up the Identity Manager Connector by navigating to *Identity & Access Management > Setup > Connectors*.  Click **Add Connector**.
+4. Set up the Directory by navigating to *Identity & Access Management > Directories*.  Click **Add Directory**.
+5. Set up People Search by navigating to *Catalog (pull down) > Settings > People Search*.  Enable People Search and map attributes as appropriate.
+6. Add the connector to the Built-In Identity Provider by navigating to *Identity & Access Management > Identity Providers*.  Click the **Built-In** provider and add the AD directory and connector.  Be sure to also select a connector to use and enable *Password (Cloud Deployment)* as a Connector Authentication Method.
+7. Configure the Default Policy Set..
 
+#### Notes Regarding Office365 Demo Setups ####
+Just a few notes to help you find your way around the Office365 Integration if you're not overly familiar with Identity/Federation and the Microsoft tools:
+- Install the [AzureADPreview Powershell Cmdlets](https://social.technet.microsoft.com/wiki/contents/articles/28552.microsoft-azure-active-directory-powershell-module-version-release-history.aspx#A) -- `PS>   Install-Module -Name MSOnline`
+- Download & Install the [MS Online Services Sign-In Assistant](https://www.microsoft.com/en-us/download/details.aspx?id=41950)
+- Download & Install [Azure AD Connect](https://docs.microsoft.com/en-us/azure/active-directory/hybrid/reference-connect-version-history)
+- Configure Azure AD Connect --> select either Password Hash Synchronization or Do Not Configure.
+- When sync completes, log into the O365 Admin portal and ensure your demo "users" are licensed for Office E1 or E3.  (E3 allows you to explore graph API integration for iOS MAM controls)
+- Use Powershell to Update the domain from Managed to Federated:
+```Powershell
+## Set the Domain to Federated
+Set-MSolDomainAuthentication -DomainName <Domain Name To Be Federated> -Authentication Federated -IssuerURI "<tenant IDM Url - e.g. yourtenant.workspaceoneair.com>" -FederationBrandName "<Domain Name to be Federated>" -PassiveLogOnURI "https://<Tenant IDM URL>/SAAS/API/1.0/POST/sso" -ActiveLogOnURI "https://<Tenant IDM URL>/SAAS/auth/wsfed/active/logon" -LogOffURI "https://login.microsoftonline.com/logout.srf" -MetadataExchangeURI "https://<Tenant IDM URL>/SAAS/auth/wsfed/services/mex" -SigningCertificate <Signing Cert downloaded from Catalog > Settings > SAML MetaData>
+```
+
+> Note - The above powershell uses the older v1 Azure AD cmdlets.   If you happen to know how to do this with the V2 preview cmdlets, please send us a pull request with an update!
 
 #### Relevant Documentation: ####
 * [Attributes that can be Enabled for People Search](https://docs.vmware.com/en/VMware-Identity-Manager/3.3/idm-administrator/GUID-F965647F-92BC-4317-92F6-D31D086EB679.html?hWord=N4IghgNiBcIC4AsCuBbARgOzASwgBwQHs5CQBfIA)
