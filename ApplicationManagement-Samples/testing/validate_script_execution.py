@@ -12,14 +12,14 @@ sample_app_dir = os.getcwd()
 expected_sg = {'alpha': config.ALPHA_GROUPS, 'beta': config.BETA_GROUPS, 'prod': config.PRODUCTION_GROUPS}
 
 
-def test_script_execution(sysparam):
+def test_script_execution(sys_param):
     """
     Method to validate the script execution. It fetches the details of the uploaded app using internal
     app APIs and compares it against the parameters given during script execution and config file.
-    :param sysparam: takes the script parameters as input
+    :param sys_param: takes the script parameters as input
     """
 
-    options, args = getopt.getopt(sysparam.argv[1:], 'hv:a:', ["help", "Version=", "AppID="])
+    options, args = getopt.getopt(sys_param.argv[1:], 'hv:a:', ["help", "Version=", "AppID="])
     application_name = args[1]
     build_name = args[2].split(',')[0]
     build_number = args[2].split(',')[1]

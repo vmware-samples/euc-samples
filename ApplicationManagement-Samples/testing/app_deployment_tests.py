@@ -173,8 +173,8 @@ def test_upload_app_and_edit_assignments():
     common_assertions(deployment_type, app_name, 'auto', result_app_details)
 
     # Edit the app assignments
-    output = str(subprocess.check_output(['python', 'deployment.py', '-a', str(application_id), app_path, app_name,
-                                          build_info, 'beta', 'ondemand'], shell=True))
+    output = str(subprocess.check_output(['python', 'deployment.py', '-a', str(application_id), build_info,
+                                          'beta', 'ondemand'], shell=True))
     log.info('Output of script execution for editing the assignments: ')
     log.info(output)
 

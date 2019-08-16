@@ -1,16 +1,16 @@
 """
-Usage: 1. python deployment.py <File Path>, <Application Name>, <Build Information>, <Deployment Type>(Alpha/Beta/Prod)
-       2. python deployment.py <File Path>, <Application Name>, <Build Information>, <Deployment Type>(Alpha/Beta/Prod),
-       <Push Mode>(Auto/Ondemand), <Retire Previous Version>(True/False), <Supported Device Models>(ex: "iPad,iPhone")
-       3. Use v/Version option to give a numeric app version, if the file version is more than 4 digits/ Alpha numeric
-       4. Please provide AppID using the option -a/AppID option, in case of edit assignment
-       5. Supported models and device type are required in case of windows universal app
-          python deployment.py <File Path>, <Application Name>, <Build Information>, <Deployment Type>, <PushMode>,
-          <Retire Previous Version>, <Supported Device Models>, <Device Type>
+Usage:
+1. Adding new application
+   Command - python deployment.py <File Path>, <Application Name>, <Build Information>, <Deployment Type>,<Push Mode>,
+   <Retire Previous Version>, <Supported Device Models> <Device Type>
+   Arguments: File Path, Application Name, Build Information and Deployment Typea are required parameters
+   All the arguments are required in case of Windows Universal App
 
-        ***Refer Documentation for detailed information***
+2. Adding new assignments for an existing app
+   Command - python deployment.py -a(or -AppID) <AppID> <Build Information> <Deployment Types> <Push Mode>
+   All the arguments are required.
 
-Arguments: File Path, Application Name, Build Information and Deployment Type are required parameters
+***Refer Documentation for detailed information***
 
 Flags: -h or --help
        -v or --Version
@@ -64,6 +64,12 @@ def validate_arguments(sysparam):
 
         if option in ("-a", "--AppID"):
             application_id = arg
+            arguments = arguments[(len(options) - 1):]
+
+            if len(arguments) < 3 or not(arguments[0] and arguments[1] and arguments[2]):
+                usage()
+
+            return arguments, app_version, application_id
 
     if len(options) > 0:
         arguments = arguments[(len(options) - 1):]
@@ -80,7 +86,10 @@ def validate_arguments(sysparam):
 
 if __name__ == "__main__":
     args, version, app_id = validate_arguments(sys)
-    application_deployment.deploy_application(args, version, app_id)
+    if not int(app_id):
+        application_deployment.add_new_application(args, version)
+    else:
+        application_deployment.edit_assignments(args, app_id)
 
     # Execute validations if the POST_SCRIPT_VALIDATION flag is set to 1 in config file,
     # Skip validations in case of editing assignments (app_id != 0 )

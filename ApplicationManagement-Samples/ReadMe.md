@@ -6,7 +6,10 @@
 * **Date Created** : 16 June 2019
 
 ## **Purpose**
-The tool provides an example of how the Application APIs can be used. This script automates Application workflow i.e. an application can be deployed to WS1 UEM server and pushed down to a device by executing this script. Assignments to an application can also be edited using this script.
+The tool provides an example of how the application deployment APIs of Workspace ONE UEM can be used for iOS and Android apps. This script can be used to automate application delivery to your end-user devices in the following cases:
+1. Add new apps with appropriate assignments
+2. Add new versions with appropriate assignments for existing apps
+3. Add new assignment groups to existing apps (*Note: This can be done only for apps that were added by executing this script*)
 
 ## **Requirements**
 To execute the script, dependencies have to be installed.
@@ -18,6 +21,7 @@ Dependencies can be installed by executing the following command:
 config.py file has to be updated with appropriate values before executing the script. This file has settings like the environment URL, WS1 tenant, smart group, etc.
 
 ### **Command to execute the script**
+#### 1. Adding a new application
 ` python deployment.py <options> <File Path> <Application Name> <Build Information> <Deployment Types> <Push Mode> <Retire Previous Version> <Supported Models> <Device Type> `
 
 Application Deployment workflow needs the following required parameters:
@@ -32,22 +36,25 @@ Optional parameters:
 options - Three options are available.
 1. -h/ -- Help: Gives the details on how to use the script.
 
-2. -v {Value}/ --Version {Value} : Use this option to provide a custom numeric version(Up to 3 digits), if the actual file version is a alpha numeric version or it is a 4 or more digits version (Ex: python deployment.py -v "1.0.0" "app.apk" "App Build Project,1" "Alpha,Beta")
+2. -v {Value}/ --Version {Value} : Use this option to provide a custom numeric version(Up to 3 digits), if the actual file version is a alpha numeric version or it is a 4 or more digits version (Ex: python deployment.py -v "1.0.0" "app.apk" "Android App"" "App Build Project,1" "Alpha,Beta")
 
-3. -a {Value}/ --AppID {Value} : Use this in case you want to edit the assignment of an existing app. AppID can be found out from the appdetails.json that was generated when the app was deployed using this script (Ex: python deployment.py -a 1234 "app.apk" "App Build Project,1" "Alpha,Beta,Prod")
+3. Retire Previous Version - This is a flag that can hold True/False. This is set to False by default. If this set to True, previous version of the app that is going to be deployed will be retired.
 
-**Note** - Assignments for applications deployed using this script can only be edited
+4. Supported Models - This is a list of device models that the app supports. (This is a required parameter in case of Windows Universal App - appx). Supported values are Android, iPhone, iPod Touch, iPad, Windows Phone 8, Windows Phone 10, Desktop, HoloLens
 
-4. Retire Previous Version - This is a flag that can hold True/False. This is set to False by default. If this set to True, previous version of the app that is going to be deployed will be retired.
-
-5. Supported Models - This is a list of device models that the app supports. (This is a required parameter in case of Windows Universal App - appx). Supported values are Android, iPhone, iPod Touch, iPad, Windows Phone 8, Windows Phone 10, Desktop, HoloLens
-
-6. Device Type - Supported Device Type(This is a required parameter in case of Windows Universal App - appx). Supported values are Android, Apple, windowsphone8, winRT
+5. Device Type - Supported Device Type(This is a required parameter in case of Windows Universal App - appx). Supported values are Android, Apple, windowsphone8, winRT
 
 Currently, the first time when an app is published with Alpha deployment mode an appdetails.json file is created in the working directory and has the app, productid, build information, version and deployment type details.
 This is being used in the script to decide what state the app deployment is for a particular build.
 
 Example: {"45": {"app_id": 483, "product_id": 0, "app_version": "5.73.0", "current_deployment": "Prod"}}
+
+#### 2. Adding new assignments for an existing app
+` python deployment.py -a(or -AppID) <App ID> <Build info> <Deployment Types> <Push Mode>`
+
+Example: python deployment.py -a "1234" "App Build Project,2" "Alpha,Beta,Prod" "Auto"
+####
+Here, "1234" is the App ID and "Alpha,Beta,Prod" are the new deployment types(assignment groups) to which this app will be assigned.
 
 ## **Integrating with Jenkins**
 jenkins_build_information.py is a python script that has been written to fetch jenkins build information.

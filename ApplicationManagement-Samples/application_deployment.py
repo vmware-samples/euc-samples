@@ -171,14 +171,15 @@ def update_app_assignments(build_info, assignment_groups, push_mode, application
     """
 
     assignment_group_for_deletion = None
+    current_app_deployments = None
 
     try:
         # Existing assignments
         current_app_deployments = helper.get_app_details_from_json(build_info)
 
     except KeyError:
-        current_app_deployments = None
         log.error('App: {id} does not exist'.format(id=application_id))
+        sys.exit(1)
 
     if current_app_deployments is not None:
         # Identify smart groups that has to be deleted from the assignment
@@ -196,12 +197,52 @@ def update_app_assignments(build_info, assignment_groups, push_mode, application
     return False
 
 
-def deploy_application(sys_param, version, app_id):
+def get_build_information(build_info_arg):
+    """
+    Parses the command line argument to fetch Build information
+    :param build_info_arg: Command line argument to fetch build information
+    :return: Build information - Build Project Name and Build Number
+    """
+
+    build_info = []
+    if config.BUILD_SERVER_URL:
+        build_info.append(config.BUILD_PROJECT_NAME)
+
+        # Runs the jenkins script to get the build number from the integrated jenkins build server
+        build_info.append(str(os.system(build_info_arg)))
+    else:
+        build_info = str.split(build_info_arg, ',')
+
+    return build_info
+
+
+def get_assignment_groups(deployment_types):
+    """
+    Gets the assignment group Ids for given deployment types
+    :param deployment_types: Deployment Types - Alpha, Beta, Prod
+    :return: Assignment Group IDs
+    """
+
+    assignment_groups = []
+    for deployment_type in deployment_types:
+        if deployment_type == 'alpha':
+            assignment_groups += config.ALPHA_GROUPS
+        elif deployment_type == 'beta':
+            assignment_groups += config.BETA_GROUPS
+        elif deployment_type == 'prod':
+            assignment_groups += config.PRODUCTION_GROUPS
+        else:
+            log.error('Invalid deployment type')
+            sys.exit(1)
+
+    return assignment_groups
+
+
+def add_new_application(sys_param, version):
     """
     Uploads, creates, assigns and deploys an application to console
     :param sys_param: Command line arguments
     :param version: Application version
-    :param app_id: Application ID
     :returns void
     """
 
@@ -210,16 +251,10 @@ def deploy_application(sys_param, version, app_id):
     source_file_path = sys_param[0]
     application_name = sys_param[1]
 
-    build_info = []
-    if config.BUILD_SERVER_URL:
-        build_info.append(config.BUILD_PROJECT_NAME)
-
-        # Runs the jenkins script to get the build number from the integrated jenkins build server
-        build_info.append(str(os.system(sys_param[2])))
-    else:
-        build_info = str.split(sys_param[2], ',')
+    build_info = get_build_information(sys_param[2])
 
     deployment_types = str.split(str.lower(sys_param[3]), ',')
+    assignment_groups = get_assignment_groups(deployment_types)
 
     # Default values for push mode and retire previous version flag
     push_mode = 'Auto'
@@ -239,40 +274,24 @@ def deploy_application(sys_param, version, app_id):
             if len(sys_param) >= 7:
                 supported_models = str.split(sys_param[6], ',')
 
-    assignment_groups = []
-    for deployment_type in deployment_types:
-        if deployment_type == 'alpha':
-            assignment_groups += config.ALPHA_GROUPS
-        elif deployment_type == 'beta':
-            assignment_groups += config.BETA_GROUPS
-        elif deployment_type == 'prod':
-            assignment_groups += config.PRODUCTION_GROUPS
-        else:
-            log.error('Invalid deployment type')
-            sys.exit(1)
+    device_type, supported_device_models = get_device_type_and_models(file_extension, supported_models, sys_param)
 
-    if not int(app_id):
-        device_type, supported_device_models = get_device_type_and_models(file_extension, supported_models, sys_param)
+    app_chunk_transaction = AppChunkTransactionData(application_name,
+                                                    build_info,
+                                                    file_name,
+                                                    push_mode,
+                                                    device_type,
+                                                    supported_device_models)
 
-        app_chunk_transaction = AppChunkTransactionData(application_name,
-                                                        build_info,
-                                                        file_name,
-                                                        push_mode,
-                                                        device_type,
-                                                        supported_device_models)
+    # App version is given as an input by the user
+    if version > '0':
+        app_chunk_transaction.app_version = version
 
-        # App version is given as an input by the user
-        if version > '0':
-            app_chunk_transaction.app_version = version
-
-        app_deploy_success, _ = create_application(app_chunk_transaction,
-                                                   source_file_path,
-                                                   build_info,
-                                                   assignment_groups,
-                                                   retire_previous_version)
-
-    else:
-        app_deploy_success = update_app_assignments(build_info, assignment_groups, push_mode, app_id)
+    app_deploy_success, _ = create_application(app_chunk_transaction,
+                                               source_file_path,
+                                               build_info,
+                                               assignment_groups,
+                                               retire_previous_version)
 
     if app_deploy_success:
         log.info('App {app_name} deployed successfully to {deployment_type} group'
@@ -280,4 +299,29 @@ def deploy_application(sys_param, version, app_id):
 
     else:
         log.error('Application deployment failed')
+        sys.exit(1)
+
+
+def edit_assignments(args, app_id):
+    """
+    Updates the assignments for a given application
+    :param args: Command line arguments
+    :param app_id: Application ID
+    :return: void
+    """
+
+    build_info = get_build_information(args[0])
+    deployment_types = str.split(str.lower(args[1]), ',')
+    assignment_groups = get_assignment_groups(deployment_types)
+    push_mode = args[2]
+
+    app_deploy_success = update_app_assignments(build_info, assignment_groups, push_mode, app_id)
+
+    if app_deploy_success:
+        log.info('Application with AppID: {app_id} updated with new assignments Push Mode: {push_mode}, '
+                 'Assignment Groups: {deployment_types}'.format(app_id=app_id, push_mode=push_mode,
+                                                                deployment_types=deployment_types))
+
+    else:
+        log.error('Updating App assignment for Application with AppID: {app_id} failed'.format(app_id=app_id))
         sys.exit(1)
