@@ -35,6 +35,7 @@ This is general guidance to help you self-configure a macOS Proof-of-Concept in 
 - [Setting up Configuration Management (Profile Payloads)](#setting-up-configuration-management-profile-payloads)
 - [Setting up 3rd-Party Non-Store Applications](#setting-up-3rd-party-non-store-applications)
   - [Add the App to Workspace ONE](#add-the-app-to-workspace-one-uem)
+- [Setting up Initial Notification for Intelligent Hub](#setting-up-initial-notification-for-intelligent-hub)
 
 **************************************************************************************************
 **************************************************************************************************
@@ -220,7 +221,7 @@ Workspace ONE Access can significally reduce the amount of username/password pro
 1. In the UEM Console, navigate to *Groups & Settings > All Settings > System > Enterprise Integration > VMware Identity Manager > Configuration
 2. Enable certificate provisioning and export the issuer certificate.
 3. In the Workspace ONE Access console, navigate to *Identity & Access Managememnt > Authentication Methods* and edit the *Certificate (Cloud Deployment)* option.
-4. **Enable** the certificate adapter.  For *Root and Intermediat CA certificates*, click **Select File** and upload the Issuer Certificate you downloaded from the UEM console.   Change the User Identifier Search Order to **upn | email | subject** and click **Save**.
+4. **Enable** the certificate adapter.  For *Root and Intermediate CA certificates*, click **Select File** and upload the Issuer Certificate you downloaded from the UEM console.   Change the User Identifier Search Order to **upn | email | subject** and click **Save**.
 5. Navigate to *Identity & Access Management > Identity Providers > Built-In*.   Associate the **Certificate (Cloud Deployment)** authentication method and click **Save**.
 6. Navigate to *Identity & Access Management > Policies* and click **Edit Default Policy**.  
 7. Click **Next** and then modify both rules (Web Browser and Workspace ONE App) to say the following (remember, these are rules for a small scale POC):
@@ -234,7 +235,7 @@ If preceding method fails:   Password (Local Directory)
 8. Click **Save** when completed.
 9. In the UEM Console, click *Add > Profile > macOS > User.   Configure the General payload settings.
 
-> For help setting up SSO profiles, refer to the [TechZone Article about Identity Preferences](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos).  YOu basically need to create a profile with 2 parts:  the SCEP profile pointing to the UEM-Access CA integration (for the user's identity cert), and a Custom Settings payload that sets the identity preference (e.g. ties the SCEP credential payload to the Workspace ONE Access Cert-Auth URL).
+> For help setting up SSO profiles, refer to the [TechZone Article about Identity Preferences](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos).  You basically need to create a profile with 2 parts:  the SCEP profile pointing to the UEM-Access CA integration (for the user's identity cert), and a Custom Settings payload that sets the identity preference (e.g. ties the SCEP credential payload to the Workspace ONE Access Cert-Auth URL).
 
 10. Click the *SCEP* payload and click **Configure**.   Choose *AirWatch Certificate Authority* for the *Source* and *Authority* fields. Choose *Certificae Authority* and ensure "allow access" is checked.   
 11. Click the *Custom Settings* payload.  Paste in the following Profile (be sure to edit the Certificate payload UUID per the TechZone article).
@@ -310,7 +311,41 @@ Application delivery from the App Store (via Custom or Volume-Purchased Apps) is
 
 
 ## Setting Up Configuration Management (Profile Payloads)
+Workspace ONE UEM has the capability to manage both the device mdmclient and the user session's mdmclient. This basically allows admins to manage in two separate scopes:  root/system context and user context.   The following set of steps walks you through managing a basic set of security-related items for macOS.  Admins are encouraged to explore the feature set and determine which profile payloads are of value to their specific organization.
 
+> Note:  Some profile payloads (such as *Custom Attributes*) are functions of the Intelligent Hub and *not* the mdmclient.  In this case, you will not be able to test the feature unless you have the Intelligent Hub installed.
+
+1. In the UEM Console, click *Add > Profile > macOS > Device*
+2. Complete the following profile items on the General Tab:   
+  -  Name:  FileVault
+  -  Assignment:  assign to the OG or All Devices groups
+3. Click on the **Disk Encryption** payload and click **Configure**
+  - ByPass Login 5 times
+4.	Click **Save & Publish** > **Publish**
+5.	Click *Add > Profile > macOS > Device*
+6.	Complete the following profile items on the General Tab:    
+  - Name:  Security
+  - Assignment:  assign to the OG or All Devices groups
+7.	Click on the **Security & Privacy** payload and click **Configure**
+  - OS Update Delay:  15 days
+  - Mac App Store & ID Developers
+  - Do Not Allow Override
+  - Allow Watch/TouchID
+8.	Click **Save & Publish** > **Publish**
+9.	Click *Add > Profile > macOS > Device*
+10.	Complete the following profile items on the General tab:
+  - Name:  Privacy Preferences
+  - Assignment:  assign to the OG or All Devices groups
+11.	Click on the **Privacy Preferences** payload and click **Configure**
+  - Add relevant [macOS Privacy Preferences Policy Control settings](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control) per the apps you intend to deploy.
+12.	Click **Save & Publish** > **Publish**
+
+
+#### Relevant Documentation ####
+* [macOS Mojave User Consent for Data Access Changes](https://techzone.vmware.com/blog/vmware-workspace-one-uem-apple-macos-mojave-user-consent-data-access)
+* [macOS Privacy Preferences Policy Control Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control)
+* [macOS Custom XML Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomXMLProfiles)
+* [macOS Custom Attribute Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
 
 **************************************************************************************************
 **************************************************************************************************
