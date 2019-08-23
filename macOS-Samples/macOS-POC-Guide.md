@@ -346,6 +346,7 @@ Workspace ONE UEM has the capability to manage both the device mdmclient and the
 * [macOS Privacy Preferences Policy Control Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control)
 * [macOS Custom XML Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomXMLProfiles)
 * [macOS Custom Attribute Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
+* [Workspace ONE UEM Console Lookup Values](https://support.workspaceone.com/articles/115001663908)
 
 **************************************************************************************************
 **************************************************************************************************
