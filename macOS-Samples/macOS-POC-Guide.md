@@ -35,6 +35,7 @@ This is general guidance to help you self-configure a macOS Proof-of-Concept in 
 - [Setting up Configuration Management (Profile Payloads)](#setting-up-configuration-management-profile-payloads)
 - [Setting up 3rd-Party Non-Store Applications](#setting-up-3rd-party-non-store-applications)
   - [Add the App to Workspace ONE](#add-the-app-to-workspace-one-uem)
+- [Setting up Initial Notification for Intelligent Hub](#setting-up-initial-notification-for-intelligent-hub)
 
 **************************************************************************************************
 **************************************************************************************************
@@ -197,16 +198,16 @@ From the perspective of a POC or lightweight demo, you can possibly attempt this
 4. Set up the Directory by navigating to *Identity & Access Management > Directories*.  Click **Add Directory**.
 5. Set up People Search by navigating to *Catalog (pull down) > Settings > People Search*.  Enable People Search and map attributes as appropriate.
 6. Add the connector to the Built-In Identity Provider by navigating to *Identity & Access Management > Identity Providers*.  Click the **Built-In** provider and add the AD directory and connector.  Be sure to also select a connector to use and enable *Password (Cloud Deployment)* as a Connector Authentication Method.
-7. Configure the Default Policy Set..
+7. Configure the Default Policy Set by navigating to *Identity & Access Management > Policies*.  Add the *Password (Cloud Deployment)* authentication option to enable login using credentials pulled from the Connector.
 
 #### Notes Regarding Office365 Demo Setups ####
 Just a few notes to help you find your way around the Office365 Integration if you're not overly familiar with Identity/Federation and the Microsoft tools:
-- Install the [AzureADPreview Powershell Cmdlets](https://social.technet.microsoft.com/wiki/contents/articles/28552.microsoft-azure-active-directory-powershell-module-version-release-history.aspx#A) -- `PS>   Install-Module -Name MSOnline`
-- Download & Install the [MS Online Services Sign-In Assistant](https://www.microsoft.com/en-us/download/details.aspx?id=41950)
-- Download & Install [Azure AD Connect](https://docs.microsoft.com/en-us/azure/active-directory/hybrid/reference-connect-version-history)
-- Configure Azure AD Connect --> select either Password Hash Synchronization or Do Not Configure.
-- When sync completes, log into the O365 Admin portal and ensure your demo "users" are licensed for Office E1 or E3.  (E3 allows you to explore graph API integration for iOS MAM controls)
-- Use Powershell to Update the domain from Managed to Federated:
+1. Install the [AzureADPreview Powershell Cmdlets](https://social.technet.microsoft.com/wiki/contents/articles/28552.microsoft-azure-active-directory-powershell-module-version-release-history.aspx#A) -- `PS>   Install-Module -Name MSOnline`
+2. Download & Install the [MS Online Services Sign-In Assistant](https://www.microsoft.com/en-us/download/details.aspx?id=41950)
+3. Download & Install [Azure AD Connect](https://docs.microsoft.com/en-us/azure/active-directory/hybrid/reference-connect-version-history)
+4. Configure Azure AD Connect --> select either Password Hash Synchronization or Do Not Configure.
+5. When sync completes, log into the O365 Admin portal and ensure your demo "users" are licensed for Office E1 or E3.  (E3 allows you to explore graph API integration for iOS MAM controls)
+6. Use Powershell to Update the domain from Managed to Federated:
 ```Powershell
 ## Set the Domain to Federated
 Set-MSolDomainAuthentication -DomainName <Domain Name To Be Federated> -Authentication Federated -IssuerURI "<tenant IDM Url - e.g. yourtenant.workspaceoneair.com>" -FederationBrandName "<Domain Name to be Federated>" -PassiveLogOnURI "https://<Tenant IDM URL>/SAAS/API/1.0/POST/sso" -ActiveLogOnURI "https://<Tenant IDM URL>/SAAS/auth/wsfed/active/logon" -LogOffURI "https://login.microsoftonline.com/logout.srf" -MetadataExchangeURI "https://<Tenant IDM URL>/SAAS/auth/wsfed/services/mex" -SigningCertificate <Signing Cert downloaded from Catalog > Settings > SAML MetaData>
@@ -214,11 +215,81 @@ Set-MSolDomainAuthentication -DomainName <Domain Name To Be Federated> -Authenti
 
 > Note - The above powershell uses the older v1 Azure AD cmdlets.   If you happen to know how to do this with the V2 preview cmdlets, please send us a pull request with an update!
 
+#### Notes Regarding SSO via Workspace ONE Access ####
+Workspace ONE Access can significally reduce the amount of username/password prompts your users endure by leveraging Certificate Authentication.   Workspace ONE UEM includes built-in CA functionality that Workspace ONE Access can leverage to generate and validate user-based certificates on the fly. To enable this functionality, you'll need to do the following:
+
+1. In the UEM Console, navigate to *Groups & Settings > All Settings > System > Enterprise Integration > VMware Identity Manager > Configuration
+2. Enable certificate provisioning and export the issuer certificate.
+3. In the Workspace ONE Access console, navigate to *Identity & Access Managememnt > Authentication Methods* and edit the *Certificate (Cloud Deployment)* option.
+4. **Enable** the certificate adapter.  For *Root and Intermediate CA certificates*, click **Select File** and upload the Issuer Certificate you downloaded from the UEM console.   Change the User Identifier Search Order to **upn | email | subject** and click **Save**.
+5. Navigate to *Identity & Access Management > Identity Providers > Built-In*.   Associate the **Certificate (Cloud Deployment)** authentication method and click **Save**.
+6. Navigate to *Identity & Access Management > Policies* and click **Edit Default Policy**.  
+7. Click **Next** and then modify both rules (Web Browser and Workspace ONE App) to say the following (remember, these are rules for a small scale POC):
+```
+Authenticate Using...
+Certifcate (Cloud Deployment)
+If preceding method fails:   Password (Cloud Deployment)
+If preceding method fails:   Password
+If preceding method fails:   Password (Local Directory)
+```
+8. Click **Save** when completed.
+9. In the UEM Console, click *Add > Profile > macOS > User.   Configure the General payload settings.
+
+> For help setting up SSO profiles, refer to the [TechZone Article about Identity Preferences](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos).  You basically need to create a profile with 2 parts:  the SCEP profile pointing to the UEM-Access CA integration (for the user's identity cert), and a Custom Settings payload that sets the identity preference (e.g. ties the SCEP credential payload to the Workspace ONE Access Cert-Auth URL).
+
+10. Click the *SCEP* payload and click **Configure**.   Choose *AirWatch Certificate Authority* for the *Source* and *Authority* fields. Choose *Certificae Authority* and ensure "allow access" is checked.   
+11. Click the *Custom Settings* payload.  Paste in the following Profile (be sure to edit the Certificate payload UUID per the TechZone article).
+
+Safari Integration:
+```xml
+<dict>
+    <key>Name</key>
+    <string>https://cas.vidmpreview.com/</string>
+    <key>PayloadCertificateUUID</key>
+    <string>33f1db5b-889a-4294-b3c5-c1fa9c410407</string>
+    <key>PayloadUUID</key>
+    <string>96635DA9-EAE8-450F-8B1D-B9EEE82E4448</string>
+    <key>PayloadType</key>
+    <string>com.apple.security.identitypreference</string>
+    <key>PayloadDisplayName</key>
+    <string>Identity Pref</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>PayloadIdentifier</key>
+    <string>com.apple.security.identitypreference</string>
+</dict>
+```
+Chrome Integration:
+```xml
+<dict>
+<key>AutoSelectCertificateForUrls</key>
+<array>
+ <string>{"pattern":"https://cas.vidmpreview.com/","filter":{"ISSUER":{"CN":”TMApple"}}}</string>
+</array>
+<key>PayloadEnabled</key>
+<true/>
+            <key>PayloadDisplayName</key>
+            <string>Google Chrome Settings</string>
+            <key>PayloadEnabled</key>
+            <true/>
+            <key>PayloadIdentifier</key>
+            <string>com.google.Chrome.4F720473-6832-4CE0-A895-E9C3FC6F8CBD</string>
+            <key>PayloadType</key>
+            <string>com.google.Chrome</string>
+            <key>PayloadUUID</key>
+            <string>4F720473-6832-4CE0-A895-E9C3FC6F8CBD</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+</dict>
+```
+
+
 #### Relevant Documentation: ####
 * [Attributes that can be Enabled for People Search](https://docs.vmware.com/en/VMware-Identity-Manager/3.3/idm-administrator/GUID-F965647F-92BC-4317-92F6-D31D086EB679.html?hWord=N4IghgNiBcIC4AsCuBbARgOzASwgBwQHs5CQBfIA)
 * [Workspace ONE Access (previously Identity Manager) Activity Path](https://techzone.vmware.com/becoming-identity-manager-hero)
 * [VMware Identity Manager Integration with Office 365](https://www.vmware.com/pdf/vidm-office365-saml.pdf)
 * [VMware Identity Manager 19.03: Configuring Certificate Authentication](https://www.youtube.com/watch?v=s4EILnnP98I)
+* [Managing Identity Preferences to Streamline Single Sign-On for macOS](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos)
 
 **************************************************************************************************
 
@@ -240,6 +311,42 @@ Application delivery from the App Store (via Custom or Volume-Purchased Apps) is
 
 
 ## Setting Up Configuration Management (Profile Payloads)
+Workspace ONE UEM has the capability to manage both the device mdmclient and the user session's mdmclient. This basically allows admins to manage in two separate scopes:  root/system context and user context.   The following set of steps walks you through managing a basic set of security-related items for macOS.  Admins are encouraged to explore the feature set and determine which profile payloads are of value to their specific organization.
+
+> Note:  Some profile payloads (such as *Custom Attributes*) are functions of the Intelligent Hub and *not* the mdmclient.  In this case, you will not be able to test the feature unless you have the Intelligent Hub installed.
+
+1. In the UEM Console, click *Add > Profile > macOS > Device*
+2. Complete the following profile items on the General Tab:   
+  -  Name:  FileVault
+  -  Assignment:  assign to the OG or All Devices groups
+3. Click on the **Disk Encryption** payload and click **Configure**
+  - ByPass Login 5 times
+4.	Click **Save & Publish** > **Publish**
+5.	Click *Add > Profile > macOS > Device*
+6.	Complete the following profile items on the General Tab:    
+  - Name:  Security
+  - Assignment:  assign to the OG or All Devices groups
+7.	Click on the **Security & Privacy** payload and click **Configure**
+  - OS Update Delay:  15 days
+  - Mac App Store & ID Developers
+  - Do Not Allow Override
+  - Allow Watch/TouchID
+8.	Click **Save & Publish** > **Publish**
+9.	Click *Add > Profile > macOS > Device*
+10.	Complete the following profile items on the General tab:
+  - Name:  Privacy Preferences
+  - Assignment:  assign to the OG or All Devices groups
+11.	Click on the **Privacy Preferences** payload and click **Configure**
+  - Add relevant [macOS Privacy Preferences Policy Control settings](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control) per the apps you intend to deploy.
+12.	Click **Save & Publish** > **Publish**
+
+
+#### Relevant Documentation ####
+* [macOS Mojave User Consent for Data Access Changes](https://techzone.vmware.com/blog/vmware-workspace-one-uem-apple-macos-mojave-user-consent-data-access)
+* [macOS Privacy Preferences Policy Control Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control)
+* [macOS Custom XML Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomXMLProfiles)
+* [macOS Custom Attribute Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
+* [Workspace ONE UEM Console Lookup Values](https://support.workspaceone.com/articles/115001663908)
 
 **************************************************************************************************
 **************************************************************************************************
@@ -248,13 +355,66 @@ Application delivery from the App Store (via Custom or Volume-Purchased Apps) is
 ## Setting Up 3rd-Party Non-Store Applications ##
 Use the following procedure to deliver Non-App Store applications to macOS.  Examples of software delivered in this method include Web Browsers (FireFox and/or Chrome), Virtual App Delivery Agents (Horizon or Citrix clients), and Tools/Utilities.
 
+### Process the App Installer with VMware AirWatch Admin Assistant (VAAA) App ###
+The [VAAA app](https://awagent.com/AdminAssistant/VMwareAirWatchAdminAssistant.dmg) is basically a GUI wrapper for a tool that generates a metadata file used by the Workspace ONE Intelligent Hub to deploy non-store apps.
+
+1. Open the VAAA app and either browse for a DMG/PKG/MPKG file or drag-n-drop it on the UI.
+2. VAAA processes the file and outputs it to a folder in your `~\Documents` folder.
+3. Click the magnifying glass to open to the location in Finder.
+
 ### Add the App to Workspace ONE UEM ###
 
 1. In Workspace ONE UEM, Navigate to *Apps & Books > List View > Internal Apps*
 2. Click **Add App** 
-3. Upload dmg/pkg, metadata plist, icon, and configure relevant information
-4. Click **Save & Assign**
-5. Choose assignment groups, Blocking Apps, and Catalog/Desired State Behavior.
+3. Upload dmg/pkg, metadata plist, icon, and configure relevant information (including categories)
+4. Add a postinstall script to leverage hubcli ("Hub Command Line Interface") to generate notifications to the user when the install completes:
 
+```bash
+/usr/local/bin/hubcli notify -t "BBEdit Installed"  -i "Workspace ONE has finished installing BBEdit" -a "Open BBEdit" -b "usr/bin/open /Applications/BBEdit.app" -c "Close"
+```
+
+> Run `/usr/local/bin/hubcli` in Terminal to view help and usage details.
+
+5. Click **Save & Assign**
+6. Choose assignment groups, Blocking Apps, and Catalog/Desired State Behavior.
+7. Publish the application.
+
+
+**************************************************************************************************
+**************************************************************************************************
+
+## Setting Up Initial Notification for Intelligent Hub ##
+While a number of customers have taken advantage of Bootstrap functionality introduced in UEM 9.2 for "onboarding splash screens," we've started to see an uptick in customers simplifying the onboarding process.   In these slimmed-down use cases, the focus has been shifted to employee experience and self-service.   Basically, the goal is to get the user to a minimally provisioned desktop as soon as possible.   In this scenario, very few apps are auto-deployed and instead the user is notified to start the VMware Intelligent Hub to explore the available app catalog and choose the apps they want installed.
+
+In this scenario, an admin can accomplish this in one of two ways: the Products framework, or the Internal Apps framework.  Either one works, it's more a matter of preference to the admin.   In both cases, the auto-deployed package doesn't run until the user is logged-in to macOS.
+
+### OPTION 1:  Use the Products Framework ###
+
+1.	Navigate to *Devices > Provisioning > Components > Files/Actions*
+2.	Click *Add Files/Actions* > *macOS*
+3.	Enter a Name:  macOS Onboarding Notification
+4.	Click the **Manifest** tab, then click **Add Action**
+  - Action to Perform:   Run
+  - Command Line:  
+```bash
+/usr/local/bin/hubcli notify -t "Welcome To Your Mac"  -i "Open your Hub to start requesting Applications" -a "Open Intelligent Hub" -b "usr/bin/open /Applications/Workspace\ ONE\ Intelligent\ Hub.app" -c "Close"
+```
+5. Click **Save**, then **Save**
+6. Navigate to *Devices > Provisioning > Product List View*
+7. Click **Add Product** > **macOS**
+8. Enter a Name:  macOS Onboarding Notification
+9. Assign one or more Smart Groups (such as "All Devices" or the OG name)
+10. Click on the **Manifest** tab and click **Add**
+  - Actions to perform:  **Install Files/Actions**
+  - Files/Actions:  **macOS Onboarding Notification**
+11	Click **Save**
+12.	Click **Activate** then **Activate**
+
+### OPTION 2:  Use the Internal Apps Framework ###
+In this case, an admin can create a [payload-free package](https://techzone.vmware.com/distributing-scripts-macos-vmware-workspace-one-operational-tutorial#1037001) (containing just the script) to the device.  In this scenario, you can still leverage the same command for hubcli as was used for Option 1 (Products)  
+
+
+### Relevant Documentation:  ###
+* [Distributing Scripts as Internal Apps for macOS](https://techzone.vmware.com/distributing-scripts-macos-vmware-workspace-one-operational-tutorial#1037001)
 
 
