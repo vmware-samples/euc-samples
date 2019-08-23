@@ -311,6 +311,42 @@ Application delivery from the App Store (via Custom or Volume-Purchased Apps) is
 
 
 ## Setting Up Configuration Management (Profile Payloads)
+Workspace ONE UEM has the capability to manage both the device mdmclient and the user session's mdmclient. This basically allows admins to manage in two separate scopes:  root/system context and user context.   The following set of steps walks you through managing a basic set of security-related items for macOS.  Admins are encouraged to explore the feature set and determine which profile payloads are of value to their specific organization.
+
+> Note:  Some profile payloads (such as *Custom Attributes*) are functions of the Intelligent Hub and *not* the mdmclient.  In this case, you will not be able to test the feature unless you have the Intelligent Hub installed.
+
+1. In the UEM Console, click *Add > Profile > macOS > Device*
+2. Complete the following profile items on the General Tab:   
+  -  Name:  FileVault
+  -  Assignment:  assign to the OG or All Devices groups
+3. Click on the **Disk Encryption** payload and click **Configure**
+  - ByPass Login 5 times
+4.	Click **Save & Publish** > **Publish**
+5.	Click *Add > Profile > macOS > Device*
+6.	Complete the following profile items on the General Tab:    
+  - Name:  Security
+  - Assignment:  assign to the OG or All Devices groups
+7.	Click on the **Security & Privacy** payload and click **Configure**
+  - OS Update Delay:  15 days
+  - Mac App Store & ID Developers
+  - Do Not Allow Override
+  - Allow Watch/TouchID
+8.	Click **Save & Publish** > **Publish**
+9.	Click *Add > Profile > macOS > Device*
+10.	Complete the following profile items on the General tab:
+  - Name:  Privacy Preferences
+  - Assignment:  assign to the OG or All Devices groups
+11.	Click on the **Privacy Preferences** payload and click **Configure**
+  - Add relevant [macOS Privacy Preferences Policy Control settings](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control) per the apps you intend to deploy.
+12.	Click **Save & Publish** > **Publish**
+
+
+#### Relevant Documentation ####
+* [macOS Mojave User Consent for Data Access Changes](https://techzone.vmware.com/blog/vmware-workspace-one-uem-apple-macos-mojave-user-consent-data-access)
+* [macOS Privacy Preferences Policy Control Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control)
+* [macOS Custom XML Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomXMLProfiles)
+* [macOS Custom Attribute Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
+* [Workspace ONE UEM Console Lookup Values](https://support.workspaceone.com/articles/115001663908)
 
 
 **************************************************************************************************
