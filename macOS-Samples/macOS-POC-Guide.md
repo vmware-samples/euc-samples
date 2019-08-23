@@ -35,6 +35,7 @@ This is general guidance to help you self-configure a macOS Proof-of-Concept in 
 - [Setting up Configuration Management (Profile Payloads)](#setting-up-configuration-management-profile-payloads)
 - [Setting up 3rd-Party Non-Store Applications](#setting-up-3rd-party-non-store-applications)
   - [Add the App to Workspace ONE](#add-the-app-to-workspace-one-uem)
+- [Setting up Initial Notification for Intelligent Hub](#setting-up-initial-notification-for-intelligent-hub)
 
 **************************************************************************************************
 **************************************************************************************************
