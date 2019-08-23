@@ -221,7 +221,7 @@ Workspace ONE Access can significally reduce the amount of username/password pro
 1. In the UEM Console, navigate to *Groups & Settings > All Settings > System > Enterprise Integration > VMware Identity Manager > Configuration
 2. Enable certificate provisioning and export the issuer certificate.
 3. In the Workspace ONE Access console, navigate to *Identity & Access Managememnt > Authentication Methods* and edit the *Certificate (Cloud Deployment)* option.
-4. **Enable** the certificate adapter.  For *Root and Intermediat CA certificates*, click **Select File** and upload the Issuer Certificate you downloaded from the UEM console.   Change the User Identifier Search Order to **upn | email | subject** and click **Save**.
+4. **Enable** the certificate adapter.  For *Root and Intermediate CA certificates*, click **Select File** and upload the Issuer Certificate you downloaded from the UEM console.   Change the User Identifier Search Order to **upn | email | subject** and click **Save**.
 5. Navigate to *Identity & Access Management > Identity Providers > Built-In*.   Associate the **Certificate (Cloud Deployment)** authentication method and click **Save**.
 6. Navigate to *Identity & Access Management > Policies* and click **Edit Default Policy**.  
 7. Click **Next** and then modify both rules (Web Browser and Workspace ONE App) to say the following (remember, these are rules for a small scale POC):
@@ -235,7 +235,7 @@ If preceding method fails:   Password (Local Directory)
 8. Click **Save** when completed.
 9. In the UEM Console, click *Add > Profile > macOS > User.   Configure the General payload settings.
 
-> For help setting up SSO profiles, refer to the [TechZone Article about Identity Preferences](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos).  YOu basically need to create a profile with 2 parts:  the SCEP profile pointing to the UEM-Access CA integration (for the user's identity cert), and a Custom Settings payload that sets the identity preference (e.g. ties the SCEP credential payload to the Workspace ONE Access Cert-Auth URL).
+> For help setting up SSO profiles, refer to the [TechZone Article about Identity Preferences](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos).  You basically need to create a profile with 2 parts:  the SCEP profile pointing to the UEM-Access CA integration (for the user's identity cert), and a Custom Settings payload that sets the identity preference (e.g. ties the SCEP credential payload to the Workspace ONE Access Cert-Auth URL).
 
 10. Click the *SCEP* payload and click **Configure**.   Choose *AirWatch Certificate Authority* for the *Source* and *Authority* fields. Choose *Certificae Authority* and ensure "allow access" is checked.   
 11. Click the *Custom Settings* payload.  Paste in the following Profile (be sure to edit the Certificate payload UUID per the TechZone article).
