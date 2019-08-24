@@ -297,7 +297,28 @@ Chrome Integration:
 ### 6. Apple Business (or School) Manager Automated Device Enrollment ###
 Admins should leverage Apple Business Manager (or Apple School Manager) to enable out-of-box automated enrollment.  
 
-1. Navigate to 
+1. In Workspace ONE UEM, navigate to *Groups & Settings > Configurations > Apple Device Enrollment Program*
+2. Click **Configure**
+3. Click **MDM_DEP_PublicKey.pem** to download it.
+4. Click the link to **[Apple Business Manager](https://business.apple.com)**
+5. Log-in to Apple Business Manager.
+6. Click *Settings > Device Management Settings > Add MDM Server*
+7. Enter a Name for the MDM Server, then click **Choose File**
+8. Browse for and select the **MDM_DEP_PublicKey.pem** file then click **Save**
+9. Click *Settings > {Your New MDM Server Name}* and click **Download Token**
+10. In Workspace ONE UEM, click **Upload**
+11. Browse for and select the token downloaded from Apple Business Manager and click **Next** to begin building your first Automated Device Enrollment (previously Device Enrollment Program) profile.
+12. Enter relevant information about your organization and choose the options you want to enable.  See below for recommended settings.   Click **Next**
+13. Choose which options in the Setup Assistant you would like the end-user to Skip.  Click **Next**
+14. Choose whether to make the profile the default and assign to newly synced devices.  Click **Finish**
+
+> **NOTE:** If you attempt to save the DEP profile and get an error, you most likely took too long in the DEP setup wizard.      If this is the case, you must start the process over (downloading *NEW* tokens).   You need not worry about analyzing each setting for your initial profile.  You can easily modify it after-the-fact under *Groups & Settings > Configurations > Apple Device Enrollment Program*
+
+#### Notes on Recommended DEP Profile Settings ####
+- **Require MDM Enrollment** — This setting also enforces enrollment should the device be wipe/reinstalled.
+- **Lock MDM Profile** — This setting will help ensure your devices do not become unmanaged by the end user (e.g. the user cannot remove the MDM profile).
+- **Await Configuration** — This setting holds the user in the setup assistant for a few moments longer, allowing more time for MDM to deliver configuration profiles *before* the User sees the Login Window.
+- **Create New Admin Account** — This allows IT to create a hidden admin account for use in accessing the device if the user’s account becomes locked out or corrupt.
 
 #### Relevant Documentation: ####
 * [ON-PREM:  Important Network Changes for Apple Fall Release 2019](https://techzone.vmware.com/blog/important-networking-changes-apple-fall-release)
