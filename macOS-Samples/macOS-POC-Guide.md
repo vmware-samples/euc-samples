@@ -315,6 +315,45 @@ Workspace ONE UEM has the capability to manage both the device mdmclient and the
 
 > Note:  Some profile payloads (such as *Custom Attributes*) are functions of the Intelligent Hub and *not* the mdmclient.  In this case, you will not be able to test the feature unless you have the Intelligent Hub installed.
 
+#### Login Window ####
+1. In the UEM Console, click *Add > Profile > macOS > Device*
+2. Complete the following profile items on the General Tab:   
+  -  Name:  Login Window
+  -  Assignment:  assign to the OG or All Devices groups
+3. Click on the **Login Windonw** payload and click **Configure**.   
+4. Select the *Options* tab.
+  - Start Screen Saver
+  - After 5 minutes
+  - Module:  `/System/Library/Screen Savers/Flurry.saver`
+5.	Click **Save & Publish** > **Publish**
+
+#### Security & Privacy ####
+1.	Click *Add > Profile > macOS > Device*
+2.	Complete the following profile items on the General Tab:    
+  - Name:  Security
+  - Assignment:  assign to the OG or All Devices groups
+3.	Click on the **Security & Privacy** payload and click **Configure**
+  - OS Update Delay:  15 days
+  - Mac App Store & ID Developers
+  - Do Not Allow Override
+  - Allow Watch/TouchID
+  - Enabled Require Password after Screensaver
+  - Grace Period "Immediately"
+4.	Click **Save & Publish** > **Publish**
+
+#### Firewall ####
+1. In the UEM Console, click *Add > Profile > macOS > Device*
+2. Complete the following profile items on the General Tab:   
+  -  Name:  Firewall
+  -  Assignment:  assign to the OG or All Devices groups
+3. Click on the **Firewall** payload and click **Configure**
+  - Enable
+  - Block All Incoming
+  - Automatically Allow Signed
+  - Enable Stealth Mode
+4.	Click **Save & Publish** > **Publish**
+
+#### FileVault ####
 1. In the UEM Console, click *Add > Profile > macOS > Device*
 2. Complete the following profile items on the General Tab:   
   -  Name:  FileVault
@@ -322,24 +361,28 @@ Workspace ONE UEM has the capability to manage both the device mdmclient and the
 3. Click on the **Disk Encryption** payload and click **Configure**
   - ByPass Login 5 times
 4.	Click **Save & Publish** > **Publish**
-5.	Click *Add > Profile > macOS > Device*
-6.	Complete the following profile items on the General Tab:    
-  - Name:  Security
+
+#### Software Update ####
+1.	Click *Add > Profile > macOS > Device*
+2.	Complete the following items on the General Tab:   
+  - Name: Software Update
   - Assignment:  assign to the OG or All Devices groups
-7.	Click on the **Security & Privacy** payload and click **Configure**
-  - OS Update Delay:  15 days
-  - Mac App Store & ID Developers
-  - Do Not Allow Override
-  - Allow Watch/TouchID
-8.	Click **Save & Publish** > **Publish**
-9.	Click *Add > Profile > macOS > Device*
-10.	Complete the following profile items on the General tab:
+3.	Click on the **Software Update** Payload and click **Configure**
+  - Install Automatically
+  - All Updates
+  - Notify User
+  - Update Interval
+  - Force Restart
+4.	Click **Save & Publish** > **Publish**
+
+#### Privacy Preferences ####
+1.	Click *Add > Profile > macOS > Device*
+2.	Complete the following profile items on the General tab:
   - Name:  Privacy Preferences
   - Assignment:  assign to the OG or All Devices groups
-11.	Click on the **Privacy Preferences** payload and click **Configure**
+3.	Click on the **Privacy Preferences** payload and click **Configure**
   - Add relevant [macOS Privacy Preferences Policy Control settings](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control) per the apps you intend to deploy.
-12.	Click **Save & Publish** > **Publish**
-
+4.	Click **Save & Publish** > **Publish**
 
 #### Relevant Documentation ####
 * [macOS Mojave User Consent for Data Access Changes](https://techzone.vmware.com/blog/vmware-workspace-one-uem-apple-macos-mojave-user-consent-data-access)
@@ -347,7 +390,6 @@ Workspace ONE UEM has the capability to manage both the device mdmclient and the
 * [macOS Custom XML Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomXMLProfiles)
 * [macOS Custom Attribute Samples](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
 * [Workspace ONE UEM Console Lookup Values](https://support.workspaceone.com/articles/115001663908)
-
 
 **************************************************************************************************
 **************************************************************************************************
