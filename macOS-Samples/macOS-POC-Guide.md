@@ -59,8 +59,9 @@ APNS provides notifications to the macOS mdmclient (user and device) instructing
 #### Relevant Documentation: ####
 * [APNS (Apple Push Notification Service) Documentation (VMware)](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.6/vmware-airwatch-guides-96/GUID-AW96-DevicesUsers_Apple_APN.html)
 * [Generating & Renewing APNS certificates (VMware)](https://support.air-watch.com/articles/115001662728)
+* [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
 
-> APNS required for macOS MDM Manageability
+> **APNS is required for macOS MDM Manageability**
 
 **************************************************************************************************
 
@@ -299,12 +300,23 @@ Admins should leverage Apple Business Manager (or Apple School Manager) to enabl
 1. Navigate to 
 
 #### Relevant Documentation: ####
-1. [ON-PREM:  Important Network Changes for Apple Fall Release 2019](https://techzone.vmware.com/blog/important-networking-changes-apple-fall-release)
+* [ON-PREM:  Important Network Changes for Apple Fall Release 2019](https://techzone.vmware.com/blog/important-networking-changes-apple-fall-release)
+* [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
 
 **************************************************************************************************
 
 ### 7. Apple Business (or School) Manager Volume-Purchased Applications ###
-Application delivery from the App Store (via Custom or Volume-Purchased Apps) is the "way forward" (per WWDC 2019) for app delivery on macOS.  VMware Workspace ONE UEM manages licenses and assignments through an integration with Apple Business (or School) Manager Locations.  To facilitate this integration, you must download a file from Apple Business
+Application delivery from the App Store (via Custom or Volume-Purchased Apps) is the "way forward" (per WWDC 2019) for app delivery on macOS.  VMware Workspace ONE UEM manages licenses and assignments through an integration with Apple Business (or School) Manager Locations.  To facilitate this integration, you must download a file from Apple Business Manager (known as the "location token") and upload it to VMware.
+
+#### Notes about Apple Caching Services ####
+If you don't already have Apple macOS Caching Services deployed in your environment, it is highly recommended by VMware and Apple.  Caching Services allows you to reduce WAN bandwidth consumption by allowing downloads from the App Store (apps, os updates, etc) to be cached locally.  This allows local reuse by other devices on your network.  The Apple App Store CDN dynamically redirects clients to internal caches to obtain content.
+
+In a large/complex network, plan your caching services configurations accordingly (tree, hub/spoke, etc).   More detail can be found in Apple's documentation:
+
+
+
+#### Relevant Documentation: ####
+* [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
 
 **************************************************************************************************
 **************************************************************************************************
