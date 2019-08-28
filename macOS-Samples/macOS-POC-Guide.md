@@ -59,8 +59,9 @@ APNS provides notifications to the macOS mdmclient (user and device) instructing
 #### Relevant Documentation: ####
 * [APNS (Apple Push Notification Service) Documentation (VMware)](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.6/vmware-airwatch-guides-96/GUID-AW96-DevicesUsers_Apple_APN.html)
 * [Generating & Renewing APNS certificates (VMware)](https://support.air-watch.com/articles/115001662728)
+* [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
 
-> APNS required for macOS MDM Manageability
+> **APNS is required for macOS MDM Manageability**
 
 **************************************************************************************************
 
@@ -296,15 +297,66 @@ Chrome Integration:
 ### 6. Apple Business (or School) Manager Automated Device Enrollment ###
 Admins should leverage Apple Business Manager (or Apple School Manager) to enable out-of-box automated enrollment.  
 
-1. Navigate to 
+1. In Workspace ONE UEM, navigate to *Groups & Settings > Configurations > Apple Device Enrollment Program*
+2. Click **Configure**
+3. Click **MDM_DEP_PublicKey.pem** to download it.
+4. Click the link to **[Apple Business Manager](https://business.apple.com)**
+5. Log-in to Apple Business Manager.
+6. Click *Settings > Device Management Settings > Add MDM Server*
+7. Enter a Name for the MDM Server, then click **Choose File**
+8. Browse for and select the **MDM_DEP_PublicKey.pem** file then click **Save**
+9. Click *Settings > {Your New MDM Server Name}* and click **Download Token**
+10. In Workspace ONE UEM, click **Upload**
+11. Browse for and select the token downloaded from Apple Business Manager and click **Next** to begin building your first Automated Device Enrollment (previously Device Enrollment Program) profile.
+12. Enter relevant information about your organization and choose the options you want to enable.  See below for recommended settings.   Click **Next**
+13. Choose which options in the Setup Assistant you would like the end-user to Skip.  Click **Next**
+14. Choose whether to make the profile the default and assign to newly synced devices.  Click **Finish**
+
+> **NOTE:** If you attempt to save the DEP profile and get an error, you most likely took too long in the DEP setup wizard.      If this is the case, you must start the process over (downloading *NEW* tokens).   You need not worry about analyzing each setting for your initial profile.  You can easily modify it after-the-fact under *Groups & Settings > Configurations > Apple Device Enrollment Program*
+
+#### Notes on Recommended DEP Profile Settings ####
+- **Require MDM Enrollment** — This setting also enforces enrollment should the device be wipe/reinstalled.
+- **Lock MDM Profile** — This setting will help ensure your devices do not become unmanaged by the end user (e.g. the user cannot remove the MDM profile).
+- **Await Configuration** — This setting holds the user in the setup assistant for a few moments longer, allowing more time for MDM to deliver configuration profiles *before* the User sees the Login Window.
+- **Create New Admin Account** — This allows IT to create a hidden admin account for use in accessing the device if the user’s account becomes locked out or corrupt.
 
 #### Relevant Documentation: ####
-1. [ON-PREM:  Important Network Changes for Apple Fall Release 2019](https://techzone.vmware.com/blog/important-networking-changes-apple-fall-release)
+* [ON-PREM:  Important Network Changes for Apple Fall Release 2019](https://techzone.vmware.com/blog/important-networking-changes-apple-fall-release)
+* [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
 
 **************************************************************************************************
 
 ### 7. Apple Business (or School) Manager Volume-Purchased Applications ###
-Application delivery from the App Store (via Custom or Volume-Purchased Apps) is the "way forward" (per WWDC 2019) for app delivery on macOS.  VMware Workspace ONE UEM manages licenses and assignments through an integration with Apple Business (or School) Manager Locations.  To facilitate this integration, you must download a file from Apple Business
+Application delivery from the App Store (via Custom or Volume-Purchased Apps) is the "way forward" (per WWDC 2019) for app delivery on macOS.  VMware Workspace ONE UEM manages licenses and assignments through an integration with Apple Business (or School) Manager Locations.  To facilitate this integration, you must download a file from Apple Business Manager (known as the "location token") and upload it to VMware.
+
+In Workspace ONE UEM, perform the following:
+
+1. Navigate to  *Groups & Settings > Configurations > VPP Managed Distribution*
+2. Click **Upload**
+3. Browse and select the location token downloaded from Apple Business Manager (from *Settings > Apps & Books*)
+4. Enter a name for the token, **Uncheck** Automatically send invites and click **Save**
+5. Navigate to *Apps & Books > Applications > Native > Purchased*
+6. Click **Sync Assets**
+7. For each VPP app that has been synced in, configure the following items:
+  - **Categories:**   This helps Hub Services provide app categorization in the Intelligent Hub
+  - **Licenses to Allocate:**   If the app is free, we recommend purchasing more apps than required to allow for growth without needing to constantly manage license numbers.
+  - **Deployment Type:**   We recommend limiting the number of apps you initially load on the device.   Let the user self-service choose the apps they want on their device.  You can automatically deploy common apps such as Microsoft Outlook and the VMware Tunnel app.
+
+#### Notes about Apple Caching Services ####
+If you don't already have Apple macOS Caching Services deployed in your environment, it is highly recommended by VMware and Apple.  Caching Services allows you to reduce WAN bandwidth consumption by allowing downloads from the App Store (apps, os updates, etc) to be cached locally.  This allows local reuse by other devices on your network.  The Apple App Store CDN dynamically redirects clients to internal caches to obtain content.
+
+In a large/complex network, plan your caching services configurations accordingly (tree, hub/spoke, etc).   More detail can be found in Apple's documentation.
+
+#### Relevant Documentation: ####
+* [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
+* [About Content Caching on Mac](https://support.apple.com/guide/mac-help/about-content-caching-on-mac-mchl9388ba1b/mac)
+* [Manage Content Caching on Mac](https://support.apple.com/guide/mac-help/manage-content-caching-on-mac-mchl3b6c3720/10.14/mac/10.14)
+* [Content Types supported by content caching in macOS](https://support.apple.com/en-us/HT204675)
+* [Set up content cache clients, peers, or parents on Mac](https://support.apple.com/guide/mac-help/set-content-cache-clients-peers-parents-mac-mchl9b56e1cf/10.14/mac/10.14)
+* [Configure Advanced content caching settings on Mac](https://support.apple.com/guide/mac-help/configure-advanced-content-caching-settings-mchl91e7141a/10.14/mac/10.14)
+* [View content caching logs and statistics on Mac](https://support.apple.com/guide/mac-help/view-content-caching-logs-statistics-mac-mchl0d8533cd/10.14/mac/10.14)
+* [Enable Content Cache discovery across multiple public IP addresses on Mac](https://support.apple.com/guide/mac-help/enable-content-cache-discovery-multiple-mchld4ab5cdc/10.14/mac/10.14)
+
 
 **************************************************************************************************
 **************************************************************************************************
@@ -315,6 +367,45 @@ Workspace ONE UEM has the capability to manage both the device mdmclient and the
 
 > Note:  Some profile payloads (such as *Custom Attributes*) are functions of the Intelligent Hub and *not* the mdmclient.  In this case, you will not be able to test the feature unless you have the Intelligent Hub installed.
 
+#### Login Window ####
+1. In the UEM Console, click *Add > Profile > macOS > Device*
+2. Complete the following profile items on the General Tab:   
+  -  Name:  Login Window
+  -  Assignment:  assign to the OG or All Devices groups
+3. Click on the **Login Windonw** payload and click **Configure**.   
+4. Select the *Options* tab.
+  - Start Screen Saver
+  - After 5 minutes
+  - Module:  `/System/Library/Screen Savers/Flurry.saver`
+5.	Click **Save & Publish** > **Publish**
+
+#### Security & Privacy ####
+1.	Click *Add > Profile > macOS > Device*
+2.	Complete the following profile items on the General Tab:    
+  - Name:  Security
+  - Assignment:  assign to the OG or All Devices groups
+3.	Click on the **Security & Privacy** payload and click **Configure**
+  - OS Update Delay:  15 days
+  - Mac App Store & ID Developers
+  - Do Not Allow Override
+  - Allow Watch/TouchID
+  - Enabled Require Password after Screensaver
+  - Grace Period "Immediately"
+4.	Click **Save & Publish** > **Publish**
+
+#### Firewall ####
+1. In the UEM Console, click *Add > Profile > macOS > Device*
+2. Complete the following profile items on the General Tab:   
+  -  Name:  Firewall
+  -  Assignment:  assign to the OG or All Devices groups
+3. Click on the **Firewall** payload and click **Configure**
+  - Enable
+  - Block All Incoming
+  - Automatically Allow Signed
+  - Enable Stealth Mode
+4.	Click **Save & Publish** > **Publish**
+
+#### FileVault ####
 1. In the UEM Console, click *Add > Profile > macOS > Device*
 2. Complete the following profile items on the General Tab:   
   -  Name:  FileVault
@@ -322,24 +413,28 @@ Workspace ONE UEM has the capability to manage both the device mdmclient and the
 3. Click on the **Disk Encryption** payload and click **Configure**
   - ByPass Login 5 times
 4.	Click **Save & Publish** > **Publish**
-5.	Click *Add > Profile > macOS > Device*
-6.	Complete the following profile items on the General Tab:    
-  - Name:  Security
+
+#### Software Update ####
+1.	Click *Add > Profile > macOS > Device*
+2.	Complete the following items on the General Tab:   
+  - Name: Software Update
   - Assignment:  assign to the OG or All Devices groups
-7.	Click on the **Security & Privacy** payload and click **Configure**
-  - OS Update Delay:  15 days
-  - Mac App Store & ID Developers
-  - Do Not Allow Override
-  - Allow Watch/TouchID
-8.	Click **Save & Publish** > **Publish**
-9.	Click *Add > Profile > macOS > Device*
-10.	Complete the following profile items on the General tab:
+3.	Click on the **Software Update** Payload and click **Configure**
+  - Install Automatically
+  - All Updates
+  - Notify User
+  - Update Interval
+  - Force Restart
+4.	Click **Save & Publish** > **Publish**
+
+#### Privacy Preferences ####
+1.	Click *Add > Profile > macOS > Device*
+2.	Complete the following profile items on the General tab:
   - Name:  Privacy Preferences
   - Assignment:  assign to the OG or All Devices groups
-11.	Click on the **Privacy Preferences** payload and click **Configure**
+3.	Click on the **Privacy Preferences** payload and click **Configure**
   - Add relevant [macOS Privacy Preferences Policy Control settings](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Privacy%20Preferences%20Policy%20Control) per the apps you intend to deploy.
-12.	Click **Save & Publish** > **Publish**
-
+4.	Click **Save & Publish** > **Publish**
 
 #### Relevant Documentation ####
 * [macOS Mojave User Consent for Data Access Changes](https://techzone.vmware.com/blog/vmware-workspace-one-uem-apple-macos-mojave-user-consent-data-access)
