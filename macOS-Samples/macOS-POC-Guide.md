@@ -329,15 +329,34 @@ Admins should leverage Apple Business Manager (or Apple School Manager) to enabl
 ### 7. Apple Business (or School) Manager Volume-Purchased Applications ###
 Application delivery from the App Store (via Custom or Volume-Purchased Apps) is the "way forward" (per WWDC 2019) for app delivery on macOS.  VMware Workspace ONE UEM manages licenses and assignments through an integration with Apple Business (or School) Manager Locations.  To facilitate this integration, you must download a file from Apple Business Manager (known as the "location token") and upload it to VMware.
 
+In Workspace ONE UEM, perform the following:
+
+1. Navigate to  *Groups & Settings > Configurations > VPP Managed Distribution*
+2. Click **Upload**
+3. Browse and select the location token downloaded from Apple Business Manager (from *Settings > Apps & Books*)
+4. Enter a name for the token, **Uncheck** Automatically send invites and click **Save**
+5. Navigate to *Apps & Books > Applications > Native > Purchased*
+6. Click **Sync Assets**
+7. For each VPP app that has been synced in, configure the following items:
+  - **Categories:**   This helps Hub Services provide app categorization in the Intelligent Hub
+  - **Licenses to Allocate:**   If the app is free, we recommend purchasing more apps than required to allow for growth without needing to constantly manage license numbers.
+  - **Deployment Type:**   We recommend limiting the number of apps you initially load on the device.   Let the user self-service choose the apps they want on their device.  You can automatically deploy common apps such as Microsoft Outlook and the VMware Tunnel app.
+
 #### Notes about Apple Caching Services ####
 If you don't already have Apple macOS Caching Services deployed in your environment, it is highly recommended by VMware and Apple.  Caching Services allows you to reduce WAN bandwidth consumption by allowing downloads from the App Store (apps, os updates, etc) to be cached locally.  This allows local reuse by other devices on your network.  The Apple App Store CDN dynamically redirects clients to internal caches to obtain content.
 
-In a large/complex network, plan your caching services configurations accordingly (tree, hub/spoke, etc).   More detail can be found in Apple's documentation:
-
-
+In a large/complex network, plan your caching services configurations accordingly (tree, hub/spoke, etc).   More detail can be found in Apple's documentation.
 
 #### Relevant Documentation: ####
 * [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
+* [About Content Caching on Mac](https://support.apple.com/guide/mac-help/about-content-caching-on-mac-mchl9388ba1b/mac)
+* [Manage Content Caching on Mac](https://support.apple.com/guide/mac-help/manage-content-caching-on-mac-mchl3b6c3720/10.14/mac/10.14)
+* [Content Types supported by content caching in macOS](https://support.apple.com/en-us/HT204675)
+* [Set up content cache clients, peers, or parents on Mac](https://support.apple.com/guide/mac-help/set-content-cache-clients-peers-parents-mac-mchl9b56e1cf/10.14/mac/10.14)
+* [Configure Advanced content caching settings on Mac](https://support.apple.com/guide/mac-help/configure-advanced-content-caching-settings-mchl91e7141a/10.14/mac/10.14)
+* [View content caching logs and statistics on Mac](https://support.apple.com/guide/mac-help/view-content-caching-logs-statistics-mac-mchl0d8533cd/10.14/mac/10.14)
+* [Enable Content Cache discovery across multiple public IP addresses on Mac](https://support.apple.com/guide/mac-help/enable-content-cache-discovery-multiple-mchld4ab5cdc/10.14/mac/10.14)
+
 
 **************************************************************************************************
 **************************************************************************************************
