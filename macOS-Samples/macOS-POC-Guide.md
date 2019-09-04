@@ -3,6 +3,8 @@ As organizations are embracing employee choice or embarking on their own [“Dig
 
 >As always, contributions from the community are welcome, so if you find something missed (or have something to share) as you go through this guide, send us a pull request!
 
+>Much of the content in this guide was covered at VMworld 2019 in the UEM2099BU session:   [STREAM](https://videos.vmworld.com/global/2019/videoplayer/27935)  |  [DOWNLOAD](https://s3-us-west-1.amazonaws.com/vmworld-usa-2019/UEM2099BU.mp4)
+
 
 
 ## THE TYPICAL "DON'T DO THIS IN YOUR PRODUCTION ENVIRONMENT" WARNING: ##
