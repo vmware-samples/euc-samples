@@ -1,11 +1,11 @@
-# **Workspace ONE ApplicationManagement-Samples**
+# **Mobile apps CICD script**
 
 ## **Overview**
 * **Author(s)** : Manisha R, Nurul Quamar Khan
 * **Email** : manishar@vmware.com, khann@vmware.com
 * **Date Created** : 16 June 2019
 
-## **Testing ApplicationManagement-Samples Script**
+## **Testing Mobile apps CICD Script**
 There are 2 different approaches for testing of this Sample:
 ### **1. Post-script Validation** (/testing/validate_script_execution.py)
 *Post-script validation is recommended every time the python script is executed for Application deployment.*
