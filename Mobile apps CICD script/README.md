@@ -1,4 +1,4 @@
-# **Workspace ONE ApplicationManagement-Samples**
+# **Mobile apps CICD script**
 
 ## **Overview**
 * **Author(s)** : Manisha R, Nurul Quamar Khan
