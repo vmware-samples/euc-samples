@@ -1,12 +1,13 @@
-# AirWatch-samples
+# EUC-samples
 
 ## macOS-Samples
-This section of the **AirWatch-samples** repository contains samples relating to macOS endpoint management.
+This section of the **EUC-samples** repository contains samples relating to macOS endpoint management with Workspace ONE UEM.
 
 Some examples of items to submit for consideration and use by the community:
 * Custom XML Profile Payloads -- Manage Preferences and settings which are not part of the default Apple MDM specification.
 * Script content for Custom Attributes -- Report custom information about a macOS device back to the Airwatch console (and optionally leverage them in Products)
 * Scripts to deploy in a Product -- Custom software distribution or settings management
+* Markdown documents covering topics such as bootstrap packages, 3rd-party software management, etc...
 
 
 
@@ -24,7 +25,7 @@ The following information must be included in the README.md or in the sample doc
 
 ### Suggested Information
 The following information should be included when possible. Inclusion of information provides valuable information to consumers of the resource.
-* VMWare Airwatch version against which the sample was developed/tested
+* VMWare Workspace ONE version against which the sample was developed/tested
 * Client Operating System version against which the sample was developed/tested (e.g. Windows Build number, or macOS Version and Build Number)
 * Language (Bash/Python/Powershell) version against which the sample was developed/tested
 
@@ -61,8 +62,8 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 
 ## VMware Resources
-* [Airwatch-Samples GitHub Repository](https://github.com/vmwaresamples/AirWatch-samples)
-* [WHITEPAPER - Product Provisioning Best Practices](https://blogs.vmware.com/euc/2017/05/vmware-airwatch-office-2016-macos-product-deployment-best-practices.html)
+* [Tech Zone macOS Activity Path](https://techzone.vmware.com/understanding-macos-management)
 * [VMware Code](https://code.vmware.com/home)
+* [VMware Tech Zone](https://techzone.vmware.com)
+* [VMware End-User Computing Blog](https://blogs.vmware.com/euc)
 * [VMware Developer Community](https://communities.vmware.com/community/vmtn/developer)
-* [VMware End User Computing Blog - AirWatch](https://blogs.vmware.com/euc/products/airwatch)

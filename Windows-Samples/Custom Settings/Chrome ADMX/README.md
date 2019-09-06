@@ -4,13 +4,14 @@
 - **Author**: Josue Negron
 - **Email**: jnegron@vmware.com
 - **Date Created**: 12/1/2017
-- **Tested on**: Windows 10 Enterprise 1709
+- **Date Updated**: 8/7/2019, rmyklebust@vmware.com
+- **Tested on**: Windows 10 Enterprise 1709, Windows 10 PRO 1809
 
         
 ## Description
 ADMX-backed policies were introduced starting in Windows 10 version 1703, however you should stick to the latest version in order to have support for all of the policies. Microsoft allowed ADMX-backed policies to be deployed using CSPs, this sample will show you how to deploy the Chrome ADMX template (easily be modified to support any other ADMX template). As well as push out ADMX-backed Chrome policies to the device once the ADMX template is installed. Please reference the resources below to figure out what value (format) needs to go inside of the data tag. This varies depending on the element type such as: text, List, Enum, MultiText, No Elements, etc. 
 
-You can deploy these Chrome CSPs samples via AirWatch. To deploy navigate to **Devices & User > Profile > Add > Windows > Desktop > Device > Custom Settings**, then copy and paste the SyncML into the box and publish the profile.
+You can deploy these Chrome CSPs samples via Workspace ONE UEM. To deploy navigate to **Devices & User > Profile > Add > Windows > Desktop > Device > Custom Settings**, then copy and paste the SyncML into the install / unistall box and publish the profile.
 
 These are all ADMX-backed policies and require special SyncML format to enable or disable. For details, see [Understanding ADMX-backed policies](https://docs.microsoft.com/en-us/windows/client-management/mdm/understanding-admx-backed-policies).
 
@@ -29,10 +30,21 @@ An ADMX file can either be shipped with Windows (located at `%SystemRoot%\policy
 Windows maps the name and category path of a Group Policy to a MDM policy area and policy name by parsing the associated ADMX file, finding the specified Group Policy, and storing the definition (metadata) in the MDM Policy CSP client store. When the MDM policy is referenced by a SyncML command and the Policy CSP URI, `.\[device|user]\vendor\msft\policy\[config|result]\<area>\<policy>`, this metadata is referenced and determines which registry keys are set or removed. For a list of ADMX-backed policies supported by MDM, see [Policy CSP - ADMX-backed policies](https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-configuration-service-provider#admx-backed-policies).
 
 Reference for [Background section](https://docs.microsoft.com/en-us/windows/client-management/mdm/understanding-admx-backed-policies#a-href-idbackgroundabackground) taken from [Microsoft](https://docs.microsoft.com/en-us/windows/client-management/mdm/understanding-admx-backed-policies#a-href-idbackgroundabackground). 
-	
+## Usage
+- ChromeADMXInstall.xml contains the latest version of the Google ADMX file as of August 6th 2019. To update to a later version replace the content in the <![CDATA[]]>	tag with the latest Google ADMX, or any other ADMX file.
+- SampleChromeSettings.xml contains samples that can be deployed either in one single custom profile or as separate profiles. The file contains a install setting command and the corrensponding remove setting command. The remove command will delete the setting on the device allowing the user to do any changes.
+
+The examples listed will do the following:
+1. Disable the Chromcast Button
+2. Disable Password Manager
+3. Install the Adobe Chrome extention
+4. Block the Browsing Protection by F-Secure extention
+5. Auto select spesific certificate to do certificate authentication into Workspace ONE
+
 ## Modifications Required
 - Modify the values inside of the data tags. 
-- Change the target of the policies to either device or user. Inside of <LocURI> you will want to change to either ./Device/ or ./User/ but be careful as some policies support User, Device, or Both, you can reference which are support by looking at the Chrome ADMX template. 
+- Change the target of the policies to either device or user. Inside of <LocURI> you will want to change to either ./Device/ or ./User/ but be careful as some policies support User, Device, or Both, you can reference which are support by looking at the Chrome ADMX template.
+- To use the certificate autoselect make sure you update the pattern to be the server you want to auto select certificate for and the CN value to reflect the CN value of the certificate provided to the users.
 
 ## Resources
 - [Understanding ADMX-backed policies](https://docs.microsoft.com/en-us/windows/client-management/mdm/understanding-admx-backed-policies)

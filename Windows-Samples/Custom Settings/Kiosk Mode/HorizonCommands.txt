@@ -1,0 +1,19 @@
+get-wmiobject Win32_Product | sort name | Format-Table IdentifyingNumber, Name, LocalPackage -AutoSize
+
+Install Command:
+VMware-Horizon-Client-4.10.0-11021086.exe /silent /norestart VDM_SERVER=horizon.vmware.com
+VMware-Horizon-Client-5.1.0-14045148.exe /silent /norestart VDM_SERVER=horizon.vmware.com
+
+Uninstall Command:
+VMware-Horizon-Client-4.10.0-11021086.exe /uninstall
+VMware-Horizon-Client-5.1.0-14045148.exe /uninstall
+
+Detection Criteria: App Exists:
+{6369A6AF-90B0-49A4-9B2C-A2E9286064ED} VMware Horizon Client 4.10.0-11021086
+{C7130443-13FF-4BAC-A4E4-50F891FE122F} VMware Horizon Client 5.1.0-14045148
+
+Horizon Documentation:
+https://docs.vmware.com/en/VMware-Horizon-Client-for-Windows/4.10/horizon-client-windows-installation/GUID-1DCFA762-6F08-455D-82C0-2A18C87E41D5.html
+
+Download:
+https://my.vmware.com/en/web/vmware/info/slug/desktop_end_user_computing/vmware_horizon_clients/5_0
