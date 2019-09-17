@@ -106,7 +106,7 @@ If not already done, you'll need to set up the AirWatch Cloud Connector (ACC) an
 The VMware Identity Manager Connector is optional and only required if you plan to fully configure VMware Workspace ONE Access (previously Identity Manager) to enable the Unified App Catalog (native/mobile, SaaS, and Virtual Apps), Notifications, and/or People integration for your macOS deployment.
 
 1. Generate an activation code in the VMware Identity Manager console.
-2. Download and run the VMware Identity Manager Connector Installer on a Windows server that meets all the requirements
+2. [Download](https://my.vmware.com/web/vmware/details?downloadGroup=VIDM_ONPREM_32&productId=728&rPId=21671) and run the VMware Identity Manager Connector Installer for Windows on a Windows server that meets all the requirements
 3. Run the Connector Setup Wizard to activate the connector and set passwords
 4. Configure proxy settings for the connector, if required.
 5. When ready to enable the Hub Services requiring Workspace ONE Access, you must migrate the directory synchronization from Workspace ONE UEM to Workspace ONE Access (using the steps outlined in the relevant documentation linked below).
