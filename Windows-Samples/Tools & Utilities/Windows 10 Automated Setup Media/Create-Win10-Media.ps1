@@ -2,8 +2,8 @@
 	.NOTES
 	===========================================================================
 	 Created with: 	SAPIEN Technologies, Inc., PowerShell Studio 2018 v5.5.155
-	 Created on:   	1/5/2019 4:09 PM
-	 Created by:   	Brooks Peppin, www.brookspeppin.com, bpeppin@vmware.com
+	 Updated:   	Aug 6th, 2019
+	 Created by:   	Brooks Peppin, www.brookspeppin.com, @brookspeppin
 	 Organization: 	VMware, Inc.
 	 Filename:     	Create-Win10-Media.ps1
 	===========================================================================
