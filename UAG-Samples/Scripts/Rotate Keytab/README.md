@@ -25,28 +25,28 @@ To execute this script successfully, you need to:
 
 The module contains the following commands:
 
-- **New-Keytabfile** – generate new keytab files based on the informed parameters, behind the scene it uses the ktpass utility   
+- **New-Keytabfile** - generate new keytab files based on the informed parameters, behind the scene it uses the ktpass utility   
 
-- **Connect-UAG** – Validate the connection with UAG and obtain authorization token to use with the other UAG related commands.
+- **Connect-UAG** - Validate the connection with UAG and obtain authorization token to use with the other UAG related commands.
 
-- **Get-Keytabs** – return the list of SPNs available on UAG
+- **Get-Keytabs** - return the list of SPNs available on UAG
 
-- **Import-Keytab** – upload the new keytab file to UAG
+- **Import-Keytab** - upload the new keytab file to UAG
 
-- **Update-IIS** – update the DefaultAppPool identity with the new credentials and reset IIS - The Application Pool Name can be overriden using the parameter -appPoolName  
+- **Update-IIS** - update the DefaultAppPool identity with the new credentials and reset IIS - The Application Pool Name can be overriden using the parameter -appPoolName  
 
 ## How to execute the script
 
 Launch a PowerShell console as an administrator user, open the runsample.ps1 file, and update the following variables that will be used by the commands:
 
-- **$spn** – Service Principal Name used to generate the keytab
-- **keytabfile** – name of the new keytabfile including the path
-- **domain** – domain of the service account
-- **username** – username for the service account that password needs to be updated
-- **newpassword** – new password for the UAG account 
-- **uaguser** – username for the UAG account with admin privileges
-- **uagpassword** – password for the UAG account 
-- **uaghostname** – UAG instance where keytab rotation will be performed
+- **$spn** - Service Principal Name used to generate the keytab
+- **keytabfile** - name of the new keytabfile including the path
+- **domain** - domain of the service account
+- **username** - username for the service account that password needs to be updated
+- **newpassword** - new password for the UAG account 
+- **uaguser** - username for the UAG account with admin privileges
+- **uagpassword** - password for the UAG account 
+- **uaghostname** - UAG instance where keytab rotation will be performed
 
 You need to open the runsample.ps1 file and update the variable values, save and run the script as:
 
