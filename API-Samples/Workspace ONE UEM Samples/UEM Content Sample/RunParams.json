@@ -1,0 +1,7 @@
+{
+	"UEMConsole": "<Your tenant URL, ex.  https://cn1506.awmdm.com",
+	"UEMUsername": "<Admin username from UEM tenant>",
+    "UEMPassword": "<Password for the username above>",
+    "UEMRESTAPIKey": "<REST API key from the tenant>",
+    "BaseFolder": "<Path where files will be written:  Mac - /Users/username/Content, Windows - C:\\Content"
+}
