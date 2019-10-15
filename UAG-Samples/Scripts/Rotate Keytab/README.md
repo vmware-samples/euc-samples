@@ -58,4 +58,5 @@ Example:
 
 
 ## Additional Resources
+* [Unified Access Gateway Tech Zone Learning Path](https://techzone.vmware.com/mastering-unified-access-gateway/)
 * [Unified Access Gateway Documentation](https://docs.vmware.com/en/Unified-Access-Gateway/)
