@@ -59,8 +59,7 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 
 ## VMware Resources
-* [Airwatch-Samples GitHub Repository](https://github.com/vmwaresamples/AirWatch-samples)
-* [WHITEPAPER - Product Provisioning Best Practices](https://blogs.vmware.com/euc/2017/05/vmware-airwatch-office-2016-macos-product-deployment-best-practices.html)
+* [Airwatch-Samples GitHub Repository](https://github.com/vmwaresamples/euc-samples)
+* [Intelligence Console User Guide](https://docs.vmware.com/en/VMware-Workspace-ONE/services/Intelligence/GUID-AWT-WS1INT-OVERVIEW.html)
+* [VMware EUC Tech Zone ](https://techzone.vmware.com)
 * [VMware Code](https://code.vmware.com/home)
-* [VMware Developer Community](https://communities.vmware.com/community/vmtn/developer)
-* [VMware End User Computing Blog - AirWatch](https://blogs.vmware.com/euc/products/airwatch)
