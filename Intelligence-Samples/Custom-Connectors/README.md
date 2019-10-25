@@ -1,4 +1,4 @@
-# EUC-samples
+# Intelligence-samples
 
 ## Custom-Connectors
 This section of the **EUC-samples** repository contains Custom Connectors samples used by the Automation on  Workspace ONE Intelligence.
