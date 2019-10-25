@@ -1,6 +1,6 @@
 # EUC-samples
 
-## IntelligenceSDK-Samples
+## IntelligenceSDK
 This section of the **EUC-samples** repository contains samples relating to Workspace ONE Intelligence SDK (formerly known as Apteligent SDK).
 
 Some examples of items to submit for consideration and use by the community:
