@@ -37,7 +37,6 @@ Follow the [GitHub process](https://help.github.com/articles/fork-a-repo)
 ### Code Style
 
 We won't actively enforce any "official" style guides, but do ask that you do what you can to:
-* Make your samples easily readable
 * Make your samples easily reusable
 * Include in-line comments to help with readability
 
@@ -59,7 +58,7 @@ Sample Exchange can be allowed to access your GitHub resources, by way of a link
 
 
 ## VMware Resources
-* [Airwatch-Samples GitHub Repository](https://github.com/vmwaresamples/euc-samples)
+* [EUC-Samples GitHub Repository](https://github.com/vmwaresamples/euc-samples)
 * [Intelligence Console User Guide](https://docs.vmware.com/en/VMware-Workspace-ONE/services/Intelligence/GUID-AWT-WS1INT-OVERVIEW.html)
 * [VMware EUC Tech Zone ](https://techzone.vmware.com)
 * [VMware Code](https://code.vmware.com/home)
