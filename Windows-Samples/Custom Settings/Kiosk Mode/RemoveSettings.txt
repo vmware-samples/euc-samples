@@ -1,0 +1,8 @@
+<Delete>
+  <CmdID>b9e3d1b7-1dab-4dd8-bb17-56fa8a341547</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/AssignedAccess/Configuration</LocURI>
+      </Target>
+  </Item>
+</Delete>
