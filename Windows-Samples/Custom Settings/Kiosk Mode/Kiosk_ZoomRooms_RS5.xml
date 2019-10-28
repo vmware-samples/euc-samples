@@ -10,9 +10,6 @@
                     <App DesktopAppPath="C:\Program Files (x86)\ZoomRooms\bin\ZoomRooms.exe" rs5:AutoLaunch="true"/>
                </AllowedApps>
            </AllAppsList>
-		   <rs5:FileExplorerNamespaceRestrictions>
-               <rs5:AllowedNamespace Name="Downloads"/>
-           </rs5:FileExplorerNamespaceRestrictions>
            <StartLayout>
                 <![CDATA[<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
                     <LayoutOptions StartTileGroupCellWidth="6" />
@@ -28,7 +25,6 @@
                 </LayoutModificationTemplate>
                 ]]>
             </StartLayout>
-           <Taskbar ShowTaskbar="true"/>
        </Profile>
    </Profiles>
    <Configs>
