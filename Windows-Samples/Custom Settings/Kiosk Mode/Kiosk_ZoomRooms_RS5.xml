@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<AssignedAccessConfiguration
+    xmlns="http://schemas.microsoft.com/AssignedAccess/2017/config"
+   xmlns:rs5="http://schemas.microsoft.com/AssignedAccess/201810/config"
+   >
+    <Profiles>
+       <Profile Id="{e27401b8-01f4-4bdc-96dc-ddbd0591dbf0}">
+           <AllAppsList>
+                <AllowedApps>
+                    <App DesktopAppPath="C:\Program Files (x86)\ZoomRooms\bin\ZoomRooms.exe" rs5:AutoLaunch="true"/>
+               </AllowedApps>
+           </AllAppsList>
+		   <rs5:FileExplorerNamespaceRestrictions>
+               <rs5:AllowedNamespace Name="Downloads"/>
+           </rs5:FileExplorerNamespaceRestrictions>
+           <StartLayout>
+                <![CDATA[<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
+                    <LayoutOptions StartTileGroupCellWidth="6" />
+                    <DefaultLayoutOverride>
+                        <StartLayoutCollection>
+                            <defaultlayout:StartLayout GroupCellWidth="6">
+                                <start:Group Name="Apps">
+                                    <start:DesktopApplicationTile DesktopApplicationLinkPath="C:\Program Files (x86)\ZoomRooms\bin\ZoomRooms.exe" Size="2x2" Column="0" Row="0" />
+                                </start:Group>
+                            </defaultlayout:StartLayout>
+                        </StartLayoutCollection>
+                    </DefaultLayoutOverride>
+                </LayoutModificationTemplate>
+                ]]>
+            </StartLayout>
+           <Taskbar ShowTaskbar="true"/>
+       </Profile>
+   </Profiles>
+   <Configs>
+       <Config>
+           <AutoLogonAccount />
+           <DefaultProfile Id="{e27401b8-01f4-4bdc-96dc-ddbd0591dbf0}"/>
+       </Config>
+   </Configs>
+</AssignedAccessConfiguration>
