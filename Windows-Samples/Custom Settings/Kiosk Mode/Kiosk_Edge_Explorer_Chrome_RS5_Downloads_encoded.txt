@@ -1,0 +1,12 @@
+  <Replace>
+    <CmdID>f4cb2bd6-4f52-4ddf-8db6-68211e77b7d0</CmdID>
+    <Item>
+      <Target>
+        <LocURI>./Device/Vendor/MSFT/AssignedAccess/Configuration</LocURI>
+      </Target>
+      <Meta>
+        <Format xmlns="syncml:metinf">chr</Format>
+      </Meta>
+      <Data>paste encoded data here</Data>
+    </Item>
+  </Replace>
