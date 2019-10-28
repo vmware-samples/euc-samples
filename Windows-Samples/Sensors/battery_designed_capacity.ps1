@@ -1,4 +1,4 @@
-﻿# Returns the max charge capacity of the batteries in percentage
+﻿# Returns the max charge capacity of the batteries in mWh (megawatt hour)
 # Return Type: String
 # Execution Context: System
 # Author: Bpeppin
@@ -8,12 +8,8 @@ if ((Get-WmiObject -Class Win32_Battery).count -ne 0)
 {
 	
 	$designedCapacity = (Get-WmiObject -Class "BatteryStaticData" -Namespace "ROOT\WMI").DesignedCapacity
-	$fullCharge = (Get-WmiObject -Class "BatteryFullChargedCapacity" -Namespace "ROOT\WMI").FullChargedCapacity
-	# 
-	$currentBatteryCapacity = ($FullCharge / $DesignedCapacity) * 100
-	# Round battery percentage
-	$currentBatteryCapacity = [decimal]::round($currentBatteryCapacity)
-	Write-Host "Battery capacity is at $($currentBatteryCapacity)%."
+	$designedCapacity = '{0:N0}' -f $designedCapacity
+	Write-Output "$designedCapacity mWh"
 }
 else
 {
