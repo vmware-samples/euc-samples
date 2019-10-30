@@ -16,6 +16,7 @@ Included in this repository is a list of Postman Collection samples that can be 
 * Atlassian JIRA - create JIRA bugs, tasks and service desk request
 * Microsoft Teams - create simple messages and cards
 * PagerDuty - create incidents
+* Salesforce - create cases
 * Service Now - create problems and tickets
 * Slack - create basic message and advanced formatted message
 * Splunk - add data input
