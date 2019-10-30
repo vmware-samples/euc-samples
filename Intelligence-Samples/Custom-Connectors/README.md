@@ -3,11 +3,16 @@
 ## Custom-Connectors
 This section of the **EUC-samples** repository contains Custom Connectors samples used by the Automation on  Workspace ONE Intelligence.
 
-The samples are postman collections that can a list of API requests, that when imported into Workspace ONE Intelligence became an automation action.
+The samples are postman collections that contain a list of API requests, that when imported into Workspace ONE Intelligence became an automation action.
 
 Some examples of items to submit for consideration and use by the community:
-* TBD
-
+* Atlassian JIRA - create JIRA bugs, tasks and service desk request
+* Microsoft Teams - create simple messages and cards
+* PagerDuty - create incidents
+* Service Now - create problems and tickets
+* Slack - create basic message and advanced formatted message
+* Splunk - add data input
+* Zendesk - create tickets
 
 ## Submitting samples
 
