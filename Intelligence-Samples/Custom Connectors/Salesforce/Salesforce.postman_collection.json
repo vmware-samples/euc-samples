@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "d6954394-d200-4fee-9a70-6a0321e44588",
+		"name": "Salesforce",
+		"description": "This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate all variable fields with the values from your instance. Including: BaseURL, OAuth2 Token URL, Client Secret and Clietn ID.\n\nSend messages and cards to Microsoft Teams using the Incoming Webhook integration.  An Incoming Webhook must be configured for each channel using the Connectors setup options.\n\n**Set Up OAuth 2.0 in Salesforce**\n\nIn order to call the Salesforce API, OAuth authentication is required and must be enable on your salesforce instance.\n\nTo setup OAuth 2.0 refer to the salesforce documentation - Topic [Step Two: Set Up Authorization][https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/quickstart_oauth.htm].\n\n\n**Authentication**\n\nTo configure this connector in Intelligence, select the *OAuth 2.0* type and enter the the following:\n1. Base URL (Typically `https://login.salesforce.com`)\n2. OAuth2 Token URL (Typically `https://login.salesforce.com/services/oauth2/token`)\n3. Client Secret\n4. Client ID\n\n\n**Actions in this Collection**\n1. **Create Case** - This will create a case object in salesforce.\n\nFor more information on Salesforce REST APIs, please check the API Explorer on Salesforce [developer site][https://developer.salesforce.com/docs/api-explorer/sobject/]\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Case",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"Type\" : \"Device\",\n  \"Status\" : \"New\",\n  \"Reason\" : \"Test Intelligence\",\n  \"Origin\" : \"Intelligence Automation\",\n  \"Subject\" : \"New Case\",\n  \"Priority\" : \"Low\",\n  \"Description\": \"Provide description\",\n  \"SuppliedPhone\": \"888-888-888\",\n  \"SuppliedEmail\": \"useremail@company.com\",\n  \"SuppliedName\" : \"name of device owner\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/services/data/v41.0/sobjects/Case",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"services",
+						"data",
+						"v41.0",
+						"sobjects",
+						"Case"
+					]
+				},
+				"description": "Create a salesforce Case based on input parameters, lookup values can be used as input parameters during the Workspace ONE Intellience Action"
+			},
+			"response": [
+				{
+					"name": "Case",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Type\" : \"Device\",\n  \"Status\" : \"New\",\n  \"Reason\" : \"Test Intelligence\",\n  \"Origin\" : \"Intelligence Automation\",\n  \"Subject\" : \"New Case\",\n  \"Priority\" : \"Low\",\n  \"Description\": \"Provide description\",\n  \"SuppliedPhone\": \"888-888-888\",\n  \"SuppliedEmail\": \"useremail@company.com\",\n  \"SuppliedName\" : \"name of device owner\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/services/data/v41.0/sobjects/Case",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"services",
+								"data",
+								"v41.0",
+								"sobjects",
+								"Case"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 30 Oct 2019 22:03:30 GMT"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536002; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Robots-Tag",
+							"value": "none"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "private"
+						},
+						{
+							"key": "Sforce-Limit-Info",
+							"value": "api-usage=22/15000"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"\",\n    \"success\": true,\n    \"errors\": []\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "2e97cd4a-4f09-45df-adcc-b5148157721a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "001a0ea6-7c08-45ec-8fc8-0f39667cf770",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
