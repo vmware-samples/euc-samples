@@ -1,0 +1,409 @@
+{
+	"info": {
+		"_postman_id": "206f89c3-5157-4da2-b36d-2b434072a939",
+		"name": "Atlassian Cloud Sample",
+		"description": "This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate all variable fields with the values from your instance. Including: BaseURL and Token.\n\nAdditionally, you can add other custom field types to this request based on your needs. Check the Jira API documentation to learn more.\n\n**Permissions required:** *Browse projects* and *Create issues* [project permissions](https://confluence.atlassian.com/x/yodKLg) for the project in which the issue or subtask is created.\n\nFor Authentication with the API, use the **Basic** Authentication type with your Admin username and populate the Password field with a generated API token. To generate a Token for use with the API, follow these instructions to [Generate account API tokens](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)\n\nFor more information on Atlassian APIs, please check the [Atlassian API Reference](https://developer.atlassian.com/cloud/jira/platform/rest/v2/#api-rest-api-2-issue-post)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Jira Bug",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{API_Token}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{Username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fields\": {\n    \"summary\": \"Add a title or summary to the issue\",\n    \"issuetype\": {\n      \"name\": \"Bug\"\n    },\n    \"project\": {\n      \"key\": \"TEST\"\n    },\n    \"description\": \"Some Description\"\n   }\n  }\n"
+				},
+				"url": {
+					"raw": "https://{{BaseURL}}/rest/api/2/issue",
+					"protocol": "https",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue"
+					]
+				},
+				"description": "Creates a Bug within Jira Cloud.\n\nProperly creating a Request requires:\n   * Updating the \"project.key\" to match the Project KEY for the bug. This is case sensitive.\n   * Updating the \"issuetype.name\" to match that of the request type name (usually 'Bug' for this request). This is case sensitive.\n   \nYou can add other custom field types to this request based on your needs. Check the Jira API documentation to learn more.\n\n**Permissions required:** *Browse projects* and *Create issues* [project permissions](https://confluence.atlassian.com/x/yodKLg) for the project in which the issue or subtask is created."
+			},
+			"response": [
+				{
+					"name": "Create Jira Bug",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fields\": {\n    \"summary\": \"Add a title or summary to the issue\",\n    \"issuetype\": {\n      \"name\": \"Bug\"\n    },\n    \"project\": {\n      \"key\": \"TEST\"\n    },\n    \"description\": \"Some Description\"\n   }\n  }\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{BaseURL}}/rest/api/2/issue",
+							"protocol": "https",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "AtlassianProxy/1.15.8.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, no-transform"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=315360000; includeSubDomains; preload"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Timing-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"10017\",\n    \"key\": \"TEST-5\",\n    \"self\": \"https://{{BaseURL}}/rest/api/2/issue/10017\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Jira Task",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{API_Token}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{Username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fields\": {\n    \"summary\": \"Add a title or summary to the issue\",\n    \"issuetype\": {\n      \"name\": \"Task\"\n    },\n    \"project\": {\n      \"key\": \"TEST\"\n    },\n    \"description\": \"Some Description\"\n   }\n  }\n"
+				},
+				"url": {
+					"raw": "https://{{BaseURL}}/rest/api/2/issue",
+					"protocol": "https",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue"
+					]
+				},
+				"description": "Creates a Task within Jira Cloud.\n\nProperly creating a Request requires:\n   * Updating the \"project.key\" to match the Project KEY for the task. This is case sensitive.\n   * Updating the \"issuetype.name\" to match that of the request type name (usually 'Task' for this request). This is case sensitive.\n   \nYou can add other custom field types to this request based on your needs. Check the Jira API documentation to learn more.\n\n**Permissions required:** *Browse projects* and *Create issues* [project permissions](https://confluence.atlassian.com/x/yodKLg) for the project in which the issue or subtask is created."
+			},
+			"response": [
+				{
+					"name": "Create Jira Task",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fields\": {\n    \"summary\": \"Add a title or summary to the issue\",\n    \"issuetype\": {\n      \"name\": \"Task\"\n    },\n    \"project\": {\n      \"key\": \"TEST\"\n    },\n    \"description\": \"Some Description\"\n   }\n  }\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{BaseURL}}/rest/api/2/issue",
+							"protocol": "https",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "AtlassianProxy/1.15.8.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, no-transform"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=315360000; includeSubDomains; preload"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Timing-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"10018\",\n    \"key\": \"TEST-6\",\n    \"self\": \"https://{{BaseURL}}/rest/api/2/issue/10018\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Service Desk Request",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{API_Token}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{Username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fields\": {\n    \"summary\": \"Add a title or summary to the issue\",\n    \"issuetype\": {\n      \"name\": \"IT help\"\n    },\n    \"project\": {\n      \"key\": \"DESK\"\n    },\n    \"description\": \"Some Description\"\n   }\n  }\n"
+				},
+				"url": {
+					"raw": "https://{{BaseURL}}/rest/api/2/issue",
+					"protocol": "https",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue"
+					]
+				},
+				"description": "Creates a request within Jira Service Desk Cloud.\n\nProperly creating a Request requires:\n   * Updating the \"project.key\" to match the Project KEY of the service desk. This is case sensitive.\n   * Updating the \"issuetype.name\" to match that of the request type name. This is case sensitive.\n   \nYou can add other custom field types to this request based on your needs. Check the Jira API documentation to learn more.\n\n**Permissions required:** *Browse projects* and *Create issues* [project permissions](https://confluence.atlassian.com/x/yodKLg) for the project in which the issue or subtask is created."
+			},
+			"response": [
+				{
+					"name": "Create Service Desk Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fields\": {\n    \"summary\": \"Add a title or summary to the issue\",\n    \"issuetype\": {\n      \"name\": \"IT help\"\n    },\n    \"project\": {\n      \"key\": \"DESK\"\n    },\n    \"description\": \"Some Description\"\n   }\n  }\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{BaseURL}}/rest/api/2/issue",
+							"protocol": "https",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"rest",
+								"api",
+								"2",
+								"issue"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "AtlassianProxy/1.15.8.1"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, no-transform"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=315360000; includeSubDomains; preload"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Timing-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"10019\",\n    \"key\": \"DESK-14\",\n    \"self\": \"https://{{BaseURL}}/rest/api/2/issue/10019\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "013b50b5-fb97-47aa-beec-aa79c1facf74",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "05a67560-7d3d-43c5-a7a7-efcf490ff6ba",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

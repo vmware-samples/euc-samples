@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "586ab7c0-eb24-448a-8c8a-719063e85fe2",
+		"name": "Microsoft Teams Sample",
+		"description": "This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate the Webhook URL(s) from your channels. \n\nSend messages and cards to Microsoft Teams using the Incoming Webhook integration.  An Incoming Webhook must be configured for each channel using the Connectors setup options.\n\n**Generating a Webhook URL for a Channel**\n\nIn order to send messages to a channel, we must first add a webhook integration in Teams.  To do this, open your Teams app, select *More Options* next to your desired channel and choose *Connectors*. Find the *Incoming Webhook* connector and configure accordingly. You should use the Webhook URL as the full URL within the Postman Request. For more details on this setup, refer to [Microsoft's Documentation](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/connectors/connectors-using#setting-up-a-custom-incoming-webhook).\n\n**Note:** Each request can only be associated with one channel in Microsoft Teams, so if you'd like the ability to send messages to multiple channels, duplicate the request in Postman and add the new Webhook URL. Be sure to save the request with a descriptive name specifying the channel to which the request is associated.\n\n\n**Authentication**\n\nTo configure this connector in Intelligence, select the *No Authentication* type and enter only the Base URL (Typically `https://outlook.office.com`). The rest of the path will be used automatically, as defined in the collection.\n\n**Actions in this Collection**\n1. **Create Simple Message** - This is a simple, text-based message that will be sent to the channel configured in the webhook URL.\n2. **Create Card** - This is a sample of one type of card that can show a formatted message including lists, images, buttons, and more. To learn more about the types of cards that can be used, see [Microsoft Teams Card Reference](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/cards/cards-reference)\n * `@context` and `@type` define what kind of card should be displayed\n * `themeColor` can be modified to highlight the card using a HEX string\n * `sections` can be modified to change the overall format of the card according to [Microsoft Teams Card Reference](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/cards/cards-reference)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Simple Message",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"text\": \"Hello World\"\n}"
+				},
+				"url": {
+					"raw": "https://outlook.office.com/{{WebhookValue}}",
+					"protocol": "https",
+					"host": [
+						"outlook",
+						"office",
+						"com"
+					],
+					"path": [
+						"{{WebhookValue}}"
+					]
+				},
+				"description": "Sends a simple message to the defined channel in the URL."
+			},
+			"response": [
+				{
+					"name": "Create Simple Message",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"text\": \"Hello World\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://outlook.office.com/{{WebhookValue}}",
+							"protocol": "https",
+							"host": [
+								"outlook",
+								"office",
+								"com"
+							],
+							"path": [
+								"{{WebhookValue}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Cache-Control",
+							"value": "no-cache"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Expires",
+							"value": "-1"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-IIS/10.0"
+						},
+						{
+							"key": "X-BackEndHttpStatus",
+							"value": "200"
+						},
+						{
+							"key": "X-BackEndHttpStatus",
+							"value": "200"
+						},
+						{
+							"key": "X-AspNet-Version",
+							"value": "4.0.30319"
+						},
+						{
+							"key": "X-RUM-Validated",
+							"value": "1"
+						},
+						{
+							"key": "X-Proxy-BackendServerStatus",
+							"value": "200"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						}
+					],
+					"cookie": [],
+					"body": "1"
+				}
+			]
+		},
+		{
+			"name": "Create Card",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@context\": \"https://schema.org/extensions\",\n    \"@type\": \"MessageCard\",\n    \"title\": \"Card Title\",\n    \"summary\": \"Card summary\",\n    \"themeColor\": \"0072C6\",\n    \"sections\": [\n        {\n            \"text\": \"Card Text\",\n            \"facts\": [\n                {\n                    \"name\": \"Item 1:\",\n                    \"value\": \"Value 1\"\n                },\n                {\n                    \"name\": \"Item 2:\",\n                    \"value\": \"Value 2\"\n                },\n                {\n                    \"name\": \"Item 3:\",\n                    \"value\": \"Value 3\"\n                }\n            ]\n            \n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://outlook.office.com/{{WebhookValue}}",
+					"protocol": "https",
+					"host": [
+						"outlook",
+						"office",
+						"com"
+					],
+					"path": [
+						"{{WebhookValue}}"
+					]
+				},
+				"description": "Creates a more complex, formatted card that is posted to the channel configured by the Incoming Webhook connector.\n\n   * `@context` and `@type` define what kind of card should be displayed\n   * `themeColor` can be modified to highlight the card using a HEX string\n   * `sections` can be modified to change the overall format of the card according to [Microsoft Teams Card Reference](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/cards/cards-reference)\n\nTo learn more about the types of cards that can be used, see [Microsoft Teams Card Reference](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/cards/cards-reference)"
+			},
+			"response": [
+				{
+					"name": "Create Card",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"@context\": \"https://schema.org/extensions\",\n    \"@type\": \"MessageCard\",\n    \"title\": \"Card Title\",\n    \"summary\": \"Card summary\",\n    \"themeColor\": \"0072C6\",\n    \"sections\": [\n        {\n            \"text\": \"Card Text\",\n            \"facts\": [\n                {\n                    \"name\": \"Item 1:\",\n                    \"value\": \"Value 1\"\n                },\n                {\n                    \"name\": \"Item 2:\",\n                    \"value\": \"Value 2\"\n                },\n                {\n                    \"name\": \"Item 3:\",\n                    \"value\": \"Value 3\"\n                }\n            ]\n            \n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://outlook.office.com/{{WebhookValue}}",
+							"protocol": "https",
+							"host": [
+								"outlook",
+								"office",
+								"com"
+							],
+							"path": [
+								"{{WebhookValue}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Cache-Control",
+							"value": "no-cache"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain; charset=utf-8"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Expires",
+							"value": "-1"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "X-BackEndHttpStatus",
+							"value": "200"
+						},
+						{
+							"key": "X-BackEndHttpStatus",
+							"value": "200"
+						},
+						{
+							"key": "X-AspNet-Version",
+							"value": "4.0.30319"
+						},
+						{
+							"key": "X-RUM-Validated",
+							"value": "1"
+						},
+						{
+							"key": "X-Proxy-BackendServerStatus",
+							"value": "200"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 28 Oct 2019 17:17:22 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "1"
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

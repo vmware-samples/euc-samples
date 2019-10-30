@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "0609abc3-c888-4e08-b2ce-49c5010ac30f",
+		"name": "Splunk Sample",
+		"description": "This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate all variable fields with the values from your instance. Including: BaseURL and Token.\n\n**Configuring Data Inputs**\nIn Splunk, navigate to Settings > Data > Data Inputs > HTTP Event Collector and configure all required settings.  Once configured, a **Token** is generated for use in the Authentication header.\n\n**Authentication**\nUse the Basic Authentication type and use `x` as the Username and `token-value` as the password to send data to your desired collector.\n\nIf applicable, you can use Splunk's token header authentication instead, simply choose the No Authentiation option in Intelligence and be sure your token is populated in the header within the Postman collection before uploading.\n\n**Additional Info**\n\nFor more information, check out Splunk's [API Reference](https://docs.splunk.com/Documentation/Splunk/8.0.0/RESTREF/RESTinput#services.2Fcollector)\n(search for `services/collector` and `services/collector/event`)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Data Input",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{Token}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "x",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"sourcetype\": \"mysourcetype\",\n\t\"event\": \"Event Data\"\n}"
+				},
+				"url": {
+					"raw": "https://{{BaseURL}}/services/collector/event",
+					"protocol": "https",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"services",
+						"collector",
+						"event"
+					]
+				},
+				"description": "To add data into Splunk, it is recommeded to utilize the Dynamic Values present in the Automation configuration screen. This will create a record with contextual data about your devices, users, security events, or other data as needed by your use-case.\n\nBe sure to configure your **sourcetype** to reflect from where this data is sent (Workspace ONE Intelligence) or to define the type of data sent (Device Posture, User, Security Threats, etc.).  Populate the **event** with details about the entity using any static or dynamic value in the system."
+			},
+			"response": [
+				{
+					"name": "Data Input",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"sourcetype\": \"mysourcetype\",\n\t\"event\": \"event data\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{BaseURL}}/services/collector/event",
+							"protocol": "https",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"services",
+								"collector",
+								"event"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Content-Length",
+							"value": "27"
+						},
+						{
+							"key": "Vary",
+							"value": "Authorization"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Server",
+							"value": "Splunkd"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"text\": \"Success\",\n    \"code\": 0\n}"
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

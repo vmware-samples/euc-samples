@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "8e975330-129f-40ac-a264-eca67bc04917",
+		"name": "Zendesk Sample",
+		"description": "This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate all variable fields with the values from your instance. Including: BaseURL and Authentication details.\n\n**Permissions**\nThe *Create Ticket* API requires the *Agent* role.\n\n**Authentication**\nIn most cases, you should be able to use *Basic Authentication* with the agent's username and password.\n\n*Note:* If 2-factor authentication is enabled, you must use an API token or the OAuth flow. \n\nTo use an API Token, use *Basic Authentication* and populate the username field with your `username` and the password field with `token:{api_token}`.\n\nOAuth can be configured using the Intelligence *OAuth Authentication* type.\n\nMore information on authentication requirements can be found at [Zendesk API Security and Authentication ](https://developer.zendesk.com/rest_api/docs/support/introduction#security-and-authentication)\n\n**Customizing the Requests**\nThis collection comes with a sample of how to create a ticket. To further customize the request for your needs, please see the [API Reference](https://developer.zendesk.com/rest_api/docs/support/tickets#create-ticket)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Ticket",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{Password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{Username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ticket\": {\n    \"subject\":  \"Subject of the ticket\",\n    \"comment\":  { \"body\": \"Details of the issue or request\" },\n    \"priority\": \"urgent\"\n  }\n}"
+				},
+				"url": {
+					"raw": "https://{{BaseURL}}/api/v2/tickets.json",
+					"protocol": "https",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"tickets.json"
+					]
+				},
+				"description": "Creates a ticket in Zendesk.  Below is a sample of fields that are supported, but to customize for your needs, please see the [API Reference](https://developer.zendesk.com/rest_api/docs/support/tickets#create-ticket)"
+			},
+			"response": [
+				{
+					"name": "Create Ticket",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ticket\": {\n    \"subject\":  \"My printer is on fire!\",\n    \"comment\":  { \"body\": \"The smoke is very colorful.\" },\n    \"priority\": \"urgent\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{BaseURL}}/api/v2/tickets.json",
+							"protocol": "https",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"tickets.json"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3028"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Zendesk-API-Version",
+							"value": "v2"
+						},
+						{
+							"key": "X-Zendesk-Application-Version",
+							"value": "v3010.27"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Rate-Limit",
+							"value": "400"
+						},
+						{
+							"key": "X-Rate-Limit-Remaining",
+							"value": "399"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000;"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Expect-CT",
+							"value": "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\""
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"ticket\": {\n        \"url\": \"https://{{BaseURL}}/api/v2/tickets/3.json\",\n        \"id\": 3,\n        \"external_id\": null,\n        \"via\": {\n            \"channel\": \"api\",\n            \"source\": {\n                \"from\": {},\n                \"to\": {},\n                \"rel\": null\n            }\n        },\n        \"created_at\": \"2019-10-28T19:13:56Z\",\n        \"updated_at\": \"2019-10-28T19:13:56Z\",\n        \"type\": null,\n        \"subject\": \"My printer is on fire!\",\n        \"raw_subject\": \"My printer is on fire!\",\n        \"description\": \"The smoke is very colorful.\",\n        \"priority\": \"urgent\",\n        \"status\": \"open\",\n        \"recipient\": null,\n        \"requester_id\": 123456789012,\n        \"submitter_id\": 123456789012,\n        \"assignee_id\": 123456789012,\n        \"organization_id\": 123456789012,\n        \"group_id\": 123456789012,\n        \"collaborator_ids\": [],\n        \"follower_ids\": [],\n        \"email_cc_ids\": [],\n        \"forum_topic_id\": null,\n        \"problem_id\": null,\n        \"has_incidents\": false,\n        \"is_public\": true,\n        \"due_at\": null,\n        \"tags\": [],\n        \"custom_fields\": [],\n        \"satisfaction_rating\": null,\n        \"sharing_agreement_ids\": [],\n        \"fields\": [],\n        \"followup_ids\": [],\n        \"brand_id\": 123456789012,\n        \"allow_channelback\": false,\n        \"allow_attachments\": true\n    },\n    \"audit\": {\n        \"id\": 123456789012,\n        \"ticket_id\": 3,\n        \"created_at\": \"2019-10-28T19:13:56Z\",\n        \"author_id\": 123456789012,\n        \"metadata\": {\n            \"system\": {\n                \"client\": \"PostmanRuntime/7.6.0\",\n                \"ip_address\": \"10.10.10.10\",\n                \"location\": \"Sandy Springs, GA, United States\",\n                \"latitude\": 33.92,\n                \"longitude\": -84.35\n            },\n            \"custom\": {}\n        },\n        \"events\": [\n            {\n                \"id\": 123456789012,\n                \"type\": \"Comment\",\n                \"author_id\": 123456789012,\n                \"body\": \"The smoke is very colorful.\",\n                \"html_body\": \"<div class=\\\"zd-comment\\\" dir=\\\"auto\\\"><p dir=\\\"auto\\\">The smoke is very colorful.</p></div>\",\n                \"plain_body\": \"The smoke is very colorful.\",\n                \"public\": true,\n                \"attachments\": [],\n                \"audit_id\": 123456789012\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": \"My printer is on fire!\",\n                \"field_name\": \"subject\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": \"urgent\",\n                \"field_name\": \"priority\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": \"123456789012\",\n                \"field_name\": \"requester_id\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": \"open\",\n                \"field_name\": \"status\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": null,\n                \"field_name\": \"type\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": \"123456789012\",\n                \"field_name\": \"assignee_id\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": \"123456789012\",\n                \"field_name\": \"group_id\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Create\",\n                \"value\": \"123456789012\",\n                \"field_name\": \"organization_id\"\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Notification\",\n                \"via\": {\n                    \"channel\": \"rule\",\n                    \"source\": {\n                        \"from\": {\n                            \"deleted\": false,\n                            \"title\": \"Notify requester of new proactive ticket\",\n                            \"id\": 123456789012\n                        },\n                        \"rel\": \"trigger\"\n                    }\n                },\n                \"subject\": \"{{ticket.title}}\",\n                \"body\": \"This ticket was created on your behalf.\\n\\n{{ticket.comments_formatted}}\\n\\nTo add additional comments, reply to this email.\",\n                \"recipients\": [\n                    123456789012\n                ]\n            },\n            {\n                \"id\": 123456789012,\n                \"type\": \"Notification\",\n                \"via\": {\n                    \"channel\": \"rule\",\n                    \"source\": {\n                        \"from\": {\n                            \"deleted\": false,\n                            \"title\": \"Notify all agents of received request\",\n                            \"id\": 123456789012\n                        },\n                        \"rel\": \"trigger\"\n                    }\n                },\n                \"subject\": \"[{{ticket.account}}] {{ticket.title}}\",\n                \"body\": \"A ticket (#{{ticket.id}}) by {{ticket.requester.name}} has been received. It is unassigned.\\n\\n{{ticket.comments_formatted}}\",\n                \"recipients\": [\n                    123456789012\n                ]\n            }\n        ],\n        \"via\": {\n            \"channel\": \"api\",\n            \"source\": {\n                \"from\": {},\n                \"to\": {\n                    \"name\": \"firstname lastname\",\n                    \"address\": \"user@example.com\"\n                },\n                \"rel\": null\n            }\n        }\n    }\n}"
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

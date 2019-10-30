@@ -1,0 +1,269 @@
+{
+	"info": {
+		"_postman_id": "e5be34d9-32fa-00aa-fdbb-8e165729f655",
+		"name": "Slack Sample",
+		"description": "This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate the Webhook URL from your Incoming Webhook integration. \n\n**Create an Incoming Webhook**\n\nUsing the Incoming Webhooks integration to create and send messages to Channels and Users is fairly straightforward, to learn how, please refer to the [Slack Documentation](https://api.slack.com/messaging/webhooks#getting-started)\n\nBy default, messages will be sent to the channel configured in the Incoming Webhook integration. This can easily be overridden in the payload body of the request.\n\n*Note:* Messages can only be sent to the channels of which the configuring user is a member.\n\n**Authentication**\n\nTo configure this connector in Intelligence, select the *No Authentication* type and enter only the Base URL (Typically `https://hooks.slack.com`). The rest of the path will be used automatically, as defined in the collection.\n\n**Actions in the Collection**\n\n1. **Basic Message** - This is a basic, text-only message action you can use to send to channels or users.\n * Populate the `channel` value with the channel name (#channel) or username (@username) to send to your recipient.\n * Populate `text` with the body of the message\n2. **Advanced Format Message** - Slack's Advanced Formating allows for more complex messaging to be displayed to your recipients.\n * Populate the `channel` value with the channel name (#channel) or username (@username) to send to your recipient.\n * `color` can be modified using Hex values\n * Additional features can be used by referring to the [Slack Documentation](https://api.slack.com/messaging/webhooks#advanced_message_formatting)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Basic Message",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"channel\": \"#channel\",\n\t\"text\": \"Hello World\"\n}"
+				},
+				"url": {
+					"raw": "https://hooks.slack.com/{{WebhookValue}}",
+					"protocol": "https",
+					"host": [
+						"hooks",
+						"slack",
+						"com"
+					],
+					"path": [
+						"{{WebhookValue}}"
+					]
+				},
+				"description": "This is a basic, text-only message action you can use to send to channels or users.\n\n* Populate the `channel` value with the channel name (#channel) or username (@username) to send to your recipient.\n* Populate `text` with the body of the message"
+			},
+			"response": [
+				{
+					"name": "Basic Message",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"channel\": \"#channel\",\n\t\"text\": \"Hello World\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://hooks.slack.com/{{WebhookValue}}",
+							"protocol": "https",
+							"host": [
+								"hooks",
+								"slack",
+								"com"
+							],
+							"path": [
+								"{{WebhookValue}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/html"
+						},
+						{
+							"key": "Content-Length",
+							"value": "22"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Apache"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains; preload"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "ok"
+				}
+			]
+		},
+		{
+			"name": "Advanced Format Message",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"channel\": \"#channel\",\n    \"attachments\": [\n        {\n            \"fallback\": \"Required plain-text summary of the attachment.\",\n            \"color\": \"#36a64f\",\n            \"pretext\": \"Optional text that appears above the attachment block\",\n            \"title\": \"Slack API Documentation\",\n            \"title_link\": \"https://api.slack.com/\",\n            \"text\": \"Optional text that appears within the attachment\",\n            \"fields\": [\n                {\n                    \"title\": \"Priority\",\n                    \"value\": \"High\",\n                    \"short\": false\n                }\n            ]\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://hooks.slack.com/{{WebhookValue}}",
+					"protocol": "https",
+					"host": [
+						"hooks",
+						"slack",
+						"com"
+					],
+					"path": [
+						"{{WebhookValue}}"
+					]
+				},
+				"description": "Slack's Advanced Formating allows for more complex messaging to be displayed to your recipients.\n\nModify the below values based on your needs:\n* Populate the `channel` value with the channel name (#channel) or username (@username) to send to your recipient.\n* `color` can be modified using Hex values\n* Additional features can be used by referring to the [Slack Documentation](https://api.slack.com/messaging/webhooks#advanced_message_formatting)"
+			},
+			"response": [
+				{
+					"name": "Advanced Format Message",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"channel\": \"#channel\",\n    \"attachments\": [\n        {\n            \"fallback\": \"Required plain-text summary of the attachment.\",\n            \"color\": \"#36a64f\",\n            \"pretext\": \"Optional text that appears above the attachment block\",\n            \"title\": \"Slack API Documentation\",\n            \"title_link\": \"https://api.slack.com/\",\n            \"text\": \"Optional text that appears within the attachment\",\n            \"fields\": [\n                {\n                    \"title\": \"Priority\",\n                    \"value\": \"High\",\n                    \"short\": false\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://hooks.slack.com/{{WebhookValue}}",
+							"protocol": "https",
+							"host": [
+								"hooks",
+								"slack",
+								"com"
+							],
+							"path": [
+								"{{WebhookValue}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/html"
+						},
+						{
+							"key": "Content-Length",
+							"value": "22"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Apache"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains; preload"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "ok"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "2548b009-92fc-4687-9331-fcee4873d9b5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "dec67687-79a0-4733-b905-0aa2ec46ef15",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

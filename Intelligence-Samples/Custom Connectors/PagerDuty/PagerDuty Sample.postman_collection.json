@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "ab75fdd5-01ff-4989-82cc-f02f141229f6",
+		"name": "PagerDuty Sample",
+		"description": "This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate all variable fields with the values from your instance. Including: BaseURL and Token.\n\nAdditionally, you can customize the requests to include fields that are required by your incident that may not be included in this collection by default.\n\nTo generate a Token for use with the API, follow these instructions to [Generate account API tokens](https://v2.developer.pagerduty.com/docs/authentication)\n\nFor more information on PagerDuty APIs, please check the [PagerDuty API Reference](https://api-reference.pagerduty.com/#!/Incidents/post_incidents)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Incident",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Token token={{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/vnd.pagerduty+json;version=2"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"incident\": {\n    \"type\": \"incident\",\n    \"title\": \"Brief title for your incident\",\n    \"service\": {\n       \"id\": \"PGVVS01\",\n        \"type\": \"service_reference\",\n        \"summary\": \"AWS\"\n    },\n    \"body\": {\n    \t\"type\": \"incident_body\",\n\t\t\"details\": \"Descriptive details of the incident\"\n    }\n  }\n}"
+				},
+				"url": {
+					"raw": "https://api.pagerduty.com/incidents",
+					"protocol": "https",
+					"host": [
+						"api",
+						"pagerduty",
+						"com"
+					],
+					"path": [
+						"incidents"
+					]
+				},
+				"description": "Creates a PagerDuty Incident.\n\nProperly creating an Incident requires:\n   * Updating the Authorization header to match the token value of your instance\n   * Updating the \"service.id\", \"service.type\", and \"service.summary\" to match that of the values in your instance.\n   \nYou can add other custom field types to this request based on your needs. Check the PagerDuty API documentation to learn more: https://api-reference.pagerduty.com/#!/Incidents/post_incidents"
+			},
+			"response": [
+				{
+					"name": "Create Incident",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token token={{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.pagerduty+json;version=2",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"incident\": {\n    \"type\": \"incident\",\n    \"title\": \"The server is on fire.\",\n    \"service\": {\n       \"id\": \"0000000\",\n        \"type\": \"service_reference\",\n        \"summary\": \"AWS\"\n    },\n    \"body\": {\n    \t\"type\": \"incident_body\",\n\t\t\"details\": \"A disk is getting full on this machine. You should investigate what is causing the disk to fill, and ensure that there is an automated process in place for ensuring data is rotated (eg. logs should have logrotate around them). If data is expected to stay on this disk forever, you should start planning to scale up to a larger disk.\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "https://api.pagerduty.com/incidents",
+							"protocol": "https",
+							"host": [
+								"api",
+								"pagerduty",
+								"com"
+							],
+							"path": [
+								"incidents"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2470"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Status",
+							"value": "201 Created"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST, PUT, DELETE, OPTIONS"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "1728000"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Authorization, Content-Type, AuthorizationOauth, From"
+						},
+						{
+							"key": "X-UA-Compatible",
+							"value": "IE=Edge,chrome=1"
+						},
+						{
+							"key": "ETag",
+							"value": "\"bbff452d690f4c2489e77821f25f3450\""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "max-age=0, private, must-revalidate"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "900a4689-5047-4c78-4f79-1bfd53427255"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "strict-origin-when-cross-origin"
+						},
+						{
+							"key": "Feature-Policy",
+							"value": "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"incident\": {\n        \"incident_number\": 8,\n        \"title\": \"The server is on fire.\",\n        \"description\": \"The server is on fire.\",\n        \"created_at\": \"2019-10-28T19:28:06Z\",\n        \"status\": \"triggered\",\n        \"incident_key\": \"bbff452d690f4c2489e77821f25f3450\",\n        \"service\": {\n            \"id\": \"0000000\",\n            \"type\": \"service_reference\",\n            \"summary\": \"AWS\",\n            \"self\": \"https://api.pagerduty.com/services/0000000\",\n            \"html_url\": \"https://{{BaseURL}}.pagerduty.com/services/0000000\"\n        },\n        \"assignments\": [\n            {\n                \"at\": \"2019-10-28T19:28:06Z\",\n                \"assignee\": {\n                    \"id\": \"0000000\",\n                    \"type\": \"user_reference\",\n                    \"summary\": \"\",\n                    \"self\": \"https://api.pagerduty.com/users/0000000\",\n                    \"html_url\": \"https://{{BaseURL}}.pagerduty.com/users/0000000\"\n                }\n            }\n        ],\n        \"last_status_change_at\": \"2019-10-28T19:28:06Z\",\n        \"first_trigger_log_entry\": {\n            \"id\": \"AB1COIJ5ODQ1A00LDZ60DNJSNU\",\n            \"type\": \"trigger_log_entry_reference\",\n            \"summary\": \"Triggered through the website\",\n            \"self\": \"https://api.pagerduty.com/log_entries/AB1COIJ5ODQ1A00LDZ60DNJSNU\",\n            \"html_url\": \"https://{{BaseURL}}.pagerduty.com/incidents/0000000/log_entries/AB1COIJ5ODQ1A00LDZ60DNJSNU\"\n        },\n        \"alert_counts\": {\n            \"all\": 0,\n            \"triggered\": 0,\n            \"resolved\": 0\n        },\n        \"is_mergeable\": true,\n        \"escalation_policy\": {\n            \"id\": \"0000000\",\n            \"type\": \"escalation_policy_reference\",\n            \"summary\": \"Default\",\n            \"self\": \"https://api.pagerduty.com/escalation_policies/0000000\",\n            \"html_url\": \"https://{{BaseURL}}.pagerduty.com/escalation_policies/0000000\"\n        },\n        \"teams\": [],\n        \"impacted_services\": [\n            {\n                \"id\": \"0000000\",\n                \"type\": \"service_reference\",\n                \"summary\": \"AWS\",\n                \"self\": \"https://api.pagerduty.com/services/0000000\",\n                \"html_url\": \"https://{{BaseURL}}.pagerduty.com/services/0000000\"\n            }\n        ],\n        \"pending_actions\": [],\n        \"acknowledgements\": [],\n        \"basic_alert_grouping\": null,\n        \"alert_grouping\": null,\n        \"last_status_change_by\": {\n            \"id\": \"0000000\",\n            \"type\": \"service_reference\",\n            \"summary\": \"AWS\",\n            \"self\": \"https://api.pagerduty.com/services/0000000\",\n            \"html_url\": \"https://{{BaseURL}}.pagerduty.com/services/0000000\"\n        },\n        \"incidents_responders\": [],\n        \"responder_requests\": [],\n        \"subscriber_requests\": [],\n        \"urgency\": \"high\",\n        \"id\": \"0000000\",\n        \"type\": \"incident\",\n        \"summary\": \"[#8] The server is on fire.\",\n        \"self\": \"https://api.pagerduty.com/incidents/0000000\",\n        \"html_url\": \"https://{{BaseURL}}.pagerduty.com/incidents/0000000\",\n        \"body\": {\n            \"details\": \"A disk is getting full on this machine. You should investigate what is causing the disk to fill, and ensure that there is an automated process in place for ensuring data is rotated (eg. logs should have logrotate around them). If data is expected to stay on this disk forever, you should start planning to scale up to a larger disk.\"\n        }\n    }\n}"
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}
