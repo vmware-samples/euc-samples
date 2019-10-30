@@ -28,9 +28,9 @@ Additionally, you can customize the requests to include fields that are required
 
 **Set Up OAuth 2.0 in Salesforce**
 
-In order to make API calls to salesforce, OAuth authentication must be enable in salesforce.
+In order to call the Salesforce API, OAuth authentication is required and must be enable on your salesforce instance.
 
-To setup OAuth 2.0 on your salesforce instance refer to [Step Two: Set Up Authorization][https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/quickstart_oauth.htm].
+To setup OAuth 2.0 on your salesforce instance refer to [Step Two: Set Up Authorization](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/quickstart_oauth.htm).
 
 
 **Authentication**
