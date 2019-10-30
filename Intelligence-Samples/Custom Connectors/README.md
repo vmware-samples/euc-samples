@@ -1,8 +1,8 @@
 # Workspace ONE Intelligence Custom Connector Samples
 
 ## Overview
-- **Author**: Adam Hardy
-- **Email**: ahardy@vmware.com
+- **Authors**: Andreano Lanusse, Adam Hardy
+- **Email**: alanusse@vmware.com, ahardy@vmware.com
 - **Date Created**: 10/28/2019
 - **Supported Platforms**: Workspace ONE Intelligence
 
