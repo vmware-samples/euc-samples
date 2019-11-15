@@ -14,12 +14,12 @@
   .EXAMPLE
 
     .\Migrate-SCCMApps-AirWatch.ps1 `
-        -SCCMSiteCode "PAL:" `
-        -AWServer "https://mondecorp.ssdevrd.com" `
-        -userName "tkent" `
+        -SCCMSiteCode "SME:" `
+        -AWServer "https://example.awmdm.com" `
+        -userName "apiuser" `
         -password "SecurePassword" `
-        -tenantAPIKey "iVvHQnSXpX5elicaZPaIlQ8hCe5C/kw21K3glhZ+g/g=" `
-        -groupID "652" `
+        -tenantAPIKey "APIKEY" `
+        -groupID "111" `
         -Verbose
 
   .PARAMETER SCCMSiteCode

@@ -22,7 +22,7 @@ Write-Host "====================================================================
 Write-Host "======================= Windows 10 x64 USB Media Creator ========================"
 Write-Host "===================== By Brooks Peppin (bpeppin@vmware.com) ====================="
 Write-Host "========================== www.brookspeppin.com ================================="
-Write-Host "===========================Updated Aug, 6 2019=================================="
+Write-Host "===========================Updated Nov, 13 2019=================================="
 Write-Host "================================================================================="`n
 Write-Host "This script creates a bootable Windows 10 media usb key that installs
 Windows 10 automatically via an autounattend.xml file. It supports booting with 
@@ -32,19 +32,20 @@ in UEFI mode and so ensure your BIOS is set to boot accordingly. It will create
 
 pause
 Write-Host "Scanning for mounted ISO..." -ForegroundColor Yellow
-$ISO = (Get-DiskImage -DevicePath \\.\CDROM0 -ErrorAction SilentlyContinue | Get-Volume)
-$letter = $ISO.driveletter
-$friendlyname = $ISO.FileSystemLabel
+$ISO = (get-volume | where DriveType -like "CD-ROM")
+
 If ($iso)
 {
+	$isoletter = $ISO.driveletter + ":"
+	$friendlyname = $ISO.FileSystemLabel
 	Write-Host "Mounted ISO found."
-	Write-Host "Drive letter: $letter"
+	Write-Host "Drive letter: $isoletter"
 	Write-Host "Friendly Name: $friendlyname "
 	Write-Host "Is this correct? (y/n)" -foreground "yellow"
 	$confirmation = Read-Host
 	if ($confirmation -eq 'y')
 	{
-		write-host "$letter drive confirmed. Continuing..."
+		write-host "$isoletter drive confirmed. Continuing..."
 	}
 	else
 	{
@@ -56,7 +57,10 @@ else
 	Write-Host "Mounted ISO not found. Please mount a Windows 10 ISO and then type the drive letter where it is mounted. 
 Include '\'. For example: E:\" -ForegroundColor Yellow
 	$ISO = Read-Host
-	
+	$isoletter = $ISO.driveletter + ":"
+	$friendlyname = $ISO.FileSystemLabel
+	Write-Host "Drive letter: $isoletter"
+	Write-Host "Friendly Name: $friendlyname "
 	
 }
 
@@ -111,13 +115,12 @@ $command | Diskpart
 
 $USB_Boot = ((Get-Volume).where({ $_.FileSystemLabel -eq "USB-Boot" })).DriveLetter + ":"
 $usb_source = ((Get-Volume).where({ $_.FileSystemLabel -eq "USB-Source" })).DriveLetter + ":"
-$ISO = $letter + ":"
 
 Write-Host "Copying boot files to USB-Boot (Fat32) partition"
-robocopy $iso $USB_Boot /mir /xd sources "system volume information" $recycle.bin /njh /njs
-robocopy $iso\sources $usb_boot\sources boot.wim /njh /njs
+robocopy $isoletter $USB_Boot /mir /xd sources "system volume information" $recycle.bin /njh /njs
+robocopy $isoletter\sources $usb_boot\sources boot.wim /njh /njs
 Write-Host "Copying sources directory to USB-Source (NTFS) partition"
-robocopy $iso\sources $usb_source\sources /mir /njh /njs
+robocopy $isoletter\sources $usb_source\sources /mir /njh /njs
 
 
 Remove-Item $usb_source\sources\ei.cfg -Force -ErrorAction SilentlyContinue
@@ -145,12 +148,12 @@ if ($confirmation -eq 'y')
 	Write-Host "Getting Windows Image information..."
 	
 	
-	$ISO_image = Get-WindowsImage -ImagePath $ISO\sources\install.wim
+	$ISO_image = Get-WindowsImage -ImagePath $isoletter\sources\install.wim
 	
 	if (!($ISO_image.Imageindex[0] -eq "1"))
 	{
 		Write-Host "Getting Windows Image information again..."
-		$ISO_image = Get-WindowsImage -ImagePath $ISO\sources\install.wim
+		$ISO_image = Get-WindowsImage -ImagePath $isoletter\sources\install.wim
 	}
 	$ISO_image
 	Write-host "Your image may have more than one index. Enter the index number of the version of Windows you would like to install. 
