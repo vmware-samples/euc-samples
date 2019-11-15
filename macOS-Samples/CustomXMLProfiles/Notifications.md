@@ -33,6 +33,26 @@ Use this to pre-stage allowed notifications for Corporate standard apps and/or a
             <key>SoundsEnabled</key>
             <true/>
         </dict>
+        <dict>
+            <key>AlertType</key>
+            <integer>2</integer>
+            <key>BadgesEnabled</key>
+            <true/>
+            <key>BundleIdentifier</key>
+            <string>com.vmware.hub.mac</string>
+            <key>CriticalAlertEnabled</key>
+            <true/>
+            <key>GroupingType</key>
+            <integer>0</integer>
+            <key>NotificationsEnabled</key>
+            <true/>
+            <key>ShowInLockScreen</key>
+            <true/>
+            <key>ShowInNotificationCenter</key>
+            <true/>
+            <key>SoundsEnabled</key>
+            <true/>
+        </dict>
     </array>
     <key>PayloadDescription</key>
     <string>Configures notifications settings.</string>
@@ -48,3 +68,9 @@ Use this to pre-stage allowed notifications for Corporate standard apps and/or a
     <integer>1</integer>
 </dict>
 ```
+
+Some additional information as found by the MacAdmins Community:
+
+* Per [Mr. McIntosh](https://mrmacintosh.com/how-to-manage-catalinas-new-application-notifications-with-a-profile/):
+  * You can clear previous notification settings (e.g. the "Allowed" settings) by running `rm ~\Library\Preferences\com.apple.ncprefs.plist`.
+  * You can see previous allowed prompts by running `sqlite3 "$(getconf DARWIN_USER_DIR)/com.apple.notificationcenter/db2/db" "select * from app;"`
