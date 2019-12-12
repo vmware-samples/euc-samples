@@ -79,6 +79,11 @@ It is highly recommended to add any and all submitted samples to the VMware Samp
 
 Sample Exchange can be allowed to access your GitHub resources, by way of a linking process, where they can be indexed and searched by the community. There are VMware social media accounts which will advertise resources posted to the site and there's no additional accounts needed, as the VMware Sample Exchange uses MyVMware credentials.
 
+### Windows Users
+Some of the samples result in a long file path that may cause cloning to fail on Windows machines. If you an error message is displayed during cloning indicating that the file name is too long then run the below command to allow longer file names during checkout.
+* ```git config --system core.longpaths true```
+* [Additional Information](https://confluence.atlassian.com/bamkb/git-checkouts-fail-on-windows-with-filename-too-long-error-unable-to-create-file-errors-867363792.html)
+
 
 ## VMware Resources
 * [VMware Code](https://code.vmware.com/home)
