@@ -3,7 +3,7 @@
 # Execution Context: System
 # Author: bpeppin
 
-$psexec = Get-Childitem -Path C:\Users -Include psexec.exe,psexec64.exe -Recurse -ErrorAction SilentlyContinue
+$psexec = Get-Childitem -Path C:\ -Include psexec.exe,psexec64.exe -Recurse -ErrorAction SilentlyContinue
 
 If ($psexec)
 {
