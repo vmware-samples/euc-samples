@@ -4,7 +4,7 @@
 - **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets, Andreano Lanusse
 - **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com
 - **Date Created**: 11/14/2018
-- **Updated**: 8/5/2019
+- **Updated**: 1/2/2020
 - **Supported Platforms**: Workspace ONE 1811+
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
 
@@ -119,6 +119,7 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 
 ## Change Log
+- 1/2/2020 - Fixed example, missing ` which produced an error when running the example provided in import_sensor_samples.ps1 file. 
 - 8/5/2019 - Added os_browser_default which returns the default web browser set on the device. Thank you for the contribution Roar Myklebust. 
 - 8/2/2019 - Updated samples, updated README.md, moved template_ samples into a folder named Templates.
 - 5/9/2019 - Added branch cache samples and fixed java version sample

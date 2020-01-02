@@ -4,7 +4,7 @@
 #Author:  Josue Negron - jnegron@vmware.com
 #Contributors: Chris Halstead - chealstead@vmware.com
 #December 2018
-#Version 1.0
+#Version 1.1
 
   .SYNOPSIS
     This Powershell script allows you to automatically import PowerShell scripts as Workspace ONE Sensors in the Workspace ONE UEM Console. 
@@ -23,7 +23,7 @@
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=" `
         -OrganizationGroupName "techzone" `
-        -SmartGroupID "41"
+        -SmartGroupID "41" `
         -UpdateSensors
 
     .PARAMETER WorkspaceONEServer
