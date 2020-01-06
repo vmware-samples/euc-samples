@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cyclecount=$(ioreg -r -c "AppleSmartBattery" | grep -w "CycleCount" | awk '{print $3}' | sed s/\"//g)
+cyclecount=$(system_profiler SPPowerDataType | grep "Cycle Count" | awk '{print $3}')
 echo $cyclecount
