@@ -11,7 +11,7 @@
 Manage Google Chrome Settings as Supported by Google via Workspace ONE:
 
 1) Download the 64-bit Enterprise Bundle from Google (link below in [Resources](#Additional-Resources))
-2) Review the [Chrome Policy List online](https://www.chromium.org/administrators/policy-list-3) or using chrome_policy_list.html found in GoogleChromeEnterpriseBundle64/Documentation/Chrome\ Policies/{language}/
+2) Review the [Chrome Policy List online](https://cloud.google.com/docs/chrome-enterprise/policies/) or using chrome_policy_list.html found in GoogleChromeEnterpriseBundle64/Documentation/Chrome\ Policies/{language}/
 3) The Custom XML file in this folder is derived from the *com.google.Chrome.plist* file in the Enterprise Bundle (GoogleChromeEnterpriseBundle64/Configuration/com.google.Chrome.plist).  Review and modify as needed for your organization as based on the Chrome Policy List
 4) Deploy the Chrome Browser for Enterprise app in order to leverage the policies configured in the preferences (via Custom XML)
 
@@ -30,6 +30,7 @@ The Issuer needs to be the Issuer of your CA. So if your Issuer is CA is **CN=la
 None
 
 ## Change Log
+- 1/22/2020: Updated Google Chrome Policies Location
 - 3/22/2018: Created Initial File
 - 4/27/2018: Added postinstall script to suppress some first run prompts
 - 11/28/2018:  Added AutoSelectCertificateForUrls key for Identity manager Integration (Thanks @adammatthews!)
