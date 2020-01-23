@@ -23,43 +23,49 @@
 ## Instructions
 
  For full, detailed instructions please see www.brookspeppin.com
-
-.PARAMETER -Server
+ 
+## PARAMETERS
+**-Server**
     Mandatory parameter for the WS1 UEM Server (omit https://). 
 
-.PARAMETER -Action
+**-Action**
 	Mandatory parameter that specifies the action the script should take. Options are: 'Get-Duplicates', 'Delete-Duplicates', 'Get-Stale', 'Delete-Stale', 'Get-Problematic', 'Delete-Problematic'. 
 
-.PARAMETER -Apikey
+**-Apikey**
 	Mandatory parameter for the API key that is requred for the script to connect via REST API to your server. These keys are per OG and are found under All Settings > System > Advanced > API > REST API.
 
-.PARAMETER -Days
+**-Days**
 	Optional parameter that specifies how many days back the script should check for stale records. Default is 90 days.  
 
-.PARAMETER -FilterSerial
+**-FilterSerial**
 	Optional parameter that filters out serials that are improperly formatted or not yet populated. See the $SerialFilter variable below for the full list. Use this for duplicates only and not stale or problematic.
+ 
 
-.OUTPUTS
+
+
+
+## OUTPUTS
   Outputs to host as well as to a log file stored in C:\UEM-Maintenance\$server\Logs\Win_UEM_Maintenence.log. This log is also formatted in a way for cmtrace.exe log viewer to read and process. Each "Get" function also 
   creates csv files under C:\UEM-Maintenance\$server\Win_$date
   
-.EXAMPLE - Get Duplicates, Filtering Serials
+  ## EXAMPLES
+**Get Duplicates, Filtering Serials**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-Duplicates -FilterSerial
 
-.EXAMPLE - Get Stale devices (default of 90 days)
+**Get Stale devices (default of 90 days)**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-Stale
 
-.EXAMPLE - Get Stale devices older than 120 days
+**Get Stale devices older than 120 days**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-Stale -Days 120
 
-.EXAMPLE - Get problematic devices
+**Get problematic devices**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-Problematic
 
-.Example - Delete Duplicates
+**Delete Duplicates**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-Duplicates -FilterSerial
 
-.Example - Delete Stale
+**Delete Stale**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-Stale 
 
-.Example - Delete Problematic
+**Delete Problematic
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-Problematic
