@@ -22,7 +22,6 @@
 
 ## Instructions
 
-**Ensure you are on Windows 10 1803 or newer running this script**
  For full, detailed instructions please see www.brookspeppin.com
 
 .PARAMETER -Server
