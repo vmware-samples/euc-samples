@@ -38,15 +38,11 @@
 	Optional parameter that specifies how many days back the script should check for stale records. Default is 90 days.  
 
 **-FilterSerial**
-	Optional parameter that filters out serials that are improperly formatted or not yet populated. See the $SerialFilter variable below for the full list. Use this for duplicates only and not stale or problematic.
+	Optional parameter that filters out serials that are improperly formatted or not yet populated. See the $SerialFilter variable in the script for the full list. Use this for duplicates only and not stale or problematic.
  
 
-
-
-
 ## OUTPUTS
-  Outputs to host as well as to a log file stored in C:\UEM-Maintenance\$server\Logs\Win_UEM_Maintenence.log. This log is also formatted in a way for cmtrace.exe log viewer to read and process. Each "Get" function also 
-  creates csv files under C:\UEM-Maintenance\$server\Win_$date
+  Outputs to host as well as to a log file stored in C:\UEM-Maintenance\$server\Logs\Win_UEM_Maintenence.log. This log is also formatted in a way for cmtrace.exe log viewer to read and process. Each "Get" function also creates csv files under C:\UEM-Maintenance\[server]\Win_[today's date]
   
   ## EXAMPLES
 **Get Duplicates, Filtering Serials**
@@ -67,5 +63,5 @@
 **Delete Stale**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-Stale 
 
-**Delete Problematic
+**Delete Problematic**
 .\Start-UEMMaintenance_Windows.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-Problematic
