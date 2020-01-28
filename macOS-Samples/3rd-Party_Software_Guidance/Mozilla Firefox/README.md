@@ -14,7 +14,7 @@ Firefox for Enterprise allows administrators to manage certain settings within t
 
 To deploy with VMware Workspace ONE UEM, add FireFox as an internal application and then customize the mobileconfig to your liking by using the following template:
 
-The contents of the json should look similar to this (modify or remove items as needed):
+The contents of the XML should look similar to this (modify or remove items as needed):
 
 ```XML
 <dict>
