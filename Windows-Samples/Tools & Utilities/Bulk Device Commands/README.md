@@ -22,16 +22,16 @@ When run, the script will retrieve a list of devices from the provided Smart Gro
 1. You will need to supply your AirWatch Admin credentials, including the AirWatch API Key.
 
 ## EXAMPLE
-
-    .\Change-EnrollmentUser.ps1 `
-        -awServer "https://YourTenant.com" `
-        -awTenantAPIKey "YourAPIKey" `
-        -awAPIUsername "YourUserName" `
-        -awAPIPassword "YourPassword" `
-        -smartGroup "Beta Users" `
-        -command "Lock" `
-        -Verbose
-
+```
+.\Bulk-DeviceCommand.ps1 `
+    -awServer "https://YourTenant.com" `
+    -awTenantAPIKey "YourAPIKey" `
+    -awAPIUsername "YourUserName" `
+    -awAPIPassword "YourPassword" `
+    -smartGroup "Beta Testers" `
+    -command "Lock" `
+    -Verbose
+```
 ## Parameters
 
 **awServer**
