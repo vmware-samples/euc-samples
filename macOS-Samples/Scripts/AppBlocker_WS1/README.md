@@ -31,7 +31,6 @@ chown 600 /usr/local/bin/AppBlockerBundles
 echo "$apps" > /usr/local/bin/AppBlockerBundles
 pid=$(pgrep -f 'Python /usr/local/bin/AppBlocker.py')
 if [[ ! -z $pid ]]; then
-	echo "GO"
 	kill $pid
 fi
 ```
@@ -45,7 +44,6 @@ If the package is removed from devices, the specified apps will continue to be b
 
 pid=$(pgrep -f 'Python /usr/local/bin/AppBlocker.py')
 if [[ ! -z $pid ]]; then
-	echo "GO"
 	kill $pid
 fi
 ```
