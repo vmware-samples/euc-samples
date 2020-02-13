@@ -23,14 +23,14 @@ When run, the script will retrieve a list of devices from the provided Smart Gro
 
 ## EXAMPLE
 
-    .\Change-EnrollmentUser.ps1 `
-        -awServer "https://YourTenant.com" `
-        -awTenantAPIKey "YourAPIKey" `
-        -awAPIUsername "YourUserName" `
-        -awAPIPassword "YourPassword" `
-        -smartGroup "Beta Users" `
-        -command "Lock" `
-        -Verbose
+  .\Bulk-DeviceCommand.ps1 `
+    -awServer "https://YourTenant.com" `
+    -awTenantAPIKey "YourAPIKey" `
+    -awAPIUsername "YourUserName" `
+    -awAPIPassword "YourPassword" `
+    -smartGroup "Beta Testers" `
+    -command "Lock" `
+    -Verbose
 
 ## Parameters
 
