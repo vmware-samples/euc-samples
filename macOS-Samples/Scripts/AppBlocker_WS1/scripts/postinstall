@@ -1,0 +1,9 @@
+#!/bin/bash
+
+LA="/Library/LaunchAgents/com.github.erikberglund.AppBlocker.plist"
+
+uid=$(python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = SCDynamicStoreCopyConsoleUser(None, None, None)[1]; sys.stdout.write(str(username) + "\n");')
+if [ $uid -gt 500 ];
+  then
+    /bin/launchctl asuser $uid /bin/launchctl load $LA
+fi

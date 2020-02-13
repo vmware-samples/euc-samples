@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>_metadata</key>
+	<dict>
+		<key>created_by</key>
+		<string>pevans</string>
+		<key>creation_date</key>
+		<date>2020-02-13T01:27:33Z</date>
+		<key>munki_version</key>
+		<string>3.0.0.3335</string>
+		<key>os_version</key>
+		<string>10.15.3</string>
+	</dict>
+	<key>autoremove</key>
+	<false/>
+	<key>catalogs</key>
+	<array>
+		<string>testing</string>
+	</array>
+	<key>category</key>
+	<string>Software</string>
+	<key>description</key>
+	<string></string>
+	<key>developer</key>
+	<string></string>
+	<key>display_name</key>
+	<string>AppBlocker</string>
+	<key>installed_size</key>
+	<integer>8</integer>
+	<key>installer_item_hash</key>
+	<string>33e95c45c9a663ec852a4f80f4736a6107ee124ab6f8df32422c4d2b9301a984</string>
+	<key>installer_item_location</key>
+	<string>AppBlocker-1.0.pkg</string>
+	<key>installer_item_size</key>
+	<integer>5</integer>
+	<key>minimum_os_version</key>
+	<string>10.5.0</string>
+	<key>name</key>
+	<string>AppBlocker</string>
+	<key>receipts</key>
+	<array>
+		<dict>
+			<key>installed_size</key>
+			<integer>8</integer>
+			<key>packageid</key>
+			<string>com.vmware.AppBlocker</string>
+			<key>version</key>
+			<string>1.0</string>
+		</dict>
+	</array>
+	<key>unattended_install</key>
+	<false/>
+	<key>unattended_uninstall</key>
+	<false/>
+	<key>uninstall_method</key>
+	<string>removepackages</string>
+	<key>uninstallable</key>
+	<true/>
+	<key>version</key>
+	<string>1.0</string>
+</dict>
+</plist>
