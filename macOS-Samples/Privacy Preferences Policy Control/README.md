@@ -40,6 +40,8 @@ The following outlines some basic, high-level steps to help you determine what P
 
 > **NOTE:**  Carl Ashley posted a great blog about [how to read TCC logs in macOS](https://carlashley.com/2018/09/06/reading-tcc-logs-in-macos/).
 
+> **NOTE:**  You can also review the TCC database *after* clicking the button to whitelist the app.   Run the command `echo ".show" | sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db` and `echo ".show" | sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db` to view the entries in the TCC databases.   You will not be able to read the TCC.db if Terminal is not granted permissions (SystemPolicyAllFiles)
+
 
 ### TCC DB Reset
 1. Use the `tccutil reset <service name>` command within Terminal.app to reset one (or more) of the affected services (Great write-up on this at [Helping your users reset TCC Privacy Policy Decisions](https://www.macblog.org/post/reset-tcc-privacy/)):
@@ -116,6 +118,7 @@ More binaries can be found at the following community pages:
 
 ## Additional Resources
 - [Workspace ONE UEM and User Consent for Data Access](https://techzone.vmware.com/blog/vmware-workspace-one-uem-apple-macos-mojave-user-consent-data-access)
+- [Diagnosing Privacy Protection Problems in Catalina](https://eclecticlight.co/2020/01/07/diagnosing-privacy-protection-problems-in-catalina/)
 - [Helping your users reset TCC Privacy Policy Decisions](https://www.macblog.org/post/reset-tcc-privacy/)
 - [Carl Ashley's `tccprofile` project](https://github.com/carlashley/tccprofile)
 - [Reading TCC Logs in macOS](https://carlashley.com/2018/09/06/reading-tcc-logs-in-macos/)
