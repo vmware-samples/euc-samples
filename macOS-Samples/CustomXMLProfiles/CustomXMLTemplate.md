@@ -1,9 +1,18 @@
 # Custom XML Payloads
 
-Custom XML payloads are the method by which MDM vendors can manage settings and preferences which are not included in the default Configuration Profile Reference.   When reading and writing preferences, developers have two main frameworks/classes they can leverage:  NSUserDefaults and CFPreferences.
+MDM vendors can manage settings and preferences which are not included in the default Configuration Profile Reference via Custom Settings (or Custom XML) payloads.   A reverse-DNS style filename is written to one of a few handful of locations, depending on how a user or MDM sets the preferences:
+
+- `/Library/Preferences/`
+- `~/Library/Preferences/`
+- `~/Library/Preferences/ByHost/`
+- `~/Library/Preferences/<AppName>/`
+- `/Library/Managed Preferences/`
+- `/Library/Managed Preferences/<username>`
+
+When reading and writing preferences, developers have two main frameworks/classes they can leverage:  NSUserDefaults and CFPreferences.   
 
 ## Managing NSUserDefaults preferences 
-NSUserDefaults custom xml payloads tend to more closely follow the mobileconfig style and are generally relatively flat.  As you can see in the template below, the `PayloadType` specifies the targeted set of user preferences which are read/written by the application's NSUserDefaultsController.
+NSUserDefaults custom XML payloads tend to follow the mobileconfig style and are generally relatively flat.  As you can see in the template below, the `PayloadType` specifies the targeted set of user preferences which are read/written by the application's NSUserDefaultsController.
 
 ### Use this template as the basis for forming Custom XML to control NSUserDefaults preference domains:
 
