@@ -1,15 +1,22 @@
-﻿# bpeppin, Updated 2/24/20. 
-# Queryies Windows SID with MDM Enrollment and matches it against current logged in user.
+﻿
+# Queries Windows SID with MDM Enrollment and matches it against current logged in user.
 # Return Type: String
 # Execution Context: 32bit (forced). Required if you have clients on pre-1910 hub. 
-# Author: bpeppin, 2/24/20
+# Author: bpeppin, 2/25/20
 
 $checksid = {
 
-    New-PSDrive HKU Registry HKEY_USERS | out-null
-    $SID = (get-childitem HKU: | Where-Object { $_.Name -like "*S-1-12-1*" -or $_.Name -like "*S-1-5-21*" -And $_.Name -notlike "*_classes" }).Name
-    $SID = $SID.Split('\')[1]
-    Remove-PSDrive HKU
+$temp = "HKU"
+New-PSDrive $temp Registry HKEY_USERS -ErrorAction SilentlyContinue | out-null
+$SID = (get-childitem HKL: -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "*S-1-12-1*" -or $_.Name -like "*S-1-5-21*" -And $_.Name -notlike "*_classes" }).Name
+Remove-PSDrive $temp
+If ($SID)
+{
+$SID = $SID.Split('\')[1]
+return $SID
+}else{
+return "No_logged_in_User"
+}
 
 
     $GUID = (Get-Item -Path "HKLM:SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\*" -ErrorAction SilentlyContinue).PSChildname
