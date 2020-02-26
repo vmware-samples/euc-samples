@@ -1,3 +1,4 @@
+
 # VMware Carbon Black Cloud Sample Collection
 
 ## Overview
@@ -9,7 +10,6 @@
 ## Purpose
 
 A sample of how Carbon Black APIs can be customized and used for Automation workflows in Workspace ONE Intelligence
-
 
 ## Requirements
 
@@ -25,12 +25,9 @@ This collection is a sample for use within Workspace ONE Intelligence.  Please b
 
 There is only one action included in this sample:
 1. Quarantine Device
-
-*Action Type* parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
-
-*Device Id[0]* parameter - Device ID in Carbon Black where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
-
-*Options Toggle* parameter - ON to quarantine device and OFF to unquarantine device
+***Action Type*** parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
+***Device Id[0]*** parameter - Device ID in Carbon Black where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
+***Options Toggle*** parameter - ON to quarantine device and OFF to unquarantine device
 
 **Note:**  The API Key must be assigned to a role with permission to execute quarantine device action.
 
@@ -40,9 +37,7 @@ There is only one action included in this sample:
 **Download the postman collection (JSON file) and perform the following updates** 
 
 - Replace the *{{API Key}}* with the new API Key created in Carbon Black Cloud
-
 - Replace the *{{API Secret Key}}* with the API Secret Key associated to the API Key
-
 - Replace the *{{ORG Key}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console
 
 
