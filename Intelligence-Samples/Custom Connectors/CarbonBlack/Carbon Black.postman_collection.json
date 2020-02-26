@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "39557424-1153-4cdb-b9f3-18fcfadf7a0d",
+		"name": "Carbon Black",
+        "description" : "This collection is a sample for use within Workspace ONE Intelligence. Please be sure to populate the API Key, API Secret Key and ORG Key from your tenant to be able to perform Quarantine Device action in Carbon Black",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Quarantine Device",
+            "description" : "Perform Quarantine device action on devices within Carbon Black Cloud Sensor installed. The API Key must be assigned to a role with permission to execute quarantine device action",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Auth-Token",
+						"value": "{{API Secret Key}}/{{API Key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"action_type\": \"QUARANTINE\",\n    \"device_id\": [\"\"],\n    \"options\": {\n        \"toggle\": \"ON\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{ORG Key}}/device_actions",
+					"protocol": "https",
+					"host": [
+						"{{DashboardUrl}}"
+					],
+					"path": [
+						"appservices",
+						"v6",
+						"orgs",
+						"{{ORG Key}}",
+						"device_actions"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Quarantine Device",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{API Secret Key}}/{{API Key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action_type\": \"QUARANTINE\",\n    \"device_id\": [\"\"],\n    \"options\": {\n        \"toggle\": \"ON\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{ORG Key}}/device_actions",
+							"protocol": "https",
+							"host": [
+								"{{DashboardUrl}}"
+							],
+							"path": [
+								"appservices",
+								"v6",
+								"orgs",
+								"{{ORG Key}}",
+								"device_actions"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 09 Jan 2020 06:11:18 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Server",
+							"value": "Apache-Coyote/1.1"
+						},
+						{
+							"key": "Set-Cookie",
+							"value": "JSESSIONID=80F3B9357BEA2A95D1BAB12CCE000EF7; Path=/appservices; HttpOnly"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a09211e3-3cde-4351-b1b8-a1cdc409bfa8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "94aa50ae-8bd4-4f79-947c-06ad2acdb5c9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
