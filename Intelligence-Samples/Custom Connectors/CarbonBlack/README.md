@@ -38,6 +38,7 @@ There is only one action included in this sample:
 
 
 **Permissions Required** 
+
 *API Key* - Create an API Key with Custom Access Level role in Carbon Black Cloud. The Custom Access Level role must include the permission to execute [*Device Quarantine Actions](https://developer.carbonblack.com/reference/carbon-black-cloud/platform/latest/devices-api/#device-actions) for the tenant in which the action will be performed.
 
 **Download the postman collection (JSON file) and perform the following updates** 
