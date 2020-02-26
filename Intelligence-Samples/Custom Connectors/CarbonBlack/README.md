@@ -24,8 +24,8 @@ A sample of how Carbon Black APIs can be customized and used for Automation work
 This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to replace the variable fields (API Key, API Secret Key and ORG Key) with the values from your Carbon Black Cloud instance.
 
 There is only one action included in this sample:
-1. Quarantine Device
 
+1. Quarantine Device, with the following parameters:
 
    ***Action Type*** parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
 
