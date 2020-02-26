@@ -13,6 +13,7 @@ Workspace ONE Intelligence Automation provides the ability for you to use your o
 
 Included in this repository is a list of Postman Collection samples that can be immediately imported into Intelligence and used in Automation workflows, with the added benefit of demonstrating how you can create Collections with your own REST API enabled services.
 
+* VMware Carbon Black - perform device quarantine action
 * Atlassian JIRA - create JIRA bugs, tasks and service desk request
 * Microsoft Teams - create simple messages and cards
 * PagerDuty - create incidents
