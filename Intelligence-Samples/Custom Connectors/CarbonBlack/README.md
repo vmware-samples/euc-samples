@@ -48,9 +48,15 @@ There is only one action included in this sample:
 - Replace the *{{ORG Key}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console
 
 
-**Authentication**
+**Configuring this Connector in Intelligence**
 
-To configure this connector in Intelligence, select the *No Authentication* type and enter the Base URL, which is the Dashboard URL for your environment. You can obtain the Dashboard URL [here](https://community.carbonblack.com/t5/Knowledge-Base/PSC-What-URLs-are-used-to-access-the-APIs/ta-p/67346). The rest of the path will be used automatically, as defined in the collection.
+Steps:
+
+1. Navigate to Settings > Integrations > Automation Connections > Add Custom Connection and add your connector detail.
+2. Select the *No Authentication* type and enter the Base URL, which is the Dashboard URL for your environment. The rest of the path will be used automatically, as defined in the collection.
+
+**Note:**  You can obtain the Dashboard URL [here](https://community.carbonblack.com/t5/Knowledge-Base/PSC-What-URLs-are-used-to-access-the-APIs/ta-p/67346). 
+
 
 For more information on Carbon Black APIs, please check the [Carbon Black API Reference](https://developer.carbonblack.com/reference/carbon-black-cloud/)
 
