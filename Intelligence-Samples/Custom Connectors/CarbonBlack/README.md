@@ -25,6 +25,7 @@ This collection is a sample for use within Workspace ONE Intelligence.  Please b
 
 There is only one action included in this sample:
 1. Quarantine Device
+
 * ***Action Type*** parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
 
 * ***Device Id[0]*** parameter - Device ID in Carbon Black where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
