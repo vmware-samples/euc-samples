@@ -4,7 +4,7 @@
 ## Overview
 - **Author**: Andreano Lanusse
 - **Email**: alanusse@vmware.com
-- **Date Created**: 02/26/2020.
+- **Date Created**: 02/26/2020
 
 
 ## Purpose
@@ -15,8 +15,8 @@ A sample of how Carbon Black APIs can be customized and used for Automation work
 
 1. The latest version of [Postman](https://www.getpostman.com) 
 2. Workspace ONE Intelligence
-3. A Carbon Black Cloud instance
-4. A Carbon Black API Key assigned to custom level access role with permission to execute quarantine device action
+3. A VMware Carbon Black Cloud instance
+4. A Carbon Black Cloud API Key assigned to custom level access role with permission to execute quarantine device action
 
 
 ## How to use this sample
