@@ -37,7 +37,7 @@ param (
 
 #------------------------------------------------------------------------
 #Variable Section
-$version = 'v2'
+$version = 'v2.1'
 $scriptfilename = "WS1-Enroll-$env:computername-$version.log" #local log file name
 $Logpath = "C:\ProgramData\Airwatch\UnifiedAgent\Logs"
 $logfile = "$logpath\$scriptfilename"
