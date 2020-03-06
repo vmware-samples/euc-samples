@@ -534,7 +534,7 @@ $scriptfilename = "WS1-Enroll-$env:computername-$version.log" #local log file na
 $Logpath = "C:\ProgramData\Airwatch\UnifiedAgent\Logs"
 $logfile = "$logpath\$scriptfilename"
 $AgentPath = "$PSScriptRoot\AirwatchAgent.msi"
-$msiargumentlist = "/i $AgentPath /quiet ENROLL=Y SERVER=$Server LGNAME=$LGName USERNAME=$UPN PASSWORD=$Password ASSIGNTOLOGGEDINUSER=Y /log $Logpath\Awagent.log"
+$msiargumentlist = "/i $AgentPath /quiet ENROLL=Y SERVER=$Server LGNAME=$LGName USERNAME=$Username PASSWORD=$Password ASSIGNTOLOGGEDINUSER=Y /log $Logpath\Awagent.log"
 $serial = (gwmi win32_BIOS).SerialNumber
 #$PATH = "HKLM:SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\*"
 #$val = (Get-ItemProperty -Path $PATH -ErrorAction SilentlyContinue).PSChildname
