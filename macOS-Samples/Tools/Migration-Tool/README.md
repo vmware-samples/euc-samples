@@ -1,4 +1,4 @@
-# Custom macOS MDM Migrator for Workspace ONE UEM
+# Safepassage to Workspace ONE UEM for macOS
 
 This tool is designed to be flexible to fit many different use cases and enrollment requirements. There is no default mode, so you must understand how the tool works in order to configure it for your needs.
 
