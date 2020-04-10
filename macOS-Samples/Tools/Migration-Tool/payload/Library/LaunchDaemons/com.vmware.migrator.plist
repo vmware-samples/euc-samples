@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.vmware.migrator</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/bin/python</string>
+		<string>/Library/Application Support/VMware/migrator.py</string>
+		<string>--custom</string>
+		<string>--removal-script</string>
+		<string>/Library/Application Support/VMware/MigratorResources/removemgmt.sh</string>
+		<string>--auto-reboot-delay</string>
+		<string>30</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/var/log/vmw_migrator.log</string>
+	<key>StandardOutPath</key>
+	<string>/var/log/vmw_migrator.log</string>
+</dict>
+</plist>
