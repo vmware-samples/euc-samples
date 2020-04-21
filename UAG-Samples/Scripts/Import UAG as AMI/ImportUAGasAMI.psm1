@@ -9,6 +9,9 @@ function SetAWSEnvironmet {
     Set-AWSCredential -AccessKey $accesskey -SecretKey $secretkey -StoreAs awsCredentialProfile
 
     Set-DefaultAWSRegion $region
+
+    Initialize-AWSDefaultConfiguration -ProfileName awsCredentialProfile -Region $region
+
 }
 
 #
@@ -187,6 +190,6 @@ function RegisterAMI {
 
     $ami = (Register-EC2Image @params)
 
-    Write-Information "AMI Registration completed - AMI ID -> $ami" -foregroundcolor blue -backgroundcolor white
+    Write-Host "AMI Registration completed - AMI ID -> $ami"
 
 }
