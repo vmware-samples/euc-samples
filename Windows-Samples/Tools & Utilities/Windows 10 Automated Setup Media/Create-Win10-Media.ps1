@@ -1,14 +1,18 @@
 ﻿<#	
 	.NOTES
 	===========================================================================
-	 Created with: 	SAPIEN Technologies, Inc., PowerShell Studio 2018 v5.5.155
-	 Updated:   	Aug 6th, 2019
+	 Updated:   	March 16, 2020
 	 Created by:   	Brooks Peppin, www.brookspeppin.com, @brookspeppin
 	 Organization: 	VMware, Inc.
 	 Filename:     	Create-Win10-Media.ps1
 	===========================================================================
 	.DESCRIPTION
 		Creates Windows 10 setup media that automatically installs via autounattend.xml.Supports both UEFI with Secure Boot on and legacy boot modes.
+	.CHANGELOG
+		3/16/20
+			- Added more thorough check for DVD ISO drive letter in case multiple drives mounted and/or one is inactive
+
+		
 #>
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
@@ -22,7 +26,7 @@ Write-Host "====================================================================
 Write-Host "======================= Windows 10 x64 USB Media Creator ========================"
 Write-Host "===================== By Brooks Peppin (bpeppin@vmware.com) ====================="
 Write-Host "========================== www.brookspeppin.com ================================="
-Write-Host "===========================Updated Nov, 13 2019=================================="
+Write-Host "===========================Updated March, 16 2020=================================="
 Write-Host "================================================================================="`n
 Write-Host "This script creates a bootable Windows 10 media usb key that installs
 Windows 10 automatically via an autounattend.xml file. It supports booting with 
@@ -32,7 +36,7 @@ in UEFI mode and so ensure your BIOS is set to boot accordingly. It will create
 
 pause
 Write-Host "Scanning for mounted ISO..." -ForegroundColor Yellow
-$ISO = (get-volume | where DriveType -like "CD-ROM")
+$ISO = (get-volume | Where-Object {$_.DriveType -like "CD-ROM" -and $_.OperationalStatus -eq "OK" -and $_.Size -gt 0})
 
 If ($iso)
 {

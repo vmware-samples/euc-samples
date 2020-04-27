@@ -88,4 +88,4 @@ Write-Host "Unified Access Gateway vmdk importing process completed"
 RegisterAMI $vmdkImage $impId
 
 
-Write-Host "Unified Access Gateway imported sucessfully and available for deployment on AWS!!!!" -foregroundcolor blue -backgroundcolor white
+Write-Host "Unified Access Gateway imported sucessfully and available for deployment on AWS!!!" -foregroundcolor blue -backgroundcolor white
