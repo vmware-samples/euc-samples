@@ -1,0 +1,20 @@
+#Create a home button and redirect to company home page#
+
+<Replace><CmdID>6</CmdID><Item><Target><LocURI>./Device/Vendor/MSFT/Policy/Config/chrome~Policy~googlechrome~Startup/ShowHomeButton</LocURI></Target><Data><![CDATA[<enabled/>]]></Data></Item></Replace>
+
+
+<Replace><CmdID>1e568e36858764764</CmdID><Item><Target><LocURI>./Device/Vendor/MSFT/Policy/Config/chrome~Policy~googlechrome~Startup/HomepageLocation</LocURI></Target><Data><![CDATA[<enabled/><data id="HomepageLocation" value="https://acme.com"/>]]></Data></Item></Replace>
+
+#To disable the home page from opening every time a new tab is opened#
+
+
+<Replace><CmdID>1654365u76546742</CmdID><Item><Target><LocURI>./Device/Vendor/MSFT/Policy/Config/chrome~Policy~googlechrome~Startup/HomepageIsNewTabPage</LocURI></Target><Data><![CDATA[<disabled/>]]></Data></Item></Replace>
+
+
+#When user launches Chrome, automatically open home page. NOTE: 1&#xF000; is necessary for this policy to work#
+
+<Replace><CmdID>76576599789875</CmdID><Item><Target><LocURI>./Device/Vendor/MSFT/Policy/Config/chrome~Policy~googlechrome~Startup/RestoreOnStartup</LocURI></Target><Data><![CDATA[<enabled/><data id="RestoreOnStartup" value="4"/>]]></Data></Item></Replace>
+
+
+
+<Replace><CmdID>765438764875</CmdID><Item><Target><LocURI>./Device/Vendor/MSFT/Policy/Config/chrome~Policy~googlechrome~Startup/RestoreOnStartupURLs</LocURI></Target><Data><![CDATA[<enabled/><data id="RestoreOnStartupURLsDesc" value="1&#xF000;https://acme.com"/>]]></Data></Item></Replace>
