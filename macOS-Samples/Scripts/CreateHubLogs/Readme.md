@@ -7,6 +7,8 @@
 * Supported Platforms: WS1 UEM 1907
 * Tested on macOS Versions: macOS Mojave
 
+**Note: As of Workspace ONE UEM 20.05, administrators are able to request Hub Logs from macOS devices directly from the Administrator Console.  In the Device Details page, select More Actions > Request Device Log.  This package is not needed for Workspace ONE 20.05 or later.**
+
 Deploy this pkg to a device through WS1 UEM in order to gather and send relevant WS1 Hub and MDM logs to the WS1 UEM Admin Console.  The logs will be stored in the **Content** section of the Admin Console, stored under a category named **macOS Logs** and under an Organization Group that you specify.  This pkg leverages preinstall and postinstall scripts in order to encrypt API credentials and pass them to the device without saving them locally in plaintext.
 
 **Note:** Access to the Content section of the Admin Console requires WS1 Advanced licenses or greater.
