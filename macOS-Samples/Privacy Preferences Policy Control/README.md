@@ -45,7 +45,7 @@ The following outlines some basic, high-level steps to help you determine what P
 
 > **NOTE:**  Carl Ashley posted a great blog about [how to read TCC logs in macOS](https://carlashley.com/2018/09/06/reading-tcc-logs-in-macos/).
 
-> **NOTE:**  You can also review the TCC database *after* clicking the button to whitelist the app.   Run the command `echo ".show" | sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db` and `echo ".show" | sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db` to view the entries in the TCC databases.   You will not be able to read the TCC.db if Terminal is not granted permissions (SystemPolicyAllFiles)
+> **NOTE:**  You can also review the TCC database *after* clicking the button to whitelist the app.   Run the command `echo ".dump" | sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db` and `echo ".dump" | sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db` to view the entries in the TCC databases.   You will not be able to read the TCC.db if Terminal is not granted permissions (SystemPolicyAllFiles)
 
 ### TCC DB Reset
 
