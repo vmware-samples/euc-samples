@@ -596,8 +596,8 @@ def main():
         else:
             oslog('Downloading Enrollment Profile')
             depnotify('Status: Downloading Workspace ONE UEM enrollment profile')
-            urllib.urlretrieve(enrollprofileurl, '/Library/Application Support/VMware/enroll.mobileconfig')
-            oslog('Downloaded to /Library/Application Support/VMware/enroll.mobileconfig')
+            urllib.urlretrieve(enrollprofileurl, '/Library/Application Support/VMware/MigratorResources/*.mobileconfig')
+            oslog('Downloaded to /Library/Application Support/VMware/MigratorResources/*.mobileconfig')
     else:
         oslog('--sideload-mode option used')
         if not opts.enrollment_profile_path:
@@ -676,7 +676,7 @@ def main():
     #This method keeps the enrollment User Approved in 10.13.2+
     depnotify('Status: Please proceed through the System Prompts to install the enrollment profile')
     oslog('Opening profile to begin enrollment')
-    if deviceosversion <= '10.15.1':
+    if deviceosversion >= '10.15.1':
         runcmd('sudo', '-u', consoleuser, '/usr/bin/open', '-a', '/System/Applications/System Preferences.app', enrollmentProfilePath)
     else:
         runcmd('sudo', '-u', consoleuser, '/usr/bin/open', '-a', '/Applications/System Preferences.app', enrollmentProfilePath)

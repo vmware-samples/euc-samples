@@ -62,6 +62,14 @@ Example of how the script is executed via the launchdaemon plist:
 </array>
 ```
 
+**Note:** When editing the launchdaemon file, make sure the file permissions are set appropriately before building the package or you may run into issues.  You can use **chmod 644** after editing the file to ensure the file permissions are set correctly.
+
+After updating the launchdaemon file as well as the various included scripts, use the following command in the project directory to build the package:
+
+```
+./buildpkg .
+```
+
 
 ### Remove the origin MDM:
 
@@ -115,7 +123,7 @@ Important: This requires one-factor token enrollment to be enabled at Settings >
 |  --dest-baseurl  | string | Base url of the enrollment server (e.g. "https://ds1234.awmdm.com") |
 |  --dest-auth  | string |  Base64 encoded username and password (e.g. "Basic dXNlcm5hbWU6cGFzc3dvcmQ=" |
 |  --dest-token  | string |  API token from UEM (e.g. "IgEM6tsn16D+6B41BlQvIW4k1xFQ2HDygxFYLXt0X9E=") |
-|  --dest-groupid  | string | Group ID for the OG the device will enroll to (e.g. "production123") |
+|  --dest-groupid  | string | Group ID for the OG the device will enroll to (e.g. "1234").  Note that this is the numerical "Location Group ID" used in the Workspace ONE UEM API.  |
 |  --dest-apiurl  | string | Base url of the api server (e.g. "https://apiserver.awmdm.com") |
 	
 Optionally require the user to input identifying information with one of the below flags. However, if neither key is supplied, the script will try to use the local username.
@@ -215,7 +223,7 @@ Conditions:
 	<string>--dest-token</string>
 	<string>IgEM6tsn16D+6B41BlQvIW4k1xFQ2HDygxFYLXt0X9E=</string>
 	<string>--dest-groupid</string>
-	<string>testog</string>
+	<string>1234</string>
 	<string>--dest-apiurl</string>
 	<string>https://as1373.awmdm.com</string>
 </array>
