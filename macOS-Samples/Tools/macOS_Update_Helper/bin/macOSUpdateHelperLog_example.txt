@@ -1,0 +1,122 @@
+20.05.20-07:40:26 - 
+20.05.20-07:40:26 - --------------------------------
+20.05.20-07:40:26 - Starting up macOSUpdateHelper...
+20.05.20-07:40:26 - --------------------------------
+20.05.20-07:40:26 - 
+20.05.20-07:40:28 - currentUser is 501
+20.05.20-07:40:28 - Force Upgrade set to: 0
+20.05.20-07:40:28 - Target macOS version is Catalina
+20.05.20-07:40:28 - allowUserPrep is set to: 1
+20.05.20-07:40:28 - allowUserPrep is set to: 1
+20.05.20-07:40:28 - numberOfDeferrals is set to: -1
+20.05.20-07:40:28 - notificationInterval is set to: 150
+20.05.20-07:40:28 - currentDate is: 2020.05.20
+20.05.20-07:40:28 - goLiveDate is set to: 2020.05.22
+20.05.20-07:40:28 - deferralNotificationType is set to: goLiveDate
+20.05.20-07:40:28 - fullScreenDownloader is set to: 1
+20.05.20-07:40:28 - updateIcon is set to: 0
+20.05.20-07:40:28 - currentDeferrals is set to: 0
+20.05.20-07:40:28 - lastDeferral is set to: 0
+20.05.20-07:40:28 - Device is not yet on macOS version 10.15.
+20.05.20-07:40:28 - Will begin next attempt at 150.
+20.05.20-07:40:28 - Ready to begin next attempt.
+20.05.20-07:40:28 - Notifying user to update.  Deferral 0 of -1...
+20.05.20-07:40:37 - 
+20.05.20-07:40:37 - --------------------------------
+20.05.20-07:40:37 - Starting up macOSUpdateHelper...
+20.05.20-07:40:37 - --------------------------------
+20.05.20-07:40:37 - 
+20.05.20-07:40:37 - currentUser is 501
+20.05.20-07:40:37 - Force Upgrade set to: 0
+20.05.20-07:40:37 - Target macOS version is Catalina
+20.05.20-07:40:37 - allowUserPrep is set to: 1
+20.05.20-07:40:37 - allowUserPrep is set to: 1
+20.05.20-07:40:37 - numberOfDeferrals is set to: -1
+20.05.20-07:40:37 - notificationInterval is set to: 150
+20.05.20-07:40:37 - currentDate is: 2020.05.20
+20.05.20-07:40:37 - goLiveDate is set to: 2020.05.22
+20.05.20-07:40:37 - deferralNotificationType is set to: goLiveDate
+20.05.20-07:40:37 - fullScreenDownloader is set to: 1
+20.05.20-07:40:37 - updateIcon is set to: 0
+20.05.20-07:40:37 - currentDeferrals is set to: -1
+20.05.20-07:40:38 - lastDeferral is set to: 1589974828
+20.05.20-07:40:38 - User chose not to defer update.
+20.05.20-07:40:38 - Device is not yet on macOS version 10.15.
+20.05.20-07:40:38 - Forcing update process to initiate...
+20.05.20-07:40:38 - iconPath is /Library/Application Support/macOSUpdateHelper/WS1_icon.png
+20.05.20-07:40:38 - Showing prep screen to user.
+20.05.20-07:40:53 - Beginning download of macOS update.
+20.05.20-07:42:35 - Download Progress: 2%
+20.05.20-07:43:16 - Download Progress: 4%
+20.05.20-07:44:21 - Download Progress: 6%
+20.05.20-07:45:07 - Download Progress: 8%
+20.05.20-07:45:57 - Download Progress: 10%
+20.05.20-07:46:48 - Download Progress: 12%
+20.05.20-07:47:34 - Download Progress: 14%
+20.05.20-07:48:19 - Download Progress: 16%
+20.05.20-07:49:10 - Download Progress: 18%
+20.05.20-07:50:01 - Download Progress: 20%
+20.05.20-07:50:47 - Download Progress: 22%
+20.05.20-07:51:33 - Download Progress: 24%
+20.05.20-07:52:24 - Download Progress: 26%
+20.05.20-07:53:05 - Download Progress: 28%
+20.05.20-07:53:55 - Download Progress: 30%
+20.05.20-07:54:57 - Download Progress: 32%
+20.05.20-07:55:47 - Download Progress: 34%
+20.05.20-07:56:38 - Download Progress: 36%
+20.05.20-07:57:14 - Download Progress: 38%
+20.05.20-07:58:00 - Download Progress: 40%
+20.05.20-07:58:46 - Download Progress: 42%
+20.05.20-07:59:27 - Download Progress: 44%
+20.05.20-08:00:23 - Download Progress: 46%
+20.05.20-08:01:09 - Download Progress: 48%
+20.05.20-08:01:49 - Download Progress: 50%
+20.05.20-08:02:35 - Download Progress: 52%
+20.05.20-08:03:21 - Download Progress: 54%
+20.05.20-08:04:17 - Download Progress: 56%
+20.05.20-08:04:59 - Download Progress: 58%
+20.05.20-08:05:45 - Download Progress: 60%
+20.05.20-08:06:36 - Download Progress: 62%
+20.05.20-08:07:17 - Download Progress: 64%
+20.05.20-08:08:04 - Download Progress: 66%
+20.05.20-08:08:55 - Download Progress: 68%
+20.05.20-08:09:46 - Download Progress: 70%
+20.05.20-08:10:32 - Download Progress: 72%
+20.05.20-08:11:23 - Download Progress: 74%
+20.05.20-08:12:04 - Download Progress: 76%
+20.05.20-08:12:50 - Download Progress: 78%
+20.05.20-08:13:36 - Download Progress: 80%
+20.05.20-08:14:22 - Download Progress: 82%
+20.05.20-08:15:14 - Download Progress: 84%
+20.05.20-08:15:55 - Download Progress: 86%
+20.05.20-08:16:51 - Download Progress: 88%
+20.05.20-08:17:37 - Download Progress: 90%
+20.05.20-08:18:23 - Download Progress: 92%
+20.05.20-08:19:04 - Download Progress: 94%
+20.05.20-08:19:45 - Download Progress: 96%
+20.05.20-08:20:37 - Download Progress: 98%
+20.05.20-08:21:23 - Download Progress: 100%
+20.05.20-08:21:28 - Download complete.  Stalling until startosinstall command signals complete.
+20.05.20-08:22:29 - Total size of macOS Install Data folder is 7871 MB
+20.05.20-08:22:29 - macOS Update is fully downloaded.  Prompting user to restart...
+20.05.20-08:55:55 - 
+20.05.20-08:55:57 - --------------------------------
+20.05.20-08:55:57 - Starting up macOSUpdateHelper...
+20.05.20-08:55:57 - --------------------------------
+20.05.20-08:55:57 - 
+20.05.20-08:56:40 - currentUser is 0
+20.05.20-09:01:44 - currentUser is 501
+20.05.20-09:01:45 - Force Upgrade set to: 0
+20.05.20-09:01:45 - Target macOS version is Catalina
+20.05.20-09:01:45 - allowUserPrep is set to: 1
+20.05.20-09:01:45 - allowUserPrep is set to: 1
+20.05.20-09:01:45 - numberOfDeferrals is set to: -1
+20.05.20-09:01:45 - notificationInterval is set to: 150
+20.05.20-09:01:45 - currentDate is: 2020.05.20
+20.05.20-09:01:45 - goLiveDate is set to: 2020.05.22
+20.05.20-09:01:45 - deferralNotificationType is set to: goLiveDate
+20.05.20-09:01:45 - fullScreenDownloader is set to: 1
+20.05.20-09:01:45 - updateIcon is set to: 0
+20.05.20-09:01:45 - currentDeferrals is set to: -1
+20.05.20-09:01:45 - lastDeferral is set to: 1589974828
+20.05.20-09:01:45 - Device is already on macOS version 10.15.

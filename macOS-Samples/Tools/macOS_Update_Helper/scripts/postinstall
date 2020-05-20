@@ -1,0 +1,4 @@
+#!/bin/bash
+# Created by Paul Evans 5/20/2020
+
+/bin/launchctl load -w /Library/LaunchDaemons/com.vmware.macosupdatehelper.plist
