@@ -1,4 +1,5 @@
 #!/bin/zsh
+# Created by Paul Evans 5/20/2020
 
 totalSteps=50
 installPath="/Library/Application Support/macOSUpdateHelper/"
