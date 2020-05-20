@@ -1,0 +1,108 @@
+#!/bin/bash
+
+n="macOSUpdateHelper"
+v="10.15"
+filename=''$n'_'$v
+
+pkgFile="./build/"$filename".pkg"
+plistFile="./build/"$filename".plist"
+
+sudo chmod 644 ./payload/Library/LaunchDaemons/com.vmware.macosupdatehelper.plist
+
+sudo pkgbuild --install-location / --identifier "com.vmware.macosupdatehelper" --version "$v" --root "./payload/" --scripts "./scripts/" "$pkgFile"
+
+a=$(echo shasum -a 256 "$pkgFile")
+b="$($a | cut -d " " -f1)"
+d="$(date +%FT%TZ)"
+size=$(du -k "$pkgFile" | awk '{print $1}')
+
+checkinstall_script='#!/bin/zsh
+macOSVersion=$(/usr/bin/defaults read "/Library/Managed Preferences/com.vmware.macosupdatehelper.plist" macOSVersion 2>/dev/null)
+/bin/echo "Check macOS Version"
+
+if [[ $(sw_vers -productVersion) = *"$macOSVersion"* ]]; then
+	exit 1 # dont install if already on target version
+fi	
+	
+if [[ ! -a "/Library/LaunchDaemons/com.vmware.macosupdatehelper.plist" || ! -a "/Library/Application Support/macOSUpdateHelper/macOSUpdateHelper.sh" || ! -a "/Applications/Utilities/DEPNotify.app/Contents/MacOS/DEPNotify" ]]; then
+	exit 0 # install any import files dont exist
+fi
+
+exit 1'
+
+uninstall_script='#!/bin/zsh
+/bin/rm "/Library/LaunchDaemons/com.vmware.macosupdatehelper.plist"
+/bin/rm "/Library/Preferences/com.vmware.macosupdatehelper.plist"
+/bin/rm -rf "/Library/Application Support/macOSUpdateHelper/"
+/bin/rm -rf "/Applications/Utilities/DEPNotify.app/"
+/bin/rm -rf "/Applications/Install macOS Catalina.app/"'
+
+
+echo '<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>_metadata</key>
+	<dict>
+		<key>created_by</key>
+		<string>AirWatchScript</string>
+		<key>creation_date</key>
+		<date>'$d'</date>
+		<key>munki_version</key>
+		<string>4.0.0.3896</string>
+		<key>os_version</key>
+		<string>10.15.4</string>
+	</dict>
+	<key>autoremove</key>
+	<false/>
+	<key>catalogs</key>
+	<array>
+		<string>testing</string>
+	</array>
+	<key>category</key>
+	<string>Software</string>
+	<key>description</key>
+	<string></string>
+	<key>developer</key>
+	<string></string>
+	<key>display_name</key>
+	<string>'$n'</string>
+	<key>installer_item_hash</key>
+	<string>'$b'</string>
+	<key>installer_item_location</key>
+	<string>'$filename'.pkg</string>
+	<key>installer_item_size</key>
+	<integer>'$size'</integer>
+	<key>minimum_os_version</key>
+	<string>10.5.0</string>
+	<key>name</key>
+	<string>'$n'</string>
+	<key>installcheck_script</key>
+	<string>'"$checkinstall_script"'</string>
+	<key>uninstall_method</key>
+	<string>uninstall_script</string>
+	<key>uninstall_script</key>
+	<string>'"$uninstall_script"'</string>
+	<key>receipts</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>'$n'</string>
+			<key>packageid</key>
+			<string>com.vmware.macosupdatehelper</string>
+			<key>version</key>
+			<string>'$v'</string>
+		</dict>
+	</array>
+	<key>unattended_install</key>
+	<false/>
+	<key>unattended_uninstall</key>
+	<false/>
+	<key>uninstallable</key>
+	<true/>
+	<key>version</key>
+	<string>'$v'</string>
+</dict>
+</plist>' > "$plistFile"
+
+sudo chmod 777 "$plistFile"
