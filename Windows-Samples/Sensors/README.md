@@ -119,7 +119,8 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 
 ## Change Log
-- 5/28/2020 - updated import_sensor_samples.ps1 file. Fixed bug with -DeleteSensors parameter. Added additional logging. 
+- 5/28/2020 - Added ability to download/export all Sensors from console to import_sensor_samples.ps1 file (version 1.3). Added various branchcache samples.
+- 5/28/2020 - updated import_sensor_samples.ps1 (version 1.2) file. Fixed bug with -DeleteSensors parameter. Added additional logging. 
 - 3/26/2020 - os_product_key added
 - 3/13/2020 - dcu_version and dcu_lock added
 - March 2020 - many BranchCache samples bc_*

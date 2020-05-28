@@ -4,7 +4,7 @@
 # Contributors: Chris Halstead - chealstead@vmware.com
 # Created: December 2018
 # Updated: May 2020
-# Version 1.2
+# Version 1.3
 
   .SYNOPSIS
     This Powershell script allows you to automatically import PowerShell scripts as Workspace ONE Sensors in the Workspace ONE UEM Console. 
@@ -54,6 +54,8 @@
     .PARAMETER UpdateSensors
     OPTIONAL: If enabled, all sensors that match will be updated with the version in the PowerShell samples. 
 
+    .PARAMETER ExportSensors
+    OPTIONAL: If enabled, all sensors will be downloaded locally, this is a good option for backuping up sensors before making updates. 
 #>
 
 [CmdletBinding()]
@@ -84,7 +86,10 @@
         [switch]$UpdateSensors, 
 
         [Parameter(Mandatory=$False)]
-        [switch]$DeleteSensors
+        [switch]$DeleteSensors, 
+
+        [Parameter(Mandatory=$False)]
+        [switch]$ExportSensors
 )
 
 # Forces the use of TLS 1.2
@@ -302,6 +307,30 @@ Function Delete-Sensors() {
     Return $Status
 }
 
+# Gets Sensor's Details (Script Data)
+Function Get-Sensor($UUID){
+    $endpointURL = $URL + "/mdm/devicesensors/" + $UUID
+    $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
+    $Sensor = $webReturn
+    Return $Sensor
+}
+
+# Downloads Sensors from Console Locally
+Function Export-Sensors($path) {
+$ConsoleSensors = Get-Sensors
+$Num = $ConsoleSensors.total_results - 1
+$ConsoleSensors = $ConsoleSensors.result_set
+DO
+    {  
+    $UUID = $ConsoleSensors[$Num].uuid
+    $Sensor = Get-Sensor($UUID)
+    $ScriptBody = $Sensor.script_data
+    Write-Host "Exporting $($Sensor.name)"
+    if($ScriptBody){[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($ScriptBody)) | Out-File -Encoding "UTF8" "$($download_path)\$($Sensor.Name).ps1" -Force}
+    $Num--
+    } While ($Num -ge 0)
+}
+
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
 Write-Host("Starting Up, let's get this done!") -ForegroundColor Yellow 
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
@@ -321,67 +350,78 @@ $WorkspaceONEGroupUUID = Get-OrganizationGroupUUID($WorkspaceONEGroupID)
 Check-ConsoleVersion
 Check-SensorsEnabled($WorkspaceONEGroupUUID)
 
+# Downloads Sensors Locally if using the -ExportSensor parameter
+if($ExportSensors){
+$download_path = Read-Host -Prompt "Input path to download Sensor samples"
+Export-Sensors($download_path)
+Write-Host "Sensors have been downloaded to " $download_path -ForegroundColor Yellow
+Write-Host("*****************************************************************") -ForegroundColor Yellow 
+Write-Host("We did it! You are awesome, have a great day!") -ForegroundColor Yellow 
+Write-Host("*****************************************************************") -ForegroundColor Yellow 
+Exit
+}
+
 # Pull in PS Samples
  $PSSensors = Get-PowerShellSensors
 
 $NumSensors = $PSSensors.Count - 1
 DO
-{
-# Removes .ps1 from filename, convert to lowercase, replace spaces with underscores
-$SensorName = ($PSSensors)[$NumSensors].Filename.ToLower() -replace ".ps1","" -replace “ “,”_”
-# If DeleteSensors switch is called, then deletes all Sensor samples
-if ($DeleteSensors) {
-    Delete-Sensors($WorkspaceONEGroupID)
-    Break
-}elseif (Check-Duplicate-Sensor $SensorName) {
-    if($UpdateSensors){
-    # Check if Sensor Already Exists
-    Write-Host($SensorName + " already exists in this tenant. Updating Sensor now!")
-    # Removes Comment # and Quotes
-    $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
-    # INTEGER, BOOLEAN, STRING, DATETIME
-    $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
-    # USER, SYSTEM, ADMIN
-    $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
-    # Encode Script
-    $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
-    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
-    $Script = [Convert]::ToBase64String($Bytes)
-    Update-Sensors $Description $Context $SensorName $ResponseType $Script
+    {
+    # Removes .ps1 from filename, convert to lowercase, replace spaces with underscores
+    $SensorName = ($PSSensors)[$NumSensors].Filename.ToLower() -replace ".ps1","" -replace “ “,”_”
+    # If DeleteSensors switch is called, then deletes all Sensor samples
+    if ($DeleteSensors) {
+        Delete-Sensors($WorkspaceONEGroupID)
+        Break
+    }elseif (Check-Duplicate-Sensor $SensorName) {
+        if($UpdateSensors){
+        # Check if Sensor Already Exists
+        Write-Host($SensorName + " already exists in this tenant. Updating Sensor now!")
+        # Removes Comment # and Quotes
+        $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
+        # INTEGER, BOOLEAN, STRING, DATETIME
+        $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
+        # USER, SYSTEM, ADMIN
+        $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
+        # Encode Script
+        $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
+        $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
+        $Script = [Convert]::ToBase64String($Bytes)
+        Update-Sensors $Description $Context $SensorName $ResponseType $Script
+        }
+        # Skips Template files
+    }elseif ($SensorName -match "template_get_registry_value|template_get_wmi_object|import_sensor_samples"){
+        Write-Host($SensorName + " is a template. Skipping Templates.") -ForegroundColor Yellow 
+    }else{ # Adds new Sensors
+        # Removes Comment # and Quotes
+        $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
+        # INTEGER, BOOLEAN, STRING, DATETIME
+        $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
+        # USER, SYSTEM, ADMIN
+        $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
+        # Encode Script
+        $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
+        $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
+        $Script = [Convert]::ToBase64String($Bytes)
+        Set-Sensors $Description $Context $SensorName $ResponseType $Script
     }
-    # Skips Template files
-}elseif ($SensorName -match "template_get_registry_value|template_get_wmi_object|import_sensor_samples"){
-    Write-Host($SensorName + " is a template. Skipping Templates.") -ForegroundColor Yellow 
-}else{ # Adds new Sensors
-    # Removes Comment # and Quotes
-    $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
-    # INTEGER, BOOLEAN, STRING, DATETIME
-    $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
-    # USER, SYSTEM, ADMIN
-    $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
-    # Encode Script
-    $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
-    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
-    $Script = [Convert]::ToBase64String($Bytes)
-    Set-Sensors $Description $Context $SensorName $ResponseType $Script
-}
-$NumSensors--
-} While ($NumSensors -ge 0)
+    $NumSensors--
+    } While ($NumSensors -ge 0)
 
 # Assign Sensors to Smart Group
 if($SmartGroupID)
 {
-Write-Host("Assigning Sensors to Smart Group")
-$SmartGroupUUID = Get-SmartGroupUUID $SmartGroupID
-$Sensors=Get-Sensors
-$Num = $Sensors.total_results -1
-$Sensors = $Sensors.result_set
-    DO
-    {
-    $SensorsUUID=$Sensors[$Num].uuid
-    Assign-Sensors $SensorsUUID $SmartGroupUUID
-    $Num--
-    } while ($Num -ge 0)
+    Write-Host("Assigning Sensors to Smart Group")
+    $SmartGroupUUID = Get-SmartGroupUUID $SmartGroupID
+    $Sensors=Get-Sensors
+    $Num = $Sensors.total_results -1
+    $Sensors = $Sensors.result_set
+        DO
+        {
+        $SensorsUUID=$Sensors[$Num].uuid
+        Assign-Sensors $SensorsUUID $SmartGroupUUID
+        $Num--
+        } while ($Num -ge 0)
 }
 
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
