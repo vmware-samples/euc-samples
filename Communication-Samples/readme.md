@@ -1,4 +1,4 @@
-# AppBlocker WS1 Package
+# Workspace ONE Custom Email Templates
 
 * Author: Mathijs de Ruiter
 * Email: mathijs.de.ruiter@fondo.nl
