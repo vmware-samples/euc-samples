@@ -16,6 +16,6 @@ In order for you to fully leverage this templates, you need to host your company
 
 Start with logging into the Workspace ONE UEM console, go to All Settings > Devices & Users > General > Message Templates and clicking the +ADD button.
 
-![console.png?raw=true](/console.png)
+![console.png?raw=true](/euc-samples/Communication-Samples/console.png)
 
 Press the <> icon in the editor to switch modes from WYSIWYG to HTML mode. Copy and paste the HTML code into the editor and make sure the type is set to Compliance Violation User Notification. Give the template a name and press Save. That's it, you can now use your custom template in compliance policies.
