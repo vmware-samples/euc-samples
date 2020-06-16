@@ -403,6 +403,8 @@ The contents of the XML should look similar to this (modify or remove items as n
 		<true/>
 		<key>security.default_personal_cert</key>
 		<string>Ask Every Time</string>
+		<key>security.osclientcerts.autoload</key>
+	        <true/>
 	</dict>
 	<key>Proxy</key>
 	<dict>
