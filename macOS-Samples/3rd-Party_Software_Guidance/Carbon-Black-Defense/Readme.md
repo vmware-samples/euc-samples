@@ -37,6 +37,8 @@ Workspace ONE administrators should deliver a Kernel Extension Policy payload to
 Current versions of the installer package for Carbon Black Defense require running an install script from the same location as the installer package. To meet this requirement, you must add a new array into the plist file which forces the Workspace ONE Intelligent Hub to unpack the DMG to a known temporary location so you can execute the install script with the required parameters.
 
 ```XML
+<key>installer_type</key>
+<string>copy_from_dmg</string>
 <key>items_to_copy</key>
 <array>
     <dict>
@@ -56,7 +58,30 @@ Current versions of the installer package for Carbon Black Defense require runni
         <string>docs/cbdefense_install_unattended.sh</string>
     </dict>
 </array>
+<key>installs</key>
+<array>
+    <dict>
+        <key>CFBundleIdentifier</key>
+        <string>CbDefense</string>
+        <key>CFBundleName</key>
+        <string>CbDefense</string>
+        <key>CFBundleShortVersionString</key>
+        <string>3.4.2.23</string>
+        <key>CFBundleVersion</key>
+        <string>3.4.2.23</string>
+        <key>minosversion</key>
+        <string>10.6</string>
+        <key>path</key>
+        <string>/Applications/Confer.app</string>
+        <key>type</key>
+        <string>application</string>
+        <key>version_comparison_key</key>
+        <string>CFBundleShortVersionString</string>
+    </dict>
+</array>
 ```
+
+> **NOTE:** You will need to replace the *CFBundleShortVersionString* and *CFBundleVersion* values in the installs array if those are different for the particular version of the Sensor you're deploying.  You can alternatively generate these values by exporting **Confer.app** from the installer package (using an app such as [Suspicious Package](https://mothersruin.com/software/SuspiciousPackage/)) and running it through the Workspace ONE Admin Assistant app.  The plist generated in that instance will contain the appropriate *installs* array information.
 
 ## Modify Scripts for Internal App
 
