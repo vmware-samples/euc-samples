@@ -12,12 +12,25 @@
 
 Install the Carbon Black Defense agent via unattended installation using Workspace ONE UEM.
 
-1) Download the Carbon Black Defense installer package for macOS (generally *confer_installer_mac-<version>.dmg*)
-2) Parse the installer with the [Workspace ONE Admin Assistant](https://awagent.com/AdminAssistant/VMwareAirWatchAdminAssistant.dmg)
-3) Modify the generated plist file as instructed in [Modify PkgInfo Plist File](#modify-pkginfo-plist-file)
-4) Upload the dmg, plist, and icon to Workspace ONE UEM as an Internal App (Apps & Books > Native > Internal)
-5) In the __Scripts__ tab, add the script described in [Modify Scripts for Internal App](#modify-scripts-for-internal-app)
-6) Configure any remaining deployment settings and Assign the app as appropriate
+1) Deploy the [Kernel Extension profile for the Carbon Black Kernel Extension](#kernel-extension-profile-for-the-carbon-black-kext).
+2) Download the Carbon Black Defense installer package for macOS (generally *confer_installer_mac-<version>.dmg*)
+3) Parse the installer with the [Workspace ONE Admin Assistant](https://awagent.com/AdminAssistant/VMwareAirWatchAdminAssistant.dmg)
+4) Modify the generated plist file as instructed in [Modify PkgInfo Plist File](#modify-pkginfo-plist-file)
+5) Upload the dmg, plist, and icon to Workspace ONE UEM as an Internal App (Apps & Books > Native > Internal)
+6) In the __Scripts__ tab, add the script described in [Modify Scripts for Internal App](#modify-scripts-for-internal-app)
+7) Configure any remaining deployment settings and Assign the app as appropriate
+
+## Kernel Extension Profile for the Carbon Black KEXT
+
+Workspace ONE administrators should deliver a Kernel Extension Policy payload to macOS 10.13.2 and later devices in order to allow the Carbon Black kernel extensions to run.  To do this, perform the following (or optionally add the Team ID and Bundle ID to an existing profile):
+
+1) Click **Add > Profile > macOS > Device** and complete the General information
+2) Select the **Kernel Extension Policy** payload an click configure
+3) Complete the profile as necessary, and include the following information in the *Allowed Kernel Extensions* list:
+  * Team ID: 7AGZNQ2S2T
+  * Bundle ID: com.carbonblack.defense.kext
+
+> **NOTE:** It is recommended to deploy the KEXT policy to eligible devices *BEFORE* deploying the Carbon Black installer.
 
 ## Modify PkgInfo Plist File
 
@@ -61,7 +74,7 @@ None
 ## Change Log
 
 - 2020-04-24: Created Initial File
-- 2020-06-16: Fixed copy/paste error
+- 2020-06-16: Added KEXT profile info
 
 ## Additional Resources
 
