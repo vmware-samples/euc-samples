@@ -40,7 +40,7 @@ Current versions of the installer package for Carbon Black Defense require runni
         <key>mode</key>
         <string>755</string>
         <key>source_item</key>
-        <string>docs/cbdefense_install_unattended.sh</string>
+        <string>cbdefense_install_unattended.sh</string>
     </dict>
 </array>
 ```
@@ -61,6 +61,7 @@ None
 ## Change Log
 
 - 2020-04-24: Created Initial File
+- 2020-06-16: Fixed copy/paste error
 
 ## Additional Resources
 
