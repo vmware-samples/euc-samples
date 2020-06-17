@@ -40,7 +40,7 @@ Current versions of the installer package for Carbon Black Defense require runni
         <key>mode</key>
         <string>755</string>
         <key>source_item</key>
-        <string>cbdefense_install_unattended.sh</string>
+        <string>docs/cbdefense_install_unattended.sh</string>
     </dict>
 </array>
 ```
