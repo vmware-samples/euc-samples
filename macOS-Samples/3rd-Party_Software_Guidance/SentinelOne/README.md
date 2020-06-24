@@ -58,7 +58,7 @@ This document will demonstrate how to install SentinelOne by staging the com.sen
 	</array>
 ```
 
-> **NOTE:** You will need to replace the *CFBundleShortVersionString* and *CFBundleVersion* values in the installs array if those are different for the particular version of the Sensor you're deploying.  You can alternatively generate these values by exporting **SentinelAgent.app** from the installer package (using an app such as [Suspicious Package](https://mothersruin.com/software/SuspiciousPackage/)) and running it through the Workspace ONE Admin Assistant app.  The plist generated in that instance will contain the appropriate *installs* array information.
+> **NOTE:** You will need to replace the *CFBundleShortVersionString* and *CFBundleVersion* values in the installs array if those are different for the particular version of the app you're deploying.  You can alternatively generate these values by exporting **SentinelAgent.app** from the installer package (using an app such as [Suspicious Package](https://mothersruin.com/software/SuspiciousPackage/)) and running it through the Workspace ONE Admin Assistant app.  The plist generated in that instance will contain the appropriate *installs* array information.
 
 ## Modify Preinstall Script for Internal App
 
