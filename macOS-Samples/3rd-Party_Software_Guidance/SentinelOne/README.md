@@ -66,7 +66,7 @@ In order to properly stage the com.sentinelone.registration-token file, you must
 
 ```BASH
 #!/bin/sh
-echo "REGISTRATION_TOKEN" > "/Library/Application Support/AirWatch/Data/Munki/Managed Installs/Cache/com.sentinelone.registration-token"
+/bin/echo "REGISTRATION_TOKEN" > "/Library/Application Support/AirWatch/Data/Munki/Managed Installs/Cache/com.sentinelone.registration-token"
 ```
 
 ## Required Changes/Updates
