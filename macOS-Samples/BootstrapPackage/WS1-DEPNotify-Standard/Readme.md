@@ -120,7 +120,7 @@ xxd -ps image.png
   
   chmod 777 "/tmp/Workspace ONE/DEPNotify/DEPNotifyTotalSteps.txt"
   echo "$numberOfApps" > "/tmp/Workspace ONE/DEPNotify/DEPNotifyTotalSteps.txt"
-  return "Success"
+  echo "Success"
   ```
 
 7. Select Save and Publish.
