@@ -41,6 +41,14 @@ Note: make sure to replace the example Test Drive servers with your actual Horiz
 						<array>
 							<string>https://horizon.testdrive.vmware.com:443/broker/xml</string>
 						</array>
+						<key>kAutoCheckForUpdates</key>
+						<false/>
+						<key>kAutoDownloadForUpdates</key>
+						<false/>
+						<key>kAllowDataSharing</key>
+						<false/>
+						<key>kAllowRemovableStorage</key>
+						<false/>
 					</dict>
 				</dict>
 			</array>

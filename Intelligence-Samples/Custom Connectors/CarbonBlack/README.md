@@ -23,9 +23,7 @@ A sample of how Carbon Black APIs can be customized and used for Automation work
 
 This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to replace the variable fields (API Key, API Secret Key and ORG Key) with the values from your Carbon Black Cloud instance.
 
-There is only one action included in this sample:
-
-1. Quarantine Device, with the following parameters:
+This sample contain only a Quarantine Device action, with the following parameters:
 
    ***Action Type*** parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
 
@@ -41,11 +39,11 @@ There is only one action included in this sample:
 
 *API Key* - Create an API Key with Custom Access Level role in Carbon Black Cloud. The Custom Access Level role must include the permission to execute [*Device Quarantine Actions](https://developer.carbonblack.com/reference/carbon-black-cloud/platform/latest/devices-api/#device-actions) for the tenant in which the action will be performed.
 
-**Download the postman collection (JSON file) and perform the following updates** 
+**Download the postman collection (JSON file) and perform the following updates**  
 
-- Replace the *{{API Key}}* with the new API Key created in Carbon Black Cloud
-- Replace the *{{API Secret Key}}* with the API Secret Key associated to the API Key
-- Replace the *{{ORG Key}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console
+- Replace the *{{API Key}}* with the new API Key created in Carbon Black Cloud  
+- Replace the *{{API Secret Key}}* with the API Secret Key associated to the API Key  
+- Replace the *{{ORG Key}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console  
 
 
 **Configuring this Connector in Intelligence**
