@@ -12,6 +12,7 @@ Deploying MS Defender ATP macOS with vmWare WorkspaceOne UEM
 If you want to distribute Microsoft Defender ATP for macOS via WorkspaceOne in an enterprise environment you need 2 plist at the end which you distribute via the custom settings in WS1 and which are located in the /Libray/Managed Preferences/. 
 On the one hand you need the onboarding info, which contains the license for Defender ATP, on the other hand you need the configuration settings. In addition you have to define the system extension policy, kernel extension policy and the privacy preferences.
 
+### Custom Settings for Managed Preferences
 For the managed configuration settings you need the com.microsoft.wdav.plist
 Sanitized plist/custom setting in xml:
 ```xml
@@ -86,4 +87,9 @@ Sanitized plist/custom setting in xml:
 <string>settings from your Defender ATP Admin center</string>
 </dict>
 ```
-Finally you can build a new profile for system extension policy, kernel extension policy and privacy preferences or you can include in one of your previous profile.
+
+### Kernel Extensions and Privacy Preferences
+In Workspace ONE UEM, you need only click Add > Profile in the top right corner, and build a macOS Device profile. While we typically suggest only a single payload per profile, in this instance, you need multiple payloads for a single app. 
+
+* The Kernel Extension payload whitelisting the Team ID: `UBF8T346G9`
+* The Privacy Preferences payload for the bundle ID `com.microsoft.wdav` granting it an *Allow* for the `SystemPolicyAllFiles` entitlement.  The Code Requirement is `identifier "com.microsoft.wdav" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = UBF8T346G9`
