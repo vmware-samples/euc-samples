@@ -41,10 +41,13 @@ This sample contain only a Quarantine Device action, with the following paramete
 
 **Download the postman collection (JSON file) and perform the following updates**  
 
-- Replace the *{{API Key}}* with the new API Key created in Carbon Black Cloud  
-- Replace the *{{API Secret Key}}* with the API Secret Key associated to the API Key  
-- Replace the *{{ORG Key}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console  
+- Replace the *{{API Key}}* with the new API Key created in Carbon Black Cloud  (API Key sample: AAFFGFFIN)
+- Replace the *{{API Secret Key}}* with the API Secret Key associated to the API Key  (API Secret Key sample: ZI335DR13D32EEDEZ8Z7IZD1)
+- Replace the *{{ORG Key}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console  (ORG Key sample: D12DHM4C)  
 
+Based on the sample values, the variable values on the the JSON file will look like this:  
+*{{API Secret Key}}/{{API Key}}* -> ZI335DR13D32EEDEZ8Z7IZD1/AAFFGFFIN  
+*{{Org Key}}* -> D12DHM4C  
 
 **Configuring this Connector in Intelligence**
 
