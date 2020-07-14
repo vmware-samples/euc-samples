@@ -25,7 +25,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"action_type\": \"QUARANTINE\",\n    \"device_id\": [\"\"],\n    \"options\": {\n        \"toggle\": \"ON\"\n    }\n}",
+					"raw": "{\n    \"action_type\": \"QUARANTINE\",\n    \"device_id\": [\"${deviceinfo_deviceid}\"],\n    \"options\": {\n        \"toggle\": \"ON\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
