@@ -16,6 +16,9 @@
         Full Command line options for airwatchagent.msi: https://docs.vmware.com/en/VMware-AirWatch/9.3/vmware-airwatch-guides-93/GUID-AW93-Enroll_SilentCommands.html
 		Complete Onboarding Windows 10 devices using CLI guide: https://techzone.vmware.com/onboarding-windows-10-using-command-line-enrollment-vmware-workspace-one-operational-tutorial
 	.NOTES
+	v2.4 - July 14, 2020
+		- Updated logic of SID check to account for an edge case related to staged enrollment
+
 	v2.3 - June 25, 2020
         - Added function to supress Windows's Toast notification indicating device un-enrollment and enrollment
 
@@ -532,7 +535,7 @@ Add-Type -ReferencedAssemblies $ReferencedAssemblies -TypeDefinition $code -Lang
 
 #------------------------------------------------------------------------
 #Variable Section
-$version = 'v2.3'
+$version = 'v2.4'
 $user = [QueryUser]::GetUserSessionInfo($env:COMPUTERNAME)
 $userFullname = "{0}\{1}" -f $user.DomainName, $user.UserName
 $oUser = New-Object -TypeName System.Security.Principal.NTAccount($userFullname)
@@ -690,9 +693,15 @@ function Check-SID
 	}
 
 	$GUID = $enrollment.GUID
-	[string]$EnrollmentSID = (Get-ChildItem HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\$GUID| Where-Object { $_.Name -notlike "*device" }).PSChildName
-	Write-Log "Enrollment SID=$EnrollmentSID"
-	If ($global:SID -eq $EnrollmentSID)
+    $key = "HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\"
+
+    $SID = Get-ChildItem $key$GUID | select name | Where-Object Name -notlike "*device" | % { $_.name.split('\') | select -last 1 }
+    If ($SID.count -gt 1)
+    {
+    $SID = $SID[-1] #selecting last item in the array which should be the correct SID with proper enrollment
+    }
+	Write-Log "Enrollment SID=$SID"
+	If ($global:SID -eq $SID)
 	{
 		Write-Log "SIDs Match"
 		Return $true
