@@ -27,25 +27,25 @@ This sample contain two actions:
 
 1 - Quarantine Device action, with the following parameters:
 
-   - ***Action Type*** parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
+   - **Action Type** parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
 
-   - ***Device Id[0]*** parameter - Carbon Black Device ID where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
+   - **Device Id[0]** parameter - Carbon Black Device ID where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
 
-   - ***Options Toggle*** parameter - ON to quarantine device and OFF to unquarantine device.
+   - **Options Toggle** parameter - ON to quarantine device and OFF to unquarantine device.
 
 **API Permission required:**  The API Key must be assigned to a custom role with permission to execute quarantine device action.
 
 2 - Change Device Policy action, with the following parameters:
 
-   - ***Action Type*** parameter - UPDATE_POLICY - Change the device policy on a device with Carbon Black Sensor to a new one defined on the Policy ID.
+   - **Action Type** parameter - UPDATE_POLICY - Change the device policy on a device with Carbon Black Sensor to a new one defined on the Policy ID.
 
-   - ***Device Id[0]*** parameter - Carbon Black Device ID where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
+   - **Device Id[0]** parameter - Carbon Black Device ID where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
    
-   - ***Policy ID*** parameter - New Policy ID to apply to the device.
+   - **Policy ID** parameter - New Policy ID to apply to the device.
 
 **API Key Permission required:**  The API Key must be assigned to a custom role with permission to update device polivy.
 
-*Custom Access Level* - The Custom Access Level role must include the permissions to execute [Device Quarantine and Update Poicy Actions](https://developer.carbonblack.com/reference/carbon-black-cloud/platform/latest/devices-api/#device-actions) for the tenant in which the action will be performed.
+*Custom Access Level* - More information on Custom Access Level role and permissions to execute [Device Quarantine and Update Poicy Actions](https://developer.carbonblack.com/reference/carbon-black-cloud/platform/latest/devices-api/#device-actions).
 
 **Download the postman collection (JSON file) and perform the following updates**  
 
