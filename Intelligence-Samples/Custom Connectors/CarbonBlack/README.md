@@ -33,7 +33,7 @@ This sample contain two actions:
 
    - **Options Toggle** parameter - ON to quarantine device and OFF to unquarantine device.
 
-**API Permission required:**  The API Key must be assigned to a custom role with permission to execute quarantine device action.
+**API Key permission required:**  The API Key must be assigned to a custom role with permission to execute quarantine device action.
 
 2 - Change Device Policy action, with the following parameters:
 
@@ -43,7 +43,7 @@ This sample contain two actions:
    
    - **Policy ID** parameter - New Policy ID to apply to the device.
 
-**API Key Permission required:**  The API Key must be assigned to a custom role with permission to update device polivy.
+**API Key permission required:**  The API Key must be assigned to a custom role with permission to update device polivy.
 
 *Custom Access Level* - More information on Custom Access Level role and permissions to execute [Device Quarantine and Update Poicy Actions](https://developer.carbonblack.com/reference/carbon-black-cloud/platform/latest/devices-api/#device-actions).
 
