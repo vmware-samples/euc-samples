@@ -37,7 +37,7 @@ This sample contain two actions:
 
 2 - Change Device Policy action, with the following parameters:
 
-   - **Action Type** parameter - UPDATE_POLICY - Change the device policy on a device with Carbon Black Sensor to a new one defined on the Policy ID.
+   - **Action Type** parameter - UPDATE_POLICY - Change the device policy on a single device with Carbon Black Sensor to a new one defined on the Policy ID.
 
    - **Device Id[0]** parameter - Carbon Black Device ID where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
    
