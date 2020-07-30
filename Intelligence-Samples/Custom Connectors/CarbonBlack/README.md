@@ -1,10 +1,10 @@
 
-# VMware Carbon Black Cloud Sample Collection
+# VMware Carbon Black Cloud Custom Connector Sample Collection
 
 ## Overview
 - **Author**: Andreano Lanusse
 - **Email**: alanusse@vmware.com
-- **Date Created**: 02/26/2020
+- **Date Created**: 02/26/2020     - **Last Update**: 07/30/2020
 
 
 ## Purpose
@@ -23,31 +23,39 @@ A sample of how Carbon Black APIs can be customized and used for Automation work
 
 This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to replace the variable fields (API Key, API Secret Key and ORG Key) with the values from your Carbon Black Cloud instance.
 
-This sample contain only a Quarantine Device action, with the following parameters:
+This sample contain two actions:
+
+1 - Quarantine Device action, with the following parameters:
 
    ***Action Type*** parameter - QUARANTINE - Perform quarantine action on a single device that contain the Carbon Black Cloud Sensor installed.
 
-   ***Device Id[0]*** parameter - Device ID in Carbon Black where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
+   ***Device Id[0]*** parameter - Carbon Black Device ID where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
 
    ***Options Toggle*** parameter - ON to quarantine device and OFF to unquarantine device.
 
+**API Permission required:**  The API Key must be assigned to a custom role with permission to execute quarantine device action.
 
-**Note:**  The API Key must be assigned to a role with permission to execute quarantine device action.
+2 - Change Device Policy action, with the following parameters:
 
+   ***Action Type*** parameter - UPDATE_POLICY - Change the device policy on a device with Carbon Black Sensor to a new one defined on the Policy ID.
 
-**Permissions Required** 
+   ***Device Id[0]*** parameter - Carbon Black Device ID where the action will be executed, use ${deviceinfo_deviceid} lookup value when performing automation.
+   
+   ***Policy ID*** parameter - New Policy ID to apply to the device.
 
-*API Key* - Create an API Key with Custom Access Level role in Carbon Black Cloud. The Custom Access Level role must include the permission to execute [*Device Quarantine Actions](https://developer.carbonblack.com/reference/carbon-black-cloud/platform/latest/devices-api/#device-actions) for the tenant in which the action will be performed.
+**API Key Permission required:**  The API Key must be assigned to a custom role with permission to update device polivy.
+
+*Custom Access Level* - The Custom Access Level role must include the permission to execute [*Device Quarantine and Update Poicy Actions](https://developer.carbonblack.com/reference/carbon-black-cloud/platform/latest/devices-api/#device-actions) for the tenant in which the action will be performed.
 
 **Download the postman collection (JSON file) and perform the following updates**  
 
-- Replace the *{{API Key}}* with the new API Key created in Carbon Black Cloud  (API Key sample: AAFFGFFIN)
-- Replace the *{{API Secret Key}}* with the API Secret Key associated to the API Key  (API Secret Key sample: ZI335DR13D32EEDEZ8Z7IZD1)
-- Replace the *{{ORG Key}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console  (ORG Key sample: D12DHM4C)  
+- Replace the *{{APIKey}}* with the new API Key created in Carbon Black Cloud  (API Key sample: AAFFGFFIN)
+- Replace the *{{APISecretKey}}* with the API Secret Key associated to the API Key  (API Secret Key sample: ZI335DR13D32EEDEZ8Z7IZD1)
+- Replace the *{{OrgKey}}* with the ORG Key available on the API Keys page in Carbon Black Cloud Console  (ORG Key sample: D12DHM4C)  
 
 Based on the sample values, the variable values on the the JSON file will look like this:  
-*{{API Secret Key}}/{{API Key}}* -> ZI335DR13D32EEDEZ8Z7IZD1/AAFFGFFIN  
-*{{Org Key}}* -> D12DHM4C  
+*{{APISecretKey}}/{{APIKey}}* -> ZI335DR13D32EEDEZ8Z7IZD1/AAFFGFFIN  
+*{{OrgKey}}* -> D12DHM4C  
 
 **Configuring this Connector in Intelligence**
 

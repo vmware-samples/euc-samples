@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "39557424-1153-4cdb-b9f3-18fcfadf7a0d",
 		"name": "Carbon Black",
-        "description" : "This collection is a sample for use within Workspace ONE Intelligence. Please be sure to populate the API Key, API Secret Key and ORG Key from your tenant to be able to perform Quarantine Device action in Carbon Black",
+        "description" : "This collection is a sample for use within Workspace ONE Intelligence. Please be sure to populate the API Key, API Secret Key and ORG Key from your tenant to be able to perform Device actions in Carbon Black",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -19,7 +19,7 @@
 					},
 					{
 						"key": "X-Auth-Token",
-						"value": "{{API Secret Key}}/{{API Key}}",
+						"value": "{{APISecret}}/{{APIKey}}",
 						"type": "text"
 					}
 				],
@@ -33,7 +33,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{ORG Key}}/device_actions",
+					"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{OrgKey}}/device_actions",
 					"protocol": "https",
 					"host": [
 						"{{DashboardUrl}}"
@@ -42,14 +42,15 @@
 						"appservices",
 						"v6",
 						"orgs",
-						"{{ORG Key}}",
+						"{{OrgKey}}",
 						"device_actions"
 					]
-				}
+				},
+				"description": "Perform Quarantine device action on devices within Carbon Black Cloud Sensor installed. The API Key must be assigned to a role with permission to execute quarantine device action"
 			},
 			"response": [
 				{
-					"name": "Quarantine Device",
+					"name": "Quarantine",
 					"originalRequest": {
 						"method": "POST",
 						"header": [
@@ -60,13 +61,13 @@
 							},
 							{
 								"key": "X-Auth-Token",
-								"value": "{{API Secret Key}}/{{API Key}}",
+								"value": "{{APISecret}}/{{APIKey}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"action_type\": \"QUARANTINE\",\n    \"device_id\": [\"\"],\n    \"options\": {\n        \"toggle\": \"ON\"\n    }\n}",
+							"raw": "{\n    \"action_type\": \"QUARANTINE\",\n    \"device_id\": [\"17595537\"],\n    \"options\": {\n        \"toggle\": \"ON\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -74,7 +75,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{ORG Key}}/device_actions",
+							"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{OrgKey}}/device_actions",
 							"protocol": "https",
 							"host": [
 								"{{DashboardUrl}}"
@@ -83,7 +84,236 @@
 								"appservices",
 								"v6",
 								"orgs",
-								"{{ORG Key}}",
+								"{{OrgKey}}",
+								"device_actions"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 30 Jul 2020 17:54:08 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Server",
+							"value": "Apache-Coyote/1.1"
+						},
+						{
+							"key": "Set-Cookie",
+							"value": "JSESSIONID=66E7CD870D3C64567B50108510C7BDAA; Path=/appservices; HttpOnly"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Xss-Protection",
+							"value": "1; mode=block"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Change Device Policy",
+			"description": "Perform update policy action on devices within Carbon Black Cloud Sensor installed. The API Key must be assigned to a role with permission to update device policy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Auth-Token",
+						"type": "text",
+						"value": "{{APISecret}}/{{APIKey}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"action_type\": \"UPDATE_POLICY\",\n    \"device_id\": [\"${deviceinfo_deviceid}\"],\n    \"options\": {\n        \"policy_id\": \"000000\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{OrgKey}}/device_actions",
+					"protocol": "https",
+					"host": [
+						"{{DashboardUrl}}"
+					],
+					"path": [
+						"appservices",
+						"v6",
+						"orgs",
+						"{{OrgKey}}",
+						"device_actions"
+					]
+				},
+				"description": "Perform update policy action on devices within Carbon Black Cloud Sensor installed. The API Key must be assigned to a role with permission to update device policy"
+			},
+			"response": [
+				{
+					"name": "Change Device Policy",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Auth-Token",
+								"type": "text",
+								"value": "{{APISecret}}/{{APIKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action_type\": \"UPDATE_POLICY\",\n    \"device_id\": [\"17595537\"],\n    \"options\": {\n        \"policy_id\": \"000000\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{OrgKey}}/device_actions",
+							"protocol": "https",
+							"host": [
+								"{{DashboardUrl}}"
+							],
+							"path": [
+								"appservices",
+								"v6",
+								"orgs",
+								"{{OrgKey}}",
+								"device_actions"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 30 Jul 2020 17:53:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "39"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Server",
+							"value": "Apache-Coyote/1.1"
+						},
+						{
+							"key": "Set-Cookie",
+							"value": "JSESSIONID=3BDC663B01AEFA85D8DD45A6418AD3C5; Path=/appservices; HttpOnly"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-Xss-Protection",
+							"value": "1; mode=block"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": false,\n    \"message\": \"Forbidden\"\n}"
+				},
+				{
+					"name": "Quarantine",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{APISecret}}/{{APIKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action_type\": \"QUARANTINE\",\n    \"device_id\": [\"3099573\"],\n    \"options\": {\n        \"toggle\": \"ON\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{DashboardUrl}}/appservices/v6/orgs/{{OrgKey}}/device_actions",
+							"protocol": "https",
+							"host": [
+								"{{DashboardUrl}}"
+							],
+							"path": [
+								"appservices",
+								"v6",
+								"orgs",
+								"{{OrgKey}}",
 								"device_actions"
 							]
 						}
