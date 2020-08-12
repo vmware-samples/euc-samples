@@ -1,4 +1,4 @@
-## iOS 14 DNS ##
+## iOS 14 DNS Settings##
 
 This is a net new payload for configuring encrypted DNS settings.
 

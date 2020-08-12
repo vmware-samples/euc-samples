@@ -1,6 +1,6 @@
-## iOS 14 DNS ##
+## iOS 14 Setup Assistant ##
 
-This is a net new payload for configuring encrypted DNS settings.
+This is a net new payload for skipping Setup Assistant screens.
 
 This payload includes:
 * DNS settings dictionary
