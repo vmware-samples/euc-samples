@@ -1,0 +1,38 @@
+# compiled output
+/tmp
+
+# dependencies
+node_modules
+
+# IDEs and editors
+.idea
+.vscode
+.project
+.classpath
+*.launch
+
+#System Files
+.DS_Store
+Thumbs.db
+
+#secrets
+ca/cacerts
+ca/index.txt
+ca/index.txt.old
+ca/openssl.cnf.bak
+ca/privatekeys
+ca/serial.old
+ca/certs
+ca/index.txt.attr
+ca/newcerts
+ca/options.cnf
+ca/requests
+ca/crl
+ca/index.txt.attr.old
+ca/openssl.cnf
+ca/pfxfiles
+ca/serial
+
+#application
+www/manifest.xml
+www/app

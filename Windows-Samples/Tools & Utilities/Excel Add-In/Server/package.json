@@ -1,0 +1,19 @@
+{
+  "name": "simple_node_api",
+  "version": "1.0.0",
+  "description": "Simple backend for Excel Add-In",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Leon Letto <leon.letto@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "agentkeepalive": "^4.1.3",
+    "express": "^4.17.1",
+    "follow-redirects": "^1.11.0",
+    "serve-static": "^1.14.1"
+  }
+}
