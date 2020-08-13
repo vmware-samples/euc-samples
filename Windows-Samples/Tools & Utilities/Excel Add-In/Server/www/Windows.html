@@ -18,12 +18,11 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
-
     <div style="background-color: white; padding-right: 15px;">
         <a href="./" target="_self">
             <img alt="VMware Logo" aria-label="VMware Logo" height="25" src="images/VMLogoBGWhite.png"></a>
     </div>
-    <a class="navbar-brand active" href="./index.html">Home</a>
+    <a class="navbar-brand" href="./index.html">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -41,7 +40,7 @@
                    aria-expanded="false">Install Guides</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
                     <a class="dropdown-item" href="./MacOs.html">MacOs</a>
-                    <a class="dropdown-item" href="./Windows.html">Windows</a>
+                    <a class="dropdown-item active" href="./Windows.html">Windows</a>
                     <a class="dropdown-item" href="./ios.html">iOS</a>
                     <a class="dropdown-item" href="ExcelOnline.html">Excel Online</a>
                 </div>
@@ -58,16 +57,9 @@
                     <img src='images/beta.png' height='150'>
                 </div>
                 <div class="col">
-                    <h2 class="display-4" style="padding-top: 20px">Workspace ONE Excel Add-In (Beta)</h2>
-                    <!--            <h5>Coming Soon</h5>-->
-                    <h4>This is the documentation page for the Workspace ONE Excel Add-In.</h4>
-                    <p> This Add-In allows you to
-                        import
-                        access
-                        your Workspace ONE UEM API from within Excel</p>
-                    <p>Here you will find links to installation documentation for the four platforms supported - Excel
-                        for iOS,
-                        MacOS, Windows and Office Online along with documentation on how to use the Add-In.</p>
+                    <h2 class="display-4" style="padding-top: 20px">Workspace ONE Windows Excel Add-In (Beta)</h2>
+                    <h4>Installation</h4>
+                    <p>This is the installation documentation page for the Workspace ONE Windows Excel Add-In.</p>
                     <br>
                 </div>
             </div>
@@ -75,29 +67,26 @@
     </div>
 
     <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h2>MacOs Install Guide</h2>
-                <p>Installation document for MacOs Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./MacOs.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>Windows Install Guide</h2>
-                <p>nstallation document for Windows Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./Windows.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>iOS Install Guide</h2>
-                <p>Installation document for iOS Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./ios.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4" style="padding-top: 40px;">
-                <h2>Online Install Guide</h2>
-                <p>Installation document for Excel Online Add-In</p>
-                <p><a class="btn btn-secondary" href="ExcelOnline.html" role="button">View details &raquo;</a></p>
-            </div>
-        </div>
-
+        <ul>
+            <li>
+                <p>Contact <a href="mailto:lettol@vmware.com">Leon Letto</a> for the add-in xml file.</p>
+            </li>
+            <li>
+                <p>See the following web page from Microsoft which shows step by step how to install on Excel for
+                    Windows</p>
+                <p>
+                    <a href="https://docs.microsoft.com/en-us/office/dev/add-ins/testing/create-a-network-shared-folder-catalog-for-task-pane-and-content-add-ins">Sideload
+                        Office Add-ins for testing</a>
+                </p>
+            </li>
+            <li>
+                <p>After this you need to add the following registry key:</p>
+                <p>[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Office\16.0\Wef]</p>
+                <p>Then add the following dword value in the above key.</p>
+                <p>"AlertInterval"=dword:00000000</p>
+                <p>You need to do this when sideloading an app to tell Excel not to timeout on long queries.</p>
+            </li>
+        </ul>
         <hr>
 
     </div> <!-- /container -->

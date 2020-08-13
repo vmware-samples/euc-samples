@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>WSOne Office AddIn</title>
+    <link rel="icon"
+          href="./images/favicon.ico"
+    />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="WSOne Office AddIn">
+    <meta name="author" content="Leon Letto">
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
+    <div style="background-color: white; padding-right: 15px;">
+        <a href="./" target="_self">
+            <img alt="VMware Logo" aria-label="VMware Logo" height="25" src="images/VMLogoBGWhite.png"></a>
+    </div>
+    <a class="navbar-brand" href="./index.html">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link active" href="./Usage.html">Usage</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="./CurrentIssues.html">Current Issues</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="false">Install Guides</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="./MacOs.html">MacOs</a>
+                    <a class="dropdown-item" href="./Windows.html">Windows</a>
+                    <a class="dropdown-item" href="./ios.html">iOS</a>
+                    <a class="dropdown-item" href="ExcelOnline.html">Excel Online</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<main role="main">
+    <div class="jumbotron" style="padding-bottom: unset">
+        <div class='row'>
+            <div class="row">
+                <div class="col-md-2">
+                    <img src='images/beta.png' height='150'>
+                </div>
+                <div class="col">
+                    <h2 class="display-4" style="padding-top: 20px">Workspace ONE Excel Add-In (Beta)</h2>
+                    <h4>Usage</h4>
+                    <p>The Workspace ONE Excel Add-In takes the complication out of accessing your Workspace ONE UEM
+                        API's
+                        and importing that data into Excel. This is a live sheet which you can update at any time and
+                        even
+                        copy
+                        into a different Office Application (eg. Word or Powerpoint) and maintain the connection to the
+                        live
+                        data your environment.</p>
+                    <p>Below you will find the step by step instructions to connect this tool to your Workspace ONE
+                        UEM API server.</p>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <ul>
+            <li>
+                <p>Sign in to Workspace ONE. Then click on Groups and Settings, then All Settings</p>
+                <img alt="Sign in to Workspace ONE" src="./images/WSOneSettings.png" Width="500">
+            </li>
+            <li>
+                <p>In the Settings pane, select System, then Advanced, then API, then REST API</p>
+                <img alt="Go to Dashboards" src="./images/WSOneSelectRest.png" width="500">
+            </li>
+            <li>
+                <p>One the REST API page, you will see the API keys which have been created. You have
+                    a choice of creating a new API key to use for this tool or using an existing one. </p>
+                <p>I would strongly suggest creating a new admin API key to use for this tool. </p>
+                <img alt="Click on the title" src="./images/WSOneCopyOrCreateAPIKey.png" width="500">
+            </li>
+            <li>
+                <p>You should create an admin account which you will use with the tool as well. This will alow you
+                    to create a role which has read-only abilities on the API.</p>
+                <img alt="Copy the Chart Number" src="./images/WSOneCreateAdminAccount.png" width="500">
+            </li>
+            <li>
+                <p>Next you should create an admin Role which has read-only abilities on the API. Click
+                    Accounts->Administrators->Roles.</p>
+                <img alt="Copy the Chart Number" src="./images/WSOneRoles.png" width="500">
+            </li>
+            <li>
+                <p>Add a Role and give it Read Only abilities on the API.</p>
+                <img alt="Copy the Chart Number" src="./images/WSOneCreateAPIReportingRole.png" width="500">
+            </li>
+            <li>
+                <p>Finally go back to your ApiReporting Admin account and assign it to only have the new
+                    APIReporting
+                    Role.</p>
+                <img alt="Copy the Chart Number" src="./images/WSOneAssignReportingRoleToAdmin.png" width="500">
+            </li>
+            <li>
+                <p>Switch to Excel, click on the Workspace ONE Add-In icon to open the add-in. </p>
+                <img src="images/WSOneVerifyAddIn.png" alt="Open Addin" width="500">
+            </li>
+            <li>
+                <p>Then click Login.</p>
+                <img src="images/WSOneHomePage.png" alt="Login to Addin" width="500">
+            </li>
+            <li>
+                <p>Next you will enter the following and click Login:</p>
+                <ul>
+                    <li>Username: Your API admin username</li>
+                    <li>Password: Your API admin password</li>
+                    <li>Apikey: The apikey you generated to allow read-only access to your api</li>
+                    <li>Domain: The domain name of the environment you manage = eg. asXX.awmdm.com</li>
+                    <p>Usually the name is asxxx since that is the API server prefix</p>
+                </ul>
+                <img src="images/WSOneLoginPage.png" alt="Paste Chart Number" width="500">
+            </li>
+            <li>
+                <p>Once you have logged in, There are multiple tabs to choose from where you can retrieve data from
+                    your
+                    API.</p>
+                <img src="images/WSOneLoggedIn.png" alt="Paste Chart Number" width="300">
+            </li>
+        </ul>
+        <br/>
+        <hr>
+
+    </div> <!-- /container -->
+
+</main>
+
+<footer class="container">
+    <p></p>
+</footer>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>
+

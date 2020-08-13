@@ -18,12 +18,11 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
-
     <div style="background-color: white; padding-right: 15px;">
         <a href="./" target="_self">
             <img alt="VMware Logo" aria-label="VMware Logo" height="25" src="images/VMLogoBGWhite.png"></a>
     </div>
-    <a class="navbar-brand active" href="./index.html">Home</a>
+    <a class="navbar-brand" href="./index.html">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -42,7 +41,7 @@
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
                     <a class="dropdown-item" href="./MacOs.html">MacOs</a>
                     <a class="dropdown-item" href="./Windows.html">Windows</a>
-                    <a class="dropdown-item" href="./ios.html">iOS</a>
+                    <a class="dropdown-item active" href="./ios.html">iOS</a>
                     <a class="dropdown-item" href="ExcelOnline.html">Excel Online</a>
                 </div>
             </li>
@@ -58,49 +57,56 @@
                     <img src='images/beta.png' height='150'>
                 </div>
                 <div class="col">
-                    <h2 class="display-4" style="padding-top: 20px">Workspace ONE Excel Add-In (Beta)</h2>
-                    <!--            <h5>Coming Soon</h5>-->
-                    <h4>This is the documentation page for the Workspace ONE Excel Add-In.</h4>
-                    <p> This Add-In allows you to
-                        import
-                        access
-                        your Workspace ONE UEM API from within Excel</p>
-                    <p>Here you will find links to installation documentation for the four platforms supported - Excel
-                        for iOS,
-                        MacOS, Windows and Office Online along with documentation on how to use the Add-In.</p>
-                    <br>
+                    <h2 class="display-4" style="padding-top: 20px">Workspace ONE iOS Excel Add-In (Beta)</h2>
+                    <h4>Installation</h4>
+                    <p>This is the installation documentation page for the Workspace ONE iOS Excel Add-In.</p>
+                    <br/>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h2>MacOs Install Guide</h2>
-                <p>Installation document for MacOs Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./MacOs.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>Windows Install Guide</h2>
-                <p>nstallation document for Windows Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./Windows.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>iOS Install Guide</h2>
-                <p>Installation document for iOS Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./ios.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4" style="padding-top: 40px;">
-                <h2>Online Install Guide</h2>
-                <p>Installation document for Excel Online Add-In</p>
-                <p><a class="btn btn-secondary" href="ExcelOnline.html" role="button">View details &raquo;</a></p>
-            </div>
-        </div>
-
+        <ul>
+            <li>
+                <p>Contact <a href="mailto:lettol@vmware.com">Leon Letto</a> for the add-in xml file.</p>
+            </li>
+            <li>
+                <p>Use a sync cable to connect your iPad to your computer. If you're connecting the iPad to your
+                    computer for the first time, you'll be prompted with "Trust This Computer". Choose Trust to
+                    continue.</p>
+            </li>
+            <li>
+                <p>In iTunes, choose the iPad icon below the menu bar.</p>
+            </li>
+            <li>
+                <p>Under Settings on the left side of iTunes, choose Apps.</p>
+            </li>
+            <li>
+                <p>On the right side of iTunes, scroll down to File Sharing, and then choose Excel in the
+                    Add-ins column.</p>
+            </li>
+            <li>
+                <p>At the bottom of the Excel Document column, choose Add File, and then select the manifest.xml
+                    file.</p>
+            </li>
+            <li>
+                <p>Open the Excel app on your iPad. If the Excel app is already running, choose the Home
+                    button, and then close and restart the app.</p>
+            </li>
+            <li>
+                <p>Open a document.</p>
+            </li>
+            <li>
+                <p>Choose Add-ins on the Insert tab. Your Workspace ONE Add-In is available to insert under the
+                    Developer
+                    heading in the Add-ins UI.</p>
+                <img src="images/WSOneiOSAddIn.png" alt="Insert Addin" height="500">
+            </li>
+        </ul>
         <hr>
 
-    </div> <!-- /container -->
+    </div>
 
 </main>
 

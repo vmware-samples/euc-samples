@@ -8,7 +8,6 @@
   },
   "keywords": [],
   "author": "Leon Letto <leon.letto@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
     "agentkeepalive": "^4.1.3",

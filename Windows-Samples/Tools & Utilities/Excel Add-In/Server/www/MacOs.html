@@ -18,12 +18,11 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
-
     <div style="background-color: white; padding-right: 15px;">
         <a href="./" target="_self">
             <img alt="VMware Logo" aria-label="VMware Logo" height="25" src="images/VMLogoBGWhite.png"></a>
     </div>
-    <a class="navbar-brand active" href="./index.html">Home</a>
+    <a class="navbar-brand" href="./index.html">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -40,7 +39,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
                    aria-expanded="false">Install Guides</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
-                    <a class="dropdown-item" href="./MacOs.html">MacOs</a>
+                    <a class="dropdown-item active" href="./MacOs.html">MacOs</a>
                     <a class="dropdown-item" href="./Windows.html">Windows</a>
                     <a class="dropdown-item" href="./ios.html">iOS</a>
                     <a class="dropdown-item" href="ExcelOnline.html">Excel Online</a>
@@ -50,6 +49,7 @@
     </div>
 </nav>
 
+
 <main role="main">
     <div class="jumbotron" style="padding-bottom: unset">
         <div class='row'>
@@ -58,16 +58,9 @@
                     <img src='images/beta.png' height='150'>
                 </div>
                 <div class="col">
-                    <h2 class="display-4" style="padding-top: 20px">Workspace ONE Excel Add-In (Beta)</h2>
-                    <!--            <h5>Coming Soon</h5>-->
-                    <h4>This is the documentation page for the Workspace ONE Excel Add-In.</h4>
-                    <p> This Add-In allows you to
-                        import
-                        access
-                        your Workspace ONE UEM API from within Excel</p>
-                    <p>Here you will find links to installation documentation for the four platforms supported - Excel
-                        for iOS,
-                        MacOS, Windows and Office Online along with documentation on how to use the Add-In.</p>
+                    <h2 class="display-4" style="padding-top: 20px">Workspace ONE MacOs Excel Add-In (Beta)</h2>
+                    <h4>Installation</h4>
+                    <p>This is the installation documentation page for the Workspace ONE MacOs Excel Add-In.</p>
                     <br>
                 </div>
             </div>
@@ -75,29 +68,38 @@
     </div>
 
     <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h2>MacOs Install Guide</h2>
-                <p>Installation document for MacOs Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./MacOs.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>Windows Install Guide</h2>
-                <p>nstallation document for Windows Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./Windows.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>iOS Install Guide</h2>
-                <p>Installation document for iOS Excel Add-In</p>
-                <p><a class="btn btn-secondary" href="./ios.html" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4" style="padding-top: 40px;">
-                <h2>Online Install Guide</h2>
-                <p>Installation document for Excel Online Add-In</p>
-                <p><a class="btn btn-secondary" href="ExcelOnline.html" role="button">View details &raquo;</a></p>
-            </div>
-        </div>
-
+        <ul>
+            <li>
+                <p>Contact <a href="mailto:lettol@vmware.com">Leon Letto</a> for the add-in xml file.</p>
+            </li>
+            <li>
+                <p>Open Terminal and go to the following folder where you'll save your add-in's manifest.xml file. If
+                    the
+                    wef folder doesn't exist on your computer, create it.</p>
+                <p>cd /Users/YourUserName/Library/Containers/com.microsoft.Excel/Data/Documents/wef</p>
+            </li>
+            <li>
+                <p>Open the folder in Finder using the command "open ." (including the dot). Copy your add-in's
+                    manifest file to this folder.</p>
+                <img alt="Your Excel Folder" width="500 " src="images/WSOneWefFolder.png">
+            </li>
+            <li>
+                <p>Open Excel, and then open a Spreadsheet. Restart Excel if it's already running.</p>
+            </li>
+            <li>
+                <p>In Excel, choose Insert > Add-ins > My Add-ins (drop-down menu), and then choose your add-in.</p>
+                <img src="images/WSOneInsertAddin.png" alt="Insert AddIn" width="500">
+                <blockquote>
+                    [!IMPORTANT] Sideloaded add-ins will not show up in the My Add-ins dialog box. They are only visible
+                    within the drop-down menu (small down-arrow to the right of My Add-ins on the Insert tab).
+                    Sideloaded add-ins are listed under the Developer Add-ins heading in this menu.
+                </blockquote>
+            </li>
+            <li>
+                <p>Verify that your add-in is displayed in Excel.</p>
+                <img src="images/WSOneVerifyAddin.png" alt="Verify AddIn" width="500">
+            </li>
+        </ul>
         <hr>
 
     </div> <!-- /container -->
