@@ -3,7 +3,7 @@
 This is a net new payload for skipping Setup Assistant screens.
 
 This payload includes:
-* DNS settings dictionary
+* Setup Assistant screens to remove
 
 Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM.
 
