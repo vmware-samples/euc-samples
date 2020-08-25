@@ -49,21 +49,23 @@ This is general guidance to help you self-configure a macOS Proof-of-Concept in 
 
 APNS provides notifications to the macOS mdmclient (user and device) instructing it to check-in for commands. 
 
-1. In Workspace ONE UEM, navigate to *Devices > Devices Settings > Apple > APNs for MDM*
-2. Select *Override > Generate New Certificate*
+1. In Workspace ONE UEM, navigate to *Groups & Settings > Configurations > APNs for MDM*
+2. Select *Generate New Certificate*.
 3. Download `MDM_APNsRequest.plist`
 4. Go to Apple’s Website linked in the UEM Console & Authenticate
 5. Click *Create a Certificate* and  Accept TOU
 6. Upload the MDM plist and download the PEM
 7. Upload PEM in Workspace ONE & Save
 
+> **NOTE:** The Apple ID used to generate APNS certificates should *ONLY* be used for this purpose. It is recommended to create an Apple ID using an email address that is a shared mailbox or group alias.  Apple will send APNS expiry warnings to this email address, and failure to renew the APNS certificate may lead to a production outage requiring re-enrollment.
+
 #### Relevant Documentation
 
-- [APNS (Apple Push Notification Service) Documentation (VMware)](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.6/vmware-airwatch-guides-96/GUID-AW96-DevicesUsers_Apple_APN.html)
-- [Generating & Renewing APNS certificates (VMware)](https://support.air-watch.com/articles/115001662728)
+- [APNS (Apple Push Notification Service) Documentation (VMware)](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/UEM_ConsoleBasics/GUID-AWT-APNSCERTS.html)
+- [How to renew an Apple Push Notification (APNS) certificate (VMware)](https://kb.vmware.com/s/article/2960965?lang=en_US)
 - [Use Apple Products on Enterprise Networks](https://support.apple.com/en-us/HT210060)
 
-> **APNS is required for macOS MDM Manageability**
+> **APNS is required for macOS Manageability with Workspace ONE**
 
 ---
 
@@ -81,8 +83,8 @@ AWCM provides notifications to the VMware Intelligent Hub for macOS, allowing va
 
 #### Relevant Documentation
 
-- [VMware AirWatch Cloud Messaging Overview](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/1907/AirWatch_Cloud_Messaging/GUID-AWT-AWCM-INTRODUCTION.html)
-- [Secure Channel Certificate](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/9.6/vmware-airwatch-guides-96/GUID-AW96-ACCEnablingAWCM.html?hWord=N4IghgNiBcIM4FMDGBXATggBEgFmAdvghNgmgC4CWAZpUmOQiAL5A)
+- [VMware AirWatch Cloud Messaging Overview](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/AirWatch_Cloud_Messaging/GUID-AWT-AWCM-INTRODUCTION.html)
+- [Secure Channel Certificate](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/AirWatch_Cloud_Messaging/GUID-AWT-ACCENABLINGAWCM.html)
 
 ---
 
