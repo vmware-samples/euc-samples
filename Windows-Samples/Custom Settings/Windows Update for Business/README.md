@@ -1,4 +1,4 @@
-# WIndows Update for Business Ring Sample
+# Windows Update for Business Ring Sample
 
 ## Overview
 - **Author**: Brooks Peppin
@@ -13,18 +13,19 @@ These sample configuration files are to be used together. The TargetReleaseVersi
 
 ## CSP Details
 These target the Policy/Update CSP and are a more streamline and simplified approach that what is currently available in the Windows Update profile in Workspace ONE UEM. I'll summarize what each of these do, but you can check out the Windows 10 Update CSP reference link below to review each in more detail. It leverages the following nodes to deliver a good user experience while still enforcing patches and reboot:
-Update/AllowAutoUpdate - This automatically installs the update but prompt the user to restart when complete and per the deadline settings.
-Update/AllowMUUpdateService - Allows device to pull updates from MS (required)
-Update/BranchReadinessLevel - Sets the branch to sem-annual channel
-Update/ConfigureDeadlineForFeatureUpdates - Deadline to install the feature update once the device sees it. Before deadline is reached, device will attempt to install outside of active hours. Once deadline it reached it will install asap.
-Update/ConfigureDeadlineForQualityUpdates - Deadline to install quality updates once the device sees it. Before deadline is reached, device will attempt to install outside of active hours. Once deadline it reached it will install asap.
-Update/ConfigureDeadlineGracePeriod - How may days the user has to reboot the device. User can “Pick a Time”, “Restart Tonight”  or “ Restart Now”
-Update/ConfigureDeadlineNoAutoReboot - This tells the device to NOT reboot outside of active hours until deadline is reached. This helps ensure the user doesn't experience unexpected reboots if the device is online and not in use outside of active hours. Recommend setting this to true (value of 1)
-Update/DeferQualityUpdatesPeriodInDays - How many days from patch release before device sees it. This is how you build out your rings. 
-Update/DeferFeatureUpdatesPeriodInDays - Since we are using the TargetReleaseVersion CSP, this should be set to 0. 
-Update/ScheduleImminentRestartWarning - Non-dismissable popup alerting restart will happen in 15 minutes.
-Update/ScheduleRestartWarning - Dismissable popup alerting restart will happen in 2 hours.
-Update/ConfigureFeatureUpdateUninstallPeriod - How long you can rollback a feature upgrade after it is installed. This takes up disk space to best not to set this to too long. I've set it to 14 days in the example profiles. 
+
+- **Update/AllowAutoUpdate** - This automatically installs the update but prompt the user to restart when complete and per the deadline settings.
+- **Update/AllowMUUpdateService** - Allows device to pull updates from MS (required)
+- **Update/BranchReadinessLevel** - Sets the branch to sem-annual channel
+- **Update/ConfigureDeadlineForFeatureUpdates** - Deadline to install the feature update once the device sees it. Before deadline is reached, device will attempt to install outside of active hours. Once deadline it reached it will install asap.
+- **Update/ConfigureDeadlineForQualityUpdates** - Deadline to install quality updates once the device sees it. Before deadline is reached, device will attempt to install outside of active hours. Once deadline it reached it will install asap.
+- **Update/ConfigureDeadlineGracePeriod** - How may days the user has to reboot the device. User can “Pick a Time”, “Restart Tonight”  or “ Restart Now”
+- **Update/ConfigureDeadlineNoAutoReboot** - This tells the device to NOT reboot outside of active hours until deadline is reached. This helps ensure the user doesn't experience unexpected reboots if the device is online and not in use outside of active hours. Recommend setting this to true (value of 1)
+- **Update/DeferQualityUpdatesPeriodInDays** - How many days from patch release before device sees it. This is how you build out your rings. 
+- **Update/DeferFeatureUpdatesPeriodInDays** - Since we are using the TargetReleaseVersion CSP, this should be set to 0. 
+- **Update/ScheduleImminentRestartWarning** - Non-dismissable popup alerting restart will happen in 15 minutes.
+- **Update/ScheduleRestartWarning** - Dismissable popup alerting restart will happen in 2 hours.
+- **Update/ConfigureFeatureUpdateUninstallPeriod** - How long you can rollback a feature upgrade after it is installed. This takes up disk space to best not to set this to too long. I've set it to 14 days in the example profiles. 
 
 ## How to Create Profile
 1. At the top of UEM console, click Add > Profile. Select Windows > Windows Desktop > Device Profile. 
