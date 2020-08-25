@@ -128,3 +128,16 @@
     <Data>2</Data>
   </Item>
 </Replace>
+<Replace>
+  <CmdID>110</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureFeatureUpdateUninstallPeriod</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>14</Data>
+  </Item>
+</Replace>
