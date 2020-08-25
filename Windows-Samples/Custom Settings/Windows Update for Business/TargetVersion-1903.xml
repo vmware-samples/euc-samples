@@ -1,0 +1,12 @@
+<Replace>
+    <CmdID>1</CmdID>
+    <Item>
+      <Target>
+        <LocURI>./Vendor/MSFT/Policy/Config/Update/TargetReleaseVersion</LocURI>
+      </Target>
+      <Meta>
+        <Format xmlns="syncml:metinf">chr</Format>
+      </Meta>
+      <Data>1903</Data>
+    </Item>
+  </Replace>
