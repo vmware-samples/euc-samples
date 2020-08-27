@@ -75,7 +75,7 @@ APNS provides notifications to the macOS mdmclient (user and device) instructing
 
 AWCM provides notifications to the VMware Intelligent Hub for macOS, allowing value-add functionality in the Hub to occur in real-time.  
 
-> NOTE:  This setup is already done if SaaS-hosted!  
+> NOTE:  This setup is already done if SaaS-hosted.  You will not see the Secure Channel screen with the role assigned to administrators in SaaS-hosted environments.
 
 1. Ensure you installed AWCM from the downloaded Workspace ONE UEM installer.
 2. Navigate to *Settings > System > Advanced > Secure Channel Certificate*
@@ -92,7 +92,7 @@ AWCM provides notifications to the VMware Intelligent Hub for macOS, allowing va
 
 `If you’re already managing other platforms, these steps may already be completed.`
 
-If not already done, you'll need to set up the AirWatch Cloud Connector (ACC) and/or the VMware Identity Manager Connector.  This is what provides connectivity to your LDAP/Active Directory services in order to enumerate/validate users when they attempt to enroll.  Connectors do not require inbound network connectivity, so they can be placed inside your network making only outbound calls to Workspace ONE UEM (ACC) or Workspace ONE Access (IDM Connector).
+If not already done, you'll need to set up the AirWatch Cloud Connector (ACC) and/or the Workspace ONE Access Connector.  This is what provides connectivity to your LDAP/Active Directory services in order to enumerate/validate users when they attempt to enroll.  Connectors do not require inbound network connectivity, so they can be placed inside your network making only outbound calls to Workspace ONE UEM (ACC) or Workspace ONE Access Connector.
 
 > **NOTE:** In cases where you're simply adding macOS as another platform into an already configured Workspace ONE deployment, these connectors may already have been installed and configured.  You do not need to set this up again if it is already in place for the specific organization group where you'll be enrolling macOS.
 
@@ -107,24 +107,30 @@ If not already done, you'll need to set up the AirWatch Cloud Connector (ACC) an
 5. In Workspace ONE UEM, browse to *Groups & Settings > All Settings > System > Enterprise Integration > Directory Services*
 6. Complete the wizard to enter information about your directory services, users, and groups.
 
-#### (Optional) VMware Identity Manager Connector
+#### (Optional) Workspace ONE Access Connector
 
-The VMware Identity Manager Connector is optional and only required if you plan to fully configure VMware Workspace ONE Access (previously Identity Manager) to enable the Unified App Catalog (native/mobile, SaaS, and Virtual Apps), Notifications, and/or People integration for your macOS deployment.
+The Workspace ONE Access Connector is optional and only required if you plan to fully configure VMware Workspace ONE Access (previously Identity Manager) to enable the Unified App Catalog (native/mobile, SaaS, and Virtual Apps), Notifications, and/or People integration for your macOS deployment.
 
-1. Generate an activation code in the VMware Identity Manager console.
-2. [Download](https://my.vmware.com/web/vmware/details?downloadGroup=VIDM_ONPREM_32&productId=728&rPId=21671) and run the VMware Identity Manager Connector Installer for Windows on a Windows server that meets all the requirements
-3. Run the Connector Setup Wizard to activate the connector and set passwords
-4. Configure proxy settings for the connector, if required.
-5. When ready to enable the Hub Services requiring Workspace ONE Access, you must migrate the directory synchronization from Workspace ONE UEM to Workspace ONE Access (using the steps outlined in the relevant documentation linked below).
-6. In Workspace ONE UEM, switch the Sourch of Authentication to Workspace ONE Access by navigating to *Groups & Settings > All Settings > Devices & Users > General > Enrollment* and on the *Authentication* tab you must choose **VMware Identity Manager** as the *Source of Authentication for Intelligent Hub*
+> **NOTE:** Do not install/use the 20.01 connector if you plan to integrate Horizon, Horizon Cloud, or Citrix applications and desktops.  If you plan to use virtual apps, you must use the 19.03 version.
+
+1. In the Workspace ONE Access console, navigate to **Identity & Access Management > Setup > Connectors**
+2. Click **New** and select **Workspace ONE Access Connector 20.01* (unlesss you have a need to use a Legacy connector)
+3. Review the information and click **Proceed anyway**
+4. In the wizard, click the *Go To MyVMware.com* link and download the Connector.  
+5. After you have installed the connector on the 
+
+When ready to enable the Hub Services requiring Workspace ONE Access, you must migrate the directory synchronization from Workspace ONE UEM to Workspace ONE Access (using the steps outlined in the relevant documentation linked below).
+6. In Workspace ONE UEM, switch the Source of Authentication to Workspace ONE Access by navigating to *Groups & Settings > All Settings > Devices & Users > General > Enrollment* and on the *Authentication* tab you must choose **Workspace ONE Access** as the *Source of Authentication for Intelligent Hub*
 
 #### Relevant Documentation:
 
-- [VMware AirWatch Cloud Connector Installation Process](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/1907/AirWatch_Cloud_Connector/GUID-AWT-INSTALL-SUPERTASK.html)
-- [Directory Services Settings Page Documentation](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/1907/System_Settings_On_Prem/GUID-AWT-SYSTEM-EI-DS.html?hWord=N4IghgNiBcICYEsBOBTAxgFwPZIJ4AIBnFJANwTRUPwQDsMUBzJMDBLWkAXyA)
-- [VMware Identity Manager Cloud Deployment (With Windows Connector)](https://docs.vmware.com/en/VMware-Identity-Manager/services/vidm-cloud-deployment-winconnector/GUID-AE1397BA-21D6-4B08-BCD3-F870A07C3DEC.html)
-- [About the VMware Identity Manager Connector](https://docs.vmware.com/en/VMware-Identity-Manager/services/identitymanager-connector-win/GUID-F3FD79B6-5F9F-4330-95F3-AF163A5D19C4.html)
-- [Directory Migration from ACC to the VMware Identity Manager Connector](https://docs.vmware.com/en/VMware-Identity-Manager/services/identitymanager-connector-win/GUID-EE38DC37-959E-4CFB-A05A-3FBA55B95D23.html)
+- [VMware AirWatch Cloud Connector Documentation](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/AirWatch_Cloud_Connector/GUID-AWT-ACC-INTRODUCTION.html)
+- [Directory Services Settings Page Documentation](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/System_Settings_On_Prem/GUID-AWT-SYSTEM-EI-DS.html?hWord=N4IghgNiBcICYEsBOBTAxgFwPZIJ4AIBnFJANwTRUKJQwwQDsBzQkAXyA)
+- [Workspace ONE Access 20.01 Overview and Connector Architecture](https://techzone.vmware.com/vmware?share=video1830)
+- [Workspace ONE Access Components - Feature Walkthrough](https://techzone.vmware.com/vmware?share=video1909)
+- [Workspace ONE Access Connector Overview - Feature Walkthrough](https://techzone.vmware.com/vmware?share=video2272)
+- [Directory Migration from ACC to the Workspace ONE Access Connector](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/3.3/identitymanager-connector-win/GUID-EE38DC37-959E-4CFB-A05A-3FBA55B95D23.html?hWord=N4IghgNiBcILYEsDmAnMAXBB7AdgAgDMUs48BBAYQr3S3IGN6BTAZxZAF8g)
+- [Installing the Workspace ONE Access Connector](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/services/ws1_access_connector_install/GUID-62084B58-850F-4688-BECF-C8EA594C688D.html?hWord=N4IghgNiBcIGoFkDuYBOBTABGAxj9AzgZjgPYB256OALqapgejQK4AOIAvkA)
 
 ---
 
@@ -199,7 +205,7 @@ For legacy compatibility, Workspace ONE UEM does not automatically enable the in
 
 - [Administering Hub Services with Workspace ONE UEM and Workspace ONE Access](https://docs.vmware.com/en/VMware-Workspace-ONE/services/intelligent-hub_IDM/GUID-7ADD4A02-DE07-4BBA-841B-40AFFDD19863.html)
 - [How to Activate Hub Services](https://docs.vmware.com/en/VMware-Workspace-ONE/services/intelligent-hub_IDM/GUID-19581E5A-BC8A-465F-ABFF-C243D69393CB.html)
-- [Using Hub Services without Enabling Workspace ONE Access (VMware Identity Manager)](https://docs.vmware.com/en/VMware-Workspace-ONE/services/intelligent-hub_IDM/GUID-BEFA3A94-357A-4B9C-AEC6-5B62D2BF3AEE.html)
+- [Using Hub Services without Enabling Workspace ONE Access (Workspace ONE Access)](https://docs.vmware.com/en/VMware-Workspace-ONE/services/intelligent-hub_IDM/GUID-BEFA3A94-357A-4B9C-AEC6-5B62D2BF3AEE.html)
 - [Hub Services when Workspace ONE Access is Integrated](https://docs.vmware.com/en/VMware-Workspace-ONE/services/intelligent-hub_IDM/GUID-826D5409-98C6-4A37-B4A9-B3DFD244AAE8.html)
 
 ---
@@ -240,7 +246,7 @@ Set-MSolDomainAuthentication -DomainName <Domain Name To Be Federated> -Authenti
 
 Workspace ONE Access can significally reduce the amount of username/password prompts your users endure by leveraging Certificate Authentication.   Workspace ONE UEM includes built-in CA functionality that Workspace ONE Access can leverage to generate and validate user-based certificates on the fly. To enable this functionality, you'll need to do the following:
 
-1. In the UEM Console, navigate to *Groups & Settings > All Settings > System > Enterprise Integration > VMware Identity Manager > Configuration
+1. In the UEM Console, navigate to *Groups & Settings > All Settings > System > Enterprise Integration > Workspace ONE Access > Configuration
 2. Enable certificate provisioning and export the issuer certificate.
 3. In the Workspace ONE Access console, navigate to *Identity & Access Managememnt > Authentication Methods* and edit the *Certificate (Cloud Deployment)* option.
 4. **Enable** the certificate adapter.  For *Root and Intermediate CA certificates*, click **Select File** and upload the Issuer Certificate you downloaded from the UEM console.   Change the User Identifier Search Order to **upn | email | subject** and click **Save**.
@@ -314,8 +320,8 @@ Chrome Integration:
 
 - [Attributes that can be Enabled for People Search](https://docs.vmware.com/en/VMware-Identity-Manager/3.3/idm-administrator/GUID-F965647F-92BC-4317-92F6-D31D086EB679.html?hWord=N4IghgNiBcIC4AsCuBbARgOzASwgBwQHs5CQBfIA)
 - [Workspace ONE Access (previously Identity Manager) Activity Path](https://techzone.vmware.com/becoming-identity-manager-hero)
-- [VMware Identity Manager Integration with Office 365](https://www.vmware.com/pdf/vidm-office365-saml.pdf)
-- [VMware Identity Manager 19.03: Configuring Certificate Authentication](https://www.youtube.com/watch?v=s4EILnnP98I)
+- [Workspace ONE Access Integration with Office 365](https://www.vmware.com/pdf/vidm-office365-saml.pdf)
+- [Workspace ONE Access 19.03: Configuring Certificate Authentication](https://www.youtube.com/watch?v=s4EILnnP98I)
 - [Managing Identity Preferences to Streamline Single Sign-On for macOS](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos)
 
 ---
