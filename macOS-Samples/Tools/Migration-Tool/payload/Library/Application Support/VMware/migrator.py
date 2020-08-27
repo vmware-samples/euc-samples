@@ -380,7 +380,10 @@ def main():
         time.sleep(1) #let the depnotify customizations bake before we open it
 
     oslog('Opening DEPNotify for user \'%s\'' % consoleuser)
-    runcmd('sudo', '-u', consoleuser, '/usr/bin/open', depnotifypath)
+
+    #runcmd('sudo', '-u', consoleuser, '/usr/bin/open', '-a', depnotifypath)
+    os.spawnl(os.P_NOWAIT, '/usr/bin/open', '-a', depnotifypath)
+    time.sleep(3)
 
     username = None
     useremail = None
@@ -676,7 +679,10 @@ def main():
     #This method keeps the enrollment User Approved in 10.13.2+
     depnotify('Status: Please proceed through the System Prompts to install the enrollment profile')
     oslog('Opening profile to begin enrollment')
-    if deviceosversion >= '10.15.1':
+    if deviceosversion >= '11.0':
+        runcmd('sudo', '-u', consoleuser, '/usr/bin/open', enrollmentProfilePath)
+        runcmd('sudo', '-u', consoleuser, '/usr/bin/open', '-b', 'com.apple.systempreferences', '/System/Library/PreferencePanes/Profiles.prefPane')
+    elif deviceosversion >= '10.15.1':
         runcmd('sudo', '-u', consoleuser, '/usr/bin/open', '-a', '/System/Applications/System Preferences.app', enrollmentProfilePath)
     else:
         runcmd('sudo', '-u', consoleuser, '/usr/bin/open', '-a', '/Applications/System Preferences.app', enrollmentProfilePath)
