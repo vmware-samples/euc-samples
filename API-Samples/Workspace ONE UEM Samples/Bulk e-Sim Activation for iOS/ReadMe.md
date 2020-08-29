@@ -1,16 +1,33 @@
 # Simplifying eSIM Cellular Plan Activation with Workspace ONE UEM
 
+## Overview
+
+- **Authors**: Robert Terakedis, Christopher Burns
+- **Email**: rterakedis@vmware.com, burnsc@vmware.com
+- **Date Created**: 2020-08-28
+- **Supported Platforms**: Workspace ONE UEM 1908
+- **Tested on macOS Versions**: macOS High Sierra
+
+## Purpose
+
 Cellular devices from Apple traditionally required a small, physical Subscriber Identity Module (SIM) card to enable service on a cellular carrier.  The SIM was typically pre-inserted by the carrier, but could be physically swapped if necessary.  Modern devices now include an eSIM, which is a chip built into the device that performs the same function but consumes less internal space.  eSIMs are also more flexible, as it supports any carrier supporting the eSIM standard and eliminates the need for physically touching/modifying the device.
 
 > **NOTE**:  The list of cellular providers is shown on [Apple's Cellular iPad page.](https://www.apple.com/ipad/cellular/)
+
+This sample guidance provides details on how to bulk activate iPad Cellular Plans.
 
 ## Table of Contents
 
 - [Activating Cellular Service without MDM](#activating-cellular-service-without-mdm)
 - [Automated Cellular Service Activation with Workspace ONE UEM](#automated-cellular-service-activation-with-workspace-one-uem)
+  - [Pre-Requisites](#pre-requisites)
   - [Known Carrier eSIM Activation Server URLs](#known-carrier-esim-activation-server-urls)
+  - [Activating with API Integration](#Activating-with-API-Integration)
+  - [Activating via Workspace ONE UEM Console](#Activating-via-Workspace-ONE-UEM-Console)
 - [Considerations and Troubleshooting](#considerations-and-troubleshooting)
   - [Considerations for Device Reset](#considerations-for-device-reset)
+  - [Considerations When Bulk Activating](#Considerations-When-Bulk-Activating)
+  - [eSIM Activation Troubleshooting](#eSIM-Activation-Troubleshooting)
   - [Pop-Up Notifications Related to Cellular Networks](#Pop-Up-Notifications-Related-to-Cellular-Networks)
 
 ## Activating Cellular Service without MDM
@@ -35,13 +52,37 @@ When organizations need to add eSIM-enabled devices to their cellular account, t
 | Verizon | https://2.vzw.otgeuicc.com |
 | AT&T | https://cust-001-v4-prod-atl2.gdsb.net |
 
-These activation server URLs are required when issuing custom commands to refresh cellular data via the API.   If you know of one not shown on this list, feel free to enter an Issue above, or 
+These activation server URLs are required when issuing custom commands to refresh cellular data via the API.   If you know of one not shown on this list, feel free to enter an Issue via GitHub or send us a pull request!  
+
+> **NOTE:** The server URL should NOT include any trailing slashes ("/").
 
 ### Activating with API Integration
 
+Use one of the following RestAPI endpoints to send a *RefreshCellularPlans* command:
+
+- `/devices/commands/`
+- `/devices/{deviceID}/commands`
+
+In the parameters of the RestAPI call, you'll need to specify the following:
+
+- command: `CustomMdmCommand`
+- customcommandmodel (application/xml):
+
+```XML
+<?xml version="1.0"?>
+<CustomCommandModel>
+  <CommandXml>
+    <dict>
+        <key>RequestType</key>
+        <string>RefreshCellularPlans</string>
+        <key>eSIMServerURL</key>
+        <string>https://eSim.Activation.Server.URL</string>
+    </dict>  
+  </CommandXml>
+</CustomCommandModel>
+```
 
 ### Activating via Workspace ONE UEM Console
-
 
 ## Considerations and Troubleshooting
 
