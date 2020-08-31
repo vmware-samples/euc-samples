@@ -84,6 +84,21 @@ In the parameters of the RestAPI call, you'll need to specify the following:
 
 ### Activating via Workspace ONE UEM Console
 
+Administrators can activate the eSIM on a per-device basis using the UEM Console.  By clicking into *Device Details* view, you can click on **More Actions > Refresh eSIM**.   The UEM console will prompt for the [Carrier eSIM Activation Server URL](#known-carrier-esim-activation-server-urls), and then clicking **Send** will issue the command to the device.
+
+If more than one device eSIM needs activation, admins can issue a bulk command using the *Custom Command* functionality.  In the *Device List View*, check the boxes to select one or more devices which require eSIM activation.  Click on **More Actions > Custom Commands**.   In the box, you'll need to paste the following Custom MDM Command XML and click **Send** to issue the command to the selected devices.
+
+> **NOTE:** Be sure to supply the correct String value for the *eSIMServerURL* key.
+
+```XML
+<dict>
+    <key>RequestType</key>
+    <string>RefreshCellularPlans</string>
+    <key>eSIMServerURL</key>
+    <string>https://eSim.Activation.Server.URL</string>
+</dict>
+```
+
 ## Considerations and Troubleshooting
 
 ### Considerations for Device Reset
