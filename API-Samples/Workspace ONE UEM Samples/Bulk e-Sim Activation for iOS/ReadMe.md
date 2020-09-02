@@ -66,20 +66,17 @@ Use one of the following RestAPI endpoints to send a *RefreshCellularPlans* comm
 In the parameters of the RestAPI call, you'll need to specify the following:
 
 - command: `CustomMdmCommand`
-- customcommandmodel (application/xml):
+- customcommandmodel (application/json):
 
-```XML
-<?xml version="1.0"?>
-<CustomCommandModel>
-  <CommandXml>
-    <dict>
+```JSON
+{
+	“CommandXml” : “<dict>
         <key>RequestType</key>
         <string>RefreshCellularPlans</string>
         <key>eSIMServerURL</key>
         <string>https://eSim.Activation.Server.URL</string>
-    </dict>  
-  </CommandXml>
-</CustomCommandModel>
+    </dict>”
+}
 ```
 
 ### Activating via Workspace ONE UEM Console
