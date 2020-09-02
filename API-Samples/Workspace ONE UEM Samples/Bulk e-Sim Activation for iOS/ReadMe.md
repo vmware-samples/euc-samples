@@ -68,9 +68,9 @@ In the parameters of the RestAPI call, you'll need to specify the following:
 - command: `CustomMdmCommand`
 - customcommandmodel (application/json):
 
-```JSON
+```yaml
 {
-	“CommandXml” : “<dict>
+    “CommandXml” : “<dict>
         <key>RequestType</key>
         <string>RefreshCellularPlans</string>
         <key>eSIMServerURL</key>
