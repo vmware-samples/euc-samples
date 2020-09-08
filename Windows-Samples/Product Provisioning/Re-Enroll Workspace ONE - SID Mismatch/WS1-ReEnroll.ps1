@@ -745,7 +745,9 @@ function Check-SID
 	}
 	If ($global:SID)
 	{
-		Write-Log "Active Windows SID:$global:SID, NTAccount: $NTAccount, Username:$username"
+		Write-log "NTAccount: $NTAccount"
+		Write-log "Username:$username"	
+		Write-Log "Active Windows SID:$global:SID"
 	}
 	else
 	{
@@ -756,13 +758,13 @@ function Check-SID
 	$GUID = $enrollment.GUID
     $key = "HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\"
 
-    $SID = Get-ChildItem $key$GUID | select name | Where-Object Name -notlike "*device" | % { $_.name.split('\') | select -last 1 }
-    If ($SID.count -gt 1)
+    $WS1_SID = Get-ChildItem $key$GUID | select name | Where-Object Name -notlike "*device" | % { $_.name.split('\') | select -last 1 }
+    If ($WS1_SID.count -gt 1)
     {
-    $SID = $SID[-1] #selecting last item in the array which should be the correct SID with proper enrollment
+    $WS1_SID = $WS1_SID[-1] #selecting last item in the array which should be the correct SID with proper enrollment
     }
-	Write-Log "Enrollment SID=$SID"
-	If ($global:SID -eq $SID)
+	Write-Log "Enrollment SID=$WS1_SID"
+	If ($global:SID -eq $WS1_SID)
 	{
 		Write-Log "SIDs Match"
 		Return $true
@@ -792,15 +794,15 @@ function Check-agent
 
 function disable-notifications
 {
-	write-log "Disabling Windows Toast notification for Device Enrollment Activity"
-    New-Item -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Force -ErrorAction SilentlyContinue
-    Set-ItemProperty -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Name "Enabled" -Type DWord -Value 0 -Force
+	write-log "Disabling Windows Toast notification for Device Enrollment Activity for user $global:SID"
+    New-Item -Path Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Force -ErrorAction SilentlyContinue
+    Set-ItemProperty -Path Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Name "Enabled" -Type DWord -Value 0 -Force
     Write-Log "HKEY User's Registry for DeviceEnrollmentActivity is set to disable notification"      
 }
 
 function enable-notifications
 {
-	Write-Log "Enabling Windows Toast notification for Device Enrollment Activity"
+	Write-Log "Enabling Windows Toast notification for Device Enrollment Activity for user $global:SID"
    # New-Item -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -ErrorAction SilentlyContinue
     Remove-ItemProperty -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Name "Enabled" -ErrorAction SilentlyContinue -Force
     Write-Log "HKEY User's Registry for DeviceEnrollmentActivity is set to enable notification"      
@@ -861,8 +863,8 @@ switch ($Unenroll) {
 	 }
 	"OnSIDMismatch" {
 		$enrollment = Get-Enrollment
-		$SID = Check-SID
-		If ($enrollment -and $SID)
+		$check_SID = Check-SID
+		If ($enrollment -and $check_SID)
 		{
 			$UPN = $enrollment.UPN
 			$server = $enrollment.server 
