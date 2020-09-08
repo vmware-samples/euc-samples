@@ -34,6 +34,11 @@
 	Date:  			Sep 2, 2020
 	Purpose/Change: Initial script development
 
+	v2.5 - September 8th, 2020
+		- Added new parameter "Unenroll" to support various unenroll scenarious. Available Options are Always, OnSIDMismatch, Never
+		- Added new parameter RemoveLegacyCatalog in case admins don't want to remove the older WS1 App catalog. 
+		- Added additional oma-dm clean up items
+	
 	v2.4 - July 14, 2020
 		- Updated logic of SID check to account for an edge case related to staged enrollment
 
