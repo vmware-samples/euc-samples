@@ -29,7 +29,6 @@
 	%WINDIR%\Sysnative\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -file .\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111
 	32 bit powershell re-enrollment to the specified server using specified staging credentials. This is for use when deploying with Products in UEM or another application that runs 32bit powershell. Legacy app catalog removed (default) and SID mismatch check skipped (default). 
 .NOTES
-	Version:        2.5
 	Author:         Brooks Peppin | bpeppin@vmware.com | www.brookspeppin.com 
 	Date:  			Sep 2, 2020
 	Purpose/Change: Initial script development
