@@ -23,8 +23,8 @@
 	.\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111
 	Standard re-enrollment to the specified server using specified staging credentials. Legacy app catalog removed and SID mismatch check skipped.
 .EXAMPLE
-	.\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111 -RemoveLegacyCatalog true -SIDCheck True
-	Re-enrollment to the specified server using specified staging credentials. Legacy app catalog removed and SID mismatch check enforced. It will only re-enroll if a SID mismatch is found.
+	.\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111 -Unenroll OnSIDMismatch
+	Re-enrollment to the specified server using specified staging credentials on SIDMismatch only. Legacy app catalog will be removed (default). 
 .EXAMPLE
 	%WINDIR%\Sysnative\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -file .\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111
 	32 bit powershell re-enrollment to the specified server using specified staging credentials. This is for use when deploying with Products in UEM or another application that runs 32bit powershell. Legacy app catalog removed (default) and SID mismatch check skipped (default). 
