@@ -1,5 +1,5 @@
 # Returns build number e.g. 17134
 # Return Type: String
-# Execution Context: User
-$os=Get-WmiObject Win32_OperatingSystem
-write-output $os.BuildNumber
+# Execution Context: System
+$BuildNumber=(Get-WmiObject Win32_OperatingSystem).Buildnumber
+return $BuildNumber
