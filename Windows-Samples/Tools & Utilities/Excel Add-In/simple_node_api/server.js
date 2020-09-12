@@ -109,7 +109,6 @@ if (cluster.isMaster) {
       username,
       usecache
     } = req.headers;
-    console.log(req.headers);
     const awTenantCode = req.headers['aw-tenant-code'];
     if (!authorization) {
       console.log('error: You are not authorized!');
