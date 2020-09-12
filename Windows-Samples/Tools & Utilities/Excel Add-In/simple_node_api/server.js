@@ -55,16 +55,19 @@ if (cluster.isMaster) {
 
 
   let useRedis = true;
-  useRedis = useRedis && fs.existsSync('ca/certs/localhost.crt');
-  if (useRedis) {
-    const bluebird = require('bluebird');
-    let redis = require('redis');
-    let client = redis.createClient();
-    bluebird.promisifyAll(redis.RedisClient.prototype);
-    bluebird.promisifyAll(redis.Multi.prototype);
+  let redis = require('redis');
+  const bluebird = require('bluebird');
+  let client = redis.createClient();
+  bluebird.promisifyAll(redis.RedisClient.prototype);
+  bluebird.promisifyAll(redis.Multi.prototype);
 
+  if (useRedis) {
+    console.log('Using Redis');
     client.on('error', function(err) {
       console.log('Something went wrong ', err);
+    });
+    client.on('connected', function(message) {
+      console.log('Redis ', message);
     });
   }
 
