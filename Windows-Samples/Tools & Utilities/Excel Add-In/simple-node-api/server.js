@@ -1,6 +1,7 @@
 const certDomain = require('./node_modules/office-addin-dev-certs/lib/defaults').domain;
 const fs = require('fs');
 
+
 function readWriteSync() {
   if (certDomain.length === 2) {
     let data = fs.readFileSync('node_modules/office-addin-dev-certs/lib/defaults.js', 'utf-8');
@@ -9,6 +10,7 @@ function readWriteSync() {
     fs.writeFileSync('node_modules/office-addin-dev-certs/lib/defaults.js', newValue, 'utf-8');
   }
 }
+
 readWriteSync();
 
 const devCerts = require('office-addin-dev-certs');
