@@ -1,10 +1,10 @@
 # Excel Add-In for Workspace ONE UEM
 
 ## Overview
-- **Authors**: Leon Letto
+- **Author**: Leon Letto
 - **Email**: lettol@vmware.com
 - **Date Created**: 8/10/2020
-- **Supported Platforms**: Workspace ONE 2003
+- **Supported Platforms**: Workspace ONE 2003+
 - **Tested on**: Windows 10 Pro/Enterprise 1803+, MacOs Catalina, Excel 2016+
 
 ## Purpose
