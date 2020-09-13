@@ -64,7 +64,8 @@ if (cluster.isMaster) {
   if (useRedis) {
     console.log('Using Redis');
     client.on('error', function(err) {
-      console.log('Something went wrong ', err);
+      console.log('redis problem. ');
+      useRedis = false;
     });
     client.on('connected', function(message) {
       console.log('Redis ', message);
