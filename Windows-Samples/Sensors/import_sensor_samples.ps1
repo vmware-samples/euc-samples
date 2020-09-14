@@ -347,8 +347,8 @@ if ($WorkspaceONEGroupID -eq $null){$WorkspaceONEGroupID = Get-OrganizationGroup
 $WorkspaceONEGroupUUID = Get-OrganizationGroupUUID($WorkspaceONEGroupID)
 
 # Checking for Supported Console Version and if Sensors is Enabled
-Check-ConsoleVersion
-Check-SensorsEnabled($WorkspaceONEGroupUUID)
+# Check-ConsoleVersion
+# Check-SensorsEnabled($WorkspaceONEGroupUUID)
 
 # Downloads Sensors Locally if using the -ExportSensor parameter
 if($ExportSensors){
