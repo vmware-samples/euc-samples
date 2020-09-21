@@ -119,7 +119,7 @@ The Workspace ONE Access Connector is optional and only required if you plan to 
 1. In the wizard, click the *Go To MyVMware.com* link and download the Connector.  
 1. After you have installed the connector on a server, return to the Access console and verify the connector is showing installed.
 
-> When ready to enable the Hub Services requiring Workspace ONE Access, you must migrate the directory synchronization from Workspace ONE UEM to Workspace ONE Access (using the steps outlined in the relevant documentation linked below).  In Workspace ONE UEM, switch the Source of Authentication to Workspace ONE Access by navigating to *Groups & Settings > All Settings > Devices & Users > General > Enrollment* and on the *Authentication* tab you must choose **Workspace ONE Access** as the *Source of Authentication for Intelligent Hub*
+> When ready to enable the Hub Services requiring Workspace ONE Access, you must migrate the source of authentication from Workspace ONE UEM to Workspace ONE Access (using the steps outlined in the relevant documentation linked below).  In Workspace ONE UEM, switch the Source of Authentication to Workspace ONE Access by navigating to *Groups & Settings > All Settings > Devices & Users > General > Enrollment* and on the *Authentication* tab you must choose **Workspace ONE Access** as the *Source of Authentication for Intelligent Hub*
 
 **Relevant Documentation:**
 
@@ -268,10 +268,10 @@ Workspace ONE Access can significantly reduce the amount of username/password pr
 1. Click **Save** when completed.
 1. In the UEM Console, click *Add > Profile > macOS > User.   Configure the General payload settings.
 
-    > For help setting up SSO profiles, refer to the [TechZone Article about Identity Preferences](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos-revisited).  You basically need to create a profile with 2 parts:  the SCEP profile pointing to the UEM-Access CA integration (for the user's identity cert), and either an Identity Preference Payload to set the preference for Safari and WebKit, or a Custom Settings payload that sets the app-specific preference to auto-select the identity certificate.
+    > For help setting up SSO profiles, refer to the [TechZone Article about Identity Preferences](https://techzone.vmware.com/blog/managing-identity-preferences-streamline-single-sign-macos-revisited).  You basically need to create a profile with 2 parts:  the SCEP profile pointing to the UEM-Access CA integration (for the user's identity cert), and either an Identity Preference configuration in the SCEP payload to set the preference for Safari and WebKit, or a Custom Settings payload that sets the app-specific preference to auto-select the identity certificate.
 
 1. Click the *SCEP* payload and click **Configure**.   Choose *AirWatch Certificate Authority* for the *Source* and *Authority* fields. Choose *Certificate Authority* and ensure "allow access" is checked.
-1. Click the *Identity Preferences* payload, or the *Custom Settings* payload.  Complete the payload settings per the TechZone article.
+1. Modify the *Identity Preferences* in the SCEP payload, or add and configure the *Custom Settings* payload.  Complete the payload settings per the TechZone article.
 
 **Relevant Documentation:**
 
@@ -306,10 +306,17 @@ Admins should leverage Apple Business Manager (or Apple School Manager) to enabl
 
 #### Notes on Recommended DEP Profile Settings
 
-- **Require MDM Enrollment** — This setting also enforces enrollment should the device be wipe/reinstalled.
+- **Custom Enrollment**  This changes the authentication flow in Automated Enrollments to use a web view rather than the normal username/password.   This web view can display a login page from a SAML Provider or Workspace ONE Access, allowing you to do customize the enrollment experience (including terms of use, and multifactor authentication).
+- **Require MDM Enrollment** — This setting enforces enrollment should the device be wipe/reinstalled.
 - **Lock MDM Profile** — This setting will help ensure your devices do not become unmanaged by the end user (e.g. the user cannot remove the MDM profile).
 - **Await Configuration** — This setting holds the user in the setup assistant for a few moments longer, allowing more time for MDM to deliver configuration profiles *before* the User sees the Login Window.
-- **Create New Admin Account** — This allows IT to create a hidden admin account for use in accessing the device if the user’s account becomes locked out or corrupt.
+- **Primary User Account Customization:**
+  - **Account Type** - Choose what access rights to give the local macOS user account created by the user in SetupAssistant.
+  - **AutoFill** - You can autofill the user account information in the Setup Assistant using Lookup Values.
+  - **Allow Editing** - By disabling this, the user cannot change the username or firstname/lastname combination.  This helps enforce standardized local macOS accounts
+- **Admin Account Creation Customization:**
+  - **Create New Admin Account** — This allows IT to create a hidden admin account for use in accessing the device if the user’s account becomes locked out or corrupt.
+  - **Unique Random Password** - This randomizes the Admin Account password and escrows the password in Workspace ONE UEM.  If the password is later accessed or viewed from Workspace ONE, Workspace ONE will set a new randomized password for the admin account and update the password stored in escrow.
 
 **Relevant Documentation:**
 
@@ -335,6 +342,8 @@ In Workspace ONE UEM, perform the following:
     - **Categories:**   This helps Hub Services provide app categorization in the Intelligent Hub
     - **Licenses to Allocate:**   If the app is free, we recommend purchasing more apps than required to allow for growth without needing to constantly manage license numbers.
     - **Deployment Type:**   We recommend limiting the number of apps you initially load on the device.   Let the user self-service choose the apps they want on their device.  You can automatically deploy common apps such as Microsoft Outlook and the VMware Tunnel app.
+
+> **NOTE:** Newer versions of Workspace ONE UEM allow you to bulk-select applications to enable them for device-based assignment.  Choosing device-based assignment eliminates the need for the end-user to have an Apple ID.
 
 #### Notes about Apple Caching Services
 
