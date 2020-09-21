@@ -1,21 +1,43 @@
-﻿<#	
-	.NOTES
-	===========================================================================
-	 Created by:	bpeppin@vmware.com | www.brookspeppin.com 
-	 Organization:	VMware, Inc.
-	 Filename:     	WS1-ReEnroll.ps1
-	===========================================================================
-	.DESCRIPTION
-		Workspace ONE Enrollment script that verifies that the MDM enrollment account (SID) matches the current logged in user's SID. If there is a mismatch then it will uninstall Hub, Uninstall ADA, and disconnect MDM
-		before attempting to re-enroll using the parameters specified to the script.
+﻿<#
+.SYNOPSIS
+	Workspace ONE Enrollment script that does several things. First, it can verify that the MDM enrollment account (SID) matches the current logged in user's SID.
+	If there is a mismatch then it will uninstall Hub, Uninstall Software Distribution Agent ADA, and disconnects MDM before attempting to re-enroll using the
+	parameters specified to the script. It also hides toast notifications for MDM so that the end user isn't prompted with a scary message about work or school 
+	account getting removed. Uninstalling the ADA agent also ensures that manages applications aren't uninstalled during unenrollment. 
+.PARAMETER Server 
+	Required paramater that specifies the UEM server you intend to enroll the device to. Format: dsXXXX.awmdm.com, i.e. cn1506.awmdm.com. 
+.PARAMETER Lgname
+	Required paramater that specifies the organization group (OG name) that the staging user belongs to. Mouse over the OG at the top of the UEM console to get this info. It will be listed under "groupID". It should be a string value.
+.PARAMETER Username
+	Required paramater that specifies the username of the staging user used to enroll.
+.PARAMETER Password
+	Required paramater that specifies the password of the staging user used to enroll
+.PARAMETER RemoveLegacyCatalog
+	Optional parameter that tells the script whether or not to removed the legacy WS1 App catalog on unenrollment. Format: True or False. Default value of true unless otherwise specified.
+.PARAMETER Unenroll
+	Required paramater that specifies whether or not to unenroll the device first. Available Options are Always, OnSIDMismatch, Never
+	-Always: Always attempts unenrollment before enrolling into specified environment
+	-OnSIDMismatch: Check for SID mismatch first before unenrolling and only unenroll if a mismatch is found.
+	-Never. Never unenrolls first. Only enrolls if no-mdm enrollment is found at all. This is the default value.
+.EXAMPLE
+	.\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111
+	Standard re-enrollment to the specified server using specified staging credentials. Legacy app catalog removed and SID mismatch check skipped.
+.EXAMPLE
+	.\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111 -Unenroll OnSIDMismatch
+	Re-enrollment to the specified server using specified staging credentials on SIDMismatch only. Legacy app catalog will be removed (default). 
+.EXAMPLE
+	%WINDIR%\Sysnative\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -file .\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111
+	32 bit powershell re-enrollment to the specified server using specified staging credentials. This is for use when deploying with Products in UEM or another application that runs 32bit powershell. Legacy app catalog removed (default) and SID mismatch check skipped (default). 
+.NOTES
+	Author:         Brooks Peppin | bpeppin@vmware.com | www.brookspeppin.com 
+	Date:  			Sep 2, 2020
+	Purpose/Change: Initial script development
 
-    .USAGE
-		64bit - powershell -executionpolicy bypass -file .\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111
-		32bit - %WINDIR%\Sysnative\WindowsPowerShell\v1.0\powershell.exe -executionpolicy bypass -file .\WS1-ReEnroll.ps1 -server ws1uem.awmdm.com -lgname staging -username staging@staging.com -password 11111
-
-        Full Command line options for airwatchagent.msi: https://docs.vmware.com/en/VMware-AirWatch/9.3/vmware-airwatch-guides-93/GUID-AW93-Enroll_SilentCommands.html
-		Complete Onboarding Windows 10 devices using CLI guide: https://techzone.vmware.com/onboarding-windows-10-using-command-line-enrollment-vmware-workspace-one-operational-tutorial
-	.NOTES
+	v2.5 - September 8th, 2020
+		- Added new parameter "Unenroll" to support various unenroll scenarious. Available Options are Always, OnSIDMismatch, Never
+		- Added new parameter RemoveLegacyCatalog in case admins don't want to remove the older WS1 App catalog. 
+		- Added additional oma-dm clean up items
+	
 	v2.4 - July 14, 2020
 		- Updated logic of SID check to account for an edge case related to staged enrollment
 
@@ -35,18 +57,28 @@
 		- Added additional logging info when enrolling via HUB
 	v2 - Feb 28, 2020
 		- Added additional waits after Hub un-enrollment and oma-dma sync to ensure everything is cleaned out properly.
-		
 #>
+
+
 param (
-	[String][Parameter(Mandatory = $true)]
+	[String][Parameter(Mandatory)]
 	$server,
-	[String][Parameter(Mandatory = $true)]
+	[String][Parameter(Mandatory)]
 	$LGName,
-	[String][Parameter(Mandatory = $true)]
+	[String][Parameter(Mandatory)]
 	$username,
-	[String][Parameter(Mandatory = $true)]
-	$Password
-	
+	[String][Parameter(Mandatory)]
+	$Password,
+	[bool]
+	$RemoveLegacyCatalog = $true,
+	[string][Parameter(Mandatory)]
+	[ValidateScript({
+		if($_ -eq "Always" -or $_ -eq "OnSIDMismatch" -or $_ -eq "Never") {
+		$true
+	} else {throw "$_ is invalid. Specify Always, OnSIDMismatch, or Never"}
+})]
+	$Unenroll
+
 )
 #-----------------PSADT Function "QueryUser" from AppDeployToolkitMain.cs file------------------------------------
 # https://github.com/PSAppDeployToolkit/PSAppDeployToolkit/tree/master/Toolkit/AppDeployToolkit
@@ -526,22 +558,24 @@ public class QueryUser
 	}
 "@
 
-
-
 [string[]]$ReferencedAssemblies = 'System.Drawing', 'System.Windows.Forms', 'System.DirectoryServices'
-#Add-Type -Path $PSScriptRoot\AppDeployToolkitMain.cs -ReferencedAssemblies $ReferencedAssemblies -IgnoreWarnings -ErrorAction 'Stop'
 Add-Type -ReferencedAssemblies $ReferencedAssemblies -TypeDefinition $code -Language CSharp	-IgnoreWarnings -ErrorAction 'Stop'
-
 
 #------------------------------------------------------------------------
 #Variable Section
-$version = 'v2.4'
+$version = 'v2.5'
 $user = [QueryUser]::GetUserSessionInfo($env:COMPUTERNAME)
 $userFullname = "{0}\{1}" -f $user.DomainName, $user.UserName
 $oUser = New-Object -TypeName System.Security.Principal.NTAccount($userFullname)
 $global:SID = $oUser.Translate([System.Security.Principal.SecurityIdentifier]).Value
 $scriptfilename = "WS1-ReEnroll.ps1.log" #local log file name
-$Logpath = "C:\ProgramData\Airwatch\UnifiedAgent\Logs"
+$current_path = $PSScriptRoot;
+if($PSScriptRoot -eq ""){
+    #PSScriptRoot only popuates if the script is being run.  Default to default location if empty
+    $Logpath = "C:\Temp";
+} else {
+	$Logpath = $PSScriptRoot
+}
 $logfile = "$logpath\$scriptfilename"
 $AgentPath = "$PSScriptRoot\AirwatchAgent.msi"
 $msiargumentlist = "/i $AgentPath /quiet ENROLL=Y SERVER=$Server LGNAME=$LGName USERNAME=$Username PASSWORD=$Password ASSIGNTOLOGGEDINUSER=Y /log $Logpath\Awagent.log"
@@ -563,59 +597,85 @@ Function Write-Log
 	Write-Host $Message
 }
 
-If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
-{
-	# Relaunch as an elevated process:
-	Write-Log "Script is not run with elevated permissions. Please re-run elevated."
-	Pause
-	exit
-}
-
-
-#Ensuring log locations exist
-If ((Test-Path $Logpath) -eq $false)
-{
-	mkdir -Path $Logpath -ErrorAction SilentlyContinue
-}
-
 Function Uninstall-Hub
 {
-	
+	write-log "Attempting to remove Intelligent HUB and MDM Enrollment"
 	
 	write-log "Checking for existing Airwatch/Workspace One Hub installations"
-	$uninstallString = @()
-	$uninstallString += (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | where-Object { $_.DisplayName -like "Airwatch*" -or $_.DisplayName -like "Workspace ONE Intelligent Hub*" }).PSChildName
-	$uninstallString += (Get-ItemProperty HKLM:\Software\wow6432node\Microsoft\Windows\CurrentVersion\Uninstall\* | where-Object { $_.DisplayName -like "Airwatch*" -or $_.DisplayName -like "Workspace ONE Intelligent Hub*" }).PSChildName
-	
-	foreach ($string in $uninstallString)
+
+	$location = @()
+	$location += (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | where-Object { $_.DisplayName -like "Airwatch*" -or $_.DisplayName -like "Workspace ONE Intelligent Hub*" })
+	$location += (Get-ItemProperty HKLM:\Software\wow6432node\Microsoft\Windows\CurrentVersion\Uninstall\* | where-Object { $_.DisplayName -like "Airwatch*" -or $_.DisplayName -like "Workspace ONE Intelligent Hub*" })
+	$array = @()
+
+	$array = foreach($item in $location){
+		$Object = New-Object psobject
+		$Object | Add-Member -MemberType NoteProperty -Name DisplayName -Value $item.DisplayName
+		$Object | Add-Member -MemberType NoteProperty -Name GUID -Value $item.PSChildname
+		$Object | Add-Member -MemberType NoteProperty -Name DisplayVersion -Value $item.DisplayVersion
+		$object
+	}
+	$array
+	#Delete reg keys
+	Remove-Item -Path HKLM:\SOFTWARE\Airwatch\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\AirwatchMDM\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Enrollments\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Provisioning\omadm\Accounts\* -Recurse -ErrorAction SilentlyContinue
+	foreach ($item in $array)
 	{
 		Try
 		{		
-			write-log "$string GUID found, uninstalling."
-			start-process -Wait "msiexec" -arg "/X $string /qn /norestart"
+			Write-Log "$($item.DisplayName) version $($item.DisplayVersion) found, uninstalling."
+			start-process -Wait "msiexec" -arg "/X $($item.GUID) /qn /norestart"
+			Start-Sleep -Seconds 10
 
 		}
 		catch
 		{
-			write-log $_.Exception
+			Write-Log $_.Exception
 		}
 		
 	}
-	
-<#	Write-Log "Renaming log folder to $Logpath.old"
-	Rename-Item $Logpath "$Logpath.old"
-	#Ensuring log locations exist
-	If ((Test-Path $Logpath) -eq $false)
-	{
-		md $Logpath -ErrorAction SilentlyContinue
-	}#>
-	
+    #uninstall WS1 App
+    if($removelegacycatalog)
+    {
+        $packageName = "AirWatchLLC.VMwareWorkspaceONE"
+        Get-AppxPackage  $packageName | Remove-AppxPackage -ErrorAction SilentlyContinue
+    }
+
+
 	Write-Log "Syncing oma-dm to ensure that it breaks mdm relationship after hub removal"
 	$GUID = (Get-Item -Path "HKLM:SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\*" -ErrorAction SilentlyContinue).PSChildname
 	Start-Process "$ENV:windir\system32\DeviceEnroller.exe" -arg "/o $GUID /c"
 	write-log "Wait 5 min for OMA-DM Un-enrollment to complete"
 	Start-Sleep 300
-	
+	#Delete reg keys
+	Remove-Item -Path HKLM:\SOFTWARE\Airwatch\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\AirwatchMDM\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Enrollments\* -Recurse -ErrorAction SilentlyContinue
+	Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Provisioning\omadm\Accounts\* -Recurse -ErrorAction SilentlyContinue
+
+	#Delete log folders
+	$path = "$env:ProgramData\AirWatch\UnifiedAgent\Logs\"
+	Get-ChildItem $path -Recurse | Remove-Item -Recurse -Force  -ErrorAction SilentlyContinue
+
+	#delete Airwatch certificates
+	if ($removecerts)
+	{
+		$Certs = get-childitem cert:"CurrentUser" -Recurse
+		$AirwatchCert = $certs | Where-Object {$_.Issuer -eq "CN=AirWatchCa"}
+		foreach ($Cert in $AirwatchCert) {
+			$cert | Remove-Item -Force
+		}
+
+		$AirwatchCert = $certs | Where-Object {$_.Subject -like "*AwDeviceRoot*"}
+		foreach ($Cert in $AirwatchCert) {
+			$cert | Remove-Item -Force
+		}
+	}
+		
 }
 
 Function Enroll-Hub
@@ -625,11 +685,11 @@ Function Enroll-Hub
 	Start-Process msiexec.exe -Wait -ArgumentList $msiargumentlist
 	write-log "Waiting 5 min for WS1 enrollment to complete the process..."
 	start-sleep 300
+	
 }
 
 
-
-function Enrollment-check
+function Get-Enrollment
 {
 
 	#Getting GUID from MDM Enrollment
@@ -656,11 +716,12 @@ function Enrollment-check
 	if ($mdm)
 	{
 		$server = (Get-ItemProperty -Path "HKLM:\SOFTWARE\AIRWATCH\BEACON\CONSOLE SETTINGS").Server
-		Write-Log "Workspace ONE Enrollment found."
+		
 		$Object = New-Object psobject
 		$Object | Add-Member -MemberType NoteProperty -Name UPN -Value $UPN
 		$Object | Add-Member -MemberType NoteProperty -Name GUID -Value $GUID
 		$Object | Add-Member -MemberType NoteProperty -Name Server -Value $server
+		Write-Log "Workspace ONE Enrollment found. Enrolled user: $UPN. Enrolled Server: $server"
 		return $Object
 	}
 	else
@@ -684,7 +745,9 @@ function Check-SID
 	}
 	If ($global:SID)
 	{
-		Write-Log "Active Windows SID:$global:SID, NTAccount: $NTAccount, Username:$username"
+		Write-log "NTAccount: $NTAccount"
+		Write-log "Username:$username"	
+		Write-Log "Active Windows SID:$global:SID"
 	}
 	else
 	{
@@ -695,13 +758,13 @@ function Check-SID
 	$GUID = $enrollment.GUID
     $key = "HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\"
 
-    $SID = Get-ChildItem $key$GUID | select name | Where-Object Name -notlike "*device" | % { $_.name.split('\') | select -last 1 }
-    If ($SID.count -gt 1)
+    $WS1_SID = Get-ChildItem $key$GUID | select name | Where-Object Name -notlike "*device" | % { $_.name.split('\') | select -last 1 }
+    If ($WS1_SID.count -gt 1)
     {
-    $SID = $SID[-1] #selecting last item in the array which should be the correct SID with proper enrollment
+    $WS1_SID = $WS1_SID[-1] #selecting last item in the array which should be the correct SID with proper enrollment
     }
-	Write-Log "Enrollment SID=$SID"
-	If ($global:SID -eq $SID)
+	Write-Log "Enrollment SID=$WS1_SID"
+	If ($global:SID -eq $WS1_SID)
 	{
 		Write-Log "SIDs Match"
 		Return $true
@@ -714,7 +777,7 @@ function Check-SID
 			
 }
 
-function check-agent-path
+function Check-agent
 {
 	if (!(Test-Path $AgentPath))
 	{
@@ -731,13 +794,15 @@ function check-agent-path
 
 function disable-notifications
 {
-    New-Item -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Force -ErrorAction SilentlyContinue
-    Set-ItemProperty -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Name "Enabled" -Type DWord -Value 0 -Force
+	write-log "Disabling Windows Toast notification for Device Enrollment Activity for user $global:SID"
+    New-Item -Path Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Force -ErrorAction SilentlyContinue
+    Set-ItemProperty -Path Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Name "Enabled" -Type DWord -Value 0 -Force
     Write-Log "HKEY User's Registry for DeviceEnrollmentActivity is set to disable notification"      
 }
 
 function enable-notifications
 {
+	Write-Log "Enabling Windows Toast notification for Device Enrollment Activity for user $global:SID"
    # New-Item -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -ErrorAction SilentlyContinue
     Remove-ItemProperty -Path Registry::HKEY_USERS\$global:SID\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.DeviceEnrollmentActivity -Name "Enabled" -ErrorAction SilentlyContinue -Force
     Write-Log "HKEY User's Registry for DeviceEnrollmentActivity is set to enable notification"      
@@ -747,6 +812,18 @@ function enable-notifications
 #--------------------------MAIN--------------------------#
 write-log "Script version is: $version"
 Write-Log "Airwatch Agent path: $AgentPath"
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
+{
+	# Relaunch as an elevated process:
+	Write-Log "Script is not run with elevated permissions. Please re-run elevated."
+	Pause
+	exit
+}
+#Ensuring log locations exist
+If ((Test-Path $Logpath) -eq $false)
+{
+	mkdir -Path $Logpath -ErrorAction SilentlyContinue
+}
 $Arch = (Get-Process -Id $PID).StartInfo.EnvironmentVariables["PROCESSOR_ARCHITECTURE"];
 if ($Arch -eq 'x86')
 {
@@ -758,42 +835,63 @@ elseif ($Arch -eq 'amd64')
 	Write-log 'Running 64-bit PowerShell'
 }
 
-
-$enrollment = Enrollment-check
-$checkSID = Check-SID
-
-
-If ($enrollment -and $checkSID)
+#Checking connection to target server before doing anything else
+Write-Log "Verifying connection to the target UEM server: $server"
+$connectionStatus  = Test-Connection -ComputerName $server -Quiet
+if($connectionStatus)
 {
-	$UPN = $enrollment.UPN
-	$server = $enrollment.server 
-	write-log "Healthy WS1 enrollment detected. Enrollment Email: $UPN, Server: $server"
+	Write-Log "Test connection passed."
+
 }
-else
-{
-	write-log "Unhealthy Workspace ONE Enrollment detected"
-    disable-notifications
-    write-log "Disabled Windows Toast notification for Device Enrollment Activity"
-	check-agent-path
-	write-log "Attempting to remove Intelligent HUB and MDM Enrollment"
-	Uninstall-Hub
-	$enrollment = Enrollment-check
-	if ($enrollment -eq $false) #checking to ensure MDM enrollment is false before attempting to enroll hub
-	{
-		Enroll-Hub
-	}
-    enable-notifications
-    Write-Log "Enabled Windows Toast notification for Device Enrollment Activity"
-	$enrollment = Enrollment-check
-	$UPN = $enrollment.UPN
-	$server = $enrollment.server 
-	If ($enrollment)
-	{
-		write-log "Workspace One enrollment Successful. Enrollment Email: $UPN, Server: $server"
-	}
-	Else
-	{
-		write-log "Workspace One enrollment failed. Manual remediation may be required. Enrollment Email: $UPN, Server: $server"
-		Exit 1
-	}
+else{
+	Write-Log "Connection failed to $server. Exiting script. "
+	exit 1
 }
+
+switch ($Unenroll) {
+	"Always" { 
+		$enrollment = Get-Enrollment
+		disable-notifications
+		Check-agent
+		Uninstall-Hub
+		$enrollment = Get-Enrollment	
+		if ($enrollment -eq $false) #checking to ensure MDM enrollment is false before attempting to enroll hub
+		{
+			Enroll-Hub
+		}
+		enable-notifications
+	 }
+	"OnSIDMismatch" {
+		$enrollment = Get-Enrollment
+		$check_SID = Check-SID
+		If ($enrollment -and $check_SID)
+		{
+			$UPN = $enrollment.UPN
+			$server = $enrollment.server 
+			write-log "Healthy WS1 enrollment detected, no SID mismatch found. Enrollment Email: $UPN, Server: $server. Exiting script."
+			Exit 0
+		}else {
+			disable-notifications
+			Check-agent
+			Uninstall-Hub
+			$enrollment = Get-Enrollment	
+			if ($enrollment -eq $false) #checking to ensure MDM enrollment is false before attempting to enroll hub
+			{
+				Enroll-Hub
+			}
+			enable-notifications
+		}
+	  }
+	"Never" { 
+		$enrollment = Get-Enrollment
+		if($enrollment)
+		{
+			$UPN = $enrollment.UPN
+			$server = $enrollment.server 
+			write-log "Healthy WS1 enrollment detected. Enrollment Email: $UPN, Server: $server. Exiting script."
+			Exit 0
+		}
+	 }
+	Default {}
+}
+

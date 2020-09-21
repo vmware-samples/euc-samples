@@ -31,7 +31,7 @@ These target the Policy/Update CSP and are a more streamline and simplified appr
 1. At the top of UEM console, click Add > Profile. Select Windows > Windows Desktop > Device Profile. 
 2. Fill out the General tab as appropriate. I recommend setting the profile to "optional" while you test. Assign a Smart Group as well.
 3. On the left side of the window at the bottom click on Custom Settings and then Configure.
-4. Copy and paste the date from the sample xml files into the "Install Settings" section
+4. Click on the sample XML file and then click "raw". Copy and paste into the "Install Settings" section of the UEM profile. 
 5. Optionally configure the "Remove Settings". Some customers paste the data into both sections so that the device never gets the data removed.
 6. Click Save and Publish
 7. Go to device details > Profile tab. Find the profile and install it on the device.
