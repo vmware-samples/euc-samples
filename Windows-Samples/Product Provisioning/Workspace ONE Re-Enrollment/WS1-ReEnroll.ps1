@@ -33,6 +33,10 @@
 	Date:  			Sep 2, 2020
 	Purpose/Change: Initial script development
 
+	v2.6 - Septempter 28th, 2020
+		- Fixed issue with installing Hub if there was a space in the path
+		- The 5 min wait for break oma-dm will only occur if a valid MDM enrollment is found
+
 	v2.5 - September 8th, 2020
 		- Added new parameter "Unenroll" to support various unenroll scenarious. Available Options are Always, OnSIDMismatch, Never
 		- Added new parameter RemoveLegacyCatalog in case admins don't want to remove the older WS1 App catalog. 
@@ -43,7 +47,6 @@
 
 	v2.3 - June 25, 2020
         - Added function to supress Windows's Toast notification indicating device un-enrollment and enrollment
-
 
 	v2.2 - March 5, 2020
 		- Added in PSADT class for querying logged in user
@@ -563,7 +566,7 @@ Add-Type -ReferencedAssemblies $ReferencedAssemblies -TypeDefinition $code -Lang
 
 #------------------------------------------------------------------------
 #Variable Section
-$version = 'v2.5'
+$version = 'v2.6'
 $user = [QueryUser]::GetUserSessionInfo($env:COMPUTERNAME)
 $userFullname = "{0}\{1}" -f $user.DomainName, $user.UserName
 $oUser = New-Object -TypeName System.Security.Principal.NTAccount($userFullname)
@@ -577,8 +580,9 @@ if($PSScriptRoot -eq ""){
 	$Logpath = $PSScriptRoot
 }
 $logfile = "$logpath\$scriptfilename"
-$AgentPath = "$PSScriptRoot\AirwatchAgent.msi"
-$msiargumentlist = "/i $AgentPath /quiet ENROLL=Y SERVER=$Server LGNAME=$LGName USERNAME=$Username PASSWORD=$Password ASSIGNTOLOGGEDINUSER=Y /log $Logpath\Awagent.log"
+$agentPath = "$PSScriptRoot\AirwatchAgent.msi"
+$temp = '"{0}"' -f $agentpath
+$msiargumentlist = "/i $temp /quiet ENROLL=Y SERVER=$Server LGNAME=$LGName USERNAME=$Username PASSWORD=$Password ASSIGNTOLOGGEDINUSER=Y"
 
 
 #End of Variable Section
@@ -645,11 +649,17 @@ Function Uninstall-Hub
     }
 
 
-	Write-Log "Syncing oma-dm to ensure that it breaks mdm relationship after hub removal"
-	$GUID = (Get-Item -Path "HKLM:SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\*" -ErrorAction SilentlyContinue).PSChildname
-	Start-Process "$ENV:windir\system32\DeviceEnroller.exe" -arg "/o $GUID /c"
-	write-log "Wait 5 min for OMA-DM Un-enrollment to complete"
-	Start-Sleep 300
+
+	$enrollment = Get-Enrollment	
+	if ($enrollment -eq $true) {
+
+		Write-Log "Syncing oma-dm to ensure that it breaks mdm relationship after hub removal"
+		$GUID = (Get-Item -Path "HKLM:SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\*" -ErrorAction SilentlyContinue).PSChildname
+		Start-Process "$ENV:windir\system32\DeviceEnroller.exe" -arg "/o $GUID /c"
+		write-log "Wait 5 min for OMA-DM Un-enrollment to complete"
+		Start-Sleep 300
+	}
+
 	#Delete reg keys
 	Remove-Item -Path HKLM:\SOFTWARE\Airwatch\* -Recurse -ErrorAction SilentlyContinue
 	Remove-Item -Path HKLM:\SOFTWARE\AirwatchMDM\* -Recurse -ErrorAction SilentlyContinue
@@ -681,7 +691,8 @@ Function Uninstall-Hub
 Function Enroll-Hub
 {
 
-	write-log "Enrolling Workspace ONE Hub with the following parameters: Server= $server, Organization Group ID= $LGName, Staging Username: $UPN, Staging Password: ******, AssignToLoggedInUser=Y"
+	write-log "Enrolling Workspace ONE Hub with the following parameters: Server= $server, Organization Group ID= $LGName, Staging Username: $username, Staging Password: ******, AssignToLoggedInUser=Y"
+
 	Start-Process msiexec.exe -Wait -ArgumentList $msiargumentlist
 	write-log "Waiting 5 min for WS1 enrollment to complete the process..."
 	start-sleep 300
@@ -783,7 +794,7 @@ function Check-agent
 	{
 		Write-Log "Unable to find AirwatchAgent.msi file in expected location. Downloading latest from the internet."
 		#Invoke-WebRequest "https://awagent.com/Home/DownloadWinPcAgentApplication" -outfile "$AgentPath" #this download 19.8 agent
-		Invoke-WebRequest "https://storage.googleapis.com/getwsone-com-prod/downloads/AirwatchAgent.msi" -outfile "$AgentPath" #downloads latest production hub installer. Note this may be a newer version than your WS1 environment.
+		Invoke-WebRequest "https://storage.googleapis.com/getwsone-com-prod/downloads/AirwatchAgent.msi" -outfile "$PSScriptRoot\AirwatchAgent.msi" #downloads latest production hub installer. Note this may be a newer version than your WS1 environment.
 	}
 	else
 	{
