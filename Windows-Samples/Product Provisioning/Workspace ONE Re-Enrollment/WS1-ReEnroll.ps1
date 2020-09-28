@@ -648,17 +648,9 @@ Function Uninstall-Hub
         Get-AppxPackage  $packageName | Remove-AppxPackage -ErrorAction SilentlyContinue
     }
 
-
-
-	$enrollment = Get-Enrollment	
-	if ($enrollment -eq $true) {
-
-		Write-Log "Syncing oma-dm to ensure that it breaks mdm relationship after hub removal"
-		$GUID = (Get-Item -Path "HKLM:SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\*" -ErrorAction SilentlyContinue).PSChildname
-		Start-Process "$ENV:windir\system32\DeviceEnroller.exe" -arg "/o $GUID /c"
-		write-log "Wait 5 min for OMA-DM Un-enrollment to complete"
-		Start-Sleep 300
-	}
+	$GUID = (Get-Item -Path "HKLM:SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\*" -ErrorAction SilentlyContinue).PSChildname
+	Start-Process "$ENV:windir\system32\DeviceEnroller.exe" -arg "/o $GUID /c"
+	Start-Sleep 60
 
 	#Delete reg keys
 	Remove-Item -Path HKLM:\SOFTWARE\Airwatch\* -Recurse -ErrorAction SilentlyContinue
