@@ -265,6 +265,8 @@ def add_new_application(sys_param, version):
 
     supported_models = None
 
+    log.info('File with name {} exists at path {}'.format(file_name, source_file_path))
+
     if len(sys_param) > 4:
         push_mode = sys_param[4]
 
