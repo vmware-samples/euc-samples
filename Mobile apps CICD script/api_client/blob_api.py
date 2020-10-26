@@ -33,7 +33,9 @@ def chunk_upload(file_source_path):
         sent_chunk_count = 0
         transaction_id = ''
 
-        log.debug('File Total chunk count:{count} with transaction {id}'.format(count=chunk_count, id=transaction_id))
+        log.debug('File {} Total chunk count:{count} with transaction {id}'.format(file_source_path,
+                                                                                   count=chunk_count,
+                                                                                   id=transaction_id))
 
         while True:
             current_chunk_count = sent_chunk_count + 1
