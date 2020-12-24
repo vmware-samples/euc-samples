@@ -1,15 +1,16 @@
 # Workspace ONE Sensors
 
 ## Overview
-- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets, Andreano Lanusse, Adarsh Kesari
-- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com, kesaria@vmware.com
+- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets, Andreano Lanusse, Adarsh Kesari, 
+Saurabh Jhunjhunwala  
+- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com, kesaria@vmware.com, sjhunjhunwal@vmware.com
 - **Date Created**: 11/14/2018
-- **Updated**: 9/14/2020
-- **Supported Platforms**: Workspace ONE 1811+
-- **Tested on**: Windows 10 Pro/Enterprise 1803+
+- **Updated**: 12/24/2020
+- **Supported Platforms**: Workspace ONE 2011+
+- **Tested on**: Windows 10 Pro/Enterprise 20H2+
 
 ## Purpose
-These Workspace ONE Sensor samples contain PowerShell command lines or scripts that can be used in a **Provisioning > Custom Attributes > Sensors** payload to report back information about the Windows 10 device back to Workspace ONE.
+These Workspace ONE Sensor samples contain PowerShell command lines or scripts that can be used in a **Devices > Sensors** payload to report back information about the Windows 10 device back to Workspace ONE.
 
 ## Description 
 There are Sensor samples, templates, and a script `import_sensor_samples.ps1` to populate your environment with all of the samples.    
@@ -52,7 +53,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "techzone"
+        -OrganizationGroupID "techzone"
 
 - **Custom Directory**: using the `-SensorsDirectory` parameter tells the script where your samples exist. The directory provided must have .ps1 files which you want uploaded as Sensors. 
 
@@ -61,7 +62,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "techzone" `
+        -OrganizationGroupID "techzone" `
 		-SensorsDirectory "C:\Users\G.P.Burdell\Downloads\Sensors"
 
 - **Assign to Smart Group**: using the `-SmartGroupID` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
@@ -71,8 +72,20 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "techzone" `
+        -OrganizationGroupID "techzone" `
 		-SmartGroupID "14"
+
+- **Assign to Smart Group and Set EVENT Triggers**: using the `-SmartGroupID` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
+
+    	.\import_sensor_samples.ps1 `
+        -WorkspaceONEServer "https://as###.awmdm.com" `
+        -WorkspaceONEAdmin "administrator" `
+        -WorkspaceONEAdminPW "P@ssw0rd" `
+        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
+        -OrganizationGroupID "techzone" `
+		-SmartGroupID "14" `
+		-TriggerType "EVENT" `
+		-LOGIN -LOGOUT -STARTUP -USER_SWITCH
 
 - **Delete All Sensors**: using the `-DeleteSensors` switch parameter will delete ALL Sensors which were uploaded and that already exist to that chosen Organization Group. ***All Sensors will be deleted, including the Sensors which were manually added!*** 
 
@@ -81,7 +94,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "techzone" `
+        -OrganizationGroupID "techzone" `
 		-DeleteSensors
 
 - **Update Sensors or Overwrite Existing Sensors**: using the `-UpdateSensors` switch parameter will update ALL Sensors that already exist which the version in the PowerShell samples. This is best used when updates and fixes are published to the source PowerShell samples.
@@ -91,7 +104,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "techzone" `
+        -OrganizationGroupID "techzone" `
 		-UpdateSensors
 
 ### Parameters 
@@ -105,7 +118,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1 
 and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access. 
 ![](https://i.imgur.com/CjiC2Qt.png)
 
-**OrganizationGroupName**: The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console.
+**OrganizationGroupID**: The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console.
 ![](https://i.imgur.com/lWjWBsF.png)
 
 **SensorsDirectory**: (OPTIONAL) The directory your .ps1 sensors samples are located, default location is the current PowerShell directory of this script. 
@@ -117,8 +130,21 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 **UpdateSensors** (OPTIONAL) If enabled, all sensors that match will be updated with the version in the PowerShell samples.
 
+**ExportSensors** (OPTIONAL) If enabled, all sensors will be downloaded locally, this is a good option for backuping up sensors before making updates. 
+
+**TriggerType** (OPTIONAL) When bulk assigning, provide the Trigger Type: **SCHEDULE**, **EVENT**, or **SCHEDULEANDEVENT**
+
+**LOGIN** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+
+**LOGOUT** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+
+**STARTUP** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+
+**USER_SWITCH** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+
 
 ## Change Log
+- 12/24/2020 - Updated import_sensor_samples.ps1 (version 3.0) file. Updated Bulk Assign to leverage new Assignment APIs. Added ability to set trigger type and event triggers. Updated "OrganizationGroupName" to "OrganizationGroupID" to reduce confusion. 
 - 9/14/2020 - Removed pre-check for console version and if sensors are enabled.
 - 8/10/2020 - Added samples for oma-dm sync troubleshooting
 - 8/3/2020 - Fix issue with bitlocker_encryption_method.ps1 sample
@@ -143,6 +169,3 @@ and you will find the key in the API Key field.  If it is not there you may need
 - 11/21/2018 - updated bios_secure_boot and bios_serial_number
 - 11/15/2018 - changed echo to write-output in all samples
 - 11/14/2018 - Uploaded README file
-
-## Additional Resources
-Coming Soon on [techzone.vmware.com](http://techzone.vmware.com)!

@@ -3,8 +3,8 @@
 # Author:  Josue Negron - jnegron@vmware.com
 # Contributors: Chris Halstead - chealstead@vmware.com
 # Created: December 2018
-# Updated: May 2020
-# Version 1.3
+# Updated: December 2020
+# Version 3.0
 
   .SYNOPSIS
     This Powershell script allows you to automatically import PowerShell scripts as Workspace ONE Sensors in the Workspace ONE UEM Console. 
@@ -22,9 +22,12 @@
         -WorkspaceONEAdmin "administrator" `
         -WorkspaceONEAdminPW "P@ssw0rd" `
         -WorkspaceONEAPIKey "7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=" `
-        -OrganizationGroupName "techzone" `
+        -OrganizationGroupID "techzone" `
         -SmartGroupID "41" `
-        -UpdateSensors
+        -UpdateSensors `
+        -TriggerType "EVENT" `
+        -LOGIN
+        -LOGOUT
 
     .PARAMETER WorkspaceONEServer
     Server URL for the Workspace ONE UEM API Server
@@ -39,7 +42,7 @@
     This is the REST API key that is generated in the Workspace ONE UEM Console.  You locate this key at All Settings -> Advanced -> API -> REST,
     and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access
 
-    .PARAMETER OrganizationGroupName
+    .PARAMETER OrganizationGroupID
     The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console.
 
     .PARAMETER SensorsDirectory
@@ -56,6 +59,21 @@
 
     .PARAMETER ExportSensors
     OPTIONAL: If enabled, all sensors will be downloaded locally, this is a good option for backuping up sensors before making updates. 
+    
+    .PARAMETER TriggerType
+    OPTIONAL: When bulk assigning, provide the Trigger Type: 'SCHEDULE', 'EVENT', or 'SCHEDULEANDEVENT'
+
+    .PARAMETER LOGIN
+    OPTIONAL: When using 'Event' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+
+    .PARAMETER LOGOUT
+    OPTIONAL: When using 'Event' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+    
+    .PARAMETER STARTUP
+    OPTIONAL: When using 'Event' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+    
+    .PARAMETER USER_SWITCH
+    OPTIONAL: When using 'Event' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
 #>
 
 [CmdletBinding()]
@@ -86,16 +104,31 @@
         [switch]$UpdateSensors, 
 
         [Parameter(Mandatory=$False)]
-        [switch]$DeleteSensors, 
+        [switch]$DeleteSensors,
 
         [Parameter(Mandatory=$False)]
-        [switch]$ExportSensors
+        [switch]$ExportSensors,
+
+        [Parameter(Mandatory=$False)]
+        [string]$TriggerType, 
+
+        [Parameter(Mandatory=$False)]
+        [switch]$LOGIN,
+
+        [Parameter(Mandatory=$False)]
+        [switch]$LOGOUT,
+
+        [Parameter(Mandatory=$False)]
+        [switch]$STARTUP,
+
+        [Parameter(Mandatory=$False)]
+        [switch]$USER_SWITCH
 )
 
 # Forces the use of TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$URL = $WorkspaceONEServer + "/api"
+$URL = $WorkspaceONEServer + "/API"
 $global:CurrentSensorUUID = ""
 
 # If a custom sensors directory is not provided then use current directory of import_sensor_samples.ps1 
@@ -137,6 +170,15 @@ Function Get-SmartGroupUUID($SmartGroupID) {
     $endpointURL = $URL + "/mdm/smartgroups/" + $SmartGroupID
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
     $SmartGroupUUID = $webReturn.SmartGroupUuid
+    Return $SmartGroupUUID
+}
+
+# Returns the Name of the Smart Group ID Provided
+Function Get-SmartGroupName($SmartGroupID) {
+    Write-Host("Getting Group Name from Group ID")
+    $endpointURL = $URL + "/mdm/smartgroups/" + $SmartGroupID
+    $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
+    $SmartGroupUUID = $webReturn.Name
     Return $SmartGroupUUID
 }
 
@@ -236,17 +278,28 @@ Function Update-Sensors($Description, $Context, $SensorName, $ResponseType, $Scr
 
 # Assigns Sensors
 Function Assign-Sensors($SensorUUID, $SmartGroupUUID) {
-    $endpointURL = $URL + "/mdm/devicesensors/assign"
-    $SensorBody = @()
-    $SensorBody += "$SensorUUID" 
+    $endpointURL = $URL + "/mdm/devicesensors/"+$SensorUUID+"/assignment"
+    $EventsBody = @()
+    if($LOGIN) {$EventsBody += "LOGIN"}
+    if($LOGOUT) {$EventsBody += "LOGOUT"}
+    if($STARTUP) {$EventsBody += "STARTUP"}
+    if($USER_SWITCH) {$EventsBody += "USER_SWITCH"}
     $SmartBody = @()
     $SmartBody += "$SmartGroupUUID"
+    $SmartGroupName = Get-SmartGroupName($SmartGroupID);
+    if(!$TriggerType) { $TriggerType = "SCHEDULE" }
     $body = [pscustomobject]@{
-        'device_sensors'          = $SensorBody;
-        'organization_group_uuid' = "$WorkspaceONEGroupUUID";
-        'smart_groups'	          = $SmartBody;
+        'name'                    = $SmartGroupName;
+        'smart_group_uuids'	      = $SmartBody;
+        'trigger_type'            = $TriggerType;
+        'event_triggers'          = $EventsBody;
             }
     $json = $body | ConvertTo-Json
+    $header = @{
+        "Authorization"  = "Basic $cred";
+        "aw-tenant-code" = $WorkspaceONEAPIKey;
+        "Accept"		 = "application/json;version=2";
+        "Content-Type"   = "application/json";}
     $webReturn = Invoke-RestMethod -Method Post -Uri $endpointURL -Headers $header -Body $json
 }
 
@@ -347,8 +400,8 @@ if ($WorkspaceONEGroupID -eq $null){$WorkspaceONEGroupID = Get-OrganizationGroup
 $WorkspaceONEGroupUUID = Get-OrganizationGroupUUID($WorkspaceONEGroupID)
 
 # Checking for Supported Console Version and if Sensors is Enabled
-# Check-ConsoleVersion
-# Check-SensorsEnabled($WorkspaceONEGroupUUID)
+#Check-ConsoleVersion
+#Check-SensorsEnabled($WorkspaceONEGroupUUID)
 
 # Downloads Sensors Locally if using the -ExportSensor parameter
 if($ExportSensors){
@@ -366,62 +419,62 @@ Exit
 
 $NumSensors = $PSSensors.Count - 1
 DO
-    {
-    # Removes .ps1 from filename, convert to lowercase, replace spaces with underscores
-    $SensorName = ($PSSensors)[$NumSensors].Filename.ToLower() -replace ".ps1","" -replace “ “,”_”
-    # If DeleteSensors switch is called, then deletes all Sensor samples
-    if ($DeleteSensors) {
-        Delete-Sensors($WorkspaceONEGroupID)
-        Break
-    }elseif (Check-Duplicate-Sensor $SensorName) {
-        if($UpdateSensors){
-        # Check if Sensor Already Exists
-        Write-Host($SensorName + " already exists in this tenant. Updating Sensor now!")
-        # Removes Comment # and Quotes
-        $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
-        # INTEGER, BOOLEAN, STRING, DATETIME
-        $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
-        # USER, SYSTEM, ADMIN
-        $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
-        # Encode Script
-        $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
-        $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
-        $Script = [Convert]::ToBase64String($Bytes)
-        Update-Sensors $Description $Context $SensorName $ResponseType $Script
-        }
-        # Skips Template files
-    }elseif ($SensorName -match "template_get_registry_value|template_get_wmi_object|import_sensor_samples"){
-        Write-Host($SensorName + " is a template. Skipping Templates.") -ForegroundColor Yellow 
-    }else{ # Adds new Sensors
-        # Removes Comment # and Quotes
-        $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
-        # INTEGER, BOOLEAN, STRING, DATETIME
-        $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
-        # USER, SYSTEM, ADMIN
-        $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
-        # Encode Script
-        $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
-        $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
-        $Script = [Convert]::ToBase64String($Bytes)
-        Set-Sensors $Description $Context $SensorName $ResponseType $Script
+{
+# Removes .ps1 from filename, convert to lowercase, replace spaces with underscores
+$SensorName = ($PSSensors)[$NumSensors].Filename.ToLower() -replace ".ps1","" -replace " ","_"
+# If DeleteSensors switch is called, then deletes all Sensor samples
+if ($DeleteSensors) {
+    Delete-Sensors($WorkspaceONEGroupID)
+    Break
+}elseif (Check-Duplicate-Sensor $SensorName) {
+    if($UpdateSensors){
+    # Check if Sensor Already Exists
+    Write-Host($SensorName + " already exists in this tenant. Updating Sensor now!")
+    # Removes Comment # and Quotes
+    $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
+    # INTEGER, BOOLEAN, STRING, DATETIME
+    $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
+    # USER, SYSTEM, ADMIN
+    $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
+    # Encode Script
+    $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
+    $Script = [Convert]::ToBase64String($Bytes)
+    Update-Sensors $Description $Context $SensorName $ResponseType $Script
     }
-    $NumSensors--
-    } While ($NumSensors -ge 0)
+    # Skips Template files
+}elseif ($SensorName -match "template_get_registry_value|template_file_hash|template_get_folder_size|template_get_wmi_object|import_sensor_samples"){
+    Write-Host($SensorName + " is a template. Skipping Templates.") -ForegroundColor Yellow 
+}else{ # Adds new Sensors
+    # Removes Comment # and Quotes
+    $Description = ($PSSensors)[$NumSensors].Context.PreContext -replace '[#]' -replace '"',"" -replace "'",""
+    # INTEGER, BOOLEAN, STRING, DATETIME
+    $ResponseType = (($PSSensors)[$NumSensors].Line.ToUpper() -split ':')[1] -replace " ",""
+    # USER, SYSTEM, ADMIN
+    $Context = (($PSSensors[$NumSensors].Context.PostContext)[0].ToUpper() -split ':')[1] -replace " ",""
+    # Encode Script
+    $Data = Get-Content ($SensorsDirectory.ToString() + "\" + ($PSSensors)[$NumSensors].Filename.ToString()) -Encoding UTF8 -Raw
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
+    $Script = [Convert]::ToBase64String($Bytes)
+    Set-Sensors $Description $Context $SensorName $ResponseType $Script
+}
+$NumSensors--
+} While ($NumSensors -ge 0)
 
 # Assign Sensors to Smart Group
 if($SmartGroupID)
 {
-    Write-Host("Assigning Sensors to Smart Group")
-    $SmartGroupUUID = Get-SmartGroupUUID $SmartGroupID
-    $Sensors=Get-Sensors
-    $Num = $Sensors.total_results -1
-    $Sensors = $Sensors.result_set
-        DO
-        {
-        $SensorsUUID=$Sensors[$Num].uuid
-        Assign-Sensors $SensorsUUID $SmartGroupUUID
-        $Num--
-        } while ($Num -ge 0)
+Write-Host("Assigning Sensors to Smart Group")
+$SmartGroupUUID = Get-SmartGroupUUID $SmartGroupID
+$Sensors=Get-Sensors
+$Num = $Sensors.total_results -1
+$Sensors = $Sensors.result_set
+    DO
+    {
+    $SensorsUUID=$Sensors[$Num].uuid
+    Assign-Sensors $SensorsUUID $SmartGroupUUID
+    $Num--
+    } while ($Num -ge 0)
 }
 
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
