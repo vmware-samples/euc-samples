@@ -26,8 +26,7 @@
         -SmartGroupID "41" `
         -UpdateSensors `
         -TriggerType "EVENT" `
-        -LOGIN
-        -LOGOUT
+        -LOGIN -LOGOUT
 
     .PARAMETER WorkspaceONEServer
     Server URL for the Workspace ONE UEM API Server
