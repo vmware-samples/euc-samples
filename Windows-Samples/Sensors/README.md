@@ -144,7 +144,7 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 
 ## Change Log
-- 1/6/2020 - fixed issue with OrganizationGroupName; renamed to OrganizationGroupID
+- 1/6/2021 - fixed issue with OrganizationGroupName; renamed to OrganizationGroupID
 - 12/24/2020 - Updated import_sensor_samples.ps1 (version 3.0) file. Updated Bulk Assign to leverage new Assignment APIs. Added ability to set trigger type and event triggers. Updated "OrganizationGroupName" to "OrganizationGroupID" to reduce confusion. 
 - 9/14/2020 - Removed pre-check for console version and if sensors are enabled.
 - 8/10/2020 - Added samples for oma-dm sync troubleshooting
