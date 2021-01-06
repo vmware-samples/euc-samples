@@ -3,8 +3,8 @@
 # Author:  Josue Negron - jnegron@vmware.com
 # Contributors: Chris Halstead - chealstead@vmware.com
 # Created: December 2018
-# Updated: December 2020
-# Version 3.0
+# Updated: Jan 2021
+# Version 3.1
 
   .SYNOPSIS
     This Powershell script allows you to automatically import PowerShell scripts as Workspace ONE Sensors in the Workspace ONE UEM Console. 
@@ -91,7 +91,7 @@
         [string]$WorkspaceONEAPIKey,
 
         [Parameter(Mandatory=$True)]
-        [string]$OrganizationGroupName, 
+        [string]$OrganizationGroupID, 
 
         [Parameter(Mandatory=$False)]
         [string]$SensorsDirectory, 
@@ -141,15 +141,15 @@ $cred = [Convert]::ToBase64String($encoding)
 # Returns the Numerial Group ID for the Organizational Group ID Provided
 Function Get-OrganizationGroupID {
     Write-Host("Getting Group ID from Group Name")
-    $endpointURL = $URL + "/system/groups/search?groupID=" + $organizationGroupName
+    $endpointURL = $URL + "/system/groups/search?groupID=" + $organizationGroupID
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
     $totalReturned = $webReturn.Total
     $groupID = -1
     If ($webReturn.Total = 1) {
         $groupID = $webReturn.LocationGroups.Id.Value
-        Write-Host("Group ID for " + $organizationGroupName + " = " + $groupID)
+        Write-Host("Group ID for " + $organizationGroupID + " = " + $groupID)
     } else {
-        Write-host("Group Name: " + $organizationGroupName + " not found")
+        Write-host("Group Name: " + $organizationGroupID + " not found")
     }
     Return $groupID
 }
@@ -442,7 +442,7 @@ if ($DeleteSensors) {
     Update-Sensors $Description $Context $SensorName $ResponseType $Script
     }
     # Skips Template files
-}elseif ($SensorName -match "template_get_registry_value|template_file_hash|template_get_folder_size|template_get_wmi_object|import_sensor_samples"){
+}elseif ($SensorName -match "template_get_registry_value|template_file_hash|template_get_folder_size|template_get_wmi_object|import_sensor_samples|get_enrollment_sid_32_64"){
     Write-Host($SensorName + " is a template. Skipping Templates.") -ForegroundColor Yellow 
 }else{ # Adds new Sensors
     # Removes Comment # and Quotes
