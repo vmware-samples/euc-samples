@@ -158,6 +158,9 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 **USER_SWITCH** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
 
+## Resources 
+- [macOS Custom Attributes to Sensors Migration Script](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Tools/CustomAttributesToSensorsMigration)
+- [macOS Custom Attributes Repo](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
 
 ## Change Log
 - 1/15/2021 - Added support for macOS. The script will now import macOS sensors automatically. Support downloading macOS sensors. Added new platform parameter to force only "Windows" or "macOS" sensors to be imported. Updated OrganizationGroupID back to OrganizationGroupName and takes in the friendly name or customer name value and NOT group ID. e.g. ACME Corp, Inc. and not acme1234. 
