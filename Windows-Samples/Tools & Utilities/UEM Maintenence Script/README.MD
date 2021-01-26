@@ -73,7 +73,7 @@ Optional parameter that will only search for duplicate users or based on a csv f
   
   ## EXAMPLES
   
-**Get Duplicate Devices, Filtering Serials**
+**Get Duplicate Devices, Filtering Serials**  
 .\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -FilterSerial
 
 **Get Duplicate Devices, Win10**
