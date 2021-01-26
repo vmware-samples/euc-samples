@@ -38,25 +38,25 @@ This script connects to your VMware Workspace ONE UEM environment and can get an
  For full, detailed instructions please see https://brookspeppin.com/2020/01/28/how-to-keep-your-workspace-one-uem-environment-clean/
  
 ## PARAMETERS
--Server
+**-Server  
 Mandatory parameter for the WS1 UEM Server (omit https://). 
 
--Action  
+**-Action  
 Mandatory parameter that specifies the action the script should take. Options are: 'Get-Duplicates', 'Delete-Duplicates', 'Get-Stale', 'Delete-Stale', 'Get-Problematic', 'Delete-Problematic'. 
 
--Apikey  
+**-Apikey  
 Mandatory parameter for the API key that is requred for the script to connect via REST API to your server. These keys are per OG and are found under All Settings > System > Advanced > API > REST API.
 
--Days  
+**-Days  
 Optional parameter that specifies how many days back the script should check for stale device records. Default is 90 days.  
 
--FilterSerial  
+**-FilterSerial  
 Optional parameter that filters out serials that are improperly formatted or not yet populated. See the $SerialFilter variable below for the full list. Use this for duplicates only and not stale or problematic.
 
--UserType  
+**-UserType  
 Optional parameter that filters against certain user types (basic, directory, or any). This only works when alongside 'Get-DuplicateUsers' or 'Delete-DuplicateUsers' function. Valid options are: 'BasicOnly', 'DirectoryOnly', 'Any'.
 
--UserList  
+**-UserList  
 Optional parameter that will only search for duplicate users or based on a csv file (-UserList <path to csv>). The format of the csv should be:
 	Column name: Username, Column data: 1 username per line. Example:
 	"Username"
@@ -64,7 +64,7 @@ Optional parameter that will only search for duplicate users or based on a csv f
 	"bpeppin"
 	"cjohnson"
 
--Platform  
+**-Platform  
 	Optional parameter that specifies which platform type you'd like to search duplicates for. Valid options are: 'Mac', 'Win10', 'Android', 'iOS', 'ChromeOS', 'Any'. Any is the default if no parameter is specified. 
  
 
