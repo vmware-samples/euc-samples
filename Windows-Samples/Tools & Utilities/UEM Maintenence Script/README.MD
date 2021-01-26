@@ -3,7 +3,6 @@
 ## Overview
 
 * Author: Brooks Peppin, www.brookspeppin.com
-* Contributors: Ivan Ivanov, Ivan Kanchev, Stefan Grigorov
 * Email: bpeppin@vmware.com
 * Date Created: 1/23/2020
 * Date Updated: 1/26/2021
