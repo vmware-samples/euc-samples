@@ -10,7 +10,7 @@
 
 
 ## Latest Updates
-1.2 - Jan 20, 2021
+1.2 - Jan 26, 2021
 - Added checking for duplicate users and deleting those duplicates (Get-DuplicateUsers, Delete-DuplicateUsers). It will by default only delete duplicate users that do not have devices enrolled. Users with devices enrolled will need to have those devices
 	deleted first before deleting the user account. Additionally, adding a UserFilter.csv parameter to the command line (-UserList <path to csv>) will enable you to target only a subset of users. The format should be:
 	Column name: Username, Column data: 1 username per line. Example:
