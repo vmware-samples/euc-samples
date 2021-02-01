@@ -5,7 +5,7 @@
 Saurabh Jhunjhunwala, Robert Terakedis  
 - **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com, kesaria@vmware.com, sjhunjhunwal@vmware.com
 - **Date Created**: 11/14/2018
-- **Updated**: 1/15/2021
+- **Updated**: 2/1/2021
 - **Supported Platforms**: Workspace ONE 2011+
 - **Tested on**: Windows 10 Pro/Enterprise 20H2+
 
@@ -64,62 +64,62 @@ Place this PowerShell script in the same directory of all of your samples (.ps1/
 - **Basic**: this command shows all required fields and will scan the default directory and upload the samples to Workspace ONE via the REST API using the credentials provided. 
 
     	.\import_sensor_samples.ps1 `
-        -WorkspaceONEServer "https://as###.awmdm.com" `
-        -WorkspaceONEAdmin "administrator" `
-        -WorkspaceONEAdminPW "P@ssw0rd" `
-        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "Digital Workspace Tech Zone" `
+        -WorkspaceONEServer 'https://as###.awmdm.com' `
+        -WorkspaceONEAdmin 'administrator' `
+        -WorkspaceONEAdminPW 'P@ssw0rd' `
+        -WorkspaceONEAPIKey 'YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=' `
+        -OrganizationGroupName 'Digital Workspace Tech Zone' `
 
 - **Custom Directory**: using the `-SensorsDirectory` parameter tells the script where your samples exist. The directory provided must have script files which you want uploaded as Sensors. 
 
     	.\import_sensor_samples.ps1 `
-        -WorkspaceONEServer "https://as###.awmdm.com" `
-        -WorkspaceONEAdmin "administrator" `
-        -WorkspaceONEAdminPW "P@ssw0rd" `
-        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "Digital Workspace Tech Zone" `
-		-SensorsDirectory "C:\Users\G.P.Burdell\Downloads\Sensors"
+        -WorkspaceONEServer 'https://as###.awmdm.com' `
+        -WorkspaceONEAdmin 'administrator' `
+        -WorkspaceONEAdminPW 'P@ssw0rd' `
+        -WorkspaceONEAPIKey 'YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=' `
+        -OrganizationGroupName 'Digital Workspace Tech Zone' `
+		-SensorsDirectory 'C:\Users\G.P.Burdell\Downloads\Sensors'
 
-- **Assign to Smart Group**: using the `-SmartGroupID` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
-
-    	.\import_sensor_samples.ps1 `
-        -WorkspaceONEServer "https://as###.awmdm.com" `
-        -WorkspaceONEAdmin "administrator" `
-        -WorkspaceONEAdminPW "P@ssw0rd" `
-        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "Digital Workspace Tech Zone" `
-		-SmartGroupID "14"
-
-- **Assign to Smart Group and Set EVENT Triggers**: using the `-SmartGroupID` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
+- **Assign to Smart Group**: using the `-SmartGroupID` or `-SmartGroupName` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
 
     	.\import_sensor_samples.ps1 `
-        -WorkspaceONEServer "https://as###.awmdm.com" `
-        -WorkspaceONEAdmin "administrator" `
-        -WorkspaceONEAdminPW "P@ssw0rd" `
-        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "Digital Workspace Tech Zone" `
-		-SmartGroupID "14" `
-		-TriggerType "EVENT" `
+        -WorkspaceONEServer 'https://as###.awmdm.com' `
+        -WorkspaceONEAdmin 'administrator' `
+        -WorkspaceONEAdminPW 'P@ssw0rd' `
+        -WorkspaceONEAPIKey 'YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=' `
+        -OrganizationGroupName 'Digital Workspace Tech Zone' `
+        -SmartGroupName 'All Devices' `
+
+- **Assign to Smart Group and Set EVENT Triggers**: using the `-SmartGroupID` or `-SmartGroupName` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
+
+    	.\import_sensor_samples.ps1 `
+        -WorkspaceONEServer 'https://as###.awmdm.com' `
+        -WorkspaceONEAdmin 'administrator' `
+        -WorkspaceONEAdminPW 'P@ssw0rd' `
+        -WorkspaceONEAPIKey 'YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=' `
+        -OrganizationGroupName 'Digital Workspace Tech Zone' `
+        -SmartGroupName 'All Devices' `
+		-TriggerType 'EVENT' `
 		-LOGIN -LOGOUT -STARTUP -USER_SWITCH
 
 - **Delete All Sensors**: using the `-DeleteSensors` switch parameter will delete ALL Sensors which were uploaded and that already exist to that chosen Organization Group. ***All Sensors will be deleted, including the Sensors which were manually added!*** 
 
     	.\import_sensor_samples.ps1 `
-        -WorkspaceONEServer "https://as###.awmdm.com" `
-        -WorkspaceONEAdmin "administrator" `
-        -WorkspaceONEAdminPW "P@ssw0rd" `
-        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "Digital Workspace Tech Zone" `
+        -WorkspaceONEServer 'https://as###.awmdm.com' `
+        -WorkspaceONEAdmin 'administrator' `
+        -WorkspaceONEAdminPW 'P@ssw0rd' `
+        -WorkspaceONEAPIKey 'YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=' `
+        -OrganizationGroupName 'Digital Workspace Tech Zone' `
 		-DeleteSensors
 
 - **Update Sensors or Overwrite Existing Sensors**: using the `-UpdateSensors` switch parameter will update ALL Sensors that already exist which the version in the Sensor samples. This is best used when updates and fixes are published to the source Sensor samples.
 
     	.\import_sensor_samples.ps1 `
-        -WorkspaceONEServer "https://as###.awmdm.com" `
-        -WorkspaceONEAdmin "administrator" `
-        -WorkspaceONEAdminPW "P@ssw0rd" `
-        -WorkspaceONEAPIKey "YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=" `
-        -OrganizationGroupName "Digital Workspace Tech Zone" `
+        -WorkspaceONEServer 'https://as###.awmdm.com' `
+        -WorkspaceONEAdmin 'administrator' `
+        -WorkspaceONEAdminPW 'P@ssw0rd' `
+        -WorkspaceONEAPIKey 'YeJtOTx/v2EpXPIEEhFo1GfAWVCfiF6TzTMKAqhTWHc=' `
+        -OrganizationGroupName 'Digital Workspace Tech Zone' `
 		-UpdateSensors
 
 ### Parameters 
@@ -133,11 +133,16 @@ Place this PowerShell script in the same directory of all of your samples (.ps1/
 and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access. 
 ![](https://i.imgur.com/CjiC2Qt.png)
 
-**OrganizationGroupName**: The display name of the Organization Group. You can find this at the top of the console, normally your company's name.
+**OrganizationGroupName**: The display name of the Organization Group. You can find this at the top of the console, normally your company's name. **Required to provide OrganizationGroupName or OrganizationGroupID.**
+
+**OrganizationGroupID**: The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console. **Required to provide OrganizationGroupName or OrganizationGroupID.**
+![](https://i.imgur.com/lWjWBsF.png)
 
 **SensorsDirectory**: (OPTIONAL) The directory your sensors samples are located, default location is the current PowerShell directory of this script. 
 
-**SmartGroupID**: (OPTIONAL) If provided, all sensors in your environment will be assigned to this Smart Group. Existing assignments will be overwritten. Navigate to **Groups & Settings > Groups > Assignment Groups**. Hover over the Smart Group, then look for the number at the end of the URL, this is your Smart Group ID. 
+**SmartGroupName**: (OPTIONAL) If provided, all scripts in your environment will be assigned to this Smart Group. Existing assignments will be overwritten. Navigate to **Groups & Settings > Groups > Assignment Groups**. The Smart Group Name is the friendly name displayed in the Groups column. The script will default to using Managed By = Organization Group used above. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
+
+**SmartGroupID**: (OPTIONAL) If provided, all scripts in your environment will be assigned to this Smart Group. Existing assignments will be overwritten. Navigate to **Groups & Settings > Groups > Assignment Groups**. Hover over the Smart Group, then look for the number at the end of the URL, this is your Smart Group ID. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
 ![](https://i.imgur.com/IjvkoGC.png)
 
 **DeleteSensors**: (OPTIONAL) If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
@@ -163,6 +168,7 @@ and you will find the key in the API Key field.  If it is not there you may need
 - [macOS Custom Attributes Repo](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
 
 ## Change Log
+- 2/1/2021 - Updated README.md. Added ability to use Organization Group ID or Name and Smart Group ID or Name. 
 - 1/15/2021 - Added support for macOS. The script will now import macOS sensors automatically. Support downloading macOS sensors. Added new platform parameter to force only "Windows" or "macOS" sensors to be imported. Updated OrganizationGroupID back to OrganizationGroupName and takes in the friendly name or customer name value and NOT group ID. e.g. ACME Corp, Inc. and not acme1234. 
 - 1/6/2021 - fixed issue with OrganizationGroupName; renamed to OrganizationGroupID
 - 12/24/2020 - Updated import_sensor_samples.ps1 (version 3.0) file. Updated Bulk Assign to leverage new Assignment APIs. Added ability to set trigger type and event triggers. Updated "OrganizationGroupName" to "OrganizationGroupID" to reduce confusion. 

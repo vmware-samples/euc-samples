@@ -62,7 +62,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1,
         -WorkspaceONEAdminPW 'P@ssw0rd' `
         -WorkspaceONEAPIKey '7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=' `
         -OrganizationGroupName 'Digital Workspace Tech Zone' `
-		-ScriptsDirectory "C:\Users\G.P.Burdell\Downloads\Sensors"
+		-ScriptsDirectory 'C:\Users\G.P.Burdell\Downloads\Scripts'
 
 - **Assign to Smart Group**: using the `-SmartGroupID` or `-SmartGroupName` parameter will assign ALL Scripts which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Scripts before moving Scripts to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
 

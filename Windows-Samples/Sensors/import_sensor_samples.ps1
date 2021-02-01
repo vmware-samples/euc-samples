@@ -3,8 +3,8 @@
 # Author:  Josue Negron - jnegron@vmware.com
 # Contributors: Chris Halstead - chealstead@vmware.com
 # Created: December 2018
-# Updated: Jan 2021
-# Version 3.2
+# Updated: Feb. 1 2021
+# Version 3.3
 
   .SYNOPSIS
     This Powershell script allows you to automatically import PowerShell scripts as Workspace ONE Sensors in the Workspace ONE UEM Console. 
@@ -23,7 +23,7 @@
         -WorkspaceONEAdminPW 'P@ssw0rd' `
         -WorkspaceONEAPIKey '7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=' `
         -OrganizationGroupName 'Digital Workspace Tech Zone' `
-        -SmartGroupID '41' `
+        -SmartGroupName 'All Devices' `
         -UpdateSensors `
         -TriggerType 'EVENT' `
         -LOGIN -LOGOUT
@@ -42,13 +42,23 @@
     and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access
 
     .PARAMETER OrganizationGroupName
-    The display name of the Organization Group. You can find this at the top of the console, normally your company's name.
+    OPTIONAL: The display name of the Organization Group. You can find this at the top of the console, normally your company's name.
+    Required to provide OrganizationGroupName or OrganizationGroupID.
+
+    .PARAMETER OrganizationGroupID
+    OPTIONAL: The Group ID for your organization group. You can find this at the top of the console by hovering over the company name.
+    Required to provide OrganizationGroupName or OrganizationGroupID.
 
     .PARAMETER SensorsDirectory
     OPTIONAL: The directory your .ps1 sensors samples are located, default location is the current PowerShell directory of this script. 
 
     .PARAMETER SmartGroupID
-    OPTIONAL: If provided, all sensors in your environment will be assigned to this Smart Group. Exisiting assignments will be overwritten. 
+    OPTIONAL: If provided, all scripts in your environment will be assigned to this Smart Group. Exisiting assignments will be overwritten. 
+    If wanting to assigned, you are required to provide SmartGroupID or SmartGroupName.
+
+    .PARAMETER SmartGroupID
+    OPTIONAL: If provided, all scripts in your environment will be assigned to this Smart Group. Exisiting assignments will be overwritten. 
+    If wanting to assigned, you are required to provide SmartGroupID or SmartGroupName.
     
     .PARAMETER DeleteSensors
     OPTIONAL: If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
@@ -93,14 +103,20 @@
         [Parameter(Mandatory=$True)]
         [string]$WorkspaceONEAPIKey,
 
-        [Parameter(Mandatory=$True)]
+        [Parameter(Mandatory=$False)]
         [string]$OrganizationGroupName, 
+
+        [Parameter(Mandatory=$False)]
+        [string]$OrganizationGroupID, 
 
         [Parameter(Mandatory=$False)]
         [string]$SensorsDirectory, 
 
         [Parameter(Mandatory=$False)]
-        [string]$SmartGroupID, 
+        [int]$SmartGroupID, 
+
+        [Parameter(Mandatory=$False)]
+        [string]$SmartGroupName,  
 
         [Parameter(Mandatory=$False)]
         [switch]$UpdateSensors, 
@@ -145,7 +161,7 @@ $encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
 $cred = [Convert]::ToBase64String($encoding)
 
 # Returns the Numerial Organization ID for the Organizational Group Name Provided
-Function Get-OrganizationID {
+Function Get-OrganizationIDbyName {
     Write-Host("Getting Organization ID from Group Name")
     $endpointURL = $URL + "/system/groups/search?name=" + $OrganizationGroupName
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
@@ -160,6 +176,22 @@ Function Get-OrganizationID {
     Return $ogID
 }
 
+# Returns the Numerial Organization ID for the Organizational Group ID Provided
+Function Get-OrganizationIDbyID {
+    Write-Host("Getting Organization ID from Group ID")
+    $endpointURL = $URL + "/system/groups/search?groupID=" + $OrganizationGroupID
+    $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
+    $totalReturned = $webReturn.Total
+    $ogID = -1
+    If ($webReturn.Total = 1) {
+        $ogID = $webReturn.LocationGroups.Id.Value
+        Write-Host("Organization ID for " + $OrganizationGroupID + " = " + $ogID)
+    } else {
+        Write-host("Group ID: " + $OrganizationGroupID + " not found")
+    }
+    Return $ogID
+}
+
 # Returns the UUID of the Organization ID Provided
 Function Get-OrganizationGroupUUID($ogID) {
     Write-Host("Getting Group UUID from Group Name")
@@ -170,9 +202,9 @@ Function Get-OrganizationGroupUUID($ogID) {
 }
 
 # Returns the UUID of the Smart Group Provided
-Function Get-SmartGroupUUID($SmartGroupID) {
+Function Get-SmartGroupUUIDbyID($SmartGroupID) {
     Write-Host("Getting Group UUID from Group Name")
-    $endpointURL = $URL + "/mdm/smartgroups/" + $SmartGroupID
+    $endpointURL = $URL + "/mdm/smartgroups/" + $SmartGroupID.ToString()
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
     $SmartGroupUUID = $webReturn.SmartGroupUuid
     Return $SmartGroupUUID
@@ -180,9 +212,17 @@ Function Get-SmartGroupUUID($SmartGroupID) {
 
 # Returns the Name of the Smart Group ID Provided
 Function Get-SmartGroupName($SmartGroupID) {
-    $endpointURL = $URL + "/mdm/smartgroups/" + $SmartGroupID
+    $endpointURL = $URL + "/mdm/smartgroups/" + $SmartGroupID.ToString()
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
-    $SmartGroupUUID = $webReturn.Name
+    $SmartGroupName = $webReturn.Name
+    Return $SmartGroupName
+}
+
+# Returns the UUID of the Smart Group Name Provided
+Function Get-SmartGroupUUIDbyName($SmartGroupName, $OgID) {
+    $endpointURL = $URL + "/mdm/smartgroups/search?name=" + $SmartGroupName + "&managedbyorganizationgroupid=" + $OgID
+    $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $header
+    $SmartGroupUUID = $webReturn.SmartGroups.SmartGroupUuid
     Return $SmartGroupUUID
 }
 
@@ -275,7 +315,7 @@ Function Assign-Sensors($SensorUUID, $SmartGroupUUID) {
     if($USER_SWITCH) {$EventsBody += "USER_SWITCH"}
     $SmartBody = @()
     $SmartBody += "$SmartGroupUUID"
-    $SmartGroupName = Get-SmartGroupName($SmartGroupID);
+    if(!$SmartGroupName){$SmartGroupName = Get-SmartGroupName($SmartGroupID);}
     if(!$TriggerType) { $TriggerType = "SCHEDULE" }
     $body = [pscustomobject]@{
         'name'                    = $SmartGroupName;
@@ -410,7 +450,16 @@ $headerv2 = @{
 
                 
 # Get ogID and UUID from Organizational Group Name
-if ($WorkspaceONEOgId -eq $null){$WorkspaceONEOgId = Get-OrganizationID($WorkspaceONEOgId)}
+if ($WorkspaceONEOgId -eq $null){
+    if($OrganizationGroupName){
+        $WorkspaceONEOgId = Get-OrganizationIDbyName($OrganizationGroupName)
+    }elseif($OrganizationGroupID){
+        $WorkspaceONEOgId = Get-OrganizationIDbyID($OrganizationGroupID)
+    }else{
+        Write-Host("Please provide a value for OrganizationGroupName or OrganizationGroupID") -ForegroundColor Yellow 
+        Exit
+    }
+}
 $WorkspaceONEGroupUUID = Get-OrganizationGroupUUID($WorkspaceONEOgId)
 
 # Checking for Supported Console Version
@@ -537,20 +586,27 @@ if ($DeleteSensors) {
 $NumSensors--
 } While ($NumSensors -ge 0)
 
-# Assign Sensors to Smart Group
-if($SmartGroupID)
+# Assign Scripts to Smart Group
+if(($SmartGroupID -ne 0) -or $SmartGroupName)
 {
-Write-Host("Assigning Sensors to Smart Group")
-$SmartGroupUUID = Get-SmartGroupUUID $SmartGroupID
-$Sensors=Get-Sensors
-$Num = $Sensors.total_results -1
-$Sensors = $Sensors.result_set
-    DO
-    {
-    $SensorsUUID=$Sensors[$Num].uuid
-    Assign-Sensors $SensorsUUID $SmartGroupUUID
-    $Num--
-    } while ($Num -ge 0)
+    Write-Host("Assigning Sensors to Smart Group")
+    if($SmartGroupID){
+        $SmartGroupUUID = Get-SmartGroupUUIDbyID $SmartGroupID
+    }elseif($SmartGroupName){
+        $SmartGroupUUID = Get-SmartGroupUUIDbyName $SmartGroupName $WorkspaceONEOgId
+    }else{
+        Write-Host("Please check your values for SmartGroupID or SmartGroupName") -ForegroundColor Yellow 
+        Exit
+    }
+    $Sensors=Get-Sensors
+    $Num = $Sensors.total_results -1
+    $Sensors = $Sensors.result_set
+        DO
+        {
+        $SensorsUUID=$Sensors[$Num].uuid
+        Assign-Sensors $SensorsUUID $SmartGroupUUID
+        $Num--
+        } while ($Num -ge 0)
 }
 
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
