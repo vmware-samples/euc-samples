@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-PROC=$(/usr/sbin/s  ysctl -n machdep.cpu.brand_string)
+PROC=$(/usr/sbin/sysctl -n machdep.cpu.brand_string)
 
 if grep -q "Apple" <<< "$PROC"; then
 	echo "arm64"
