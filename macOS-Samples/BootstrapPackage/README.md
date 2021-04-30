@@ -1,5 +1,5 @@
 # Bootstrap Package
-<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/Bootstrap_icon_400px.png" style="width: 200px;"/>
+<img src="https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/Bootstrap_icon_400px.png" style="width: 200px;"/>
 
 The Bootstrap Package feature gives admins the ability to have their installer pkgs deployed to devices *immediately* after enrollment has completed.
 
@@ -20,13 +20,13 @@ The feature is best paired with a DEP Enrollment, but is available for all types
 This feature leverages an Apple MDM Command called `InstallApplication`. This [Apple API command](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/MobileDeviceManagementProtocolRef/3-MDM_Protocol/MDM_Protocol.html#//apple_ref/doc/uid/TP40017387-CH3-SW755) allows an MDM provider to natively install signed .pkgs to an enrolled device. Historically, to install .pkgs the AirWatch Agent would handle the download and installation. This is usually fine for the majority of pkgs (productivity apps), but for those pkgs in which the Admin needs installed ASAP after enrollment, using a bootstrap package is more appropriate
 
 ##### Before Bootstrap
-[<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/Pre-Bootstrap.png">](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/Pre-Bootstrap.png)
+[<img src="https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/Pre-Bootstrap.png">](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/Pre-Bootstrap.png)
 
 ##### With Bootstrap
-[<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/With_Bootstrapedit.png">](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/With_Bootstrapedit.png)
+[<img src="https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/With_Bootstrapedit.png">](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/With_Bootstrapedit.png)
 
 ##### Apple MDM API InstallApplication Command
-[<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/MDMInstallApplicationFlow.png">](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/MDMInstallApplicationFlow.png)
+[<img src="https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/MDMInstallApplicationFlow.png">](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/MDMInstallApplicationFlow.png)
 
 [Please be sure to also read the Caveats section for more details!](https://github.com/vmwaresamples/AirWatch-samples/tree/master/Apple-Samples/BootstrapPackage#caveats)
 
@@ -36,11 +36,11 @@ The Bootstrap package is deployed to the device *as soon as enrollment completes
 
 Below are links to detailed flow charts for each enrollment flow, showing when the `InstallApplication` command is queued:
 
-* [**DEP Enrollment Flow Chart**](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/DEP_Bootstrap.png)
-* [**Agent Enrollment Flow Chart**](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/AgentEnrollment_Bootstrap.png)
-* [**Web-Enrollment/Sideload Enrollment Flow Chart**](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/WebEnrollment_Bootstrap.png)
+* [**DEP Enrollment Flow Chart**](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/DEP_Bootstrap.png)
+* [**Agent Enrollment Flow Chart**](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/AgentEnrollment_Bootstrap.png)
+* [**Web-Enrollment/Sideload Enrollment Flow Chart**](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/WebEnrollment_Bootstrap.png)
 
-Once `InstallApplication` is `Acknowledged`, the installation will complete depending on download speed + install time. But as diagrammed in the [above InstallApplication flow chart](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/MDMInstallApplicationFlow.png), the macOS `mdmclient` does not tell the server when the pkg is installed. So we do not have any visibility on the download or install status - we can only display when the command was queued and acknowledged.
+Once `InstallApplication` is `Acknowledged`, the installation will complete depending on download speed + install time. But as diagrammed in the [above InstallApplication flow chart](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/MDMInstallApplicationFlow.png), the macOS `mdmclient` does not tell the server when the pkg is installed. So we do not have any visibility on the download or install status - we can only display when the command was queued and acknowledged.
 
 **Note:** Device-Context profiles will be queued before Bootstrap. So, for example, if your package depends on the device having an issued certificate from your CA, it should be installed via a device profile so that it's in the keychain before the package is installed.
 
@@ -147,7 +147,7 @@ To have greater control over what packages are installed on enrollment, and also
 #### How does the tool work?  
 Pkgs are stored on an external file server, such as AWS S3. A JSON Manifest should be created that defines the location, name, SHA256 hash of each file, and also stored on a file server. The InstallApplications tool will look at this manifest to download and install the packages in the defined order, validating the hash before installation for security.  
 
-[<img src="https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/InstallApplications%20Tool.png">](https://raw.githubusercontent.com/vmwaresamples/AirWatch-samples/master/Apple-Samples/BootstrapPackage/images/InstallApplications%20Tool.png)
+[<img src="https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/InstallApplications%20Tool.png">](https://raw.githubusercontent.com/vmware-samples/euc-samples/master/macOS-Samples/BootstrapPackage/images/InstallApplications%20Tool.png)
 
 #### Why should I use this tool?  
 Due to the [caveats and limitations](https://github.com/vmwaresamples/AirWatch-samples/tree/master/Apple-Samples/BootstrapPackage#caveats) stated above, this tool extends the Bootstrap feature to give the admin more control over when the packages are deployed and in what order they are installed.
