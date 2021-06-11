@@ -3,7 +3,7 @@
 ## Overview
 - **Author**: Brooks Peppin
 - **Email**: bpeppin@vmware.com
-- **Date Created**: 3/21/2018
+- **Date Updated**: 6/11/2021
 - **Supported Platforms**: Workspace ONE 1811 or newer
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
 
@@ -16,4 +16,4 @@ If you implement the "ZeroTouchDomainJoin" command which automatically logs out 
 3. Complete the wizard and ensure the command is formatted properly. If any of the special characters don't render properly, simply manually edit the XML file to correct. 
 
 ## Command
-cmd /c reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v dontdisplaylastusername /t REG_SZ /d 1 /f
+cmd /c reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v dontdisplaylastusername /t REG_DWORD /d 1 /f
