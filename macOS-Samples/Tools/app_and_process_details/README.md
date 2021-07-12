@@ -11,10 +11,10 @@ Download the appblocker.py script.
 ## Usage
 
 ```shell
-python3 appblocker.py --list
+python3 appblock.py --list
 ```
 ```shell
-python3 appblocker.py --app /System/Applications/Podcasts.app
+python3 appblock.py --app /System/Applications/Podcasts.app
 ```
 --List will show you an output of all installed applications on your Mac, under /Applications, /System/Applications and /System/Applications/Utilities. 
 
