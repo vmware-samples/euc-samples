@@ -35,4 +35,4 @@ Bundle ID: com.apple.podcasts
 Changes and improvements welcome. Please follow the VMware Contribution guide for this repository. 
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[BSD 3-Clause License](https://github.com/vmware-samples/euc-samples/blob/master/LICENSE)
