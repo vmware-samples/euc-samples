@@ -10,11 +10,11 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in
   <false />
   <key>AllowedTeamIdentifiers</key>
   <array>
-    <string>MyTeam</string>
+    <string>ABC123</string>
   </array>
   <key>AllowedKernelExtensions</key>
   <dict>
-    <key>ExampleExtension</key>
+    <key>ABC123</key>
     <array>
       <string>com.my.app</string>
     </array>

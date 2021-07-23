@@ -7,11 +7,17 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom Command modal 
   <key>RequestType</key>
   <string>ScheduleOSUpdate</string>
   <key>Updates</key>
-    <array>
+  <array>
       <dict>
-        <key>MaxUserDeferrals</key>
-        <string>5</string>
+          <key>InstallAction</key>
+          <string>InstallASAP</string>
+          <key>ProductKey</key>
+          <string>_MACOS_12.0</string>
+          <key>ProductVersion</key>
+          <string>12.0</string>
+          <key>MaxUserDeferrals</key> <!-- New Key -->
+          <string>5</string>
       </dict>
-    </array>
+  </array>
 </dict>
 ```

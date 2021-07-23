@@ -10,5 +10,9 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom Command modal 
   <true />
   <key>RebuildKernelCache</key>
   <true />
+  <key>KextPaths</key>
+  <array>
+	  <string>/System/Library/Extensions/kext.kext</string>
+  </array>	  
 </dict>
 ```
