@@ -11,6 +11,12 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in
 <dict>
   <key>requireManagedPasteboard</key> <!--This field works in conjuction with the existing Managed Open In keys in the Restrictions payload UI-->
   <true />
+  <key>allowNFC</key>
+  <false />
+  <key>allowAutoUnlock</key>
+  <false />
+  <key>allowUnpairedExternalBootToRecovery</key>
+  <false />
   <key>allowCloudPrivateRelay</key>
   <false />
   <key>forceOnDeviceOnlyTranslation</key>
