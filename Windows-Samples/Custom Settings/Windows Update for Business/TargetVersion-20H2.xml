@@ -19,7 +19,7 @@
         <LocURI>./Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineForFeatureUpdates</LocURI>
       </Target>
       <Meta>
-        <Format xmlns="syncml:metinf">chr</Format>
+        <Format xmlns="syncml:metinf">int</Format>
       </Meta>
       <Data>7</Data>
     </Item>
@@ -45,7 +45,7 @@
         <LocURI>./Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineForFeatureUpdates</LocURI>
       </Target>
       <Meta>
-        <Format xmlns="syncml:metinf">chr</Format>
+        <Format xmlns="syncml:metinf">int</Format>
       </Meta>
       <Data></Data>
     </Item>
