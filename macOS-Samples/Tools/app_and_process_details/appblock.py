@@ -6,7 +6,7 @@
 # Date: 6th July 2021
 #
 
-import subprocess, sys, getopt, re, argparse, os
+import subprocess, sys, getopt, re, argparse, os, uuid
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--apps', help='Application Path')
@@ -57,12 +57,58 @@ if args.apps:
 	bundle_plist = subprocess.run(["osascript", "-e", f"id of app \"{sha_contents}\""], capture_output=True)
 	bundleid = str(bundle_plist.stdout, 'utf-8').strip()
 
-	print(f"Name: {name}")
-	print(f"File Path: {app}/Contents/MacOS")
-	print(f"CD Hash: {cdhash}")
-	print(f"Team ID: {teamid}")
-	print(f"SHA-265: {sha256}")
-	print(f"Bundle ID: {bundleid}")
+	# print(f"Name: {name}")
+	# print(f"File Path: {app}/Contents/MacOS")
+	# print(f"CD Hash: {cdhash}")
+	# print(f"Team ID: {teamid}")
+	# print(f"SHA-256: {sha256}")
+	# print(f"Bundle ID: {bundleid}")
+    
+	print("<dict>")
+	print("\t<key>Restrictions</key>")
+	print("\t<array>")
+
+	print("======= Beginning of app config (delete this line) ========")
+
+	print("<dict>")
+	print("\t<key>Attributes</key>")
+	print("\t<dict>")
+	print("\t\t<key>cdhash</key>")
+	print(f"\t\t\t<string>{cdhash}</string>")
+	print("\t\t<key>name</key>")
+	print("\t\t<array>")
+	print(f"\t\t\t<string>{name}</string>")
+	print("\t\t</array>")
+	print("\t\t<key>path</key>")
+	print(f"\t\t\t<string>{app}/Contents/MacOS</string>")
+	print("\t\t<key>bundleId</key>")
+	print("\t\t<array>")
+	print(f"\t\t\t<string>{bundleid}</string>")
+	print("\t\t</array>")
+	print("\t</dict>")
+	print("\t<key>Actions</key>")
+	print("\t<array>")
+	print("\t\t<integer>1</integer>")
+	print("\t</array>")
+	print("\t<key>Message</key>")
+	print(f"\t<string>You are not permitted to use the {name} App</string>")
+	print("</dict>")
+
+	print("======= Bottom of Payload (use if required, delete this line) ========")
+	print("\t</array>")
+	print("\t<key>PayloadDisplayName</key>")
+	print("\t<string>Restricted Software Policy</string>")
+	print("\t<key>PayloadIdentifier</key>")
+	print("\t<string>HubSettings.93f1655a-59fb-42dc-bc31-9571275cb12b</string>")
+	print("\t<key>PayloadOrganization</key>")
+	print("\t<string>VMware</string>")
+	print("\t<key>PayloadType</key>")
+	print("\t<string>com.vmware.hub.mac.restrictions</string>")
+	print("\t<key>PayloadUUID</key>")
+	print(f"\t<string>{uuid.uuid4()}</string>")
+	print("\t<key>PayloadVersion</key>")
+	print("\t<integer>1</integer>")
+	print("</dict>")
 
 if args.list:
 	list_apps = subprocess.run(["ls"], capture_output=True, cwd="/Applications/")
