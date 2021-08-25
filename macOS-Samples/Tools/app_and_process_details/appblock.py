@@ -68,7 +68,7 @@ if args.apps:
 	print("\t<key>Restrictions</key>")
 	print("\t<array>")
 
-	print("======= Beginning of app config (delete this line) ========")
+	print("======== Beginning of app config (delete this line) ========")
 
 	print("<dict>")
 	print("\t<key>Attributes</key>")
@@ -94,7 +94,7 @@ if args.apps:
 	print(f"\t<string>You are not permitted to use the {name} App</string>")
 	print("</dict>")
 
-	print("======= Bottom of Payload (use if required, delete this line) ========")
+	print("======== End of App Config - Rest of payload, use if required (delete this line) ========")
 	print("\t</array>")
 	print("\t<key>PayloadDisplayName</key>")
 	print("\t<string>Restricted Software Policy</string>")
@@ -121,8 +121,8 @@ if args.list:
 	utility_apps_list = list_utility_apps.stdout
 
 	for line in apps_list.splitlines():	
-		print(f"/Applications/{str(line,'utf-8')}")
+		print(f'"/Applications/{str(line,"utf-8")}"')
 	for line in system_apps_list.splitlines():		
-		print(f"/System/Applications/{str(line,'utf-8')}")
+		print(f'"/System/Applications/{str(line,"utf-8")}"')
 	for line in utility_apps_list.splitlines():		
-		print(f"/System/Applications/Utilities/{str(line,'utf-8')}")
+		print(f'"/System/Applications/Utilities/{str(line,"utf-8")}"')
