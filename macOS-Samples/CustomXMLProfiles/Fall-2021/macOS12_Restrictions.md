@@ -19,15 +19,15 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in
     <key>forceDelayedMajorSoftwareUpdates</key> <!-- This key is required for enforcedSoftwareUpdateMajorOSDeferredInstallDelay-->
     <true />
     <key>enforcedSoftwareUpdateMajorOSDeferredInstallDelay</key>
-    <int>90</int>
+    <integer>90</integer>
     <key>forceDelayedSoftwareUpdates</key> <!-- This key is required for enforcedSoftwareUpdateMinorOSDeferredInstallDelay-->
     <true />
     <key>enforcedSoftwareUpdateMinorOSDeferredInstallDelay</key>
-    <int>90</int>
+    <integer>90</integer>
     <key>forceDelayedAppSoftwareUpdates</key> <!-- This key is required for enforcedSoftwareUpdateNonOSDeferredInstallDelay-->
     <true />
     <key>enforcedSoftwareUpdateNonOSDeferredInstallDelay</key>
-    <int>90</int>
+    <integer>90</integer>
     <key>allowEraseContentAndSettings</key>
     <false />
 </dict>
