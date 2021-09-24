@@ -3,5 +3,4 @@
 # Execution Context: System
 try { $bios=Confirm-SecureBootUEFI }
 catch { $false }
-Write-Output $bios
-
+return $bios
