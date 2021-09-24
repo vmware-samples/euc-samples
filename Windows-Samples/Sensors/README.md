@@ -1,10 +1,10 @@
 # Workspace ONE Sensors
 
 ## Overview
-- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets, Andreano Lanusse, Adarsh Kesari
-- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com, kesaria@vmware.com
+- **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets, Andreano Lanusse, Adarsh Kesari, Phil Helmling
+- **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com, kesaria@vmware.com, helmlingp@vmware.com
 - **Date Created**: 11/14/2018
-- **Updated**: 9/14/2020
+- **Updated**: 9/24/2021
 - **Supported Platforms**: Workspace ONE 1811+
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
 
@@ -19,21 +19,21 @@ You will want to leverage the `template_`  samples and modify any of the data, o
 
 ### WMI Query Template
     $wmi=(Get-WmiObject WMI_Class_Name)
-    write-output $wmi.Attribute_Name
+    return $wmi.Attribute_Name
 
 ### Registry Value Template 
     $reg=Get-ItemProperty "HKLM:\Key Folder\Key Name"
-    write-output $reg.ValueName
+    return $reg.ValueName
 
 ### Hash Value Template 
     $file=Get-FileHash ([Environment]::SystemDirectory + "\filename.exe") -Algorithm MD5
-	Write-Output $file.Hash
+	return $file.Hash
 
 ### Folder Size Template 
     $TargetFolder = [Environment]::GetFolderPath("MyPictures")
 	$FolderInfo = Get-ChildItem $TargetFolder -Recurse -File | Measure-Object -Property Length -Sum
 	$FolderSize = ($FolderInfo.Sum/1MB)
-	Write-Output  ([System.Math]::Round($FolderSize))
+	return  ([System.Math]::Round($FolderSize))
 
 ## Workspace ONE Sensors Importer
 
@@ -119,6 +119,7 @@ and you will find the key in the API Key field.  If it is not there you may need
 
 
 ## Change Log
+- 9/24/2021 - Added sensors to assist with Windows 11 Readiness dashboards and reports
 - 9/14/2020 - Removed pre-check for console version and if sensors are enabled.
 - 8/10/2020 - Added samples for oma-dm sync troubleshooting
 - 8/3/2020 - Fix issue with bitlocker_encryption_method.ps1 sample
