@@ -1,0 +1,227 @@
+<Replace>
+  <CmdID>1</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowAutoUpdate</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>2</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowMUUpdateService</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>3</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/BranchReadinessLevel</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>16</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>4</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineNoAutoReboot</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>5</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleImminentRestartWarning</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>15</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>6</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleRestartWarning</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>2</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>7</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureFeatureUpdateUninstallPeriod</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>14</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>8</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursMaxRange</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>10</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>9</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ExcludeWUDriversInQualityUpdate</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+
+#Remove Settings
+<Delete>
+  <CmdID>1</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowAutoUpdate</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>2</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowMUUpdateService</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>3</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/BranchReadinessLevel</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>4</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineNoAutoReboot</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>5</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleImminentRestartWarning</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>6</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleRestartWarning</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>7</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureFeatureUpdateUninstallPeriod</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>8</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursMaxRange</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>9</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ExcludeWUDriversInQualityUpdate</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+  </Item>
+</Delete>

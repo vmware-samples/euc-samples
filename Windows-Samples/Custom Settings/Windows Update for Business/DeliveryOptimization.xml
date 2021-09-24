@@ -1,0 +1,54 @@
+<Replace>
+  <CmdID>1</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODownloadMode</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>2</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>2</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheAge</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>604800</Data>
+  </Item>
+</Replace>
+
+#Remove Settings
+<Delete>
+  <CmdID>1</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODownloadMode</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>2</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheAge</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>

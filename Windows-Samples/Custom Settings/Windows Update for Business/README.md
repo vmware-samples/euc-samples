@@ -25,14 +25,14 @@ These target the Policy/Update CSP and are a more streamline and simplified appr
 - **Update/DeferFeatureUpdatesPeriodInDays** - Since we are using the TargetReleaseVersion CSP, this should be set to 0. 
 - **Update/ScheduleImminentRestartWarning** - Non-dismissable popup alerting restart will happen in 15 minutes.
 - **Update/ScheduleRestartWarning** - Dismissable popup alerting restart will happen in 2 hours.
-- **Update/ConfigureFeatureUpdateUninstallPeriod** - How long you can rollback a feature upgrade after it is installed. This takes up disk space to best not to set this to too long. I've set it to 14 days in the example profiles. 
+- **Update/ConfigureFeatureUpdateRemovePeriod** - How long you can rollback a feature upgrade after it is installed. This takes up disk space to best not to set this to too long. I've set it to 14 days in the example profiles. 
 
 ## How to Create Profile
 1. At the top of UEM console, click Add > Profile. Select Windows > Windows Desktop > Device Profile. 
 2. Fill out the General tab as appropriate. I recommend setting the profile to "optional" while you test. Assign a Smart Group as well.
 3. On the left side of the window at the bottom click on Custom Settings and then Configure.
 4. Click on the sample XML file and then click "raw". Copy and paste into the "Install Settings" section of the UEM profile. 
-5. Optionally configure the "Remove Settings". Some customers paste the data into both sections so that the device never gets the data removed.
+5. Optionally configure the "Remove Settings". 
 6. Click Save and Publish
 7. Go to device details > Profile tab. Find the profile and install it on the device.
 8. It should show green as successfully installed. You can check on the device to see the values applied by going to HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\current\device\Update

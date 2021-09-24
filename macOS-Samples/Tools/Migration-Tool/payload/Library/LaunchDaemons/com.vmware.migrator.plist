@@ -11,7 +11,7 @@
 		<string>--custom</string>
 		<string>--removal-script</string>
 		<string>/Library/Application Support/VMware/MigratorResources/removemgmt.sh</string>
-		<string>--auto-reboot-delay</string>
+		<string>--forced-restart-delay/string>
 		<string>30</string>
 	</array>
 	<key>RunAtLoad</key>

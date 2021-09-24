@@ -31,7 +31,7 @@ WorkspaceServicesProfile = 'Workspace Services'
 DeviceManagerProfile = 'Device Manager'
 depnotifylog = '/private/var/tmp/depnotify.log'
 depnotifypath = '/Applications/Utilities/DEPNotify.app'
-hubpath = 'https://getwsone.com/macOS/VMwareWorkspaceONEIntelligentHub.pkg'
+hubpath = 'https://packages.vmware.com/wsone/VMwareWorkspaceONEIntelligentHub.pkg'
 
 migratorpath = '/Library/Application Support/VMware/migrator.py'
 resourcesdir='/Library/Application Support/VMware/MigratorResources/'
