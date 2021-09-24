@@ -1,4 +1,4 @@
-# EUC-samples (previously AirWatch-Samples)
+# EUC-samples
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -12,12 +12,11 @@
   - [Maintenance Ownership](#maintenance-ownership)
   - [Filing Issues](#filing-issues)
   - [Resolving Issues](#resolving-issues)
-  - [VMware Sample Exchange](#vmware-sample-exchange)
 - [VMware Resources](#vmware-resources)
 
 
 ## Introduction
-Welcome to the **EUC-samples** repository.  This project is intended for the community and VMware to share commonly used code snippets that can aid VMWare Workspace ONE and Horizon administrators. 
+Welcome to the **EUC-samples** repository.  This project is intended for the community and VMware to share commonly used code snippets that can aid VMware Workspace ONE and Horizon administrators. 
 
 Some examples of items to submit for consideration and use by the community:
 * Custom XML Profile Payloads
@@ -73,11 +72,6 @@ Any bugs or other issues should be filed within GitHub by way of the repositoryâ
 
 ### Resolving Issues
 Any community member can resolve issues within the repository, however only the board member can approve the update. Once approved, assuming the resolution involves a pull request, only a board member will be able to merge and close the request.
-
-### VMware Sample Exchange
-It is highly recommended to add any and all submitted samples to the VMware Sample Exchange:  <https://code.vmware.com/samples>
-
-Sample Exchange can be allowed to access your GitHub resources, by way of a linking process, where they can be indexed and searched by the community. There are VMware social media accounts which will advertise resources posted to the site and there's no additional accounts needed, as the VMware Sample Exchange uses MyVMware credentials.
 
 ### Windows Users
 Some of the samples result in a long file path that may cause cloning to fail on Windows machines. If you an error message is displayed during cloning indicating that the file name is too long then run the below command to allow longer file names during checkout.
