@@ -1,1 +1,0 @@
-msiexec.exe /x "C:\DeplymentShare\Win10upgrade\AirwatchAgent\AirwatchAgent.msi" /qn
