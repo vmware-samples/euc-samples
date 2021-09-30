@@ -1,0 +1,862 @@
+{
+	"info": {
+		"_postman_id": "6e9f2518-8748-4328-8417-60b5d597f890",
+		"name": "Custom UEM API Calls",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CustomMDMCommand-RestartDevice",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{acceptV1}}",
+						"type": "text"
+					},
+					{
+						"key": "aw-tenant-code",
+						"value": "REPLACE_ME",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RestartDevice</string></dict>\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command=CustomMDMCommand&id=${airwatch.device._device_serial_number}",
+					"protocol": "https",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"mdm",
+						"devices",
+						"commands"
+					],
+					"query": [
+						{
+							"key": "searchby",
+							"value": "Serialnumber"
+						},
+						{
+							"key": "command",
+							"value": "CustomMDMCommand"
+						},
+						{
+							"key": "id",
+							"value": "${airwatch.device._device_serial_number}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CustomMDMCommand-RestartDevice",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptV1}}",
+								"type": "text"
+							},
+							{
+								"key": "aw-tenant-code",
+								"value": "{{aw-tenant-code}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RestartDevice</string></dict>\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command={{command}}&id={{iPadSerialNum}}",
+							"protocol": "https",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"mdm",
+								"devices",
+								"commands"
+							],
+							"query": [
+								{
+									"key": "searchby",
+									"value": "Serialnumber"
+								},
+								{
+									"key": "command",
+									"value": "{{command}}"
+								},
+								{
+									"key": "id",
+									"value": "{{iPadSerialNum}}"
+								}
+							]
+						}
+					},
+					"status": "Accepted",
+					"code": 202,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Correlation-ID",
+							"value": "a3b0d654-c2e9-424d-ae15-23dce310f0fd"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "50000"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "49999"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1632933163"
+						},
+						{
+							"key": "X-Api-Version",
+							"value": "v1"
+						},
+						{
+							"key": "api-supported-versions",
+							"value": "1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 16:32:43 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "CustomMDMCommand-RecommendationCadence",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{acceptV1}}",
+						"type": "text"
+					},
+					{
+						"key": "aw-tenant-code",
+						"value": "REPLACE_ME",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>Settings</string><key>Settings</key><array><dict><key>Item</key><string>SoftwareUpdateSettings</string><key>RecommendationCadence</key><integer>1</integer></dict></array></dict>\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command=CustomMDMCommand&id=${airwatch.device._device_serial_number}",
+					"protocol": "https",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"mdm",
+						"devices",
+						"commands"
+					],
+					"query": [
+						{
+							"key": "searchby",
+							"value": "Serialnumber"
+						},
+						{
+							"key": "command",
+							"value": "CustomMDMCommand"
+						},
+						{
+							"key": "id",
+							"value": "${airwatch.device._device_serial_number}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CustomMDMCommand-RecommendationCadence",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptV1}}",
+								"type": "text"
+							},
+							{
+								"key": "aw-tenant-code",
+								"value": "{{aw-tenant-code}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>Settings</string><key>Settings</key><array><dict><key>Item</key><string>SoftwareUpdateSettings</string><key>RecommendationCadence</key><integer>1</integer></dict></array></dict>\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command={{command}}&id={{iPadSerialNum}}",
+							"protocol": "https",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"mdm",
+								"devices",
+								"commands"
+							],
+							"query": [
+								{
+									"key": "searchby",
+									"value": "Serialnumber"
+								},
+								{
+									"key": "command",
+									"value": "{{command}}"
+								},
+								{
+									"key": "id",
+									"value": "{{iPadSerialNum}}"
+								}
+							]
+						}
+					},
+					"status": "Accepted",
+					"code": 202,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Correlation-ID",
+							"value": "faad78bf-d6e9-4c06-ae1c-8c1c60ffe695"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "50000"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "49997"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1632933163"
+						},
+						{
+							"key": "X-Api-Version",
+							"value": "v1"
+						},
+						{
+							"key": "api-supported-versions",
+							"value": "1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 16:33:45 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "CustomMDMCommand-RefreshCellularPlan-Tmobile",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{acceptV1}}",
+						"type": "text"
+					},
+					{
+						"key": "aw-tenant-code",
+						"value": "REPLACE_ME",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RefreshCellularPlans</string><key>eSIMServerURL</key><string>https://t-mobile.gdsb.net</string></dict>\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command=CustomMDMCommand&id=${airwatch.device._device_serial_number}",
+					"protocol": "https",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"mdm",
+						"devices",
+						"commands"
+					],
+					"query": [
+						{
+							"key": "searchby",
+							"value": "Serialnumber"
+						},
+						{
+							"key": "command",
+							"value": "CustomMDMCommand"
+						},
+						{
+							"key": "id",
+							"value": "${airwatch.device._device_serial_number}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CustomMDMCommand-RecommendationCadence",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptV1}}",
+								"type": "text"
+							},
+							{
+								"key": "aw-tenant-code",
+								"value": "{{aw-tenant-code}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RefreshCellularPlans</string><key>eSIMServerURL</key><string>https://t-mobile.gdsb.net</string></dict>\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command={{command}}&id={{iPadSerialNum}}",
+							"protocol": "https",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"mdm",
+								"devices",
+								"commands"
+							],
+							"query": [
+								{
+									"key": "searchby",
+									"value": "Serialnumber"
+								},
+								{
+									"key": "command",
+									"value": "{{command}}"
+								},
+								{
+									"key": "id",
+									"value": "{{iPadSerialNum}}"
+								}
+							]
+						}
+					},
+					"status": "Accepted",
+					"code": 202,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Correlation-ID",
+							"value": "faad78bf-d6e9-4c06-ae1c-8c1c60ffe695"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "50000"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "49997"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1632933163"
+						},
+						{
+							"key": "X-Api-Version",
+							"value": "v1"
+						},
+						{
+							"key": "api-supported-versions",
+							"value": "1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 16:33:45 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "CustomMDMCommand-RefreshCellularPlan-Verizon",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{acceptV1}}",
+						"type": "text"
+					},
+					{
+						"key": "aw-tenant-code",
+						"value": "REPLACE_ME",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RefreshCellularPlans</string><key>eSIMServerURL</key><string>https://2.vzw.otgeuicc.com</string></dict>\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command=CustomMDMCommand&id=${airwatch.device._device_serial_number}",
+					"protocol": "https",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"mdm",
+						"devices",
+						"commands"
+					],
+					"query": [
+						{
+							"key": "searchby",
+							"value": "Serialnumber"
+						},
+						{
+							"key": "command",
+							"value": "CustomMDMCommand"
+						},
+						{
+							"key": "id",
+							"value": "${airwatch.device._device_serial_number}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CustomMDMCommand-RecommendationCadence",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptV1}}",
+								"type": "text"
+							},
+							{
+								"key": "aw-tenant-code",
+								"value": "{{aw-tenant-code}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RefreshCellularPlans</string><key>eSIMServerURL</key><string>https://2.vzw.otgeuicc.com</string></dict>\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command={{command}}&id={{iPadSerialNum}}",
+							"protocol": "https",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"mdm",
+								"devices",
+								"commands"
+							],
+							"query": [
+								{
+									"key": "searchby",
+									"value": "Serialnumber"
+								},
+								{
+									"key": "command",
+									"value": "{{command}}"
+								},
+								{
+									"key": "id",
+									"value": "{{iPadSerialNum}}"
+								}
+							]
+						}
+					},
+					"status": "Accepted",
+					"code": 202,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Correlation-ID",
+							"value": "faad78bf-d6e9-4c06-ae1c-8c1c60ffe695"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "50000"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "49997"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1632933163"
+						},
+						{
+							"key": "X-Api-Version",
+							"value": "v1"
+						},
+						{
+							"key": "api-supported-versions",
+							"value": "1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 16:33:45 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "CustomMDMCommand-RefreshCellularPlan-ATT",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "{{acceptV1}}",
+						"type": "text"
+					},
+					{
+						"key": "aw-tenant-code",
+						"value": "REPLACE_ME",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RefreshCellularPlans</string><key>eSIMServerURL</key><string>https://cust-001-v4-prod-atl2.gdsb.net</string></dict>\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command=CustomMDMCommand&id=${airwatch.device._device_serial_number}",
+					"protocol": "https",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"mdm",
+						"devices",
+						"commands"
+					],
+					"query": [
+						{
+							"key": "searchby",
+							"value": "Serialnumber"
+						},
+						{
+							"key": "command",
+							"value": "CustomMDMCommand"
+						},
+						{
+							"key": "id",
+							"value": "${airwatch.device._device_serial_number}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CustomMDMCommand-RecommendationCadence",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptV1}}",
+								"type": "text"
+							},
+							{
+								"key": "aw-tenant-code",
+								"value": "{{aw-tenant-code}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"CommandXml\" : \"<dict><key>RequestType</key><string>RefreshCellularPlans</string><key>eSIMServerURL</key><string>https://cust-001-v4-prod-atl2.gdsb.net</string></dict>\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{baseURL}}/api/mdm/devices/commands?searchby=Serialnumber&command={{command}}&id={{iPadSerialNum}}",
+							"protocol": "https",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"mdm",
+								"devices",
+								"commands"
+							],
+							"query": [
+								{
+									"key": "searchby",
+									"value": "Serialnumber"
+								},
+								{
+									"key": "command",
+									"value": "{{command}}"
+								},
+								{
+									"key": "id",
+									"value": "{{iPadSerialNum}}"
+								}
+							]
+						}
+					},
+					"status": "Accepted",
+					"code": 202,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Correlation-ID",
+							"value": "faad78bf-d6e9-4c06-ae1c-8c1c60ffe695"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "50000"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "49997"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1632933163"
+						},
+						{
+							"key": "X-Api-Version",
+							"value": "v1"
+						},
+						{
+							"key": "api-supported-versions",
+							"value": "1"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 28 Sep 2021 16:33:45 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "acceptV1",
+			"value": "application/json;version=1"
+		},
+		{
+			"key": "acceptV2",
+			"value": "application/json;version=2"
+		},
+		{
+			"key": "acceptV3",
+			"value": "application/json;version=3"
+		},
+		{
+			"key": "command",
+			"value": "CustomMdmCommand"
+		}
+	]
+}
