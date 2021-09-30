@@ -8,12 +8,16 @@
   Recommend deleting stored creds after use if you aren't planning on using this script all the time. Each environment saves credentials separately. 
 
 .NOTES
-  Version:       	 		1.2
   Author:        		 	Brooks Peppin, www.brookspeppin.com
   Blog: 					https://brookspeppin.com/2020/01/28/how-to-keep-your-workspace-one-uem-environment-clean-uem-maintenance-script-for-windows-10/
   Initial Creation Date: 	Jan 14, 2021
 
 .CHANGELOG
+1.3 - Sep 30, 2021
+- Fixed bugs and adding more error handling
+- Added new switch: -mode with parameters 'Online' or 'Offline'. Online gets data live from server and Offline uses previously exported csvs (for that day)
+- Platform switch set to required
+
 1.2 - Jan 20, 2021
 - Added checking for duplicate users and deleting those duplicates (Get-DuplicateUsers, Delete-DuplicateUsers). It will by default only delete duplicate users that do not have devices enrolled. Users with devices enrolled will need to have those devices
 	deleted first before deleting the user account. Additionally, adding a UserFilter.csv parameter to the command line (-UserList <path to csv>) will enable you to target only a subset of users. The format should be:
@@ -59,28 +63,32 @@
 .PARAMETER -Platform
 	Optional parameter that specifies which platform type you'd like to search duplicates for. Valid options are: 'Mac', 'Win10', 'Android', 'iOS', 'ChromeOS', 'Any'. Any is the default if no parameter is specified. 
 
+.PARAMETER -Mode
+	Required parameter that specifies which the data gets pulled live from server and or uses previously exported csvs (for that day)
+
+
 
 .OUTPUTS
   Outputs to host as well as to a log file stored in C:\UEM-Maintenance\$server\Logs\Win_UEM_Maintenence.log. This log is also formatted in a way for cmtrace.exe log viewer to read and process. Each "Get" function also 
   creates csv files under C:\UEM-Maintenance\$server\Win_$date
   
 .EXAMPLE - Get Duplicate Devices, Filtering Serials
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -FilterSerial
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -FilterSerial -mode Online
 
 .EXAMPLE - Get Duplicate Devices, Win10
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -Platform Win10
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -Platform Win10 -mode Online
 
 .EXAMPLE - Get Stale devices (default of 90 days)
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices -mode Online
 
 .EXAMPLE - Get Stale devices older than 120 days
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices -Days 120
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices -Days 120 -mode Online
 
 .EXAMPLE - Get problematic devices
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-ProblematicDevices
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-ProblematicDevices -mode Online
 
 .EXAMPLE - Get DuplicateUsers
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateUsers
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateUsers -mode Online
 
 .EXAMPLE - Get DuplicateUsers, filtering against a csv, and only looking for basic users
 .\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateUsers -UserList C:\temp\userlist.csv -UserType 'BasicOnly'
@@ -107,6 +115,9 @@ param (
 	[int32]$days = 90,
 	[switch]$FilterSerial = $false,
 	[parameter(Mandatory = $true)]
+	[ValidateSet('Online', 'Offline')]
+    [string]$mode,
+	[parameter(Mandatory = $true)]
 	[ValidateSet('Get-DuplicateDevices', 'Delete-DuplicateDevices', 'Get-StaleDevices', 'Delete-StaleDevices', 'Get-ProblematicDevices', 'Delete-ProblematicDevices', 'Get-DuplicateUsers', 'Delete-DuplicateUsers')]
 	[string]$Action,
 	[ValidateSet('Mac', 'iOS', 'Win10', 'Android', 'ChromeOS', 'Any')]
@@ -131,7 +142,7 @@ param (
 ##################
 #Define variables#
 ##################
-$version = "1.2"
+$version = "1.3"
 $date = ((Get-Date).AddDays(- $days)).ToString('yyyy-MM-dd')
 $ExportFileLocation = "C:\UEM-Maintenance\$server\$((Get-Date).ToString('yyyy-MM-dd'))" #using  ISO 8601 format
 $LogFilePath = "C:\UEM-Maintenance\$server\Logs\"
@@ -308,32 +319,40 @@ function Get-ProblematicDevices {
 function Get-DuplicateDevices {
 	
 
-	Write-Log -Message "Looking for existing csv of duplicate devices..."
-	If ((Test-Path $ExportFileLocation\$DuplicateDevice_csv)) {
-		Write-Log -Message "$ExportFileLocation\$DuplicateDevice_csv found!"
-		Write-Log -Message "Importing $DuplicateDevice_csv"
-		$devices = Import-Csv $ExportFileLocation\$DuplicateDevice_csv
-		Write-Log -Message "$(($devices | Measure-Object).Count) devices found."
-		$output = $devices
-	}
-	else {
-		Write-Log -Message "No csv of duplicate devices found. Getting from All Device list..."
-		$devices = Get-AllDevices
-		If ($FilterSerial) {
-			Write-Log -Message "Looking for duplicate devices and filtering out $FriendlySerialFilter"
-			$devices = $devices | Where-Object { $_.SerialNumber -NotContains $SerialFilter }
-
-		}
-
-		$dupes = $devices | Group-ObjectCount SerialNumber | Where-Object { $_.count -gt 1 }
-		$Count = ($dupes | measure-object).count
-		Write-log "There are $count devices with duplicates"
+	$devices = Get-AllDevices
+	If ($FilterSerial) {
+		Write-Log -Message "Looking for duplicate devices and filtering out $FriendlySerialFilter"
+		$devices = $devices | Where-Object { $_.SerialNumber -NotContains $SerialFilter }
 
 	}
-		
 
-	Write-Log -Message "Exporting to $ExportFileLocation\$DuplicateDevice_csv"
-	$dupes | Out-file $ExportFileLocation\$DuplicateDevice_csv
+	switch ($mode) {
+		'Online' { 
+			$dupes = $devices | Group-ObjectCount SerialNumber | Where-Object { $_.count -gt 1 }
+			$Count = ($dupes | measure-object).count
+			Write-log "There are $count unique devices with duplicates"
+			Write-Log -Message "Exporting to $ExportFileLocation\$DuplicateDevice_csv"
+			$dupes.Group | Export-Csv $ExportFileLocation\$DuplicateDevice_csv -NoTypeInformation
+
+		 }
+		 'Offline'{
+			Write-Log -Message "Offline switch used. Getting from duplicates from existing csv file"
+			If (Test-Path $ExportFileLocation\$DuplicateDevice_csv) {
+				Write-Log -Message "Existing $DuplicateDevice_csv file found in $ExportFileLocation\$DuplicateDevice_csv. Importing device list from there..."
+				$devices = Import-Csv $ExportFileLocation\$DuplicateDevice_csv
+				Write-Log -Message "Found $(@($devices.count)) devices."
+				$dupes = $devices | Group-ObjectCount SerialNumber | Where-Object { $_.count -gt 1 }
+				$Count = ($dupes | measure-object).count
+				Write-log "There are $count unique devices with duplicates"
+
+			}else {
+				Write-Log -Message "No $alldevice_csv file found in $ExportFileLocation\$alldevice_csv, Please re-run the script with '-mode Online'"
+				Exit
+			}
+		 }
+		Default {}
+	}
+
 		
 	
 
@@ -579,122 +598,104 @@ function Get-DuplicateUsers {
 
 function Get-AllDevices {
 	
-	
-	If ((Test-Path $ExportFileLocation\$alldevice_csv)) {
-		Write-Log -Message "Existing $alldevice_csv file found in $ExportFileLocation\$alldevice_csv. Importing device list from there..."
-		$devices = Import-Csv $ExportFileLocation\$alldevice_csv
-		Write-Log -Message "Found $(@($devices.count)) devices."
-		return $devices
-	}
-	else {
-		Write-Log -Message "No $alldevice_csv file found in $ExportFileLocation\$alldevice_csv, getting all devices from $server..."
-
-		switch ($platform) {
-			'Mac' {
-				$platform = "platform=AppleOSX"
-			}
-			'iOS' {
-				$platform = "platform=Apple"
-			}
-			'Win10' {
-				$platform = "platform=WinRT"
-			}
-			'Android' {
-				$platform = "platform=Android"
-			}
-			'Chrome' {
-				$platform = "platform=ChromeOS"
-			}
-			'Any' {
-				$platform = ''
-			}
-		
-			Default { $platform = '' }
-		}
-	
-		$i = 0
-		$devices = $null
-		do {
-			Write-Log "Querying page $i"
-			$temp = (Invoke-RestMethod -Uri "https://$server/api/mdm/devices/search?$platform&page=$i&pagesize=30000" -Method Get -Headers $global:hdrs -ContentType "application/json").Devices
-			$devices += $temp
-			$i++
+	switch ($mode) {
+		'Online' { 
+			Write-Log -Message "Online switch used. Pulling all devices from UEM..."
+			switch ($platform) {
+				'Mac' {
+					$platform = "&platform=AppleOSX"
+				}
+				'iOS' {
+					$platform = "&platform=Apple"
+				}
+				'Win10' {
+					$platform = "&platform=WinRT"
+				}
+				'Android' {
+					$platform = "&platform=Android"
+				}
+				'Chrome' {
+					$platform = "&platform=ChromeOS"
+				}
+				'Any' {
+					$platform = $null
+				}
 			
-		}
-		until ($temp -eq $null)
-	}
-	Write-Log -Message "$(@($devices.count)) total devices were found from UEM via API"
-	Write-Log -Message "Formatting data structure..."
-	$output = $Null
-	$output = foreach ($row in $devices) {
-		#formatting data. 
-		Try {
-	
-			$table = @{
-				'UDID'               = $row.udid
-				'SerialNumber'       = $row.SerialNumber
-				'DeviceFriendlyName' = $row.DeviceFriendlyName
-				'MACAddress'         = $row.MacAddress
-				'EnrollmentStatus'   = $row.EnrollmentStatus
-				'LastEnrolled'       = ($row.LastEnrolledOn).Split('T')[0]
-				'LastEnrolledTime'   = ($row.LastEnrolledOn).Split('T')[1]
-				'LastSeen'           = ($row.LastSeen).Split('T')[0]
-				'DeviceID'           = $row.id.Value
-				'Model'              = $row.Model
-				'UserEmail'          = $row.UserEmailAddress
-				'User'               = $row.UserName
+				Default { $platform = $null }
 			}
-			$obj = New-Object -TypeName PSObject -Property $table
-			$obj
-		}
-		catch {
-
-		}
 		
+			$i = 0
+			$devices = $null
+			do {
+				Write-Log "Querying page $i"
+				$temp = (Invoke-RestMethod -Uri "https://$server/api/mdm/devices/search?page=$i&pagesize=30000$platform" -Method Get -Headers $global:hdrs -ContentType "application/json").Devices
+				$devices += $temp
+				$i++
+				
+			}
+			until ($temp -eq $null)
+			Write-Log -Message "$(@($devices.count)) total devices were found from UEM via API"
+			Write-Log -Message "Formatting data structure..."
+			$output = $Null
+			$output = foreach ($row in $devices) {
+				#formatting data. 
+				Try {
+			
+					$table = @{
+						'UDID'               = $row.udid
+						'SerialNumber'       = $row.SerialNumber
+						'DeviceFriendlyName' = $row.DeviceFriendlyName
+						'MACAddress'         = $row.MacAddress
+						'EnrollmentStatus'   = $row.EnrollmentStatus
+						'LastEnrolled'       = ($row.LastEnrolledOn).Split('T')[0]
+						'LastEnrolledTime'   = ($row.LastEnrolledOn).Split('T')[1]
+						'LastSeen'           = ($row.LastSeen).Split('T')[0]
+						'DeviceID'           = $row.id.Value
+						'Model'              = $row.Model
+						'UserEmail'          = $row.UserEmailAddress
+						'User'               = $row.UserName
+					}
+					$obj = New-Object -TypeName PSObject -Property $table
+					$obj
+				}
+				catch {
+		
+				}
+				
+			}
+			$output | Export-Csv $ExportFileLocation\$alldevice_csv -NoTypeInformation -ErrorAction SilentlyContinue
+			Write-Log -Message "$(@($devices.count)) total devices were exported to $ExportFileLocation\$alldevice_csv"
+			return $output
+		 }
+		'Offline' { 
+			Write-Log -Message "Offline switch used. Getting from All Device csv file"
+			If (Test-Path $ExportFileLocation\$alldevice_csv) {
+				Write-Log -Message "Existing $alldevice_csv file found in $ExportFileLocation\$alldevice_csv. Importing device list from there..."
+				$devices = Import-Csv $ExportFileLocation\$alldevice_csv
+				Write-Log -Message "Found $(@($devices.count)) devices."
+				return $devices
+			}else {
+				Write-Log -Message "No $alldevice_csv file found in $ExportFileLocation\$alldevice_csv, Please re-run the script with '-mode Online'"
+				Exit
+			}
+		 }
+		Default {}
 	}
-	$output | Export-Csv $ExportFileLocation\$alldevice_csv -NoTypeInformation -ErrorAction SilentlyContinue
-	Write-Log -Message "$(@($devices.count)) total devices were exported to $ExportFileLocation\$alldevice_csv"
-	return $output
-
 }
 
 function Get-AllUsers {
-	If ((Test-Path $ExportFileLocation\$allusers_csv)) {
-		Write-Log -Message "Existing $allusers_csv file found in $ExportFileLocation\$allusers_csv. Importing user list from there..."
-		$users = Import-Csv $ExportFileLocation\$allusers_csv
-		Write-Log -Message "Found $(@($users.count)) user(s) in the csv."
-		return $users
-	}
-	else { 
-		If ($UserList) {
-			Write-Log -Message "User list filter found in path: $UserList. Importing..."
-			$userlist = Import-Csv $UserList
-			$usercount = ($userlist | measure-object).count
-			Write-Log -Message "Found $usercount user(s) in the csv."
 
-		
-			Write-Log -Message "Getting user for those $usercount user(s) info from $server..."
-
-			foreach ($row in $userlist) {
-				$username = $row.username
-				$users += (Invoke-RestMethod -Uri "https://$server/api/system/users/search?username=$username" -Method Get -Headers $global:hdrs -ContentType "application/json").Users
-
-			}
-			
-		}
-		else {
-			Write-Log -Message "Getting user info from $server..."
-			$i = 0
-			do {
-				Write-Log "Querying page $i"
-				$temp = (Invoke-RestMethod -Uri "https://$server/api/system/users/search?page=$i&pagesize=10000&orderby=username" -Method Get -Headers $global:hdrs -ContentType "application/json").Users
-				$users += $temp
-				write-log "$(@($users.count)) total users found"
-				$i++
-			} until ($temp -eq $null)
-
-		}
-			
+	switch ($mode) {
+		"Online" { 
+		Write-Log -Message "Getting live user info from $server..."
+		$i = 0
+		do {
+			Write-Log "Querying page $i"
+			$temp = (Invoke-RestMethod -Uri "https://$server/api/system/users/search?page=$i&pagesize=10000&orderby=username" -Method Get -Headers $global:hdrs -ContentType "application/json").Users
+			$users += $temp
+			write-log "$(@($users.count)) total users found"
+			$i++
+		} until ($temp -eq $null)
 		Write-Log -Message "Formatting data..."
 				
 		$output = foreach ($row in $users) {
@@ -718,12 +719,43 @@ function Get-AllUsers {
 			catch {
 				
 			}
-			
 		}
 		$output | Export-Csv $ExportFileLocation\$allusers_csv -NoTypeInformation -ErrorAction SilentlyContinue
 		Write-Log -Message "$(@($users.count)) total users were exported to $ExportFileLocation\$allusers_csv"
-		return $output
 	}
+
+		"Offline" { 
+			If ((Test-Path $ExportFileLocation\$allusers_csv)) {
+				Write-Log -Message "Existing $allusers_csv file found in $ExportFileLocation\$allusers_csv. Importing user list from there..."
+				$users = Import-Csv $ExportFileLocation\$allusers_csv
+				Write-Log -Message "Found $(@($users.count)) user(s) in the csv."
+
+				return $users
+			}
+			else { 
+				If ($UserList) {
+					Write-Log -Message "User list filter found in path: $UserList. Importing..."
+					$userlist = Import-Csv $UserList
+					$usercount = ($userlist | measure-object).count
+					Write-Log -Message "Found $usercount user(s) in the csv."
+		
+				
+					Write-Log -Message "Getting user for those $usercount user(s) info from $server..."
+		
+					foreach ($row in $userlist) {
+						$username = $row.username
+						$users += (Invoke-RestMethod -Uri "https://$server/api/system/users/search?username=$username" -Method Get -Headers $global:hdrs -ContentType "application/json").Users
+		
+					}
+					return $users
+				}
+		  }
+		Default {}
+	}
+
+}
+
+	
 
 	
 }
@@ -747,6 +779,12 @@ switch ($Action) {
 	'Delete-DuplicateDevices' {
 		Get-DuplicateDevices
 		$deletions = Format-DevicesForDelete -InputData ($global:DuplicatesToBeDeleted)
+		Write-Log "Devices to be deleted: $(@($deletions.count))"
+		$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'."
+		while ($confirmation -ne "y") {
+			if ($confirmation -eq 'n') { exit }
+			$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'. "
+		}
 		Delete-DevicesFromUEM -InputData $deletions
 	}
 	'Get-StaleDevices' {
@@ -755,6 +793,12 @@ switch ($Action) {
 	'Delete-StaleDevices' {
 		Get-StaleDevices
 		$deletions = Format-DevicesForDelete -InputData ($global:StaleToBeDeleted)
+		Write-Log "Devices to be deleted: $(@($deletions.count))"
+		$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'."
+		while ($confirmation -ne "y") {
+			if ($confirmation -eq 'n') { exit }
+			$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'. "
+		}
 		Delete-DevicesFromUEM -InputData $deletions
 		
 	}
@@ -764,6 +808,12 @@ switch ($Action) {
 	'Delete-ProblematicDevices' {
 		Get-ProblematicDevices
 		$deletions = Format-DevicesForDelete -InputData ($global:ProblematicToBeDeleted)
+		Write-Log "Devices to be deleted: $(@($deletions.count))"
+		$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'."
+		while ($confirmation -ne "y") {
+			if ($confirmation -eq 'n') { exit }
+			$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'. "
+		}
 		Delete-DevicesFromUEM -InputData $deletions
 	}
 	'Get-DuplicateUsers' {
@@ -772,6 +822,12 @@ switch ($Action) {
 	}
 	'Delete-DuplicateUsers' {
 		$deletions = Get-DuplicateUsers
+		Write-Log "Users to be deleted: $(@($deletions.count))"
+		$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'."
+		while ($confirmation -ne "y") {
+			if ($confirmation -eq 'n') { exit }
+			$confirmation = Read-Host "Are you sure? Please enter 'y' or 'n'. "
+		}
 		Delete-DuplicateUsers -InputData $deletions
 
 	}
