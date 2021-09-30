@@ -9,7 +9,7 @@
 
 .NOTES
   Author:        		 	Brooks Peppin, www.brookspeppin.com
-  Blog: 					https://brookspeppin.com/2020/01/28/how-to-keep-your-workspace-one-uem-environment-clean-uem-maintenance-script-for-windows-10/
+  Blog: 					https://www.brookspeppin.com/2021/01/26/how-to-keep-your-workspace-one-uem-environment-clean/
   Initial Creation Date: 	Jan 14, 2021
 
 .CHANGELOG

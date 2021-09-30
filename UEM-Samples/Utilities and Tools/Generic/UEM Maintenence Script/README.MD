@@ -39,7 +39,7 @@ This script connects to your VMware Workspace ONE UEM environment and can get an
 
 ## Instructions
 
- For full, detailed instructions please see https://brookspeppin.com/2020/01/28/how-to-keep-your-workspace-one-uem-environment-clean/
+ For full, detailed instructions please see https://www.brookspeppin.com/2021/01/26/how-to-keep-your-workspace-one-uem-environment-clean/
  
 ## PARAMETERS
 **-Server  
