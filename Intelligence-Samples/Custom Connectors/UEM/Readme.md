@@ -7,7 +7,7 @@
 
 ## Purpose
 
-A sample of how the MDM Rest API can be used to issue Custom MDM Commands to a device.   This postman collection contains the following custom commands:
+A sample of how you can use the MDM Rest API to issue Custom MDM Commands to a device.   This postman collection contains the following custom commands:
 
 1. RestartDevice
 2. RecommendationCadence
@@ -19,18 +19,18 @@ A sample of how the MDM Rest API can be used to issue Custom MDM Commands to a d
 2. Workspace ONE Intelligence
 3. Workspace ONE UEM
 4. An enrolled device
-5. An administrator account with API Access enabled and sufficient role-based permissions to execute the API tasks.
+5. An administrator account with API Access enabled and sufficient role-based permissions to run the API tasks.
 6. An API Key (as generated at **Settings > System > Advanced > API > REST API**).
 
 ## How to prepare this sample for import
 
 This collection is a sample for use within Workspace ONE Intelligence.  Please be sure to populate all variable fields with the values from your instance. Follow this process to prepare the Postman Collection for uploading to Intelligence:
 
-1. Download the Custom UEM API Calls postman collection locally and open it in postman.
+1. Download the Custom UEM API Calls postman collection locally and open it in Postman.
 2. Note the 5 separate UEM API calls included:  *RestartDevice, RecommendationCadence, RefreshCellularPlans* (3 separate instances of RefreshCellularPlans)
 3. Click on the line that says "Post" for the *RestartDevice* API Call.  In the *Headers* section, replace the **VALUE** for **aw-tenant-code** with your API Key (see oAuth note below)
 4. Click Save to save the updated API call.
-5. Repeat Step 3 and 4 for the other API calls.
+5. Repeat Steps 3 and 4 for the other API calls.
 6. Right-Click on the **Custom UEM API Calls** collection and click **Export**
 7. Save the collection export as Postman version 2.1 to your device.
 
@@ -38,7 +38,7 @@ This collection is a sample for use within Workspace ONE Intelligence.  Please b
 
 ## Build a Workspace ONE Intelligence Custom Connector
 
-Once you've prepared the Postman collection for import, you are ready to use the Collection as the starting point for your Intelligence Connector.
+Once you've prepared the Postman collection for import, you are ready to use the collection as the starting point for your Intelligence Connector.
 
 > **NOTE:** If you configure your Connector API authentication for oAuth, Workspace ONE Intelligence ignores the authentication scheme provided in the Postman Collection.
 
@@ -48,13 +48,13 @@ Once you've prepared the Postman collection for import, you are ready to use the
 1. Click **Add Custom Connector**
 1. Enter a Connector Name (such as *Custom MDM Command*), and enter API authentication details for the payload body and click **OK**
 1. Click **Import Actions**.  Browse to your modified Postman collection and click **Open**
-1. Click the three dots next to the **Action Name** (*RestartDevice*) and click **Configure**.   Note the parameters and body that were brought in from the Postman Collection.  You will not be shown the *aw-tenant-code* but it is there if you provided it in the Collection.   Click **Cancel**
-1. Click the three dots next to the **Action Name** and click **Test**.  Replace the **id** value with the serialnumber of an iOS device and click **Test**.   Ensure the test is successful and you see the device restart. 
+1. Click the three dots next to the **Action Name** (*RestartDevice*) and click **Configure**.   Note the parameters and body that the import brought in from the Postman Collection.  Workspace ONE Intelligence will not show you the *aw-tenant-code*, but it is there if you provide it in the collection.   Click **Cancel**
+1. Click the three dots next to the **Action Name** and click ** test**.  Replace the **id** value with the serial number of an iOS device and click ** test**.   Ensure the test is successful and you see the device restart. 
 1. Optionally, you can repeat the test for the other Custom MDM Commands you'd like to use.
 
 ## Use the Custom Connector in an Intelligence Automation
 
-With the custom connector in place, you can now use the connector to trigger custom mdm commands against devices in your environment.
+With the custom connector in place, you can now use the connector to trigger custom MDM commands against devices in your environment.
 
 > **CAUTION:** When setting up a Workflow, build it with a highly limited filter (<10 devices) and a manual trigger.  Test and validate expected results *before* automating against your entire fleet!
 
@@ -64,7 +64,7 @@ With the custom connector in place, you can now use the connector to trigger cus
 1. Enter a name and description for the workflow (such as *RecommendationCadence Workflow*)
 1. For an initial test of the workflow, set the *Trigger* to **Manual**
 1. Enter your initial filter.  Some useful filters may include:
-  * Filter by a specific testing Organizaiton Group:  (Devices > Device Organization Group Name) | Equals | (Enter a specific UEM Org Group Name)
+  * Filter by a specific testing Organization Group:  (Devices > Device Organization Group Name) | Equals | (Enter a specific UEM Org Group Name)
   * Filter by a specific testing user:  (Devices > User Name) | Equals | (Enter a specific enrollment User Name)
   * Filter by a specific serial number:  (Devices > Serial Number normalized) | Equals | (Specific Device Serial Number)
 7. After configuring your filter, click the **View** button in the "Filter Results Summary" box to see how many devices are potentially targeted by your filter.
@@ -74,7 +74,7 @@ With the custom connector in place, you can now use the connector to trigger cus
 1. Optionally add any additional actions you want to test.
 1. Click **Save** in the top right corner.
 1. Select your new workflow in the list of Workflows.  Click **More > Enable**
-1. Enable **One time manual run** and click **Enable**
+1. Enable ** One-time manual run** and click **Enable**
 1. Click **More > Run** and click **Yes** to manually run the workflow on filtered devices.
  
 ## Validating your Workflow ##
@@ -93,16 +93,16 @@ You can also validate the activity in Workspace ONE Intelligence:
 
 You have two options here: create a new workflow or edit the existing workflow.   In either case, when you finish editing the workflow and go to Save it, you may be asked whether to enable a One-Time Manual Run.
 
-* If you save & enable with *One Time Manual Run* **Disabled**, the enabled workflow only takes action against *new* devices that populate into the filter.   In other words, the workflow does not run against devices currently known within the filter.
+* If you save & enable with *One Time Manual Run* **Disabled**, the enabled workflow only takes Action against *new* devices that populate into the filter.   In other words, the workflow does not run against devices currently known within the filter.
 * If you save & enable with *One Time Manual Run* **Enabled**, the enabled workflow runs against all existing devices currently known within the filter **AND** new devices that later fall into the filter.
 
-## Tips for Creating your own Postman Collection
+## Tips for Creating your Postman Collection
 
-If you use postman to create a collection of additional UEM API calls to use in Intelligence Automations, you'll need to keep the following tips in mind:
+If you use Postman to create a collection of additional UEM API calls to use in Intelligence Automations, you'll need to keep the following tips in mind:
 
-* Be mindful of the HTTP Verb:  Post, Get, Update, etc.  If you use the wrong one, you'll most likely see HTTP 404 reponses.
+* Be mindful of the HTTP Verb:  Post, Get, Update, etc.  If you use the wrong one, you'll most likely see HTTP 404 responses.
 * Make use of *Environments* in Postman to enable rapid testing or testing against different APIs using different credentials or variable values.
-* While variables (sourced from environments or Collections) are a great way to make Collections shareable, they may not be helpful if you intend to upload the collection to Intelligence.   If the collection will be used as an import for Automation actions, be sure you're hard coding necessary values (such as the *aw-tenant-code) in each API call.
+* While variables (sourced from environments or Collections) are a great way to make Collections shareable, they may not be helpful if you intend to upload the collection to Intelligence.   If the collection is used as an import for Automation actions, be sure you're hard coding necessary values (such as the *aw-tenant-code) in each API call.
 
 
 ## Additional Resources
