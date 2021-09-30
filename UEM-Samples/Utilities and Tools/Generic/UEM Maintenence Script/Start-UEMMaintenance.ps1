@@ -16,7 +16,7 @@
 1.3 - Sep 30, 2021
 - Fixed bugs and adding more error handling
 - Added new switch: -mode with parameters 'Online' or 'Offline'. Online gets data live from server and Offline uses previously exported csvs (for that day)
-- Platform switch set to required
+
 
 1.2 - Jan 20, 2021
 - Added checking for duplicate users and deleting those duplicates (Get-DuplicateUsers, Delete-DuplicateUsers). It will by default only delete duplicate users that do not have devices enrolled. Users with devices enrolled will need to have those devices

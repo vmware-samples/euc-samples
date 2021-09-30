@@ -5,10 +5,15 @@
 * Author: Brooks Peppin, www.brookspeppin.com
 * Email: bpeppin@vmware.com
 * Date Created: 1/23/2020
-* Date Updated: 1/26/2021
+* Date Updated: 9/30/2021
 
 
 ## Latest Updates
+1.3 - Sep 30, 2021
+- Fixed bugs and adding more error handling
+- Added new switch: -mode with parameters 'Online' or 'Offline'. Online gets data live from server and Offline uses previously exported csvs (for that day)
+
+
 1.2 - Jan 26, 2021
 - Added checking for duplicate users and deleting those duplicates (Get-DuplicateUsers, Delete-DuplicateUsers). It will by default only delete duplicate users that do not have devices enrolled. Users with devices enrolled will need to have those devices
 	deleted first before deleting the user account. Additionally, adding a UserFilter.csv parameter to the command line (-UserList <path to csv>) will enable you to target only a subset of users. The format should be:
@@ -65,7 +70,9 @@ Optional parameter that will only search for duplicate users or based on a csv f
 
 **-Platform  
 	Optional parameter that specifies which platform type you'd like to search duplicates for. Valid options are: 'Mac', 'Win10', 'Android', 'iOS', 'ChromeOS', 'Any'. Any is the default if no parameter is specified. 
- 
+
+** -Mode
+	Required parameter that specifies which the data gets pulled live from server and or uses previously exported csvs (for that day)
 
 ## OUTPUTS
   Outputs to host as well as to a log file stored in C:\UEM-Maintenance\$server\Logs\Win_UEM_Maintenence.log. This log is also formatted in a way for cmtrace.exe log viewer to read and process. Each "Get" function also creates csv files under C:\UEM-Maintenance\[server]\Win_[today's date]
@@ -73,34 +80,34 @@ Optional parameter that will only search for duplicate users or based on a csv f
   ## EXAMPLES
   
 **Get Duplicate Devices, Filtering Serials**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -FilterSerial
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -FilterSerial -mode Online
 
 **Get Duplicate Devices, Win10**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -Platform Win10
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateDevices -Platform Win10 -mode Online
 
 **Get Stale devices (default of 90 days)**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices -mode Online
 
 **Get Stale devices older than 120 days**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices -Days 120
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-StaleDevices -Days 120 -mode Online
 
 **Get problematic devices**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-ProblematicDevices
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-ProblematicDevices -mode Online
 
 **Get DuplicateUsers**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateUsers
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateUsers -mode Online
 
 **Get DuplicateUsers, filtering against a csv, and only looking for basic users**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateUsers -UserList C:\temp\userlist.csv -UserType 'BasicOnly'
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Get-DuplicateUsers -UserList C:\temp\userlist.csv -UserType 'BasicOnly' -mode Online
 
 **Delete DuplicateUsers (this will use the "to be deleted csv" from your previous "Get-duplicateusers" command)**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Delete-DuplicateUsers
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg=" -Action Delete-DuplicateUsers -mode Online
 
 **Delete Duplicate Devices**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-DuplicateDevices -FilterSerial
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-DuplicateDevices -FilterSerial -mode Online
 
 **Delete Stale Devices**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-StaleDevices
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-StaleDevices -mode Online
 
 **Delete Problematic Devices**  
-.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-ProblematicDevices
+.\Start-UEMMaintenance.ps1 -server myserver.awmdm.com -ApiKey "zwhD99G6593LDO0D93A030139nZti0sur0Gg="  -Action Delete-ProblematicDevices -mode Online
