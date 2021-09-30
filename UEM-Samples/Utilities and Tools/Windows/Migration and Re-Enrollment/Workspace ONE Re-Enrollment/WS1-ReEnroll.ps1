@@ -784,9 +784,8 @@ function Check-agent
 {
 	if (!(Test-Path $AgentPath))
 	{
-		Write-Log "Unable to find AirwatchAgent.msi file in expected location. Downloading latest from the internet."
-		#Invoke-WebRequest "https://awagent.com/Home/DownloadWinPcAgentApplication" -outfile "$AgentPath" #this download 19.8 agent
-		Invoke-WebRequest "https://storage.googleapis.com/getwsone-com-prod/downloads/AirwatchAgent.msi" -outfile "$PSScriptRoot\AirwatchAgent.msi" #downloads latest production hub installer. Note this may be a newer version than your WS1 environment.
+		Write-Log "Unable to find AirwatchAgent.msi file in expected location. Exiting script."
+		Exit 1
 	}
 	else
 	{
