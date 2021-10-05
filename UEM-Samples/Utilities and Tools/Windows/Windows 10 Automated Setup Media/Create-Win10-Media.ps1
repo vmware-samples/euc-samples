@@ -26,7 +26,7 @@ Write-Host "====================================================================
 Write-Host "======================= Windows 10 x64 USB Media Creator ========================"
 Write-Host "===================== By Brooks Peppin (bpeppin@vmware.com) ====================="
 Write-Host "========================== www.brookspeppin.com ================================="
-Write-Host "===========================Updated March, 16 2020=================================="
+Write-Host "===========================Updated October 4, 2021=================================="
 Write-Host "================================================================================="`n
 Write-Host "This script creates a bootable Windows 10 media usb key that installs
 Windows 10 automatically via an autounattend.xml file. It supports booting with 
@@ -98,6 +98,9 @@ else
 {
 	exit
 }
+Write-host "Would you like to add the autounattend.xml to the USB to enable zero-touch install? (EFI systems only)" -foreground "yellow"
+Write-Host "(y/n)" -foreground "yellow"
+$confirmation = Read-Host
 
 $command = @"
 select disk $drivenumber
@@ -131,9 +134,7 @@ Remove-Item $usb_source\sources\ei.cfg -Force -ErrorAction SilentlyContinue
 Add-Content -Path $usb_source\sources\ei.cfg -Value "[CHANNEL]" -Force
 Add-Content -Path $usb_source\sources\ei.cfg -Value "Retail" -Force
 
-Write-host "Would you like to add the autounattend.xml to the USB to enable zero-touch install? (EFI systems only)" -foreground "yellow"
-Write-Host "(y/n)" -foreground "yellow"
-$confirmation = Read-Host
+
 if ($confirmation -eq 'y')
 {
 	Try
@@ -168,8 +169,8 @@ This will update the autounattend.xml file to automatically apply the correct im
 	
 	$xml = New-Object XML
 	$xml.Load("$USB_Boot\autounattend.xml")
-	$xml.unattend.settings.component.imageinstall.osimage.installfrom.metadata.value = $OS_Name
-	Write-Host OS Image Name set to $OS_Name -ForegroundColor Yellow
+	$xml.unattend.settings.component.imageinstall.osimage.installfrom.metadata.value = $index
+	Write-Host OS Image Index set to $Index -ForegroundColor Yellow
 	$xml.Save("$USB_Boot\autounattend.xml")
 }
 else
