@@ -53,12 +53,12 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in
 				<array>
 					<string>com.apple.InstallAssistant.Monterey</string>
 					<string>com.apple.InstallAssistant.macOSMonterey</string>
-                    <string>com.apple.InstallAssistant.Seed.macOS12Seed1</string>
+					<string>com.apple.InstallAssistant.Seed.macOS12Seed1</string>
 				</array>
-                <key>cdhash</key>
-                <array>
-                    <string>315413acae0f4d1063691c9ecfd3c8d625196353</string>
-                </array>
+				<key>cdhash</key>
+				<array>
+					<string>315413acae0f4d1063691c9ecfd3c8d625196353</string>
+				</array>
 			</dict>
 			<key>Actions</key>
 			<array>
