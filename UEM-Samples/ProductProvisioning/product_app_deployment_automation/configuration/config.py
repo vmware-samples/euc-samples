@@ -1,4 +1,4 @@
-# API host url to make the call against
+# Host url to make the call against
 HOST_URL = ''
 PORT = 443
 # Represents WS1 _numeric_ organization group-ID
@@ -8,11 +8,11 @@ AW_TENANT_CODE = ''
 # Username and Password to access WS1 REST APIs
 API_USERNAME = ''
 API_PASSWORD = ''
-# List of assignment groups in WS1 UEM for Alpha deployment
+# List of assignment groups in WS1 UEM for Alpha deployment, enclose the Ids between single quotes
 ALPHA_GROUPS = []
-# List of assignment groups in WS1 UEM for Beta deployment
+# List of assignment groups in WS1 UEM for Beta deployment, enclose the Ids between single quotes
 BETA_GROUPS = []
-# List of assignment groups in WS1 UEM for Production deployment
+# List of assignment groups in WS1 UEM for Production deployment, enclose the Ids between single quotes
 PRODUCTION_GROUPS = []
 
 # POST_SCRIPT_VALIDATION : 1 => When set to 1, after uploading and publishing the product, the script will fetch

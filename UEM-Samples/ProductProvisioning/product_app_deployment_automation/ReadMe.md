@@ -1,15 +1,14 @@
 # **Workspace ONE ProductManagement-Samples**
 
 ## **Overview**
-* **Author(s)** : Krati Gupta
-* **Email** : krgupta@vmware.com
+* **Author(s)** : Krati Gupta, Madhushree Nayak M
+* **Email** : krgupta@vmware.com, mnayakm@vmware.com
 * **Date Created** : 06 March 2020
 
 ## **Purpose**
-The tool provides an example of how the product deployment APIs of Workspace ONE UEM can be used for Android apps. This script can be used to automate product delivery to your end-user devices in the following cases:
-1. Add new product with appropriate assignments
-2. Add new versions with appropriate assignments for new apps
-3. Update assignment for existing product
+The tool provides an example of how the product deployment APIs of Workspace ONE UEM can be used for Android app deployment. This script can be used to automate product delivery to your end-user devices in the following cases:
+1. Create product with app manifest and appropriate smartgroup assignments
+2. Update assignment for existing product
 
 ## **Requirements**
 To execute the script, dependencies have to be installed.
@@ -89,7 +88,6 @@ The script can be integrated with any build server as follows:
 2. Write a Python script to call an appropriate Build Server API to get the build information.
 3. Add a post build action in the build pipeline
 4. Provide the absolute file path of the Build Server API client written in place of <Build Information> argument.
-
 
 ## **Testing**
 End to End test cases have been added under the folder 'testing'. Please refer ReadMe file under testing folder for more details on how to run the test cases.
