@@ -1,5 +1,7 @@
 {
     "BlobId": 0,
+    "IconBlobUuId": "",
+    "TransactionId": "",
     "ApplicationName": "TODO - Fill in",
     "PushMode": "0",
     "Description": "",
@@ -13,6 +15,8 @@
     "AppVersion": "1.0.0",
     "EnableProvisioning": false,
     "FileName": "placeholder.zip",
+    "SupportedProcessorArchitecture": "TODO - x86 or x64",
+    "IsDependencyFile": false,
     "DeviceType": "WinRT",
     "SupportedModels": {
         "Model": [
@@ -22,8 +26,6 @@
             }
         ]
     },
-    "SupportedProcessorArchitecture": "TODO - x86 or x64",
-    "IsDependencyFile": false,
     "DeploymentOptions": {
         "WhenToInstall": {
             "DataContingencies": [],
