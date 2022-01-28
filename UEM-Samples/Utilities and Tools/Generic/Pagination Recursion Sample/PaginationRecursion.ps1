@@ -106,7 +106,7 @@ $Headers = Create-Headers -authString $AuthString -tenantCode $ApiKey
 
 # Variables
 $page = 0           # page var that can be incremented between calls
-$pagesize = 500     # amount of records per page queried (don't exceed 1,000 for SaaS)
+$pagesize = 500     # amount of records per page queried (max: 500)
 
 # Call QueryDevicesExtensiveSearch with an empty record set. The method will recursively call itself until all pages
 # have been successfully queried
