@@ -11,8 +11,17 @@
 		<string>--custom</string>
 		<string>--removal-script</string>
 		<string>/Library/Application Support/VMware/MigratorResources/removemgmt.sh</string>
-		<string>--forced-restart-delay/string>
-		<string>30</string>
+		<string>--sideload-mode</string>
+		<string>--enrollment-profile-path</string>
+		<string>/Library/Application Support/VMware/MigratorResources/enroll.mobileconfig</string>
+		<string>--predepnotify-script</string>
+		<string>/Library/Application Support/VMware/MigratorResources/predepnotify.sh</string>
+		<string>--premigration-script</string>
+		<string>/Library/Application Support/VMware/MigratorResources/premigration.sh</string>
+		<string>--postmigration-script</string>
+		<string>/Library/Application Support/VMware/MigratorResources/postmigration.sh</string>
+		<string>--forced-restart-delay</string>
+		<string>600</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>

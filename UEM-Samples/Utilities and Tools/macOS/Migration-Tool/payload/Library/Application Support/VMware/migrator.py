@@ -69,6 +69,10 @@ def getdeviceinfo():
         deviceinfo['model'] = plist[0]['_items'][0]['machine_model'] #e.g. MacBookPro14,3
         deviceinfo['uuid'] = plist[0]['_items'][0]['platform_UUID']
         deviceinfo['serial'] = plist[0]['_items'][0]['serial_number']
+        cmd = ['/usr/bin/sw_vers', '-productVersion']
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, err = proc.communicate()
+        deviceinfo['osvers'] = output
     except Exception as e: #noqa
         oslog('Error getting system info via system_profiler')
         oslog(str(e))
@@ -76,7 +80,7 @@ def getdeviceinfo():
         depnotify('Command: Quit: Error getting system info')
         cleanup()
     else:
-        deviceinfo['osvers'] = platform.mac_ver()[0] #OS Version, e.g. 10.14.1
+        #deviceinfo['osvers'] = platform.mac_ver()[0] #OS Version, e.g. 10.14.1
         return deviceinfo
 
 
