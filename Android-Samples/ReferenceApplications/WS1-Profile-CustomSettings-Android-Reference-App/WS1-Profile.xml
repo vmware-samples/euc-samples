@@ -1,0 +1,7 @@
+<characteristic type="com.airwatch.android.androidwork.app:com.vmw.appconfig" uuid="2bac235c-03b6-4ea7-a94c-079f5a8bc343">
+    <parm name="VALUE1" value="ExampleValue" />
+    <parm name="URL" value="https://www.vmware.com" />
+    <parm name="ENVIRONMENT" value="PROD" />
+    <parm name="SERIALNUM" value="{{DeviceSerialNumber}}" />
+    <parm name="USERNAME" value="{{EnrollmentUser}}" />
+</characteristic>
