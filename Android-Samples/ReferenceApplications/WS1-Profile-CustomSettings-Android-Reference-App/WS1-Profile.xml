@@ -2,6 +2,6 @@
     <parm name="VALUE1" value="ExampleValue" />
     <parm name="URL" value="https://www.vmware.com" />
     <parm name="ENVIRONMENT" value="PROD" />
-    <parm name="SERIALNUM" value="{{DeviceSerialNumber}}" />
-    <parm name="USERNAME" value="{{EnrollmentUser}}" />
+    <parm name="SERIALNUM" value="{DeviceSerialNumber}" />
+    <parm name="USERNAME" value="{EnrollmentUser}" />
 </characteristic>
