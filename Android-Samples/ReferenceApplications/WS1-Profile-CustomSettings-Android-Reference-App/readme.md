@@ -47,9 +47,9 @@ I/System.out: Here is the URL: https://www.vmware.com
 
 I/System.out: Here is the Example Value: ExampleValue
 
-I/System.out: Here is the Serial Number: {FA7280304391}
+I/System.out: Here is the Serial Number: FA7280304391
 
-I/System.out: Here is the User: {Maui}
+I/System.out: Here is the User: Maui
 
 I/EUCPSO: Here is the Environment: PROD
 
@@ -57,16 +57,17 @@ I/EUCPSO: Here is the URL: https://www.vmware.com
 
 I/EUCPSO: Here is the Example Value: ExampleValue
 
-I/EUCPSO: Here is the Serial Number: {FA7280304391}
+I/EUCPSO: Here is the Serial Number: FA7280304391
 
-I/EUCPSO: Here is the User: {Maui}
+I/EUCPSO: Here is the User: Maui
 
 ---
 
 ## NOTES
 
-* Version:        4.1
+* Version:        4.2
 * Creation Date:  02/25/2022
+* Last Updated:   04/03/2022
 * Author:         Ryan Pringnitz - rpringnitz@vmware.com
 * Author:         Made with love in Kalamazoo, Michigan
 * Purpose/Change: Initial Release
