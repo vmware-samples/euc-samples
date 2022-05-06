@@ -40,7 +40,7 @@ The following information must be included in the README.md or in the sample doc
 
 ### Suggested Information
 The following information should be included when possible. Inclusion of information provides valuable information to consumers of the resource.
-* VMWare Product version against which the sample was developed/tested
+* VMware Product version against which the sample was developed/tested
 * Client Operating System version against which the sample was developed/tested (e.g. Windows Build number, or macOS Version and Build Number)
 * Language (Bash/Python/Powershell) version against which the sample was developed/tested
 
