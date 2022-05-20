@@ -16,7 +16,7 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom Command modal 
           <key>ProductVersion</key>
           <string>12.0</string>
           <key>MaxUserDeferrals</key> <!-- New Key -->
-          <string>5</string>
+          <integer>5</integer>
       </dict>
   </array>
 </dict>
