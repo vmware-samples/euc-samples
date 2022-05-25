@@ -1,79 +1,107 @@
-# Google Chrome
+# CrowdStrike Falcon Agent
 
 ## Overview
 
-- **Authors**: Robert Terakedis, John Richards, Adam Matthews
-- **Email**: rterakedis@vmware.com, jrichards@vmware.com
-- **Date Created**: 4/17/2018
-- **Supported Platforms**: AirWatch version 9.3
-- **Tested on macOS Versions**: macOS High Sierra
+- **Authors**: Matt Zaske
+- **Email**: mzaske@vmware.com
+- **Date Created**: 5/25/2022
+- **Supported Platforms**: Workspace ONE UEM v2203
+- **Tested on macOS Versions**: macOS Big Sur
 
 ## Purpose
 
-Manage Google Chrome Settings as Supported by Google via Workspace ONE:
+Deploying CrowdStrike Falcon Agent for macOS with Workspace ONE UEM
 
-1) Download the 64-bit Enterprise Bundle from Google (link below in [Resources](#Additional-Resources))
-2) Review the [Chrome Policy List online](https://cloud.google.com/docs/chrome-enterprise/policies) or using chrome_policy_list.html found in GoogleChromeEnterpriseBundle64/Documentation/Chrome\ Policies/{language}/
-3) The Custom XML file in this folder is derived from the *com.google.Chrome.plist* file in the Enterprise Bundle (GoogleChromeEnterpriseBundle64/Configuration/com.google.Chrome.plist).  Review and modify as needed for your organization as based on the Chrome Policy List
-4) Deploy the Chrome Browser for Enterprise app in order to leverage the policies configured in the preferences (via Custom XML)
+1) Deploy configuration profile with all the needed payloads
+2) Download the profile Falcon Agent pkg
+3) Parse the pkg with the [Workspace ONE Admin Assistant](https://awagent.com/AdminAssistant/VMwareAirWatchAdminAssistant.dmg)
+4) Modify the generated plist file as instructed.
+5) Upload the pkg, plist, and icon to Workspace ONE UEM as an Internal App (Resources > Apps > Native > Internal)
+6) In the __Scripts__ tab, add the scripts described.
+7) Configure any remaining deployment settings and Assign the app as appropriate.
 
-## Notes Regarding VMware Identity Manager Cert-based Authentication
+## Configuration Profile Creation
 
-To manage the Certicficate Picker, use the **AutoSelectCertificateForUrls** key and set the Pattern URL to the CAS URL of your Identity Manager Instance:
+CrowdStrike provides the necessary profile as a mobileconfig file directly [here](a.	https://supportportal.crowdstrike.com/s/article/Tech-Alert-Preparing-for-macOS-Falcon-Sensor-6-11). This is meant to help decipher the plist and create a profile in UEM. All information below can be found in the mobileconfig file directly.
 
-- *.vmwareidentity.com = https://cas-aws.vmwareidentity.com/
-- *.vmwareidentity.eu = https://cas-aws.vmwareidentity.eu/
-- *.vidmpreview.com = https://cas.vidmpreview.com/
+1) Click **Add > Profile > macOS > Device** and complete the General information
+2) Select the **System Extension Policy** payload an click configure
+3) Complete the payload (Allow User Overrides can be selected or not, up to the organization), and include the following information in the *Allowed System Extensions* list:
+  * Team ID: X9E956P446
+  * Bundle ID: com.crowdstrike.falcon.Agent
+4) Include the following information in the *Allowed System Extension Types* list:
+  * Team ID: X9E956P446
+  * Select the boxes for Endpoint Security and Network
+5) Select the **Privacy Preferences** payload an click configure
+6) Select Add App and add the following details:
+  * Identifier: com.crowdstrike.falcon.Agent
+  * Identifier Type: Bundle ID
+  * Code Requirement: identifier "com.crowdstrike.falcon.Agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = X9E956P446
+  * System Policy All Files: Allow
+7) After selecting save, select Add App again and add the following details:
+  * Identifier: com.crowdstrike.falcon.App
+  * Identifier Type: Bundle ID
+  * Code Requirement: identifier "com.crowdstrike.falcon.App" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = X9E956P446
+  * System Policy All Files: Allow
+8) Select the **Content Filter** payload an click configure
+9) Complete the payload using the following information (if information is not provided below then you can leave as default values):
+  * Filter Type: Plug-in
+  * Filter Name: Falcon
+  * Identifier: com.crowdstrike.falcon.App
+  * Organization: CrowdStrike Inc.
+  * Filer WebKit Traffic: Disabled (Not Checked)
+  * Filter Socket Traffic: Enabled (Checked)
+  * Custom Data (5 additional key-value pairs to be added):
+    * FilterDataProviderBundleIdentifier - com.crowdstrike.falcon.Agent
+    * FilterDataProviderDesignatedRequirement - identifier "com.crowdstrike.falcon.Agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "X9E956P446"
+    * FilterPacketProviderBundleIdentifier - com.crowdstrike.falcon.Agent
+    * FilterPacketProviderDesignatedRequirement - identifier "com.crowdstrike.falcon.Agent" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "X9E956P446"
+    * FilterGrade - inspector
+  10) Save and publish the profile
 
-The Issuer needs to be the Issuer of your CA. So if your Issuer is CA is **CN=lab-ad01-CA** use **lab-ad01-CA**.
+  > **NOTE:** When adding Custom Data for the Content Filter payload the value shown first goes in the "Key" column and the second value after the dash (-) goes in the "Value" column
 
-## Notes Regarding Kerberos Authentication
+## Package Deployment Details
 
-To enable Kerberos Authentication, you'll need to explore the use of two policies:  AuthServerWhitelist and AuthNegotiateDelegateWhitelist.  More information about these two policies can be found in the [List of Policy Keys for Chrome](https://cloud.google.com/docs/chrome-enterprise/policies).
+After obtaining the correct package from CrowdStrike directly, you will parse the pkg using the Admin Assistant. After that follow the below steps:
+1) Edit the plist file that is created to ensure the 'Name' and 'Version' keys are in line with what you are expecting.
+  * The Name key is how the app will appear in the UEM console as well as on the user's Hub Catalog.
+2) Upload the pkg and plist files to UEM using the Add Application workflow (Resources > Apps > Native > Internal)
+3) Add the icon under Images tab
+4) Add the following scripts under the Scripts tab
+  * Post Install Script - needed to activate the license, replace INSERT_LICENSE_HERE with the actual license string
+  ```BASH
+  #!/bin/sh
+  /Applications/Falcon.app/Contents/Resources/falconctl license INSERT_LICENSE_HERE
+  exit 0
+  ```
+  * Post Uninstall Script - ensure app is removed if functionality is enabled. No maintenance token, if token is needed – add it after uninstall in line
+  ```BASH
+  #!/bin/sh
+  sudo /Applications/Falcon.app/Contents/Resources/falconctl uninstall
+  exit 0
+  ```
+  * Install Check Script - ensure CrowdStrike is installed and proper version activated. Update the target version to what you are deploying in first line
+  ```BASH
+  #!/bin/sh
+  target_version=6.26.13904.0
 
-## Notes Regarding Chrome Browser Cloud Management
+  #convert version number to individual
+  function version { echo "$@" | /usr/bin/awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
 
-There have been some great significant advancements in the Google Admin console to centrally manage and easily quickly see the status of Chrome Browser across your business desktop endpoints.  With Chrome Browser Cloud Management, you can quickly see reports on deployed versions, device information, apps, and extensions installed, or management policies applied. From the Google Admin console, you can also take quick action on devices, such as blocking or force-installing a specific extension.  Users need not sign in to Google to enable Cloud Management. Instead, Workspace ONE administrators manage the devices with “enrollment tokens” that are Globally Unique Identifiers (GUID) randomly generated in the Google Admin console. These tokens can be used for many devices or just one One or more devices may use a token.
+  # Grab current version of installed crowdstrike
+  current_version=$(/usr/bin/sudo /Applications/Falcon.app/Contents/Resources/falconctl stats | /usr/bin/grep version | /usr/bin/awk '{print $2}')
+  echo CrowdStrike version $current_version
 
-For reference, there is a workflow of the enrollment process in the [Chrome Browser Cloud Management whitepaper](http://bit.ly/managebrowsers).
-
-To enable Chrome Browser Cloud Management for macOS, add the following two lines inside the [Example Custom Settings XML](#Example-Custom-Settings-XML) displayed below:
-
-```XML
-    <key>CloudManagementEnrollmentToken</key>
-    <string>XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</string>
-    <key>CloudManagementEnrollmentMandatory</key>
-    <true/>
-```
-
-## Example Custom Settings XML
-
-```XML
-<dict>
-    <key>AutoSelectCertificateForUrls</key>
-    <array>
-    <string>{"pattern":"https://cas.vidmpreview.com","filter":{"ISSUER":{"CN":”TMApple"}}}</string>
-    </array>
-     <key>BuiltInDnsClientEnabled</key>
-    <false />
-    <key>AuthServerWhitelist</key>
-    <string>*.domain.com</string>
-    <key>AuthNegotiateDelegateWhitelist</key>
-    <string>*.domain.com</string>
-    <key>PayloadEnabled</key>
-    <true/>
-    <key>PayloadDisplayName</key>
-    <string>Google Chrome Settings</string>
-    <key>PayloadIdentifier</key>
-    <string>com.google.Chrome.4F720473-6832-4CE0-A895-E9C3FC6F8CBD</string>
-    <key>PayloadType</key>
-    <string>com.google.Chrome</string>
-    <key>PayloadUUID</key>
-    <string>4F720473-6832-4CE0-A895-E9C3FC6F8CBD</string>
-    <key>PayloadVersion</key>
-    <integer>1</integer>
-</dict>
-```
+  # Compare with the version we want to install
+  if [ $(version $current_version) -lt $(version $target_version) ]; then
+      echo install CrowdStrike
+      exit 0
+  else
+      echo CrowdStrike is installed
+      exit 1
+  fi
+  ```
 
 ## Required Changes/Updates
 
@@ -81,11 +109,7 @@ None
 
 ## Change Log
 
-- 2020-02-27: Added Notes Regarding Chrome Browser Cloud Management
-- 2020-01-21: Updated Google Chrome Policies Location
-- 2018-11-28:  Added AutoSelectCertificateForUrls key for Identity manager Integration (Thanks @adammatthews!)
-- 2018-04-27: Added postinstall script to suppress some first run prompts
-- 2018-03-22: Created Initial File
+- 2022-05-25: Created Initial File
 
 ## Additional Resources
 
