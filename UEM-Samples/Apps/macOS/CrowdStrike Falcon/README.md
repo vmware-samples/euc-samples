@@ -110,8 +110,3 @@ None
 ## Change Log
 
 - 2022-05-25: Created Initial File
-
-## Additional Resources
-
-- [List of Policy Keys for Chrome](https://cloud.google.com/docs/chrome-enterprise/policies)
-- [Chrome Browser for Enterprise -- Google](https://enterprise.google.com/chrome/chrome-browser)
