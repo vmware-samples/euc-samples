@@ -18,7 +18,7 @@ Deploying Arctic Wolf Agent for macOS with Workspace ONE UEM
 4) In the __Scripts__ tab, add the scripts described.
 5) Configure any remaining deployment settings and Assign the app as appropriate.
 
-  > **NOTE:** Further info from Arctic Wolf can be seen here: https://docs.arcticwolf.com/agent/installing_mac.html#verifying-the-deployment 
+  > **NOTE:** Further info from Arctic Wolf can be seen here: https://docs.arcticwolf.com/agent/installing_mac.html
 
 ## Package Deployment Details
 
