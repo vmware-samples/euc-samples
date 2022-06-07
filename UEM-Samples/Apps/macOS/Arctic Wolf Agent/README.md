@@ -62,8 +62,7 @@ After obtaining the correct package from Arctic Wolf directly, you will parse th
 
   # version of Arctic Wolf being deployed - convert hyphen and underscores to decimal
   target_version="2020-11_02"
-  target_version=$(echo "$target_version" | tr '-' '.')
-  target_version=$(echo "$target_version" | tr '_' '.')
+  target_version=$(echo "$target_version" | /usr/bin/tr '-' '.' | /usr/bin/tr '_' '.')
 
   # Check if Arctic Wolf is installed first
   if [ -f "/Library/ArcticWolfNetworks/Agent/etc/scoutversion.json" ]; then
@@ -72,9 +71,7 @@ After obtaining the correct package from Arctic Wolf directly, you will parse th
     function version { echo "$@" | /usr/bin/awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
 
     # Grab current Arctic Wolf version installed - convert hyphen and underscores to decimal
-    current_version=$(/bin/cat /Library/ArcticWolfNetworks/Agent/etc/scoutversion.json | /usr/bin/cut -d ":" -f 2 | /usr/bin/sed -e '1d;3d' | /usr/bin/tr -d '"",')
-    current_version=$(echo "$current_version" | /usr/bin/tr '-' '.')
-    current_version=$(echo "$current_version" | /usr/bin/tr '_' '.')
+    current_version=$(/bin/cat /Library/ArcticWolfNetworks/Agent/etc/scoutversion.json | /usr/bin/cut -d ":" -f 2 | /usr/bin/sed -e '1d;3d' | /usr/bin/tr -d '"",' | /usr/bin/tr '-' '.' | /usr/bin/tr '_' '.')
     echo Arctic Wolf current version: $current_version
 
     # Compare with version we are expecting
