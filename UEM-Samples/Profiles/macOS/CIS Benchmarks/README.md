@@ -17,7 +17,7 @@ The following requirements can be achieved using Custom Settings profiles with W
 - 2.3.3 - Familiarize users with screen lock tools or corner to Start Screen Saver: Hot Corner Setup.xml
 - 2.5.2.2 & 2.5.2.3 - Enable Firewall & Enable Firewall Stealth Mode: CIS-firewall.xml
 - 2.10 - Enable Secure Keyboard Entry in terminal.app: CIS-TerminalSecureKeyboard.xml
-- 2.13 - Review Siri Settings: CIS-DisableSiri.xml & CIS-DisableSiriMenubar.xml
+- 2.13 - Review Siri Settings: CIS-DisableSiri.xml & CIS-DisableSiriMenubar.xml & CIS-DisableSysPrefPanes.xml
 - 4.1 - Disable Bonjour advertising service: CIS-DisableBonjourAds.xml
 - 6.1.4 - Disable "Allow guests to connect to shared folders: CIS-AFSGuestDisable.xml & CIS-SMBGuestDisable.xml
 - 6.3 - Disable the automatic run of safe files in Safari: CIS-DisableSafariAutoRun.xml
