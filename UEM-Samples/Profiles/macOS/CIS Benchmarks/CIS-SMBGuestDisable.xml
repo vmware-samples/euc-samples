@@ -1,0 +1,32 @@
+<dict>
+	<key>PayloadUUID</key>
+	<string>A1B5F315-11F7-4340-8908-935988F731E9</string>
+	<key>PayloadType</key>
+	<string>com.apple.ManagedClient.preferences</string>
+	<key>PayloadOrganization</key>
+	<string>VMware</string>
+	<key>PayloadIdentifier</key>
+	<string>com.apple.smb.A1B5F315-11F7-4340-8908-935988F731E9</string>
+	<key>PayloadDisplayName</key>
+	<string>Disable guest access to SMB</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+	<key>PayloadEnabled</key>
+	<true/>
+	<key>PayloadContent</key>
+	<dict>
+		<key>com.apple.smb</key>
+		<dict>
+			<key>Forced</key>
+			<array>
+				<dict>
+					<key>mcx_preference_settings</key>
+					<dict>
+						<key>AllowGuestAccess</key>
+						<false/>
+					</dict>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+</dict>

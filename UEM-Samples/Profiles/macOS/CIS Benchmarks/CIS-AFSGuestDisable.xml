@@ -1,0 +1,32 @@
+<dict>
+	<key>PayloadUUID</key>
+	<string>E1C37BCC-7ACB-4567-9B6A-68175A46046A</string>
+	<key>PayloadType</key>
+	<string>com.apple.ManagedClient.preferences</string>
+	<key>PayloadOrganization</key>
+	<string>VMware</string>
+	<key>PayloadIdentifier</key>
+	<string>com.apple.AppleFileServer.E1C37BCC-7ACB-4567-9B6A-68175A46046A</string>
+	<key>PayloadDisplayName</key>
+	<string>Disable guest access to AFS</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+	<key>PayloadEnabled</key>
+	<true/>
+	<key>PayloadContent</key>
+	<dict>
+		<key>com.apple.AppleFileServer</key>
+		<dict>
+			<key>Forced</key>
+			<array>
+				<dict>
+					<key>mcx_preference_settings</key>
+					<dict>
+						<key>guestAccess</key>
+						<false/>
+					</dict>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+</dict>
