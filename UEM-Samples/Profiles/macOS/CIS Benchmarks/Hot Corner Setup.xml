@@ -1,0 +1,18 @@
+<dict>
+    <key>wvous-bl-corner</key>
+    <integer>5</integer>
+    <key>wvous-bl-modifier</key>
+    <integer>0</integer>
+    <key>PayloadDisplayName</key>
+    <string>Hot Corner Setup</string>
+    <key>PayloadIdentifier</key>
+    <string>com.apple.dock.39ED5C2B-FD0F-41F4-A196-5548FE03136F</string>
+    <key>PayloadOrganization</key>
+    <string></string>
+    <key>PayloadType</key>
+    <string>com.apple.dock</string>
+    <key>PayloadUUID</key>
+    <string>39ED5C2B-FD0F-41F4-A196-5548FE03136F</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>

@@ -1,0 +1,16 @@
+<dict>
+			<key>EnableFirewall</key>
+			<true/>
+			<key>EnableStealthMode</key>
+			<true/>
+			<key>PayloadDisplayName</key>
+			<string>Firewall #1</string>
+			<key>PayloadIdentifier</key>
+			<string>com.apple.security.firewall</string>
+			<key>PayloadType</key>
+			<string>com.apple.security.firewall</string>
+			<key>PayloadUUID</key>
+			<string>790CDD48-446C-44EA-B0E3-3869628ACDB1</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+</dict>
