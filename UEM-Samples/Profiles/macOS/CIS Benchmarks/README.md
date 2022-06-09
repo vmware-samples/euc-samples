@@ -11,7 +11,7 @@ https://www.cisecurity.org/cis-benchmarks/
 
 ## Custom Profile Detail
 
-The following requirements can be achieved using Custom Settings profiles with Workspace ONE UEM:
+The following requirements can be achieved using Custom Settings profiles with Workspace ONE UEM. Most of these files are attached as samples in this repo:
 
 - 2.2.1 & 2.2.2 - Enable "Set time and date automatically" & Ensure time set is within appropriate limits: https://github.com/vmware-samples/euc-samples/blob/master/UEM-Samples/Profiles/macOS/Set_NTP_Server.md
 - 2.3.3 - Familiarize users with screen lock tools or corner to Start Screen Saver: Hot Corner Setup.xml
