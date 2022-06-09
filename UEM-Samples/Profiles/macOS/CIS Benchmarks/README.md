@@ -1,5 +1,5 @@
 # Profiles for CIS Benchmark 
-### (https://www.cisecurity.org/cis-benchmarks/)
+https://www.cisecurity.org/cis-benchmarks/
 
 ## Overview
 
