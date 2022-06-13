@@ -34,7 +34,7 @@ In order to deploy Netskope successfully there is a need to deploy a configurati
     ------------- | -------------
     24W52P9M7W  | com.netskope.client.Netskope-Client.NetskopeClientMacAppProxy
     24W52P9M7W  |  com.netskope.client.Netskope-Client.NetskopeClientMacDNSProxy
-4) Include the following
+4) Include the following information in the *Allowed System Extension Types* list:
   - Team ID: 24W52P9M7W
   - Select the box for "Network"
 5) Final product for System Extensions should look like:
