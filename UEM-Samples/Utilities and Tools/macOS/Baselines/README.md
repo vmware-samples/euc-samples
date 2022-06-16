@@ -13,22 +13,39 @@
 Utilizing the macOS Security Compliance Project (mSCP) to enforce baselines on macOS devices using Workspace ONE. We will review briefly how to use the mSCP to generate the baseline you are wanting to configure and then go into detail on how to deploy this configuration using Workspace ONE. We will review two different deployment options as well for environments that are Freestyle enabled and those that are not. Here is a high level overview:
 
 1) [Prerequisites for mSCP](#prerequisites-for-mSCP)
-2) Generating a Baseline
-3) Generating Guidance (profiles and scripts)
+2) [Generating a Baseline](#generating-a-baseline)
+3) [Generating Guidance](#generating-guidance)
 4) Deploying via Workspace ONE with Freestyle Orchestrator
 5) Deploying via Workspace ONE without Freestyle Orchestrator
+6) Reporting via Workspace ONE Intelligence
 
 ## Prerequisites for mSCP
 
 The first few sections are primarily going to follow along with the [mSCP wiki](https://github.com/usnistgov/macos_security/wiki) and how I go about utilizing the project to generate a baseline for CIS Level 1 in my example. First, we need to clone or download the project and necessary modules:
 1) Using Terminal on your Mac, run the following commands:
-  - 'git clone https://github.com/usnistgov/macos_security.git
+```
+git clone https://github.com/usnistgov/macos_security.git
 
 cd macos_security
 
 pip3 install -r requirements.txt --user
 
-bundle install'
-2) This will drop all the project files locally on your Mac in a new directory called 'macos_security'
+bundle install
+```
+
+2) This will drop all the project files locally on your Mac in a new directory called `macos_security`
 
 ## Generating a Baseline
+
+Now that we have the files we need locally, we can work on [generating a proper baseline file](https://github.com/usnistgov/macos_security/wiki/Generate-a-Baseline). There are many built-in baselines to choose from and they can be seen by using the following command:
+```
+./scripts/generate_baseline.py -l
+```
+In my example here I will be using the predefined 'cis_lvl1' baseline. If you are planning to use a predefine baseline there is nothing further for you to do in this step as the yaml file should already be created and located in the `macos_security/baselines` directory. 
+  - You are able to customize the baselines and generate your own tailored baseline using the following command.
+  ```
+  ./scripts/generate_baseline.py -k name_of_baseline
+  ```
+  - More details on customization can be seen [here](https://github.com/usnistgov/macos_security/wiki/Customization)
+
+## Generating Guidance
