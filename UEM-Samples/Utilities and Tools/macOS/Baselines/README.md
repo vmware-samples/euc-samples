@@ -65,11 +65,17 @@ At this point you have all the files needed to begin deploying the baseline usin
 - If your environment is enabled with Control Plane architecture and Freestyle Orchestrator, follow the [Deploying via Workspace ONE with Freestyle Orchestrator instructions](#deploying-via-workspace-one-with-freestyle-orchestrator)
 - If it is not, follow the [Deploying via Workspace ONE without Freestyle Orchestrator instructions](#deploying-via-workspace-one-without-freestyle-orchestrator)
 - In order to determine if your environment has Freestyle Orchestrator look for the icon in the upper left of your UEM Console:
-![image](https://user-images.githubusercontent.com/63124926/174119436-70f0cf2d-f00e-4269-8e74-acb286141a09.png)
-
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/63124926/174119436-70f0cf2d-f00e-4269-8e74-acb286141a09.png">
+</p>
 
 ## Deploying via Workspace ONE with Freestyle Orchestrator
 
-text
+The fun begins! By now we should have all the files needed to deploy our baseline configuration out to our macOS devices. 
+
+#### Profiles
+#### Scripts
+#### Sensors
+#### Workflow
 
 ## Deploying via Workspace ONE without Freestyle Orchestrator
