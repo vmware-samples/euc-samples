@@ -22,13 +22,13 @@ Utilizing the macOS Security Compliance Project (mSCP) to enforce baselines on m
 
 The first few sections are primarily going to follow along with the [mSCP wiki](https://github.com/usnistgov/macos_security/wiki) and how I go about utilizing the project to generate a baseline for CIS Level 1 in my example. First, we need to clone or download the project and necessary modules:
 1) Using Terminal on your Mac, run the following commands:
-  - code(git clone https://github.com/usnistgov/macos_security.git
+  - 'git clone https://github.com/usnistgov/macos_security.git
 
 cd macos_security
 
 pip3 install -r requirements.txt --user
 
-bundle install)
+bundle install'
 2) This will drop all the project files locally on your Mac in a new directory called 'macos_security'
 
 ## Generating a Baseline
