@@ -74,6 +74,28 @@ At this point you have all the files needed to begin deploying the baseline usin
 The fun begins! By now we should have all the files needed to deploy our baseline configuration out to our macOS devices. 
 
 #### Profiles
+First up we will start with deploying the necessary configuration profiles. The mSCP tool will drop these into 2 locations outlined here:
+- The organization audit plist is located at `../build/{baseline}/preferences` and is used by the tool to determine if any rules in the baseline should be exempt. This will be deployed via WS1 so it ends up in the `/Library/ManagedPreferences/` directory on the device.
+    - To do this we will utilize the [Workspace ONE Mobileconfig Importer fling](https://flings.vmware.com/workspace-one-mobileconfig-importer)
+    - Once you have installed the tool on your Mac, fill in your environment details under the Preferences menu option in the Menubar
+    - After that, use the "Select File" option and navigate the the audit plist file in the `../build/{baseline}/preferences` directory
+    - Give the profile a name and description in the upper left. Also select the managing OG of your UEM environment and the smart group you wish to assign the profile to. I have a screenshot of my example below:
+        - ![image](https://user-images.githubusercontent.com/63124926/174325113-c7ce8358-b0db-406d-91a7-28990b287c9a.png)
+    - Click "Create Profile" to go ahead and send the profile to your WS1 tenant using the API connection
+    - Once it is there in UEM, there are 2 minor edits we need to make. Edit the profile and go down to the "Custom Settings" payload where you will find your profile XML. Select "Add Version" to begin editing:
+        - Remove the first `<dict>` tag (delete line 1)
+        - Toward the bottom of the XML we are going to remove the `</dict>` tag on the line right before `<key>PayloadIdentifier</key>` (seen in screenshot below)
+        - Next we are going to rename the string for `<key>PayloadType</key>` from `<string>com.apple.ManagedClient.preferences</string>` to `<string>org.cis_lvl1.audit</string>` (seen in screenshot below)
+            - ![image](https://user-images.githubusercontent.com/63124926/174324378-f6932a34-2f13-4795-bdcc-10f420237d7b.png)
+    - Select "Save and Publish" to deploy the changes
+
+- Next we need to deploy the configuration profiles needed to enforce certain rules within the baseline. These are located at `../build/{baseline}/mobileconfigs`. In this directory you will find a folder `unsigned` containing the unsigned mobileconfig files and a folder called `preferences` containing the raw plist files. For our purposes we will utilize the `unsigned` folder.
+-  Utilizing the same tool as deploying the Audit plist we will upload the mobileconfig files to WS1 UEM - [Workspace ONE Mobileconfig Importer fling](https://flings.vmware.com/workspace-one-mobileconfig-importer)
+-  The process is the same as before: "Select File", navigate to the `../build/{baseline}/mobileconfigs/unsigned` and select a file, give it a Name/Description, select your managed OG and smart group, and then "Create Profile"
+    - You will need to repeat this step for each mobileconfig file in the directory. For example there are 14 profiles for CIS Level 1 baseline. 
+        - ![image](https://user-images.githubusercontent.com/63124926/174332315-d78fe2e8-bc54-4074-94e1-4cf476cc2818.png)
+- After completing the importing of these files you are all set from a profle perspective. 
+
 #### Scripts
 #### Sensors
 #### Workflow
