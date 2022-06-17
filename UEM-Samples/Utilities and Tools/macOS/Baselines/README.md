@@ -94,10 +94,15 @@ First up we will start with deploying the necessary configuration profiles. The 
 -  The process is the same as before: "Select File", navigate to the `../build/{baseline}/mobileconfigs/unsigned` and select a file, give it a Name/Description, select your managed OG and smart group, and then "Create Profile"
     - You will need to repeat this step for each mobileconfig file in the directory. For example there are 14 profiles for CIS Level 1 baseline. 
         - ![image](https://user-images.githubusercontent.com/63124926/174332315-d78fe2e8-bc54-4074-94e1-4cf476cc2818.png)
-- After completing the importing of these files you are all set from a profle perspective. 
+- After completing the importing of these files you are all set from a profile perspective. 
 
-#### Scripts
-#### Sensors
-#### Workflow
+#### Scripts, Sensors, and Workflow
+
+Moving on to the Scripts section. There is one main script that is versatile in what it can do (i.e. scan, remediate, pull stats, etc.) This script is located at `../build/{baseline}/{baseline}_compliance.sh`. In order to deploy this with WS1 we will follow the following methodology:
+- Compliance scan run at predetermined interval (i.e. every 12 hours)
+- After compliance scan complete, collect stats using Sensor
+- Using Workflow within Freestyle Orchestrator - trigger Remediation if device is not 100% compliant
+
+We will start with the Sensors. Utilizing the compliance script there are different flags that trigger different behaviors. For the Sensors we will focus on the reporting and collecting the compliance 
 
 ## Deploying via Workspace ONE without Freestyle Orchestrator
