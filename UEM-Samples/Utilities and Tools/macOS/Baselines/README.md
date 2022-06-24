@@ -69,6 +69,13 @@ At this point you have all the files needed to begin deploying the baseline usin
     <img src="https://user-images.githubusercontent.com/63124926/174119436-70f0cf2d-f00e-4269-8e74-acb286141a09.png">
 </p>
 
+## CHANGE
+- Deploy Profiles
+- Deploy Script via Apps & Books
+- Deploy Sensors to collect Data (formerly Custom Attributes)
+- Remediation
+    - Branch here to Freestyle and non-Freestyle
+
 ## Deploying via Workspace ONE with Freestyle Orchestrator
 
 The fun begins! By now we should have all the files needed to deploy our baseline configuration out to our macOS devices. 
