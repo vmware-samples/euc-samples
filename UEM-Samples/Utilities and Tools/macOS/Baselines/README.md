@@ -4,7 +4,7 @@
 
 - **Authors**: Matt Zaske
 - **Email**: mzaske@vmware.com
-- **Date Created**: 6/16/2022
+- **Date Created**: 6/23/2022
 - **Supported Platforms**: Workspace ONE UEM v2204
 - **Tested on macOS Versions**: macOS Monterey
 
@@ -103,6 +103,37 @@ Moving on to the Scripts section. There is one main script that is versatile in 
 - After compliance scan complete, collect stats using Sensor
 - Using Workflow within Freestyle Orchestrator - trigger Remediation if device is not 100% compliant
 
-We will start with the Sensors. Utilizing the compliance script there are different flags that trigger different behaviors. For the Sensors we will focus on the reporting and collecting the compliance 
+We will start with the Sensors. Utilizing the compliance script there are different flags that trigger different behaviors. For the Sensors we will focus on the reporting and collecting the compliance data. There are many different data points you might be interested in: Compliant Count, Non-compliant Count, % Compliant, etc. For this example I am going to walk through the creation of a Sensor for "Non-compliant Count" and you can utilize this to create whatever other Sensors you need:
+1) Navigate to Resources>Sensors in your Workspace ONE UEM Console and select Add>macOS
+2) Fill out the "General" tab by giving your Sensor a name. I will use cis_noncompliant_count
+3) After selecting "Next" you will be taken to "Details." Leave the top 2 dropdowns as default values (bash and system)
+4) Edit the "Response Data Type" to be an integer
+5) Open up the compliance script located at `../build/{baseline}/{baseline}_compliance.sh`
+6) Copy/paste the entire contents into the text editor in WS1 UEM
+7) In order to capture the data you want, you will need to modify lines 4797-4814 (end)
+    - You will delete all of these lines and repalce it with the action you are wanting
+    - In my example, I want the non-compliant count so I will use `compliance_count "non-compliant"`
+    - See screenshot below of how it should look after you are done:
+    - ![image](https://user-images.githubusercontent.com/63124926/175406992-d7476eb1-8858-4dac-a1fb-daec8d7a5696.png)
+8) You will then select "Next" followed by "Save & Assign"
+9) Complete the assignment and select the Deployment Trigger as "Periodically"
+
 
 ## Deploying via Workspace ONE without Freestyle Orchestrator
+
+Coming Soon
+
+## Notes
+- On a given device you can view the full Audit Log at `/Library/Logs/{baseline}_baseline.log`
+
+## Resources
+important links or sources?
+
+## Required Changes/Updates
+
+- Add deployment details using Workspace ONE UEM without Freestyle Orchestrator
+- Add functionality to upload full audit log to Workspace ONE UEM Console
+
+## Change Log
+
+- 2022-06-23: Created Initial File
