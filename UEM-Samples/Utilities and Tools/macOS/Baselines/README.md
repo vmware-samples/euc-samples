@@ -114,7 +114,7 @@ Moving on to the Script section, there is one main script that is versatile in w
 3. First I will build the file structure on my Mac to get ready to build the pkg. I will place the `{baseline}_compliance.sh` file in the `private\var\cis` directory:
     - ![image](https://user-images.githubusercontent.com/63124926/175644679-dfec6db9-c2cd-48a9-9294-b9ef29b30ad5.png)
 4. After that we are ready to build the pkg. Navigate to the directory, `CIS Baseline` in my case, and execute the following command:
-    - `pkgbuild --install-location / --identifier "com.vmware.cisbaseline" --version "1.0" --root ./payload/ --scripts ./scripts/ ./build/CISbaseline.pkg'
+    - `pkgbuild --install-location / --identifier "com.vmware.cisbaseline" --version "1.0" --root ./payload/ --scripts ./scripts/ ./build/CISbaseline.pkg`
 5. The pkg is dropped into the Build folder where you can grab it and go ahead and parse the pkg with VMware Admin Assistant
 6. Edit the plist file that is created to ensure the 'Name' and 'Version' keys are in line with what you are expecting. 
     - The Name key is how the app will appear in the UEM console as well as on the user's Hub Catalog.
@@ -204,16 +204,16 @@ There is certainly more data you could collect (compliant rule count, % complian
 1. Navigate to Resources>Sensors and select Add>macOS
 2. Fill out the General tab with your desired name (Must be between 2 and 64 characters using only a combination of lowercase letters, numbers, and underscores. The first character must be a lowercase letter.)
     - I will use cis_compliancescan for my example
-3. Select "Next" and you will move to the next section, "Details." Here we will leave the first 3 options as the default values (Bash, System and String).
+3. Select "Next" and you will move to the next section, "Details." Here we will change the language to `Zsh` and leave the next 2 options as the default values (System and String).
 4. Provide the following script in the textbox to trigger the compliance scan using the --check flag and the collecting the last scan information:
 ```
-#!/bin/bash
+#!/bin/zsh
 
-#path to file
+#path to file and packageid
 filepath=/private/var/cis/cis_lvl1_compliance.sh
 
 #trigger compliance scan
-sudo .$filepath --check
+zsh $filepath --check
 
 #collect last scan date/time
 lastComplianceScan=$(defaults read /Library/Preferences/org.cis_lvl1.audit.plist lastComplianceCheck)
@@ -231,16 +231,17 @@ echo "$lastComplianceScan"
 
 Next, we will configure the Sensor to collect the non-compliant rule count. We will follow the same steps as before, but with the following modifications:
 - Name: cis_noncompliant_count
+- Language: Zsh
 - Response Data Type: Integer
 - Code: 
 ```
-#!/bin/bash
+#!/bin/zsh
 
 #path to file
 filepath=/private/var/cis/cis_lvl1_compliance.sh
 
 #trigger non-compliant count
-sudo .$filepath ---non_compliant
+zsh $filepath ---non_compliant
 ```
 
 ## Deploying via Workspace ONE without Freestyle Orchestrator
