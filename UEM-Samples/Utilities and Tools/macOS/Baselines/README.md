@@ -17,11 +17,12 @@ Utilizing the macOS Security Compliance Project (mSCP) to enforce baselines on m
 3. [Generating Guidance](#generating-guidance)
 4. [Deploying Baseline with Workspace ONE](#deploying-baseline-with-workspace-one)
     1. [Profiles](#profiles)
-    2. Script
-    3. Sensors
-    4. Remediation
-        1. [Deploying via Workspace ONE with Freestyle Orchestrator](#deploying-via-workspace-one-with-freestyle-orchestrator)
-        2. [Deploying via Workspace ONE without Freestyle Orchestrator](#deploying-via-workspace-one-without-freestyle-orchestrator)
+    2. [Script](#script)
+    3. [Sensors](#sensors)
+    4. [Remediation](#remediation)
+        1. [Using Freestyle Orchestrator](#remediation-with-freestyle-orchestrator)
+        2. [Using other methods](#remediation-without-freestyle-orchestrator)
+5. [Reporting](#reporting)
 
 ## Prerequisites for mSCP
 
@@ -66,14 +67,6 @@ This command will create all files and place them in the /build folder under the
   - Using this file you can set certain rules within a baseline to be [disabled or exempt](https://github.com/usnistgov/macos_security/wiki/Compliance-Script)
 
 At this point you have all the files needed to begin deploying the baseline using Workspace ONE!
-
-
-- If your environment is enabled with Control Plane architecture and Freestyle Orchestrator, follow the [Deploying via Workspace ONE with Freestyle Orchestrator instructions](#deploying-via-workspace-one-with-freestyle-orchestrator)
-- If it is not, follow the [Deploying via Workspace ONE without Freestyle Orchestrator instructions](#deploying-via-workspace-one-without-freestyle-orchestrator)
-- In order to determine if your environment has Freestyle Orchestrator look for the icon in the upper left of your UEM Console:
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/63124926/174119436-70f0cf2d-f00e-4269-8e74-acb286141a09.png">
-</p>
 
 ## Deploying Baseline with Workspace ONE
 
@@ -213,7 +206,7 @@ There is certainly more data you could collect (compliant rule count, % complian
 filepath=/private/var/cis/cis_lvl1_compliance.sh
 
 #trigger compliance scan
-zsh $filepath --check
+zsh $filepath --check >/dev/null 2>/dev/null
 
 #collect last scan date/time
 lastComplianceScan=$(defaults read /Library/Preferences/org.cis_lvl1.audit.plist lastComplianceCheck)
@@ -229,7 +222,7 @@ echo "$lastComplianceScan"
 7. On the "Deployment" tab, select "Periodically" as the trigger. This will scan the device for compliance every 4 hours (default value).
 8. Select "Save" followed by "Close" to complete the setup of this Sensor.  
 
-Next, we will configure the Sensor to collect the non-compliant rule count. We will follow the same steps as before, but with the following modifications:
+Next, we will configure a Sensor to collect the non-compliant rule count. We will follow the same steps as before, but with the following modifications:
 - Name: cis_noncompliant_count
 - Language: Zsh
 - Response Data Type: Integer
@@ -241,10 +234,61 @@ Next, we will configure the Sensor to collect the non-compliant rule count. We w
 filepath=/private/var/cis/cis_lvl1_compliance.sh
 
 #trigger non-compliant count
-zsh $filepath ---non_compliant
+zsh $filepath --non_compliant
 ```
 
-## Deploying via Workspace ONE without Freestyle Orchestrator
+### Remediation
+
+Now that we have deployed all the scripts and profiles to our macOS devices, we need a way to ensure the device maintains complaince. To do this we need to execute the compliance script using the `--fix` parameter. In order to do this in WS1 we have a couple of options. We do not want to continually call the fix function if there is nothing to fix, so we will be utilizing our sensor from the last section `cis_noncompliant_count`. 
+
+- If your environment is enabled with Control Plane architecture and Freestyle Orchestrator, follow the [Remediation with Freestyle Orchestrator instructions](#remediation-with-freestyle-orchestrator)
+- If it is not, follow the [Remediation without Freestyle Orchestrator instructions](#remediation-without-freestyle-orchestrator)
+- In order to determine if your environment has Freestyle Orchestrator look for the icon in the upper left of your UEM Console:
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/63124926/174119436-70f0cf2d-f00e-4269-8e74-acb286141a09.png">
+</p>
+
+#### Remediation with Freestyle Orchestrator
+
+In this section we will be building a Workflow that will trigger the remediation script to execute whenever the non-compliant count is greater than 0. To do this we will first add a Script:
+1. Navigate to Resources>Scripts and then select Add>macOS
+2. In the "General" tab, give your Script a name (CIS Remediation) and I recommend leaving App Catalog Custimization disabled so end users do not see this script in their catalog.
+3. In the "Details" tab we will change the language to `Zsh` and leave the next 2 options as the default values (System and 30).
+4. Provide the following script in the textbox to trigger the remediation scan using the --fix flag 
+```
+#!/bin/zsh
+
+#path to file and packageid
+filepath=/private/var/cis/cis_lvl1_compliance.sh
+
+#trigger compliance scan
+zsh $filepath --fix >/dev/null 2>/dev/null
+
+#trigger non-compliant sensor to run and collect new value after remediation
+/usr/local/bin/hubcli sensors --trigger cis_noncompliant_count
+
+exit 0
+```
+5. Select "Next" followed by "Save"
+
+Now we can move on to building our Workflow:
+1. Select "Freestyle" in the top left of the UEM Console and you will be take to a new Freestyle Workflow (you might need to select "Get Started")
+2. On this screen you will configure the following:
+    - Name in top left
+    - Platform: macOS
+    - Assigned Smart Group
+    - Condition: Sensor (cis_noncompliant_count) does not equal 0
+    - Resource: Script (CIS Remediation)
+    - ![image](https://user-images.githubusercontent.com/63124926/176307317-96ffc088-cb87-43f5-aeca-5455bd6da9c1.png)
+3. When complete, select "Publish" in the bottom right
+
+Now you have fully deployed your Baseline to your macOS devices! Head to the [Reporting](#reporting) section for what you can do using Workspace ONE Intelligence.
+
+#### Remediation without Freestyle Orchestrator
+
+Coming Soon
+
+## Reporting
 
 Coming Soon
 
@@ -261,7 +305,6 @@ These are linked throughout the walk-through, but here is a consolidated list:
 
 - Reporting via Workspace ONE Intelligence
 - Add functionality to upload full audit log to Workspace ONE UEM Console
-- Issue with stats reporting incorrectly with the mSCP: https://github.com/usnistgov/macos_security/issues/144
 
 ## Change Log
 
