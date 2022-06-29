@@ -10,7 +10,7 @@
 
 ## Purpose
 
-Utilizing the macOS Security Compliance Project (mSCP) to enforce baselines on macOS devices using Workspace ONE. We will review briefly how to use the mSCP to generate the baseline you are wanting to configure and then go into detail on how to deploy this configuration using Workspace ONE. We will review two different deployment options as well for environments that are Freestyle enabled and those that are not. Here is a high level overview:
+Utilizing the macOS Security Compliance Project (mSCP) to enforce baselines on macOS devices using Workspace ONE. We will review briefly how to use the mSCP to generate the desired baseline and then detail the procedure to deploy this configuration using Workspace ONE. We will close by reviewing deployment options for Freestyle-enabled and non-Freestyle-enabled environments. Here is a high level overview:
 
 1. [Prerequisites for mSCP](#prerequisites-for-mSCP)
 2. [Generating a Baseline](#generating-a-baseline)
@@ -26,7 +26,8 @@ Utilizing the macOS Security Compliance Project (mSCP) to enforce baselines on m
 
 ## Prerequisites for mSCP
 
-The first few sections are primarily going to follow along with the [mSCP wiki](https://github.com/usnistgov/macos_security/wiki) and how I go about utilizing the project to generate a baseline for CIS Level 1 in my example. First, we need to clone or download the project and necessary modules:
+The first few sections follow the [mSCP wiki](https://github.com/usnistgov/macos_security/wiki), specifically how to utilize the the project to generate a baseline for CIS Level 1. First, we need to clone or download the project and necessary modules:
+
 1) Using Terminal on your Mac, run the following commands:
 ```
 git clone https://github.com/usnistgov/macos_security.git
@@ -46,7 +47,7 @@ Now that we have the files we need locally, we can work on [generating a proper 
 ```
 ./scripts/generate_baseline.py -l
 ```
-In my example here I will be using the predefined 'cis_lvl1' baseline. If you are planning to use a predefine baseline there is nothing further for you to do in this step as the YAML file should already be created and located in the `../macos_security/baselines` directory. 
+In the example below, we'll utilize the predefined 'cis_lvl1' baseline. If you are planning to use a predefine baseline there is nothing further for you to do in this step as the YAML file should already be created and located in the `../macos_security/baselines` directory. 
   - You are able to customize the baselines and generate your own tailored baseline using the following command.
   ```
   ./scripts/generate_baseline.py -k name_of_baseline
@@ -82,7 +83,8 @@ First up we will start with deploying the necessary configuration profiles. The 
     - To do this we will utilize the [Workspace ONE Mobileconfig Importer fling](https://flings.vmware.com/workspace-one-mobileconfig-importer)
     - Once you have installed the tool on your Mac, fill in your environment details under the Preferences menu option in the Menubar
     - After that, use the "Select File" option and navigate the the audit plist file in the `../build/{baseline}/preferences` directory
-    - Give the profile a name and description in the upper left. Also select the managing OG of your UEM environment and the smart group you wish to assign the profile to. I have a screenshot of my example below:
+    - Give the profile a name and description in the upper left. Also select the managing OG of your UEM environment and the smart group you wish to assign the profile to. I have an example screenshot below:
+        - Use a naming standard for your profiles such as `macOS - CIS - {benchmark control}` seen in screenshot below
         - ![image](https://user-images.githubusercontent.com/63124926/174325113-c7ce8358-b0db-406d-91a7-28990b287c9a.png)
     - Click "Create Profile" to go ahead and send the profile to your WS1 tenant using the API connection
     - Once it is there in UEM, there are 2 minor edits we need to make. Edit the profile and go down to the "Custom Settings" payload where you will find your profile XML. Select "Add Version" to begin editing:
@@ -94,7 +96,7 @@ First up we will start with deploying the necessary configuration profiles. The 
 
 - Next we need to deploy the configuration profiles needed to enforce certain rules within the baseline. These are located at `../build/{baseline}/mobileconfigs`. In this directory you will find a folder `unsigned` containing the unsigned mobileconfig files and a folder called `preferences` containing the raw plist files. For our purposes we will utilize the `unsigned` folder.
 - Before using the tool to import the mobileconfig files to Workspace ONE, we will need to run the following command to delete an uneeded key from the files. Confirm you are still in the `macos_security` working directory and run the following command:
-    - `for file in /Users/mzaske/Documents/github/macos_security/build/cis_lvl1/mobileconfigs/unsigned/*; do sed -i '' '5,9d' $file; done`
+    - `for file in ./build/cis_lvl1/mobileconfigs/unsigned/*; do sed -i '' '5,9d' $file; done`
     - Replace `cis_lvl1` with the baseline you are deploying and point to the full path of the mobileconfig unsigned profiles
 -  Utilizing the same tool as deploying the Audit plist we will upload the mobileconfig files to WS1 UEM - [Workspace ONE Mobileconfig Importer fling](https://flings.vmware.com/workspace-one-mobileconfig-importer)
 -  The process is the same as before: "Select File", navigate to the `../build/{baseline}/mobileconfigs/unsigned` and select a file, give it a Name/Description, select your managed OG and smart group, and then "Create Profile"
@@ -105,11 +107,11 @@ First up we will start with deploying the necessary configuration profiles. The 
 ### Script
 
 Moving on to the Script section, there is one main script that is versatile in what it can do (i.e. scan, remediate, pull stats, etc.). This script is located at `../build/{baseline}/{baseline}_compliance.sh`. In order to deploy this with WS1 we will use a pkg we create:
-1. There are many packaging tools out there you can use to accomplish this task, but for my example I will use pkgbuild CLI.
-2. Essentially we want to deploy the script file, `{baseline}_compliance.sh`, to a known location on the device. For my example I will use the `private\var\cis` directory (cis referring to the baseline I am deploying in my example).
-3. First I will build the file structure on my Mac to get ready to build the pkg. I will place the `{baseline}_compliance.sh` file in the `private\var\cis` directory:
+1. There are many packaging tools out there you can use to accomplish this task, but for this example I will use pkgbuild CLI.
+2. Essentially we want to deploy the script file, `{baseline}_compliance.sh`, to a known location on the device. In this example we will use the `private\var\cis` directory (cis referring to the baseline).
+3. First we build the file structure on your Mac to get ready to build the pkg. We will place the `{baseline}_compliance.sh` file in the `private\var\cis` directory:
     - ![image](https://user-images.githubusercontent.com/63124926/175644679-dfec6db9-c2cd-48a9-9294-b9ef29b30ad5.png)
-4. After that we are ready to build the pkg. Navigate to the directory, `CIS Baseline` in my case, and execute the following command:
+4. After that we are ready to build the pkg. Navigate to the directory, `CIS Baseline` in this case, and execute the following command:
     - `pkgbuild --install-location / --identifier "com.vmware.cisbaseline" --version "1.0" --root ./payload/ --scripts ./scripts/ ./build/CISbaseline.pkg`
 5. The pkg is dropped into the Build folder where you can grab it and go ahead and parse the pkg with VMware Admin Assistant
 6. Edit the plist file that is created to ensure the 'Name' and 'Version' keys are in line with what you are expecting. 
@@ -199,7 +201,7 @@ First things first, if you are on an older version of Workspace ONE UEM and do n
 There is certainly more data you could collect (compliant rule count, % compliant, etc.) if needed. We will start with the configuration of triggering the compliance scan and collecting the last compliance scan date/time:
 1. Navigate to Resources>Sensors and select Add>macOS
 2. Fill out the General tab with your desired name (Must be between 2 and 64 characters using only a combination of lowercase letters, numbers, and underscores. The first character must be a lowercase letter.)
-    - I will use cis_compliancescan for my example
+    - I will use cis_compliancescan in this example
 3. Select "Next" and you will move to the next section, "Details." Here we will change the language to `Zsh` and leave the next 2 options as the default values (System and String).
 4. Provide the following script in the textbox to trigger the compliance scan using the --check flag and the collecting the last scan information:
 ```
