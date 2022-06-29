@@ -4,9 +4,9 @@
 
 - **Authors**: Matt Zaske
 - **Email**: mzaske@vmware.com
-- **Date Created**: 6/23/2022
+- **Date Created**: 6/29/2022
 - **Supported Platforms**: Workspace ONE UEM v2204
-- **Tested on macOS Versions**: macOS Monterey
+- **Tested on macOS Versions**: macOS Big Sur
 
 ## Purpose
 
@@ -93,10 +93,13 @@ First up we will start with deploying the necessary configuration profiles. The 
     - Select "Save and Publish" to deploy the changes
 
 - Next we need to deploy the configuration profiles needed to enforce certain rules within the baseline. These are located at `../build/{baseline}/mobileconfigs`. In this directory you will find a folder `unsigned` containing the unsigned mobileconfig files and a folder called `preferences` containing the raw plist files. For our purposes we will utilize the `unsigned` folder.
+- Before using the tool to import the mobileconfig files to Workspace ONE, we will need to run the following command to delete an uneeded key from the files. Confirm you are still in the `macos_security` working directory and run the following command:
+    - `for file in /Users/mzaske/Documents/github/macos_security/build/cis_lvl1/mobileconfigs/unsigned/*; do sed -i '' '5,9d' $file; done`
+    - Replace `cis_lvl1` with the baseline you are deploying and point to the full path of the mobileconfig unsigned profiles
 -  Utilizing the same tool as deploying the Audit plist we will upload the mobileconfig files to WS1 UEM - [Workspace ONE Mobileconfig Importer fling](https://flings.vmware.com/workspace-one-mobileconfig-importer)
 -  The process is the same as before: "Select File", navigate to the `../build/{baseline}/mobileconfigs/unsigned` and select a file, give it a Name/Description, select your managed OG and smart group, and then "Create Profile"
-    - You will need to repeat this step for each mobileconfig file in the directory. For example there are 14 profiles for CIS Level 1 baseline. 
-        - ![image](https://user-images.githubusercontent.com/63124926/174332315-d78fe2e8-bc54-4074-94e1-4cf476cc2818.png)
+    - ***You will need to repeat this step for each mobileconfig file in the directory. For example there are 14 profiles for CIS Level 1 baseline.*** 
+        - ![image](https://user-images.githubusercontent.com/63124926/176467217-e84eaaca-984d-4015-a983-80ede9db314e.png)
 - After completing the importing of these files you are all set from a profile perspective. 
 
 ### Script
@@ -278,6 +281,7 @@ Now we can move on to building our Workflow:
     - Platform: macOS
     - Assigned Smart Group
     - Condition: Sensor (cis_noncompliant_count) does not equal 0
+        - **Under "Additional Settings" be sure to enable "Re-evaluate Condition"**
     - Resource: Script (CIS Remediation)
     - ![image](https://user-images.githubusercontent.com/63124926/176307317-96ffc088-cb87-43f5-aeca-5455bd6da9c1.png)
 3. When complete, select "Publish" in the bottom right
@@ -286,7 +290,38 @@ Now you have fully deployed your Baseline to your macOS devices! Head to the [Re
 
 #### Remediation without Freestyle Orchestrator
 
-Coming Soon
+Without Freestyle Orchestrator we can make another Sensor (or Custom Attribute profile) perform a smilar function:
+1. Following similar steps outlined [here](#sensors), we will add a new Sensor
+    - Name: cis_remediation
+    - Language: Zsh
+    - Execution Context: System
+    - Response Data Type: String
+    - Code:
+```
+#!/bin/zsh
+
+#path to file and packageid
+filepath=/private/var/cis/cis_lvl1_compliance.sh
+
+#check if script needs to run_fix
+#if cis_noncompliant_count = 0 then exit
+noncompliantCount=$(zsh $filepath --non_compliant)
+if [[ $noncompliantCount == 0 ]]; then
+  echo "Compliant"
+  exit 0
+fi
+
+#trigger run_fix
+zsh $filepath --fix >/dev/null 2>/dev/null
+
+echo "Remediation in Progress"
+
+exit 0
+```
+2. After saving the Sensor, you will create your assignment. 
+3. Set your deployment trigger to "periodically" which will check to see if rememdiation is needed every 4 hours by default.
+
+Now you have fully deployed your Baseline to your macOS devices! Head to the [Reporting](#reporting) section for what you can do using Workspace ONE Intelligence.
 
 ## Reporting
 
@@ -308,4 +343,4 @@ These are linked throughout the walk-through, but here is a consolidated list:
 
 ## Change Log
 
-- 2022-06-23: Created Initial File
+- 2022-06-29: Created Initial File
