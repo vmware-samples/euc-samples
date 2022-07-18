@@ -1,0 +1,44 @@
+<dict>
+	<key>Restrictions</key>
+	<array>
+		<dict>
+			<key>Attributes</key>
+			<dict>
+				<key>name</key>
+				<array>
+					<string>Install macOS Ventura</string>
+          <string>Install macOS Ventura Beta</string>
+				</array>
+				<key>bundleId</key>
+				<array>
+					<string>com.apple.InstallAssistant.Ventura</string>
+					<string>com.apple.InstallAssistant.macOSVentura</string>
+					<string>com.apple.InstallAssistant.Seed.macOS13Seed1</string>
+				</array>
+				<key>cdhash</key>
+				<array>
+					<string>1bf92238272cc6a51607cec2df4175ab4fffb556</string>
+          <string>d2fc012a68692c4070afeb21f74a7032a898c261</string>
+				</array>
+			</dict>
+			<key>Actions</key>
+			<array>
+			<integer>1</integer>
+			</array>
+			<key>Message</key>
+			<string>You are not permitted to install macOS Ventura.</string>
+		</dict>
+	</array>
+	<key>PayloadDisplayName</key>
+	<string>Restricted Software Policy</string>
+	<key>PayloadOrganization</key>
+	<string>VMware</string>
+	<key>PayloadType</key>
+	<string>com.vmware.hub.mac.restrictions</string>
+	<key>PayloadUUID</key>
+	<string>3955DB1E-026C-4909-A278-84558AC28268</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+  <key>PayloadIdentifier</key>
+	<string>com.vmware.hub.mac.restrictions.3955DB1E-026C-4909-A278-84558AC28268</string>
+</dict>
