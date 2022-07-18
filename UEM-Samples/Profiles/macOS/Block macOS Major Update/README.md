@@ -35,6 +35,6 @@ The following delays Major OS updates (*enforcedSoftwareUpdateMajorOSDeferredIns
 
 This feature can use multiple combinations of installer names, bundleIDs (obtained from the Info.plist file), and the cdhash for the macOS Installer (obtained using `/usr/bin/codesign -dvvv /Applications/Install\ macOS\ Monterey.app/Contents/Resources/startosinstall`).
 
-Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM. You will find examples in this repo for Monterrey and Ventura (beta currently). 
+Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in Workspace ONE UEM. You will find examples in this repo for blocking Monterey and Ventura (beta currently). 
 
-More information on this feature can be seen here: https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/macOS_Platform/GUID-AppsProcessRestrictionsformacOS.html -+
+More information on this feature can be seen here: https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/macOS_Platform/GUID-AppsProcessRestrictionsformacOS.html
