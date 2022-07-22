@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#download hub
+hubURL="https://ds1380.awmdm.com/DeviceServices/resources/VMwareWorkspaceONEIntelligentHub.pkg"
+dlLocation="/Library/Application Support/VMware/MigratorResources"
+mkdir -p "$dlLocation"
+curl -o "$dlLocation/hub.pkg" $hubURL
+
+#install hub
+installer -pkg "$dlLocation/hub.pkg" -target /
+
+# check if Installed
+if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then exit 0; else exit 1; fi
