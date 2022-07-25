@@ -6,7 +6,7 @@
 	<string>com.vmware.migrator</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/bin/python3</string>
+		<string>/usr/local/bin/python3</string>
 		<string>/Library/Application Support/VMware/migrator.py</string>
 		<string>--custom</string>
 		<string>--removal-script</string>

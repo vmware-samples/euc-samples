@@ -5,7 +5,7 @@ alertText="Mac Migration In Progress..."
 alertMessage="Please standby as the migration is underway. Further diaglog and input will begin shortly..."
 currentUser=$(stat -f%Su /dev/console)
 currentUID=$(id -u "$currentUser")
-/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"Ok\"} default button 1" &
+/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"OK\"} default button 1" &
 
 #download hub
 dlLocation="/Library/Application Support/VMware/MigratorResources"
@@ -15,8 +15,7 @@ hubURL="https://packages.vmware.com/wsone/VMwareWorkspaceONEIntelligentHub.pkg"
 if [ ! -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then
   if [ ! -d "$dlLocation" ]; then
     mkdir -p "$dlLocation"
-      if [ -f "$hubfile" ];
-        then
+      if [ -f "$hubfile" ]; then
           echo "hub already downloaded" >> /var/log/vmw_migrator.log
       else
           curl -o "$hubfile" $hubURL
@@ -25,24 +24,22 @@ if [ ! -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then
 fi
 
 # check if Installed
-if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ];
-  then
+if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then
     echo "hub already installed" >> /var/log/vmw_migrator.log
-  else
+else
     #install hub
     installer -pkg "$dlLocation/hub.pkg" -target /
+    #close hub after install
+    hubStatus=$(/bin/ps aux | /usr/bin/grep "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep")
+    while [ ! -n "$hubStatus" ]
+    do
+      #waiting for hub to launch
+      #echo "not launched"
+      hubStatus=$(/bin/ps aux | /usr/bin/grep "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep")
+    done
+    #kill hub
+    /bin/ps auxww | /usr/bin/grep -i "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep" | /usr/bin/awk '{ print $2 }' | /usr/bin/xargs kill
 fi
-
-#close hub after install
-hubStatus=$(/bin/ps aux | /usr/bin/grep "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep")
-while [ ! -n "$hubStatus" ]
-do
-  #waiting for hub to launch
-  #echo "not launched"
-  hubStatus=$(/bin/ps aux | /usr/bin/grep "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep")
-done
-#kill hub
-/bin/ps auxww | /usr/bin/grep -i "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep" | /usr/bin/awk '{ print $2 }' | /usr/bin/xargs kill
 
 # Make python3 file in /usr/local/bin
 FILE=/usr/local/bin/python3
@@ -72,7 +69,6 @@ if [ ! -f "$FILE" ]; then
 fi
 
 #Install certifi and update ca certificates
-#!/bin/sh
 
 #/Library/Frameworks/Python.framework/Versions/@PYVER@/bin/python@PYVER@ << "EOF"
 /Library/Application\ Support/AirWatch/Data/Munki/bin/Python.framework/Versions/3.10/bin/python3 << "EOF"
