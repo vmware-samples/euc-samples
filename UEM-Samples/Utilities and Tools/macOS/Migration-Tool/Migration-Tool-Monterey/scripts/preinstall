@@ -1,13 +1,25 @@
 #!/bin/bash
 
-#download hub
-hubURL="https://ds1380.awmdm.com/DeviceServices/resources/VMwareWorkspaceONEIntelligentHub.pkg"
-dlLocation="/Library/Application Support/VMware/MigratorResources"
-mkdir -p "$dlLocation"
-curl -o "$dlLocation/hub.pkg" $hubURL
-
-#install hub
-installer -pkg "$dlLocation/hub.pkg" -target /
-
 # check if Installed
+if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then
+  exit 0
+else
+  #notify user that migration is underway - intelligent hub is downloading and installing
+  alertText="Mac Migration In Progress..."
+  alertMessage="Please standby as the migration is underway. Further diaglog and input will begin shortly..."
+  currentUser=$(stat -f%Su /dev/console)
+  currentUID=$(id -u "$currentUser")
+  /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop"
+
+  #download hub
+  hubURL="https://packages.vmware.com/wsone/VMwareWorkspaceONEIntelligentHub.pkg"
+  dlLocation="/Library/Application Support/VMware/MigratorResources"
+  mkdir -p "$dlLocation"
+  curl -o "$dlLocation/hub.pkg" $hubURL
+  
+  #install hub
+  installer -pkg "$dlLocation/hub.pkg" -target /
+fi
+
+#ensure install successful
 if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then exit 0; else exit 1; fi
