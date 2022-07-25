@@ -64,6 +64,7 @@ def depnotify(text):
 def getcurrentconsoleuser():
     # https://macmule.com/2014/11/19/how-to-get-the-currently-logged-in-user-in-a-more-apple-approved-way/
     cfuser = str(subprocess.check_output(['defaults', 'read', '/Library/Preferences/com.apple.loginwindow.plist', 'lastUserName']), 'utf8')
+    cfuser = cfuser.replace("\n", "")
     return cfuser  # returns a 3-tuple - (Username, UID, GroupID) - so username is cfuser[0]
 
 
