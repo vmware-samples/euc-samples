@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 # encoding: utf-8
 #
 # Copyright 2020 VMware Inc.
@@ -28,13 +28,9 @@ import subprocess
 import sys
 import time
 import urllib.error
-import urllib.error
 import urllib.parse
-import urllib.parse
-import urllib.request
 import urllib.request
 import uuid
-
 
 WorkspaceServicesProfile = 'Workspace Services'
 DeviceManagerProfile = 'Device Manager'
@@ -47,10 +43,15 @@ resourcesdir = '/Library/Application Support/VMware/MigratorResources/'
 ldpath = '/Library/LaunchDaemons/com.vmware.migrator.plist'
 ldidentifier = 'com.vmware.migrator'
 
+# with open('/tmp/migrator.txt', 'w') as f:
+#     f.write('Start of Install\n')
+
 
 def oslog(text):
     try:
         print(('[Migrator] ' + str(text)))
+        #with open('/tmp/migrator.txt', 'a') as f:
+        #    f.write('[Migrator] ' + str(text) + '\n')
     except Exception as e:  # noqa
         print(e)
 
@@ -64,6 +65,7 @@ def depnotify(text):
 def getcurrentconsoleuser():
     # https://macmule.com/2014/11/19/how-to-get-the-currently-logged-in-user-in-a-more-apple-approved-way/
     cfuser = str(subprocess.check_output(['defaults', 'read', '/Library/Preferences/com.apple.loginwindow.plist', 'lastUserName']), 'utf8')
+    cfuser = cfuser.replace("\n", "")
     return cfuser  # returns a 3-tuple - (Username, UID, GroupID) - so username is cfuser[0]
 
 
@@ -206,13 +208,15 @@ def wait_for_input(username=True, email=False):
 
 
 def wait_for_unenrollment():
-    profilelist = str(subprocess.check_output(['sudo', '/usr/bin/profiles', '-vP']))
+    #profilelist = str(subprocess.check_output(['sudo', '/usr/bin/profiles', '-vP']))
+    profilelist = str(subprocess.check_output(['/usr/bin/profiles', '-vP']))
     if 'com.apple.mdm' in profilelist:
         oslog('Device is enrolled - com.apple.mdm payload found')
         not_enrolled = False
         runcount = 0
         while runcount < 270:
-            profilelist = str(subprocess.check_output(['sudo', '/usr/bin/profiles', '-vP']))
+            #profilelist = str(subprocess.check_output(['sudo', '/usr/bin/profiles', '-vP']))
+            profilelist = str(subprocess.check_output(['/usr/bin/profiles', '-vP']))
             if 'com.apple.mdm' in profilelist:
                 oslog('Still enrolled, waiting for unenrollment...')
             else:
@@ -457,6 +461,7 @@ def main():
             oslog('GET - ' + url)
 
         try:
+
             req = urllib.request.Request(url=url, headers=HEADERS)
             response = urllib.request.urlopen(req).read()
             oslog('Raw Response - ' + str(response))
@@ -475,7 +480,8 @@ def main():
                 oslog('Failed - Error code: %s' % str(e.code))
             oslog(e.read())
             depnotify('Command: WindowStyle: Activate')
-            depnotify('Command: Quit: Error retrieving User Info from WSONE')
+            # depnotify('Command: Quit: Error retrieving User Info from WSONE')
+            depnotify('Command: Quit: Error retrieving User Info from WSONE %s' % str(e.reason))
             cleanup()
 
 
@@ -641,6 +647,12 @@ def main():
         else:
             oslog('Downloading Enrollment Profile')
             depnotify('Status: Downloading Workspace ONE UEM enrollment profile')
+            if not os.path.isfile(resourcesdir):
+                try:
+                    os.mkdir(resourcesdir)
+                except Exception as e:
+                    oslog(e)
+                    oslog('Error creating directory for profile')
             urllib.request.urlretrieve(enrollprofileurl,
                                        '/Library/Application Support/VMware/MigratorResources/*.mobileconfig')
             oslog('Downloaded to /Library/Application Support/VMware/MigratorResources/*.mobileconfig')
@@ -672,8 +684,8 @@ def main():
         # Remove Workspace ONE UEM (formerly known as AirWatch)
         oslog('Removing Workspace ONE UEM')
         depnotify('Status: Removing Workspace ONE UEM')
-        runcmd('/bin/bash', '/Library/Scripts/hubuninstaller.sh')
-        runcmd('/bin/rm', '-rf', '/Library/Application Support/AirWatch/')
+        #runcmd('/bin/bash', '/Library/Scripts/hubuninstaller.sh')
+        #runcmd('/bin/rm', '-rf', '/Library/Application Support/AirWatch/')
         ORIGIN_HEADERS = {}
         url = originurl + '/api/mdm/devices/commands?command=EnterpriseWipe&searchBy=Serialnumber&id=' + deviceserial
         ORIGIN_HEADERS['Authorization'] = originauth
@@ -714,7 +726,7 @@ def main():
         if opts.enrollment_profile_path:
             enrollmentProfilePath = opts.enrollment_profile_path
     else:
-        enrollmentProfilePath = '/Library/Application Support/VMware/MigratorResources/*.mobileconfig'
+        enrollmentProfilePath = '/Library/Application\ Support/VMware/MigratorResources/*.mobileconfig'
 
     # Opening the profile, which opens System Preferences > Profiles pane,
     # the user would need to go through the GUI prompts to install the profile (enroll)
