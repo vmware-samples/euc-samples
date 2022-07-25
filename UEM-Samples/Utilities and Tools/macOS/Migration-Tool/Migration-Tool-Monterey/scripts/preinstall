@@ -1,25 +1,129 @@
 #!/bin/bash
 
-# check if Installed
-if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then
-  exit 0
-else
-  #notify user that migration is underway - intelligent hub is downloading and installing
-  alertText="Mac Migration In Progress..."
-  alertMessage="Please standby as the migration is underway. Further diaglog and input will begin shortly..."
-  currentUser=$(stat -f%Su /dev/console)
-  currentUID=$(id -u "$currentUser")
-  /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop"
+#notify user that migration is underway - intelligent hub is downloading and installing
+alertText="Mac Migration In Progress..."
+alertMessage="Please standby as the migration is underway. Further diaglog and input will begin shortly..."
+currentUser=$(stat -f%Su /dev/console)
+currentUID=$(id -u "$currentUser")
+/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"Ok\"} default button 1" &
 
-  #download hub
-  hubURL="https://packages.vmware.com/wsone/VMwareWorkspaceONEIntelligentHub.pkg"
-  dlLocation="/Library/Application Support/VMware/MigratorResources"
-  mkdir -p "$dlLocation"
-  curl -o "$dlLocation/hub.pkg" $hubURL
-  
-  #install hub
-  installer -pkg "$dlLocation/hub.pkg" -target /
+#download hub
+dlLocation="/Library/Application Support/VMware/MigratorResources"
+hubfile="$dlLocation/hub.pkg"
+hubURL="https://packages.vmware.com/wsone/VMwareWorkspaceONEIntelligentHub.pkg"
+
+if [ ! -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then
+  if [ ! -d "$dlLocation" ]; then
+    mkdir -p "$dlLocation"
+      if [ -f "$hubfile" ];
+        then
+          echo "hub already downloaded" >> /var/log/vmw_migrator.log
+      else
+          curl -o "$hubfile" $hubURL
+      fi
+  fi
 fi
 
-#ensure install successful
-if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then exit 0; else exit 1; fi
+# check if Installed
+if [ -d "/Applications/Workspace ONE Intelligent Hub.app" ];
+  then
+    echo "hub already installed" >> /var/log/vmw_migrator.log
+  else
+    #install hub
+    installer -pkg "$dlLocation/hub.pkg" -target /
+fi
+
+#close hub after install
+hubStatus=$(/bin/ps aux | /usr/bin/grep "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep")
+while [ ! -n "$hubStatus" ]
+do
+  #waiting for hub to launch
+  #echo "not launched"
+  hubStatus=$(/bin/ps aux | /usr/bin/grep "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep")
+done
+#kill hub
+/bin/ps auxww | /usr/bin/grep -i "/Applications/Workspace ONE Intelligent Hub.app/Contents/MacOS/Intelligent Hub" | /usr/bin/grep -v "grep" | /usr/bin/awk '{ print $2 }' | /usr/bin/xargs kill
+
+# Make python3 file in /usr/local/bin
+FILE=/usr/local/bin/python3
+if [ ! -f "$FILE" ]; then
+  echo "Adding link to python3 from hub" >> /var/log/vmw_migrator.log
+  ln -sf /Library/Application\ Support/AirWatch/Data/Munki/bin/Python.framework/Versions/3.10/bin/python3 /usr/local/bin/python3
+fi
+
+FILE=~/.zshrc
+if [ ! -f "$FILE" ]; then
+    if grep -Fxq 'export PATH="/usr/local/bin:$PATH"' $FILE
+      then
+        echo "path already updated in .zshrc" >> /var/log/vmw_migrator.log
+    else
+        echo 'export PATH="/usr/local/bin:$PATH"' >> $FILE
+    fi
+fi
+
+FILE=~/.bashrc
+if [ ! -f "$FILE" ]; then
+    if grep -Fxq 'export PATH="/usr/local/bin:$PATH"' $FILE
+      then
+        echo "path already updated in .zshrc" >> /var/log/vmw_migrator.log
+    else
+        echo 'export PATH="/usr/local/bin:$PATH"' >> $FILE
+    fi
+fi
+
+#Install certifi and update ca certificates
+#!/bin/sh
+
+#/Library/Frameworks/Python.framework/Versions/@PYVER@/bin/python@PYVER@ << "EOF"
+/Library/Application\ Support/AirWatch/Data/Munki/bin/Python.framework/Versions/3.10/bin/python3 << "EOF"
+# install_certifi.py
+#
+# sample script to install or update a set of default Root Certificates
+# for the ssl module.  Uses the certificates provided by the certifi package:
+#       https://pypi.python.org/pypi/certifi
+import os
+import os.path
+import ssl
+import stat
+import subprocess
+import sys
+
+STAT_0o775 = ( stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
+             | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP
+             | stat.S_IROTH |                stat.S_IXOTH )
+def main():
+    #openssl_dir='/Library/Application Support/AirWatch/Data/Munki/bin/Python.framework/Versions/3.10/etc/openssl'
+    #openssl_cafile='cert.pem'
+
+    openssl_dir, openssl_cafile = os.path.split(
+        ssl.get_default_verify_paths().openssl_cafile)
+
+    try:
+        print(1)
+        os.makedirs(openssl_dir)
+    except FileExistsError:
+        print('Error creating directory openssl_cafile')
+        pass
+
+    print(" -- pip install --upgrade certifi")
+    subprocess.check_call([sys.executable,
+        "-E", "-s", "-m", "pip", "install", "--upgrade", "certifi"])
+    import certifi
+
+    # change working directory to the default SSL directory
+    print(2)
+    os.chdir(openssl_dir)
+    relpath_to_certifi_cafile = os.path.relpath(certifi.where())
+    print(" -- removing any existing file or link")
+    try:
+        os.remove(openssl_cafile)
+    except FileNotFoundError:
+        pass
+    print(" -- creating symlink to certifi certificate bundle")
+    os.symlink(relpath_to_certifi_cafile, openssl_cafile)
+    print(" -- setting permissions")
+    os.chmod(openssl_cafile, STAT_0o775)
+    print(" -- update complete")
+if __name__ == '__main__':
+    main()
+EOF
