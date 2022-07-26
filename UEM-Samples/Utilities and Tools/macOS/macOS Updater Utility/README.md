@@ -41,7 +41,7 @@ In order to make the MDM commands to download and install macOS updates, mUU uti
 4. On the "Details" tab you will do the following:
     1. Leave the "Language" as Bash and "Execution Context" as System
     2. The timeout will need to be set to 30 seconds longer than "promptTimer" which is explained in the [Profile](#profile) section below
-    3. Upload or copy/paste the contents of the `macOSupdater.sh` file: 
+    3. Upload or copy/paste the contents of the `macOSupdater.sh` [file](https://github.com/mzaske3/euc-samples/blob/a7b5b62f035701b278fe350dd363653670c7aec7/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdater.sh)
 5. After selecting "Next" you will configure the "Variables" section. It is very important that the variables names match exactly as below (screenshot as well for reference).
 6. Then select "Save" and you will be taken back to the Scripts List View. Here you will select the bubble the left of your Script and select "Assign"
 7. Selct "New Assignement" and fill in the "Definition" tab as needed. Ensure to scope the assignment to only devices intended to upgrade using proper smart group.
@@ -63,7 +63,7 @@ The behavior the end user experiences is controlled by a configuration profile t
 1. Click **Add > Profile > macOS > Device** and complete the General information
     1. Ideally you would assign this profile to the same smart group that you assigned the Script to.
 2. Select the "Custom Settings" payload and select "Add" or "Configure"
-3. Paste in the XML content from the `macOSupdaterSettings.xml` file
+3. Paste in the XML content from the `macOSupdaterSettings.xml` [file](https://github.com/mzaske3/euc-samples/blob/a7b5b62f035701b278fe350dd363653670c7aec7/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdaterSettings.xml)
     1. Make any modifications as you see fit to the customizable options shown below.
 4. Save and Publish the profile once completed.
 
@@ -78,7 +78,9 @@ Here is a breakdown of the keys and their meaning:
 | messageBody | string | This will upgrade your computer the latest version of macOS. It will quit out of all open applications. Please make sure to save your documents and data before proceeding. This installation will restart your computer and may take several minutes to complete. If you have questions and/or concerns, please contact your IT Support team. | The message body of the prompt dialog box that is displayed to the user. |
 
 ## Notes
-
+- Action is only taken on the device (i.e. user prompted) if both the Script and Profile are deployed to the device and the following criteria are met:
+    - User is logged into the Mac
+    - Current OS version is less than the desired OS version
 
 ## Required Changes/Updates
 
