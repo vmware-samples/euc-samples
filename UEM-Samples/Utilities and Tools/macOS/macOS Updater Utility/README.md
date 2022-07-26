@@ -10,7 +10,7 @@
 
 ## Purpose
 
-The macOS Updater Utility (mUU) keeps your Mac device fleet up to date by prompting and, if needed, forcing users to update to your specified version of macOS. mUU utilizes [Apple's MDM Commands](https://developer.apple.com/documentation/devicemanagement/scheduleosupdatecommand/command/updatesitem) to download and install the needed updates via the Workspace ONE UEM API. The tool will allow you to specify max number of deferrals, deferral grace period and more! Read more to find out how to deploy this solution using Workspace ONE UEM!
+The macOS Updater Utility (mUU) keeps your Mac device fleet up to date by prompting users to update to your specified version of macOS. If necessary, mUU will force users to update their OS. mUU utilizes [Apple's MDM Commands](https://developer.apple.com/documentation/devicemanagement/scheduleosupdatecommand/command/updatesitem) to download and install updates via the Workspace ONE UEM API. mUU will allow you to specify max number of deferrals, deferral grace period, and more! Read more to find out how to deploy this solution using Workspace ONE UEM. 
 <p align="center">
     <img width="532" alt="image" src="https://user-images.githubusercontent.com/63124926/181076575-23266933-bff4-46fd-adf9-ab332054f994.png">
 </p>
@@ -31,7 +31,7 @@ In order to make the MDM commands to download and install macOS updates, mUU uti
 2. Search for and select "OAuth Client Management"
 3. Select "Add" and fill in the details similar to below. Feel free to modify as you see fit:
     1. <img width="1165" alt="image" src="https://user-images.githubusercontent.com/63124926/181052726-89d89b96-9c20-4817-9946-d8ef55639e14.png">
-4. After selecting "Save" you will need to note/save the Client ID and Secret. These will be needed in a later step when deploying the script. 
+4. After selecting "Save" you will need to note/save the Client ID and Secret. This is the only time you will be able to access the Client Secret, so ensure to keep it in a safe place. These will be needed in a later step when deploying the script. 
 
 ## Deploying macOS Updater Utility
 #### Script
@@ -42,7 +42,7 @@ In order to make the MDM commands to download and install macOS updates, mUU uti
     1. Leave the "Language" as Bash and "Execution Context" as System
     2. The timeout will need to be set to 30 seconds longer than "promptTimer" which is explained in the [Profile](#profile) section below
     3. Upload or copy/paste the contents of the `macOSupdater.sh` [file](https://github.com/mzaske3/euc-samples/blob/a7b5b62f035701b278fe350dd363653670c7aec7/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdater.sh)
-5. After selecting "Next" you will configure the "Variables" section. It is very important that the variables names match exactly as below (screenshot as well for reference).
+5. After selecting "Next" you will configure the "Variables" section. It is very important that the variables names match exactly as below (see table and screenshot below).
 6. Then select "Save" and you will be taken back to the Scripts List View. Here you will select the bubble the left of your Script and select "Assign"
 7. Selct "New Assignement" and fill in the "Definition" tab as needed. Ensure to scope the assignment to only devices intended to upgrade using proper smart group.
 8. After selecting "Next" you will configure the "Deployment" tab:
