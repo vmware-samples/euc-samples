@@ -9,7 +9,6 @@
 # Designed to keep macOS devices on the desired OS version
 # by utilizing Apples MDM commands
 #
-# GitHub:
 #
 ##################################
 
