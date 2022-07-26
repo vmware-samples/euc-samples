@@ -199,6 +199,7 @@ installUpdate () {
       mdmCommand "InstallForceRestart" "ProductKey" "$desiredProductKey"
     fi
   fi
+  /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"The update is now installing.  Your device will be rebooted momentarily. Please save any work and close all applications.\" with title \"Installation in Progress...\" with icon POSIX file \"$icon\" buttons {\"OK\"} default button 1" &
   echo "Installing"
 }
 
