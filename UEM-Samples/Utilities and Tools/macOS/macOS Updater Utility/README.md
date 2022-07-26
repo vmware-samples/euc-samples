@@ -6,7 +6,7 @@
 - **Email**: mzaske@vmware.com
 - **Date Created**: 7/22/2022
 - **Supported Platforms**: Workspace ONE UEM v2204
-- **Tested on macOS Versions**: macOS Big Sur and Monterey (Intel and Apple Silicon)
+- **Tested on macOS Versions**: macOS Big Sur and Monterey (Intel CPU)
 
 ## Purpose
 
@@ -88,6 +88,7 @@ Here is a breakdown of the keys and their meaning:
   - Icon file improvements
   - Battery and Disk Space verification
   - Improved error handling
+- Testing on Apple Silicon devices
 
 ## Change Log
 
