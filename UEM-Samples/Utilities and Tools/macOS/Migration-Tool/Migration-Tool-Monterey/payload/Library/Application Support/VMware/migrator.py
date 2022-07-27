@@ -726,7 +726,8 @@ def main():
         if opts.enrollment_profile_path:
             enrollmentProfilePath = opts.enrollment_profile_path
     else:
-        enrollmentProfilePath = '/Library/Application\ Support/VMware/MigratorResources/*.mobileconfig'
+        enrollmentProfilePath = '/Library/Application Support/VMware/MigratorResources/*.mobileconfig'
+
 
     # Opening the profile, which opens System Preferences > Profiles pane,
     # the user would need to go through the GUI prompts to install the profile (enroll)
@@ -766,27 +767,33 @@ def main():
 
     depnotify('Command: WindowStyle: Activate')
     # Check value of 'enrolled' to know whether the MDM Profile was found or not
+    # Check if hub installed and if not, install hub.
     if enrolled:  # enrolled = True - Tell the user enrollment succeeded and clean up
         runcmd('sudo', '-u', consoleuser, 'killall', 'System Preferences')
         depnotify('Command: WindowStyle: Activate')
-        try:
-            oslog('Downloading Workspace ONE Intelligent Hub...')
-            depnotify('Status: Downloading Workspace ONE Intelligent Hub...')
-            urllib.request.urlretrieve(hubpath, '/tmp/ws1hub.pkg')
-        except IOError as e:
-            if hasattr(e, 'reason'):
-                oslog('Failed - Reason: %s' % str(e.reason))
-            elif hasattr(e, 'code'):
-                oslog('Failed - Error code: %s' % str(e.code))
-            oslog(e.read())
-            depnotify('Status: Error downloading Workspace ONE Intelligent Hub. Download manually from getwsone.com.')
-            pass
-        else:
-            oslog('Installing Workspace ONE Intelligent Hub...')
-            depnotify('Status: Installing Workspace ONE Intelligent Hub...')
-            installpkg('/tmp/ws1hub.pkg')
-            depnotify('Status: Enrollment complete!')
-        time.sleep(2)
+        hubpkg='/tmp/ws1hub.pkg'
+        if not os.path.exists("/Applications/Workspace ONE Intelligent Hub.app"):
+            if not os.path.exists(hubpkg):
+                try:
+                    oslog('Downloading Workspace ONE Intelligent Hub...')
+                    depnotify('Status: Downloading Workspace ONE Intelligent Hub...')
+                    urllib.request.urlretrieve(hubpath, hubpkg)
+                except IOError as e:
+                    if hasattr(e, 'reason'):
+                        oslog('Failed - Reason: %s' % str(e.reason))
+                    elif hasattr(e, 'code'):
+                        oslog('Failed - Error code: %s' % str(e.code))
+                    oslog(e.read())
+                    depnotify('Status: Error downloading Workspace ONE Intelligent Hub. Download manually from getwsone.com.')
+                    pass
+                else:
+                    oslog('Installing Workspace ONE Intelligent Hub...')
+                    depnotify('Status: Installing Workspace ONE Intelligent Hub...')
+                    installpkg(hubpkg)
+                    depnotify('Status: Enrollment complete!')
+                    time.sleep(2)
+
+
         # run post-migration script if provided
         if opts.postmigration_script:
             oslog('--postmigration-script detected')
