@@ -6,7 +6,7 @@
 - **Email**: mzaske@vmware.com
 - **Date Created**: 7/22/2022
 - **Supported Platforms**: Workspace ONE UEM v2204
-- **Tested on macOS Versions**: macOS Big Sur and Monterey (Intel CPU)
+- **Tested on macOS Versions**: macOS Big Sur and Monterey (Intel and Apple Silicon CPU)
 
 ## Purpose
 
@@ -81,6 +81,9 @@ Here is a breakdown of the keys and their meaning:
 - Action is only taken on the device (i.e. user prompted) if both the Script and Profile are deployed to the device and the following criteria are met:
     - User is logged into the Mac
     - Current OS version is less than the desired OS version
+- The tool will log to `/Library/Logs/macOSupdater.log`
+    - This log can also be retrieved via the Workspace ONE UEM console using the "More Actions > Retrieve Device Log" functionality.
+    - Once the log bundle is retrieved you will find the log in the `/data/ProductsNew` directory
 
 ## Required Changes/Updates
 
@@ -88,7 +91,7 @@ Here is a breakdown of the keys and their meaning:
   - Icon file improvements
   - Battery and Disk Space verification
   - Improved error handling
-- Testing on Apple Silicon devices
+
 
 ## Change Log
 
