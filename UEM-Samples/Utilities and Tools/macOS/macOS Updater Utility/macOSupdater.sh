@@ -16,6 +16,7 @@
 managedPlist="/Library/Managed Preferences/com.macOSupdater.settings.plist"
 counterFile="/private/var/macOSupdater/mu_properties.plist"
 logLocation="/Library/Logs/macOSupdater.log"
+ws1Log="/Library/Application Support/AirWatch/Data/ProductsNew/"
 currentOS=$(sw_vers -productVersion)
 currentUser=$(stat -f%Su /dev/console)
 currentUID=$(id -u "$currentUser")
@@ -32,7 +33,7 @@ serial=$(ioreg -c IOPlatformExpertDevice -d 2 | awk -F\" '/IOPlatformSerialNumbe
 function version { echo "$@" | /usr/bin/awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
 
 # Logging Function for reporting actions
-log(){
+log() {
     DATE=`date +%Y-%m-%d\ %H:%M:%S`
     LOG="$logLocation"
 
@@ -48,6 +49,7 @@ getToken () {
     log "auth token received"
   else
     log "failed to get API auth token, exiting....."
+    /bin/cp "$logLocation" "$ws1Log"
     exit 0
   fi
   echo "$oAuthToken"
@@ -96,16 +98,43 @@ dlCheck () {
   else
     #find product key of minor update then search if downloaded
     log "checking for minor update download"
-    productKey=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -A 2 "$desiredOS" | /usr/bin/awk 'NR==3{print $3}' | /usr/bin/tr -d '"')
-    updatePath=$(/usr/bin/find /private/var/folders/zz -type d -name "*$productKey*" 2>/dev/null | grep "swcdn.apple.com")
-    log "OSproductKey: $productKey"
-    log "Update Path: $updatePath"
-    if [ -d "$updatePath" ]; then
-      echo "yes"
+    updateStarted=$(/usr/bin/grep -A 1 -e "Start downloading updates" /private/var/log/install.log | /usr/bin/grep -e "$desiredProductKey")
+    updateStarted2=$(/usr/bin/grep -e "download $desiredProductKey now" /private/var/log/install.log)
+    if [[ ! -z "$updateStarted" || ! -z "$updateStarted2" ]]; then
+      SUprocessID=$(/usr/bin/grep "SoftwareUpdate: request for status for unknown product $desiredProductKey" /private/var/log/install.log | /usr/bin/awk 'END{print $4}' | /usr/bin/cut -d "[" -f2 | /usr/bin/cut -d "]" -f1)
+      matchCount=$(/usr/bin/grep -c "SUOSUMobileSoftwareUpdateController: Download finished:" /private/var/log/install.log)
+      if [[ $matchCount -gt 0 ]]; then
+        index=0
+        while [ $index -lt $matchCount ]
+        do
+          index=$((index+1))
+          dlProcessID=$(/usr/bin/grep "SUOSUMobileSoftwareUpdateController: Download finished:" /private/var/log/install.log | /usr/bin/awk 'NR=='$index'{print $4}' | /usr/bin/cut -d "[" -f2 | /usr/bin/cut -d "]" -f1)
+          if [[ "$dlProcessID" == "$SUprocessID" ]]; then
+            log "Update found"
+            echo "yes"
+            return
+          fi
+        done
+        log "Update not downloaded"
+        echo "no"
+      else
+        log "Update not downloaded - none"
+        echo "no"
+      fi
     else
-      #update not found
+      log "Update download not started"
       echo "no"
     fi
+    # productKey=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -A 2 "$desiredOS" | /usr/bin/awk 'NR==3{print $3}' | /usr/bin/tr -d '"')
+    # updatePath=$(/usr/bin/find /private/var/folders/zz -type d -name "*$productKey*" 2>/dev/null | grep "swcdn.apple.com")
+    # log "OSproductKey: $productKey"
+    # log "Update Path: $updatePath"
+    # if [ -d "$updatePath" ]; then
+    #   echo "yes"
+    # else
+    #   #update not found
+    #   echo "no"
+    # fi
   fi
 }
 
@@ -149,6 +178,72 @@ userPrompt () {
   echo "$prompt"
 }
 
+# secondary prompt to inform user of major update install progress
+installStatus () {
+  #create script and call it to notify user update is installing and reboot coming
+  /bin/cat <<"EOT" > installStatus.sh
+  #!/bin/bash
+
+  #notify user that migration is underway - intelligent hub is downloading and installing
+  alertText="macOS Update Installation In Progress..."
+  alertMessage="The macOS Update is now being prepared. Please save any work and close all applications as your Mac will be rebooted as soon as it has completed installation."
+  currentUser=$(stat -f%Su /dev/console)
+  currentUID=$(id -u "$currentUser")
+  installLog="/private/var/log/install.log"
+  /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"OK\"}" &
+  updateProgress=$(/usr/bin/grep -e "Progress: phase:PREPARING_UPDATE stalled:NO portionComplete:" "$installLog" | /usr/bin/awk 'END{print substr($8,19,2)}')
+  updatePrepDone=$(/usr/bin/grep -e "Progress: phase:COMPLETED stalled:NO portionComplete:1.000000" "$installLog")
+
+  #report update prep %
+  count=0
+  while [ -z "$updatePrepDone" ]
+  do
+    updateProgress=$(/usr/bin/grep -e "Progress: phase:PREPARING_UPDATE stalled:NO portionComplete:" "$installLog" | /usr/bin/awk 'END{print substr($8,19,2)}')
+    updatePrepDone=$(/usr/bin/grep -e "Progress: phase:COMPLETED stalled:NO portionComplete:1.000000" "$installLog")
+    #display progress
+    interval=$(( count % 180 ))
+    if [[ ! -z "$updateProgress" && "$interval" -eq 0 ]]; then
+      alertText="macOS Update Installation In Progress..."
+      alertMessage="The macOS Update is now installing. Please save any work and close all applications as your Mac will be rebooted as soon as it has completed installation.\n\n Percentage Complete: $updateProgress%"
+      /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"OK\"} giving up after 60" &
+    fi
+    #wait - timeout after 60 minutes
+    if [[ $count -eq 3600 ]]; then
+      echo "update failed to prep"
+      alertText="macOS Update Failed"
+      alertMessage="The macOS Update failed to install. The installation will be retried at a later time. Please reach out to your IT helpdesk if you have any questions."
+      /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"OK\"}" &
+      exit 0
+    fi
+    count=$((count+1))
+    sleep 1
+  done
+
+  #done - reboot
+  count=0
+  updateSuccess=$(/usr/bin/grep -e "Apply succeeded, proceeding with reboot" "$installLog")
+  while [ -z "$updateSuccess" ]
+  do
+    updateSuccess=$(/usr/bin/grep -e "Apply succeeded, proceeding with reboot" "$installLog")
+    #wait - timeout after 10 minutes
+    if [[ $count -eq 600 ]]; then
+      echo "update failed to prep"
+      alertText="macOS Update Failed"
+      alertMessage="The macOS Update failed to install. The installation will be retried at a later time. Please reach out to your IT helpdesk if you have any questions."
+      /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"OK\"}" &
+      exit 0
+    fi
+    count=$((count+1))
+    sleep 1
+  done
+  alertText="macOS Update Installation In Progress..."
+  alertMessage="The macOS Update is now installed. Your device will now reboot."
+  /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"OK\"}" &
+EOT
+
+  /bin/bash installStatus.sh &
+}
+
 # install OS update
 installUpdate () {
   #check major or minor update
@@ -157,8 +252,8 @@ installUpdate () {
     #check if need to use ProductKey or ProductVersion (macOS 12+) in MDM command
     if [[ "$currentMajor" -ge "12" ]]; then
       #use productVersion
-      log "mdmCommand InstallForceRestart ProductVersion $desiredOS"
-      mdmCommand "InstallForceRestart" "ProductVersion" "$desiredOS"
+      log "mdmCommand InstallASAP ProductVersion $desiredOS"
+      mdmCommand "InstallASAP" "ProductVersion" "$desiredOS"
     else
       #use productKey - check intel vs apple silicon as well
       cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string | grep -o "Intel")
@@ -181,10 +276,13 @@ installUpdate () {
         esac
       else
         #apple silicon - use MDM commands
-        log "mdmCommand InstallForceRestart ProductKey $desiredProductKey"
-        mdmCommand "InstallForceRestart" "ProductKey" "$desiredProductKey"
+        log "mdmCommand InstallASAP ProductKey $desiredProductKey"
+        mdmCommand "InstallASAP" "ProductKey" "$desiredProductKey"
       fi
     fi
+    #trigger script to notify user that upgrade is installing and reboot is imminent
+    log "triggering notification script"
+    installStatus
   else
     #install minor update
     #check if need to use ProductKey or ProductVersion (macOS 12+) in MDM command
@@ -198,7 +296,6 @@ installUpdate () {
       mdmCommand "InstallForceRestart" "ProductKey" "$desiredProductKey"
     fi
   fi
-  /bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"The update is now installing.  Your device will be rebooted momentarily. Please save any work and close all applications.\" with title \"Installation in Progress...\" with icon POSIX file \"$icon\" buttons {\"OK\"} default button 1" &
   echo "Installing"
 }
 
@@ -214,6 +311,7 @@ if [ ! -f "$managedPlist" ]; then
   #clean up counter file and Exit
   rm -rf "$counterFile"
   log "config profile not installed, exiting....."
+  /bin/cp "$logLocation" "$ws1Log"
   exit 0
 fi
 log "profile installed"
@@ -224,6 +322,7 @@ if [[ $(version $currentOS) -ge $(version $desiredOS) ]]; then
   #clean up counter file and Exit
   rm -rf "$counterFile"
   log "device is up to date, exiting....."
+  /bin/cp "$logLocation" "$ws1Log"
   exit 0
 fi
 log "upgrade needed - currentOS: $currentOS : desiredOS: $desiredOS"
@@ -244,14 +343,14 @@ log "$updateType update requested"
 
 #grab desired product key if needed - currentOS < 12.0
 #check major or minor
-if [ $currentMajor -lt 12 ]; then
-  if [[ "$1" = "major" ]]; then
-    desiredProductKey="MACOS_"$desiredOS
-  else
-    desiredProductKey="MSU_UPDATE_"$osBuild"_patch_"$desiredOS
-  fi
-  log "ProductKey: $desiredProductKey"
+if [[ "$updateType" = "major" ]]; then
+  desiredProductKey="_MACOS_"$desiredOS
+else
+  osBuild=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -B 1 "$desiredOS" | /usr/bin/awk 'NR==1{print $3}' | /usr/bin/tr -d '"')
+  desiredProductKey="MSU_UPDATE_"$osBuild"_patch_"$desiredOS
 fi
+log "ProductKey: $desiredProductKey"
+
 
 #grab API info
 authToken=$(getToken $clientID $clientSec)
@@ -261,12 +360,23 @@ downloadCheck=$(dlCheck "$updateType")
 if [[ "$downloadCheck" = "no" ]]; then
   dlInstaller "$updateType"
   log "installer download started, exiting....."
+  /bin/cp "$logLocation" "$ws1Log"
   exit 0
 fi
 log "installer downloaded"
 
 log "deferrals: $deferralCount"
 log "maxDeferrals: $maxDeferrals"
+
+#check if user is active
+userStatus=$(/usr/bin/pmset -g useractivity | /usr/bin/grep "Level =" | /usr/bin/awk '{print $3}' | /usr/bin/tr -d "'")
+log "User status: $userStatus"
+if [[ ! "$userStatus" = "PresentActive" ]]; then
+  log "user is not active so not proceeding to prompt, exiting....."
+  /bin/cp "$logLocation" "$ws1Log"
+  exit 0
+fi
+
 #prompt user to upgrade
 #check if user has deferrals remaining
 if [[ $deferralCount -lt  $maxDeferrals ]]; then
@@ -294,4 +404,5 @@ else
 fi
 
 log ">>>>> Exiting macOS Updater Utility <<<<<"
+/bin/cp "$logLocation" "$ws1Log"
 exit 0
