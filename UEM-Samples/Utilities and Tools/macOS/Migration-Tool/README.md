@@ -1,4 +1,6 @@
-# Migrate to Workspace ONE UEM for macOS
+# Migrate macOS Devices to Workspace ONE UEM
+
+This is an updated version of the previous generation of the tool which can be found [here]().
 
 This tool is designed to be flexible to fit different use cases. There is no default mode, so you must understand how the tool works in order to configure it for your needs.
 
@@ -12,16 +14,11 @@ To use this tool, you must first make some decisions on how the migration and en
 ## What do you want the experience to be?
 1. **I want it completely silent and transparent to the end user.**
 	* Unfortunately this is not really a viable option anymore. Since macOS 10.13.4, some critical functionality in MDM requires User Approved MDM Enrollment such as installing Kernel Extension whitelists or Privacy Preference policies.
-	* It technically can still be done, but it is not recommended and is not built-in with this tool. Also, the capability is expected to be removed in macOS 10.16.
 
 2. **I want minimal user interaction and visuals, just enough for User Approved MDM Enrollment.**
 	* Typically this means you will not require users to do any form of enrollment authentication to complete the migration.
 
-	
-3. **I want to require users to enter some information or authenticate to complete the migration.**
-	* This is where things start getting more complex and may require you to make special customizations to the tool.
-
-4. **I dont need my users to do anything special, but I want them to have a great visual experience throughout the migration to explain the process and tell them when it's finished.**
+3. **I dont need my users to do anything special, but I want them to have a great visual experience throughout the migration to explain the process and tell them when it's finished.**
 	* This is the most typical migration we see, the evolution of #2, which balances complexity with a good UX, while also ensuring the enrollment is User Approved.
 
 	
@@ -32,12 +29,62 @@ This tool is a collection of files and scripts distributed to targeted devices a
 
 As soon as the .pkg is installed, the following will happen:
 1. Migrator (this tool) will install and load its Launch Daemon
-2. The LaunchDaemon will execute the migration script with along with your configured parameters.
-3. The migrator script will run in a defined order, behaving as you configure it, removing the prior MDM and then guiding the installation of Workspace ONE.
+2. The Launch Daemon will execute the migration script along with your configured parameters.
+3. The migration script will run in a defined order, behaving as you configure it, removing the prior MDM and then guiding the installation of Workspace ONE.
 4. Migrator will gracefully exit and kill its process.
 
+## Configuration
+There are 3 main steps to obtain a pkg that you are able to deploy:
+1. [Launch Daemon Configuration](#launch-daemon)
+2. [Customization Scripts](#customization-scripts) (optional)
+3. [Building the pkg](#building-the-pkg)
 
-This tool installs a launchdaemon that executes a python script to perform the migration. The script comes with a number of flags and keys to define the behavior depending on use case. 
+### Launch Daemon
+
+This tool installs a launchdaemon that executes a bash script to perform the migration. The script comes with a number of flags and keys to define the behavior depending on use case. Here are the flags that are configured and their meaning. Below you will find a couple of [examples](#example-configurations-launch-daemon) of how you might configure the flags. 
+| Flag Name | Required? | Example | Details |
+|---|---|---| ---|
+| --origin | Yes | Must be set to wsone or custom | Tells the tool what the source MDM envrionment will be |
+| --origin-apiurl | Yes, if origin = wsone | https://as1380.awmdm.com | The WS1 API URL of source environment |
+| --origin-auth | Yes, if origin = wsone | Basic ABCD1234WXYZ9876==  | Base64 encoded API credentials for the source WS1 tenant |
+| --origin-token | Yes, if origin = wsone | ABCDEFG1234567+COJnXFNZM6uZxXLVVTAUuUheXI= | REST API token for the source WS1 tenant |
+| --removal-script | Yes, if origin = custom and different than example | /Library/Application Support/VMware/MigratorResources/removemdm.sh | Full absolute path of the script containing the steps to remove the prior MDM. You can put this script wherever you want, but it's recommended to use the same directory as in the example |
+| --enrollment-profile-path | Yes if different than example | /Library/Application Support/VMware/MigratorResources/enroll.mobileconfig | Full absolute path of the mobileconfig file that is used to enroll device to destination WS1 tenant. |
+| --registration-type | Yes if different than 'none' | local, prompt or none | The method used to retrieve username of the Mac being migrated. More details [here](#registration-types) |
+| --dest-baseurl | Yes if registration-type is not 'none' | https://ds1688.awmdm.com | The WS1 Device Services URL of destination environment |
+| --dest-auth | Yes if registration-type is not 'none' | Basic ABCD1234WXYZ9876== | Base64 encoded API credentials for the destination WS1 tenant |
+| --dest-token | Yes if registration-type is not 'none' | ABCDEFG1234567+COJnXFNZM6uZxXLVVTAUuUheXI= | REST API token for the destination WS1 tenant |
+| --dest-groupid | Yes if registration-type is not 'none' | Group1234 | Group ID of target Organization Group in destination environment |
+| --dest-apiURL | Yes if registration-type is not 'none' | https://as1688.awmdm.com | The WS1 API URL of destination environment  |
+| --user-prompt | Yes if registration-type set to 'prompt' | username or email | What value to request from the user during migration in order to find their user account in destination WS1 tenant |
+
+#### Registration Types
+- local
+- prompt
+- none
+
+#### Example Configurations (Launch Daemon)
+- ws1 to ws1 (none)
+- custom to ws1 (prompt)
+
+### Customization Scripts
+
+The tool can also be further customized through the use of add-on scripts. You will find these scripts within the `payload` directory and below are quick definitions of how they might be used if you choose to do so. These are not required for the tool to function, but give flexibility to add to user experience or handle any other tasks. These scripts must belong at the designated path in the chart. 
+| Name | Purpose | Path |
+|---|---|---|
+| Pre-DEPNotify | Script to run before DEPNotify is opened. This is where you should add all DEPNotify customizations like branding and content. | /Library/Application Support/VMware/MigratorResources/predepnotify.sh |
+| Pre-Migration | Script to run after DEPNotify has opened, but right before the Origin MDM removal step is performed. This is where you should add DEPNotify customizations that should occur before the migration begins. | /Library/Application Support/VMware/MigratorResources/premigration.sh |
+| Mid-Migration | Script to run after the origin MDM has been removed but before starting the process of obtaining & installing the destination MDM profile. This is where you should add DEPNotify customizations (like progress indicators to the user). | /Library/Application Support/VMware/MigratorResources/midmigration.sh |
+| Post-Migration | Script to run after destination MDM profile has been installed. This is where you should add final DEPNotify customizations and inform the user of the migration completion. | /Library/Application Support/VMware/MigratorResources/postmigration.sh |
+
+### Building the pkg
+- ensure all files in place: scripts, mobileconfig, etc
+- cd to proper directory
+- execute pkgbuild
+
+
+
+old stuff:
 
 Example of how the script is executed via the launchdaemon plist:
 ```xml
@@ -62,7 +109,6 @@ Example of how the script is executed via the launchdaemon plist:
 </array>
 ```
 
-**Note:** When editing the launchdaemon file, make sure the file permissions are set appropriately before building the package or you may run into issues.  You can use **chmod 644** after editing the file to ensure the file permissions are set correctly.
 
 After updating the launchdaemon file as well as the various included scripts, use the following command in the project directory to build the package:
 
