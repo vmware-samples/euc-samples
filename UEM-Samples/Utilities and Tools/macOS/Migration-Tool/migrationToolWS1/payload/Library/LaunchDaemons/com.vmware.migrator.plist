@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.vmware.migrator</string>
+<key>ProgramArguments</key>
+<array>
+	<string>/bin/bash</string>
+	<string>/Library/Application Support/VMware/migrator.sh</string>
+	<string>--origin</string>
+	<string>wsone</string>
+	<string>--origin-apiurl</string>
+	<string>https://as1688.awmdm.com</string>
+	<string>--origin-auth</string>
+	<string>Basic abcdefg12345</string>
+	<string>--origin-token</string>
+	<string>kldsflkajsdflasdfas==</string>
+	<string>--registration-type</string>
+	<string>local</string>
+	<string>--dest-baseurl</string>
+	<string>https://ds1380.awmdm.com</string>
+	<string>--dest-auth</string>
+	<string>Basic adfaldskfadsf==</string>
+	<string>--dest-token</string>
+	<string>kljsdjhvynreaga=</string>
+	<string>--dest-groupid</string>
+	<string>mz</string>
+	<string>--dest-apiurl</string>
+	<string>https://as1380.awmdm.com</string>
+</array>
+<key>RunAtLoad</key>
+<true/>
+<key>StandardErrorPath</key>
+<string>/var/log/vmw_migrator.log</string>
+<key>StandardOutPath</key>
+<string>/var/log/vmw_migrator.log</string>
+</dict>
+</plist>
