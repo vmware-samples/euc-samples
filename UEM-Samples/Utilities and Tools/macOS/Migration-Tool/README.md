@@ -59,13 +59,59 @@ This tool installs a launchdaemon that executes a bash script to perform the mig
 | --user-prompt | Yes if registration-type set to 'prompt' | username or email | What value to request from the user during migration in order to find their user account in destination WS1 tenant |
 
 #### Registration Types
-- local
-- prompt
-- none
+In order to ensure the device is enrolled to the proper user in the destination Workspace ONE environment, there are 3 registration modes. It is important that regardless of mode used, there must be a match for the valid username in the destination environment: 
+1. local
+	- This will use the username of the local macOS user account to register the device to in Workspace ONE. 
+2. prompt
+	- This will prompt the user to provide their username (or email address) during the migration process
+	- When using this option be sure to also use `--user-prompt` to set what value to request from the user (username or email)
+3. none
+	- No registration will happen as part of migration process. Use this method if you plan to preregister devices to users in Workspace ONE using a CSV [batch import](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/UEM_ConsoleBasics/GUID-AWT-BATCHIMPORTFEATURE.html). 
 
 #### Example Configurations (Launch Daemon)
-- ws1 to ws1 (none)
-- custom to ws1 (prompt)
+Custom (other MDM provider) to Workspace ONE with local username used to register the device to the user in WS1:
+```
+<key>ProgramArguments</key>
+<array>
+	<string>/bin/bash</string>
+	<string>/Library/Application Support/VMware/migrator.sh</string>
+	<string>--origin</string>
+	<string>custom</string>
+	<string>--removal-script</string>
+	<string>/Library/Application Support/VMware/MigratorResources/removemdm.sh</string>
+	<string>--registration-type</string>
+	<string>local</string>
+	<string>--dest-baseurl</string>
+	<string>https://ds1380.awmdm.com</string>
+	<string>--dest-auth</string>
+	<string>Basic YWlyd2F0Y2hcbXphc2tlOmlka1dURjY5OCQjYmlneg==</string>
+	<string>--dest-token</string>
+	<string>u6eL5iq92WZBM8nP+COJnXFNZM6uZxXLVVTAUuUheXI=</string>
+	<string>--dest-groupid</string>
+	<string>mz</string>
+	<string>--dest-apiurl</string>
+	<string>https://as1380.awmdm.com</string>
+</array>
+```
+
+Workspace ONE to Workspace ONE with no registration:
+```
+<key>ProgramArguments</key>
+<array>
+	<string>/bin/bash</string>
+	<string>/Library/Application Support/VMware/migrator.sh</string>
+	<string>--origin</string>
+	<string>wsone</string>
+	<string>--origin-apiurl</string>
+	<string>https://as1688.awmdm.com</string>
+	<string>--origin-auth</string>
+	<string>Basic YWlyd2F0Y2hcbXphc2tlOmlka1dURjY5OCQjYmlneg==</string>
+	<string>--origin-token</string>
+	<string>u6eL5iq92WZBM8nP+COJnXFNZM6uZxXLVVTAUuUheXI=</string>
+	<string>--registration-type</string>
+	<string>none</string>
+</array>
+```
 
 ### Customization Scripts
 
@@ -78,10 +124,15 @@ The tool can also be further customized through the use of add-on scripts. You w
 | Post-Migration | Script to run after destination MDM profile has been installed. This is where you should add final DEPNotify customizations and inform the user of the migration completion. | /Library/Application Support/VMware/MigratorResources/postmigration.sh |
 
 ### Building the pkg
-- ensure all files in place: scripts, mobileconfig, etc
-- cd to proper directory
-- execute pkgbuild
-1. Download the files needed to build the pkg by right clicking the zip file at top of the page and 
+1. Download the files needed to build the pkg by clicking the zip file at the top of this page `migrationToolWS1.zip` and then selecting "Download" option
+2. Make any edits needed such as:
+	1. Placing enroll.mobileconfig file in MigratorResources directory (see [appendix for instructions](#retrieve-automated-enrollment-profile) on how to retrieve this profile)
+	2. Configuring `com.vmware.migrator.plist` with desired options
+	3. Editing any of the customization scripts
+3. Open up Terminal and cd to the migrationToolWS1 directory that was downloaded
+4. Build the pkg using the following command - edit the pkg name to help keep track of version history as needed:
+`pkgbuild --install-location / --identifier "com.vmware.migrator" --version "1.0" --root ./payload/ --scripts ./scripts/ ./build/migrator_v1.pkg`
+5. The pkg will then be able to be retrieved from the `build` directory
 
 ## Notes
 - Logging:
@@ -93,6 +144,19 @@ The tool can also be further customized through the use of add-on scripts. You w
 - Admin privileges
 	- In order to install and approve the MDM profile to enroll to Workspace ONE, the user on the Mac must have admin privileges
 	- As part of the migrator tool, it will promote any standard user to admin to complete this and then revert back to standard when done
+	
+## Appendix
+### Retrieve Automated Enrollment Profile
+1. Navigate to Groups & Settings / All Settings / Devices & Users / Apple / Automated Enrollment
+2. Ensure you are at the Organization Group where you are wanting the Mac devices to enroll to
+3. Once the "Current Setting" is set to "Override" make the following selections:
+	1. Enable Automated Enrollment: Enabled
+	2. Platform: macOS
+	3. Staging Mode: Single User Device
+	4. Default Staging User: Default Staging User (or your desired staging account)
+4. Select "Save"
+5. Once the page refreshes, select "Export" and this will download the `mobileconfig` profile
+6. Rename this file to `enroll.mobilconfig` and place in the `MigratorResources` directory
 
 ## Required Changes/Updates
 
@@ -102,240 +166,3 @@ The tool can also be further customized through the use of add-on scripts. You w
 ## Change Log
 
 - 2022-08-08: Created Initial File
-
-
-
-
-
-
-
-old stuff:
-
-Example of how the script is executed via the launchdaemon plist:
-```xml
-<key>ProgramArguments</key>
-<array>
-	<string>/usr/bin/python</string>
-	<string>/Library/Application Support/VMware/migrator.py</string>
-	<string>--custom</string>
-	<string>--removal-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/removemdm.sh</string>
-	<string>--sideload-mode</string>
-	<string>--enrollment-profile-path</string>
-	<string>/Library/Application Support/VMware/MigratorResources/enroll.mobileconfig</string>
-	<string>--predepnotify-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/predepnotify.sh</string>
-	<string>--premigration-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/premigration.sh</string>
-	<string>--postmigration-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/postmigration.sh</string>
-	<string>--forced-restart-delay</string>
-	<string>600</string>
-</array>
-```
-
-
-After updating the launchdaemon file as well as the various included scripts, use the following command in the project directory to build the package:
-
-```
-./buildpkg .
-```
-
-
-### Remove the origin MDM:
-
-If you are doing a **Workspace ONE to Workspace ONE** migration, you must use the **--wsone** flag and also the following keys:
-
-| Key | Type | Notes |
-|---|---|---|
-|  --wsone  | flag | Flag to specify a Workspace ONE migration. This flag requires the below keys to make the API calls to WSONE for Enterprise Wipe. |
-|  --origin-apiurl  | string | Base url of the api server (e.g. "https://apiserver.awmdm.com") |
-|  --origin-auth  | string |  Base64 encoded username and password (e.g. "Basic dXNlcm5hbWU6cGFzc3dvcmQ=" |
-|  --origin-token  | string |  API token from UEM (e.g. "IgEM6tsn16D+6B41BlQvIW4k1xFQ2HDygxFYLXt0X9E=") |
-
-
-If you are doing any **other vendor migration to Workspace ONE**, you must use the **--custom** flag and also the following key:
-
-| Key | Type | Notes |
-|---|---|---|
-| --custom | flag | Flag to specify that it's a custom migration (not --wsone). This flag requires a removal script to be specified.
-|  --removal-script  | string | Full absolute path of the script containing the steps to remove the prior mdm. you can put these scripts wherever you want, but it's recommended to use the same directory as in the example format (e.g. "/Library/Application Support/VMware/MigratorResources/removemdm.sh")|
-		
-		
-		
-### Choose how the device will obtain and install the new enrollment profile
-Currently with this tool, there are two primary methods for obtaining and installing the new profile:
-
-**Option 1 -** Sideload an exported staging enrollment profile from UEM Console (Settings > Devices & Users > Apple > Automated Enrollment), distributed with the migration tool. Devices should be pre-registered in UEM to the enrollment user. This is the recommended method for experience #2 and #4.
-	
-		--sideload-mode
-		--enrollment-profile-path
-
-use the **--sideload-mode** flag and also the **--enrollment-profile-path** key:
-
-| Key | Type | Notes |
-|---|---|---|
-|  --sideload-mode  | flag | Flag to specify a migration workflow in which the enrollment mobileconfig is being sideloaded as part of the migration package. Requires the below key to specify the path where the mobileconfig file is dropped. |
-|  --enrollment-profile-path  | string | Full absolute path of the mobileconfig file. you can put this wherever you want, but it's recommended to use the same directory as in the example format (e.g. "/Library/Application Support/VMware/MigratorResources/enroll.mobileconfig")|		
-	
-	
-**Option 2 -** Use API's to fetch the enrollment profile and prompt the user for information. 
-
-Important: This requires one-factor token enrollment to be enabled at Settings > Devices & Users > General > Enrollment.
-
-		--dest-baseurl
-		--dest-auth
-		--dest-token
-		--dest-groupid
-		--dest-apiurl
-		
-| Key | Type | Notes |
-|---|---|---|
-|  --dest-baseurl  | string | Base url of the enrollment server (e.g. "https://ds1234.awmdm.com") |
-|  --dest-auth  | string |  Base64 encoded username and password (e.g. "Basic dXNlcm5hbWU6cGFzc3dvcmQ=" |
-|  --dest-token  | string |  API token from UEM (e.g. "IgEM6tsn16D+6B41BlQvIW4k1xFQ2HDygxFYLXt0X9E=") |
-|  --dest-groupid  | string | Group ID for the OG the device will enroll to (e.g. "1234").  Note that this is the numerical "Location Group ID" used in the Workspace ONE UEM API.  |
-|  --dest-apiurl  | string | Base url of the api server (e.g. "https://apiserver.awmdm.com") |
-	
-Optionally require the user to input identifying information with one of the below flags. However, if neither key is supplied, the script will try to use the local username.
-
-		--prompt-username
-		--prompt-email
-		
-These flags will cause DEPNotify to drop a prompt to the user requesting them to enter whichever identifier you specify via flag
-		
-		
-### Customize the experience
-
-This tool provides several different places to customize the migration experience, depending at what stage the user/device is at. You can write small scripts to run at specific stages and include them in the migration package.
-
-All of these scripts are optional and not required for the migration.
-
-	--predepnotify-script
-	--premigration-script
-		--donotwait-for-premig
-	--midmigration-script
-	--postmigration-script
-
-	--prompt-for-restart
-		--forced-restart-delay
-		
-
-| Key | Type | Notes |
-|---|---|---|
-| --predepnotify-script | string | Full absolute path of a script to run before DEPNotify is opened. This is where you should add all DEPNotify customizations like branding and content. (e.g. "/Library/Application Support/VMware/MigratorResources/premig.sh") |
-| --premigration-script | string | Full absolute path of a script to run after DEPNotify has opened, but right before the Origin MDM removal step is performed. This is where you should add DEPNotify customizations that should occur before the migration begins. (e.g. "/Library/Application Support/VMware/MigratorResources/premig.sh") |
-| --donotwait-for-premig | flag | Typically the tool waits for each script to run before going to the next step. In rare cases, you may have a script that could take a long time to process and the mdm removal step isn't dependent on its completion. |
-| --midmigration-script | string | Full absolute path of a script to run after the origin MDM has been removed but before starting the process of obtaining & installing the destination mdm profile. This is where you should add DEPNotify customizations (like progress indicators to the user). (e.g. "/Library/Application Support/VMware/MigratorResources/midmig.sh")  |
-| --postmigration-script | string | Full absolute path of a script to run after destination MDM profile has been installed. This is where you should add final DEPNotify customizations and inform the user of the migration completion. (e.g. "/Library/Application Support/VMware/MigratorResources/postmig.sh")  |
-| --prompt-for-restart | flag | This flag triggers DEPNotify to prompt the user to restart the machine with a simple dialog. |
-| --forced-restart-delay | string | Number of seconds to delay auto reboot after migration is complete. You can both prompt the user and include this too as a fallback if the user doesn't accept the prompt. (e.g. "900")|
-
-
-
-
-## Example Configurations
-
-**Example 1**
-Conditions:
-1. 3rd Party Vendor to Workspace ONE
-	* --custom
-2. Pre-registered devices using exported mobileconfig from UEM
-	* --sideload-mode & --enrollment-profile-path
-3. Scripts used to guide user through process via DEPNotify customizations 
-	* --predepnotify-script & --premigration-script & --postmigration-script
-4. Forced restart 600 seconds after migration completes
-	* --forced-restart
-
-```xml
-<key>ProgramArguments</key>
-<array>
-	<string>/usr/bin/python</string>
-	<string>/Library/Application Support/VMware/migrator.py</string>
-	<string>--custom</string>
-	<string>--removal-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/removemdm.sh</string>
-	<string>--sideload-mode</string>
-	<string>--enrollment-profile-path</string>
-	<string>/Library/Application Support/VMware/MigratorResources/enroll.mobileconfig</string>
-	<string>--predepnotify-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/predepnotify.sh</string>
-	<string>--premigration-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/premigration.sh</string>
-	<string>--postmigration-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/postmigration.sh</string>
-	<string>--forced-restart-delay</string>
-	<string>600</string>
-</array>
-```
-
-**Example 2**
-Conditions:
-1. 3rd Party Vendor to Workspace ONE
-	* --custom & --removal
-2. Prompt user for info (username) and fetch enrollment profile
-	* --dest-baseurl, --dest-auth, --dest-token, --dest-groupid, --dest-apiurl
-3. No DEPNotify customizations, default behavior
-4. No restart
-
-```xml
-<key>ProgramArguments</key>
-<array>
-	<string>/usr/bin/python</string>
-	<string>/Library/Application Support/VMware/migrator.py</string>
-	<string>--custom</string>
-	<string>--removal-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/removemdm.sh</string>
-	<string>--prompt-username</string>
-	<string>--dest-baseurl</string>
-	<string>https://https://testdriveds.awmdm.com</string>
-	<string>--dest-auth</string>
-	<string>Basic dXNlcm5hbWU6cGFzc3dvcmQ=</string>
-	<string>--dest-token</string>
-	<string>IgEM6tsn16D+6B41BlQvIW4k1xFQ2HDygxFYLXt0X9E=</string>
-	<string>--dest-groupid</string>
-	<string>1234</string>
-	<string>--dest-apiurl</string>
-	<string>https://as1373.awmdm.com</string>
-</array>
-```
-
-**Example 3**
-Conditions:
-1. Workspace ONE to Workspace ONE
-	* --wsone, --origin-apiurl, --origin-auth, --origin-token
-2. Pre-registered devices using exported mobileconfig from UEM
-	* --sideload-mode & --enrollment-profile-path
-3. Scripts used to guide user through process via DEPNotify customizations 
-	* --predepnotify-script & --midmigration-script & --postmigration-script
-4. No restart
-
-
-```xml
-<key>ProgramArguments</key>
-<array>
-	<string>/usr/bin/python</string>
-	<string>/Library/Application Support/VMware/migrator.py</string>
-	<string>--wsone</string>
-	<string>--origin-apiurl</string>
-	<string>https://as1373.awmdm.com</string>
-	<string>--origin-auth</string>
-	<string>Basic dXNlcm5hbWU6cGFzc3dvcmQ=</string>
-	<string>--origin-token</string>
-	<string>IgEM6tsn16D+6B41BlQvIW4k1xFQ2HDygxFYLXt0X9E=</string>
-	<string>--sideload-mode</string>
-	<string>--enrollment-profile-path</string>
-	<string>/Library/Application Support/VMware/MigratorResources/enroll.mobileconfig</string>
-	<string>--predepnotify-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/predepnotify.sh</string>
-	<string>--midmigration-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/midmigration.sh</string>
-	<string>--postmigration-script</string>
-	<string>/Library/Application Support/VMware/MigratorResources/postmigration.sh</string>
-</array>
-```
-
-
-
-
-
