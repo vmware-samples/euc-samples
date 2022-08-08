@@ -81,6 +81,31 @@ The tool can also be further customized through the use of add-on scripts. You w
 - ensure all files in place: scripts, mobileconfig, etc
 - cd to proper directory
 - execute pkgbuild
+1. Download the files needed to build the pkg by right clicking the zip file at top of the page and 
+
+## Notes
+- Logging:
+	- The tool will log to `/var/log/vmw_migrator.log`
+- Workspace ONE Intelligent Hub
+	- At the end of the migration the tool will download and install the Hub for the user
+	- There is an option to supply the Hub pkg in the migrator pkg to avoid the download if needed
+		- Place the hub pkg at the following location: `/Library/Application Support/VMware/MigratorResources/hub.pkg`
+- Admin privileges
+	- In order to install and approve the MDM profile to enroll to Workspace ONE, the user on the Mac must have admin privileges
+	- As part of the migrator tool, it will promote any standard user to admin to complete this and then revert back to standard when done
+
+## Required Changes/Updates
+
+- Updates to come:
+  - DEP enrollment functionality
+
+## Change Log
+
+- 2022-08-08: Created Initial File
+
+
+
+
 
 
 
