@@ -4,15 +4,24 @@
 - **Author**: Brooks Peppin
 - **Email**: bpeppin@vmware.com
 - **Date Created**: 8/25/2020
+- **Date updated**: 8/10/2022
 - **Supported Platforms**: Windows 10 Desktop 1803 and above 
 - **Supported SKUs**: Home, Pro, Enterprise, Education
 - **Tested on**: Windows 10 1809 Enterprise and higher
 
 ## Purpose 
-These sample configuration files are to be used together. The TargetReleaseVersion should be used to keep your devices locked to a specific Feature Upgrade version. This means that you are no longer "approving" or "deferring" the feature upgrade. It simply will go to (or stay on) the value that is in the profile. For example, deploying the "TargetVersion-1809.xml" as a custom settings profile will keep an 1809 device on 1809 version for the lifecycle of that version. See the Windows 10 release information page (link at bottom) for the End of Service date for each Windows 10 Version.
+These sample configuration files are to be used together, deploying one Quality Update (QU) Ring profile, one Feature Update (FU) Ring profile and one Delivery Optimization profile. Combined, these profiles control Windows 10/11 Update settings as referenced below with the following design principles
+1. Auto-Approved Updates
+2. Deferrals to control deployment and risk
+3. Delivery Optimization to control/improve download usage
+4. Rapid device compliance
+5. The best user experience
+
+Controlling Feature Update & OS Version
+TargetReleaseVersion policy in the FU Ring policy should be used to keep your devices locked to a specific Feature Upgrade version. This means that you are no longer "approving" or "deferring" the feature upgrade. It simply will go to (or stay on) the value that is in the profile. ProductVersion in the FU Ring policy should be used to keep your devices locked to a specific OS Version. For example, locked to Windows 10 or forced upgrade to Windows 11.
 
 ## CSP Details
-These target the Policy/Update CSP and are a more streamline and simplified approach that what is currently available in the Windows Update profile in Workspace ONE UEM. I'll summarize what each of these do, but you can check out the Windows 10 Update CSP reference link below to review each in more detail. It leverages the following nodes to deliver a good user experience while still enforcing patches and reboot:
+These target the Policy/Update CSP and are a more streamline and simplified approach that what is currently available in the Windows Update profile in Workspace ONE UEM. I'll summarize what each of these do, but you can check out the Windows Update CSP reference link below to review each in more detail. It leverages the following nodes to deliver a good user experience while still enforcing patches and reboot:
 
 - **Update/AllowAutoUpdate** - This automatically installs the update but prompt the user to restart when complete and per the deadline settings.
 - **Update/AllowMUUpdateService** - Allows device to pull updates from MS (required)
@@ -37,10 +46,13 @@ These target the Policy/Update CSP and are a more streamline and simplified appr
 7. Go to device details > Profile tab. Find the profile and install it on the device.
 8. It should show green as successfully installed. You can check on the device to see the values applied by going to HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\current\device\Update
 
-
 ## Change Log
+1. Merged SharedSettings into each Quality and Feature Update Ring profile to provide flexibility of deployment.
+2. Added recommended settings for Quality Update and Feature Update profiles.
+3. Added recommended settings for Delivery Optimization profile & example for second location.
+4. Added Pause Updates profile
 
 ## Additional Resources
-* [Windows 10 Release Information](https://docs.microsoft.com/en-us/windows/release-information/)
-* [Windows 10 Update CSP Reference](https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update)
+* [Windows 10/11 Release Information](https://docs.microsoft.com/en-us/windows/release-information/)
+* [Windows 10/11 Update CSP Reference](https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update)
 * [Managing Device Restarts after update](https://docs.microsoft.com/en-us/windows/deployment/update/waas-restart)
