@@ -2,6 +2,19 @@
   <CmdID>10</CmdID>
   <Item>
     <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOAllowVPNPeerCaching</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>20</CmdID>
+  <Item>
+    <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODownloadMode</LocURI>
     </Target>
     <Meta>
@@ -12,33 +25,7 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>20</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheAge</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>0</Data>
-  </Item>
-</Replace>
-<Replace>
   <CmdID>30</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMinFileSizeToCache</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>1</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>40</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODelayBackgroundDownloadFromHttp</LocURI>
@@ -51,7 +38,7 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>50</CmdID>
+  <CmdID>40</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODelayForegroundDownloadFromHttp</LocURI>
@@ -61,6 +48,19 @@
       <Type>text/plain</Type>
     </Meta>
     <Data>600</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>50</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOGroupId</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>3c490952-9809-4a9e-9877-0afaed519dee</Data>
   </Item>
 </Replace>
 <Replace>
@@ -80,22 +80,98 @@
   <CmdID>70</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOGroupId</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMinFileSizeToCache</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>80</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheAge</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>90</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheSize</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>10</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>100</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DORestrictPeerSelectionBy</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>110</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOSetHoursToLimitBackgroundDownloadBandwidth</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">chr</Format>
-      <Type>text/plain</Type>
     </Meta>
-    <Data>3c490952-9809-4a9e-9877-0afaed519dee</Data>
+    <Data>
+	<Range>
+	<RangeStartTime>8</RangeStartTime>
+	<RangeEndTime>18</RangeEndTime>
+	<PercentageMaxDownloadBandwidthIn>20</PercentageMaxDownloadBandwidthIn>
+	<PercentageMaxDownloadBandwidthOut>90</PercentageMaxDownloadBandwidthOut>
+	</Range>
+	</Data>
   </Item>
 </Replace>
-
+<Replace>
+  <CmdID>120</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOSetHoursToLimitForegroundDownloadBandwidth</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+    </Meta>
+    <Data>
+	<Range>
+	<RangeStartTime>8</RangeStartTime>
+	<RangeEndTime>18</RangeEndTime>
+	<PercentageMaxDownloadBandwidthIn>40</PercentageMaxDownloadBandwidthIn>
+	<PercentageMaxDownloadBandwidthOut>90</PercentageMaxDownloadBandwidthOut>
+	</Range>
+	</Data>
+  </Item>
+</Replace>
 
 <Delete>
   <CmdID>10</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODownloadMode</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOAllowVPNPeerCaching</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -108,7 +184,7 @@
   <CmdID>20</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheAge</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODownloadMode</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -121,7 +197,7 @@
   <CmdID>30</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMinFileSizeToCache</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODelayBackgroundDownloadFromHttp</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -134,7 +210,7 @@
   <CmdID>40</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODelayBackgroundDownloadFromHttp</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODelayForegroundDownloadFromHttp</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -147,10 +223,10 @@
   <CmdID>50</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DODelayForegroundDownloadFromHttp</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOGroupId</LocURI>
     </Target>
     <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
+      <Format xmlns="syncml:metinf">chr</Format>
       <Type>text/plain</Type>
     </Meta>
     <Data></Data>
@@ -173,11 +249,74 @@
   <CmdID>70</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOGroupId</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMinFileSizeToCache</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>80</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheAge</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>90</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOMaxCacheSize</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>100</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DORestrictPeerSelectionBy</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>110</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOSetHoursToLimitBackgroundDownloadBandwidth</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">chr</Format>
-      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>120</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/DeliveryOptimization/DOSetHoursToLimitForegroundDownloadBandwidth</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
     </Meta>
     <Data></Data>
   </Item>

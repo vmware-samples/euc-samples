@@ -2,19 +2,6 @@
   <CmdID>10</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferFeatureUpdatesPeriodInDays</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>21</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>20</CmdID>
-  <Item>
-    <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartDeadlinePeriodInDaysForFeatureUpdates</LocURI>
     </Target>
     <Meta>
@@ -25,7 +12,33 @@
   </Item>
 </Replace>
 <Replace>
+  <CmdID>20</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineForFeatureUpdates</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
   <CmdID>30</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineGracePeriodForFeatureUpdates</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>5</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>40</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureFeatureUpdateUninstallPeriod</LocURI>
@@ -38,19 +51,20 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>40</CmdID>
+  <CmdID>50</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/TargetReleaseVersion</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferFeatureUpdatesPeriodInDays</LocURI>
     </Target>
     <Meta>
-      <Format xmlns="syncml:metinf">chr</Format>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
     </Meta>
-    <Data>21H1</Data>
+    <Data>21</Data>
   </Item>
 </Replace>
 <Replace>
-  <CmdID>50</CmdID>
+  <CmdID>60</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ProductVersion</LocURI>
@@ -61,24 +75,22 @@
     <Data>Windows 10</Data>
   </Item>
 </Replace>
-
+<Replace>
+  <CmdID>70</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/TargetReleaseVersion</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+    </Meta>
+    <Data>21H2</Data>
+  </Item>
+</Replace>
 
 
 <Delete>
   <CmdID>10</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferFeatureUpdatesPeriodInDays</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data></Data>
-  </Item>
-</Delete>
-<Delete>
-  <CmdID>20</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartDeadlinePeriodInDaysForFeatureUpdates</LocURI>
@@ -91,10 +103,23 @@
   </Item>
 </Delete>
 <Delete>
+  <CmdID>20</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineForFeatureUpdates</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
   <CmdID>30</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureFeatureUpdateUninstallPeriod</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineGracePeriodForFeatureUpdates</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -107,10 +132,11 @@
   <CmdID>40</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/TargetReleaseVersion</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureFeatureUpdateUninstallPeriod</LocURI>
     </Target>
     <Meta>
-      <Format xmlns="syncml:metinf">chr</Format>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
     </Meta>
     <Data></Data>
   </Item>
@@ -119,7 +145,32 @@
   <CmdID>50</CmdID>
   <Item>
     <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferFeatureUpdatesPeriodInDays</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>60</CmdID>
+  <Item>
+    <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ProductVersion</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>70</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/TargetReleaseVersion</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">chr</Format>

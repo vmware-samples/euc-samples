@@ -2,69 +2,6 @@
   <CmdID>10</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowAutoUpdate</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>1</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>20</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowUpdateService</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data>1</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>30</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowMUUpdateService</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>1</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>40</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/BranchReadinessLevel</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>16</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>50</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DetectionFrequency</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data>22</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>60</CmdID>
-  <Item>
-    <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursMaxRange</LocURI>
     </Target>
     <Meta>
@@ -75,7 +12,7 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>70</CmdID>
+  <CmdID>20</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursStart</LocURI>
@@ -88,7 +25,7 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>80</CmdID>
+  <CmdID>30</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursEnd</LocURI>
@@ -100,7 +37,57 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>90</CmdID>
+  <CmdID>40</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowAutoUpdate</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>50</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowMUUpdateService</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>60</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowNonMicrosoftSignedUpdate</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>70</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowUpdateService</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>80</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutomaticMaintenanceWakeUp</LocURI>
@@ -113,20 +100,7 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>100</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferQualityUpdatesPeriodInDays</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>2</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>110</CmdID>
+  <CmdID>90</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartDeadlinePeriodInDays</LocURI>
@@ -139,7 +113,7 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>120</CmdID>
+  <CmdID>100</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartNotificationSchedule</LocURI>
@@ -152,7 +126,7 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>130</CmdID>
+  <CmdID>110</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartRequiredNotificationDismissal</LocURI>
@@ -164,7 +138,146 @@
   </Item>
 </Replace>
 <Replace>
+  <CmdID>120</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/BranchReadinessLevel</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>16</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>130</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineForQualityUpdates</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
   <CmdID>140</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineGracePeriod</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>2</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>150</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineNoAutoReboot</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>160</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferQualityUpdatesPeriodInDays</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>2</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>170</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DetectionFrequency</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data>22</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>180</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ExcludeWUDriversInQualityUpdate</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>190</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/IgnoreMOAppDownloadLimit</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>200</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/IgnoreMOUpdateDownloadLimit</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>210</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ManagePreviewBuilds</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data>0</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>220</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleImminentRestartWarning</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>15</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>230</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleRestartWarning</LocURI>
@@ -177,45 +290,20 @@
   </Item>
 </Replace>
 <Replace>
-  <CmdID>150</CmdID>
+  <CmdID>240</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleImminentRestartWarning</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/SetDisablePauseUXAccess</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
       <Type>text/plain</Type>
     </Meta>
-    <Data>15</Data>
+    <Data>1</Data>
   </Item>
 </Replace>
 <Replace>
-  <CmdID>160</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ExcludeWUDriversInQualityUpdate</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data>0</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>170</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowNonMicrosoftSignedUpdate</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data>0</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>180</CmdID>
+  <CmdID>250</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/UpdateNotificationLevel</LocURI>
@@ -227,109 +315,10 @@
     <Data>0</Data>
   </Item>
 </Replace>
-<Replace>
-  <CmdID>190</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/IgnoreMOAppDownloadLimit</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data>0</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>200</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/IgnoreMOUpdateDownloadLimit</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data>0</Data>
-  </Item>
-</Replace>
-<Replace>
-  <CmdID>210</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/System/AllowBuildPreview</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data>0</Data>
-  </Item>
-</Replace>
 
 
 <Delete>
   <CmdID>10</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowAutoUpdate</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data></Data>
-  </Item>
-</Delete>
-<Delete>
-  <CmdID>20</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowUpdateService</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data></Data>
-  </Item>
-</Delete>
-<Delete>
-  <CmdID>30</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowMUUpdateService</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data></Data>
-  </Item>
-</Delete>
-<Delete>
-  <CmdID>40</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/BranchReadinessLevel</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data></Data>
-  </Item>
-</Delete>
-<Delete>
-  <CmdID>50</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DetectionFrequency</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-    </Meta>
-    <Data></Data>
-  </Item>
-</Delete>
-<Delete>
-  <CmdID>60</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursMaxRange</LocURI>
@@ -342,7 +331,7 @@
   </Item>
 </Delete>
 <Delete>
-  <CmdID>70</CmdID>
+  <CmdID>20</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursStart</LocURI>
@@ -355,7 +344,7 @@
   </Item>
 </Delete>
 <Delete>
-  <CmdID>80</CmdID>
+  <CmdID>30</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ActiveHoursEnd</LocURI>
@@ -365,9 +354,59 @@
     </Meta>
     <Data></Data>
   </Item>
-</Replace>
+</Delete>
 <Delete>
-  <CmdID>90</CmdID>
+  <CmdID>40</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowAutoUpdate</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>50</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowMUUpdateService</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>60</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowNonMicrosoftSignedUpdate</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>70</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowUpdateService</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>80</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutomaticMaintenanceWakeUp</LocURI>
@@ -380,20 +419,7 @@
   </Item>
 </Delete>
 <Delete>
-  <CmdID>100</CmdID>
-  <Item>
-    <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferQualityUpdatesPeriodInDays</LocURI>
-    </Target>
-    <Meta>
-      <Format xmlns="syncml:metinf">int</Format>
-      <Type>text/plain</Type>
-    </Meta>
-    <Data></Data>
-  </Item>
-</Replace>
-<Delete>
-  <CmdID>110</CmdID>
+  <CmdID>90</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartDeadlinePeriodInDays</LocURI>
@@ -406,7 +432,7 @@
   </Item>
 </Delete>
 <Delete>
-  <CmdID>120</CmdID>
+  <CmdID>100</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartNotificationSchedule</LocURI>
@@ -419,7 +445,7 @@
   </Item>
 </Delete>
 <Delete>
-  <CmdID>130</CmdID>
+  <CmdID>110</CmdID>
   <Item>
     <Target>
       <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AutoRestartRequiredNotificationDismissal</LocURI>
@@ -431,10 +457,36 @@
   </Item>
 </Delete>
 <Delete>
+  <CmdID>120</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/BranchReadinessLevel</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>130</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineForQualityUpdates</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
   <CmdID>140</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleRestartWarning</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineGracePeriod</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -447,7 +499,7 @@
   <CmdID>150</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleImminentRestartWarning</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ConfigureDeadlineNoAutoReboot</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -460,7 +512,7 @@
   <CmdID>160</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ExcludeWUDriversInQualityUpdate</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DeferQualityUpdatesPeriodInDays</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -473,7 +525,7 @@
   <CmdID>170</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/AllowNonMicrosoftSignedUpdate</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/DetectionFrequency</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -485,7 +537,7 @@
   <CmdID>180</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/UpdateNotificationLevel</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ExcludeWUDriversInQualityUpdate</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
@@ -522,10 +574,62 @@
   <CmdID>210</CmdID>
   <Item>
     <Target>
-      <LocURI>./Device/Vendor/MSFT/Policy/Config/System/AllowBuildPreview</LocURI>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ManagePreviewBuilds</LocURI>
     </Target>
     <Meta>
       <Format xmlns="syncml:metinf">int</Format>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>220</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleImminentRestartWarning</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>230</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/ScheduleRestartWarning</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>240</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/SetDisablePauseUXAccess</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>250</CmdID>
+  <Item>
+    <Target>
+      <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/UpdateNotificationLevel</LocURI>
+    </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
     </Meta>
     <Data></Data>
   </Item>

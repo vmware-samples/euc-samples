@@ -2,9 +2,9 @@
 
 ## Overview
 - **Author**: Brooks Peppin
-- **Email**: bpeppin@vmware.com
+- **Updated By**: helmlingp@vmware.com
 - **Date Created**: 8/25/2020
-- **Date updated**: 8/10/2022
+- **Date updated**: 8/16/2022
 - **Supported Platforms**: Windows 10 Desktop 1803 and above 
 - **Supported SKUs**: Home, Pro, Enterprise, Education
 - **Tested on**: Windows 10 1809 Enterprise and higher
@@ -17,24 +17,38 @@ These sample configuration files are to be used together, deploying one Quality 
 4. Rapid device compliance
 5. The best user experience
 
-Controlling Feature Update & OS Version
+## Controlling Feature Update & OS Version
 TargetReleaseVersion policy in the FU Ring policy should be used to keep your devices locked to a specific Feature Upgrade version. This means that you are no longer "approving" or "deferring" the feature upgrade. It simply will go to (or stay on) the value that is in the profile. ProductVersion in the FU Ring policy should be used to keep your devices locked to a specific OS Version. For example, locked to Windows 10 or forced upgrade to Windows 11.
 
-## CSP Details
-These target the Policy/Update CSP and are a more streamline and simplified approach that what is currently available in the Windows Update profile in Workspace ONE UEM. I'll summarize what each of these do, but you can check out the Windows Update CSP reference link below to review each in more detail. It leverages the following nodes to deliver a good user experience while still enforcing patches and reboot:
+## Typical Settings to Review or Adjust
+The following settings should be reviewed and adjusted to deliver the required outcome for your environment, as well as your risk and compliance requirements. In general, all Quality Update Profiles are similar except for deferral period in days, and likewise for Feature Update Profiles.
+Only the settings that need review are noted here. The Windows 10/11 Update CSP Reference as noted below should be referenced for all settings.
 
-- **Update/AllowAutoUpdate** - This automatically installs the update but prompt the user to restart when complete and per the deadline settings.
-- **Update/AllowMUUpdateService** - Allows device to pull updates from MS (required)
-- **Update/BranchReadinessLevel** - Sets the branch to sem-annual channel
-- **Update/ConfigureDeadlineForFeatureUpdates** - Deadline to install the feature update once the device sees it. Before deadline is reached, device will attempt to install outside of active hours. Once deadline it reached it will install asap.
+### Quality Update Settings
+- **Update/AllowAutoUpdate** - This automatically installs the update but prompts the user to restart when complete as per the deadline & grace period settings (required).
+- **Update/AllowMUUpdateService** - Allows device to pull updates for Microsoft apps.
+- **Update/BranchReadinessLevel** - Sets the branch to sem-annual channel (only change if using Insider Preview Channel for UAT/Test devices).
+- **Update/AutoRestartDeadlinePeriodInDays** - Deadline in days before automatically executing a scheduled restart outside of active hours.
 - **Update/ConfigureDeadlineForQualityUpdates** - Deadline to install quality updates once the device sees it. Before deadline is reached, device will attempt to install outside of active hours. Once deadline it reached it will install asap.
-- **Update/ConfigureDeadlineGracePeriod** - How may days the user has to reboot the device. User can “Pick a Time”, “Restart Tonight”  or “ Restart Now”
-- **Update/ConfigureDeadlineNoAutoReboot** - This tells the device to NOT reboot outside of active hours until deadline is reached. This helps ensure the user doesn't experience unexpected reboots if the device is online and not in use outside of active hours. Recommend setting this to true (value of 1)
-- **Update/DeferQualityUpdatesPeriodInDays** - How many days from patch release before device sees it. This is how you build out your rings. 
-- **Update/DeferFeatureUpdatesPeriodInDays** - Since we are using the TargetReleaseVersion CSP, this should be set to 0. 
-- **Update/ScheduleImminentRestartWarning** - Non-dismissable popup alerting restart will happen in 15 minutes.
-- **Update/ScheduleRestartWarning** - Dismissable popup alerting restart will happen in 2 hours.
-- **Update/ConfigureFeatureUpdateRemovePeriod** - How long you can rollback a feature upgrade after it is installed. This takes up disk space to best not to set this to too long. I've set it to 14 days in the example profiles. 
+- **Update/DeferQualityUpdatesPeriodInDays** - How many days from Quality Update release before device sees it. This is how you build out your rings. 
+- **Update/ConfigureDeadlineGracePeriod** - How may days the user has to reboot the device. User can “Pick a Time”, “Restart Tonight”  or “ Restart Now”.
+- **Update/ExcludeWUDriversInQualityUpdate** - Exclude Drivers in the WU Catalog being offered for install. 
+- **Update/SetDisablePauseUXAccess** - Remove the ability for a user to Pause Updates in the UI.
+- **Update/UpdateNotificationLevel** - Define what Windows Update notifications users see
+
+### Feature Update Settings
+- **Update/ConfigureDeadlineForFeatureUpdates** - Deadline to install the feature update once the device sees it. Before deadline is reached, device will attempt to install outside of active hours. Once deadline it reached it will install asap.
+- **Update/ConfigureDeadlineGracePeriodForFeatureUpdates** - Specify a minimum number of days until restarts occur automatically for feature updates.
+- **Update/ConfigureFeatureUpdateUninstallPeriod** - How long you can uninstall/rollback a feature upgrade after it is installed. This takes up disk space to best not to set this to too long. I've set it to 14 days in the example profiles. 
+- **Update/DeferFeatureUpdatesPeriodInDays** - How many days from Feature Update release before device sees it. This is how you build out your rings.
+- **Update/ProductVersion** - Specifies which major Windows Desktop version (eg Windows 10) to move the device to or stay on until that major version reaches end of service.
+- **Update/TargetReleaseVersion** - Specifies which minor Windows Desktop version (eg 21H1) to move the device to or stay on until that minor version reaches end of service.
+
+### Delivery Optimization Settings
+- **DeliveryOptimization/DODownloadMode** - Set to Use Peers on Same Local Network. Used in conjunction with DOGroupId will provide secure Peer to Peer sharing of updates.
+- **DeliveryOptimization/DOGroupId** - A GUID that specifies which devices to peer with. Can be any GUID generated in either Powershell or another GUID generator such as [VMware Policy Builder](https://vmwarepolicybuilder.com/). It does not have to be the AzureAD Tenant ID.
+- **DeliveryOptimization/DOSetHoursToLimitBackgroundDownloadBandwidth** - set the hours of the day to limit background download of updates as well as the percentage of bandwidth utilised.
+- **DeliveryOptimization/DOSetHoursToLimitForegroundDownloadBandwidth** - set the hours of the day to limit foreground download of updates as well as the percentage of bandwidth utilised.
 
 ## How to Create Profile
 1. At the top of UEM console, click Add > Profile. Select Windows > Windows Desktop > Device Profile. 
@@ -50,7 +64,7 @@ These target the Policy/Update CSP and are a more streamline and simplified appr
 1. Merged SharedSettings into each Quality and Feature Update Ring profile to provide flexibility of deployment.
 2. Added recommended settings for Quality Update and Feature Update profiles.
 3. Added recommended settings for Delivery Optimization profile & example for second location.
-4. Added Pause Updates profile
+4. Added Pause Quality Updates and Pause Feature Updates profiles
 
 ## Additional Resources
 * [Windows 10/11 Release Information](https://docs.microsoft.com/en-us/windows/release-information/)
