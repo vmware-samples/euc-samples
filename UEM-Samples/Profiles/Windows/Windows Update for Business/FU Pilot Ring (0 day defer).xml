@@ -21,7 +21,7 @@
       <Format xmlns="syncml:metinf">int</Format>
       <Type>text/plain</Type>
     </Meta>
-    <Data>0</Data>
+    <Data>1</Data>
   </Item>
 </Replace>
 <Replace>
