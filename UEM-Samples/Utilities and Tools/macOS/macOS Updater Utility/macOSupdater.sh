@@ -5,6 +5,8 @@
 # Developed by: Matt Zaske
 # July 2022
 #
+# revision 2 (August 19, 2022)
+#
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
 # by utilizing Apples MDM commands
@@ -96,45 +98,33 @@ dlCheck () {
         ;;
     esac
   else
-    #find product key of minor update then search if downloaded
+    #find minor update then search if downloaded
     log "checking for minor update download"
-    updateStarted=$(/usr/bin/grep -A 1 -e "Start downloading updates" /private/var/log/install.log | /usr/bin/grep -e "$desiredProductKey")
-    updateStarted2=$(/usr/bin/grep -e "download $desiredProductKey now" /private/var/log/install.log)
-    if [[ ! -z "$updateStarted" || ! -z "$updateStarted2" ]]; then
-      SUprocessID=$(/usr/bin/grep "SoftwareUpdate: request for status for unknown product $desiredProductKey" /private/var/log/install.log | /usr/bin/awk 'END{print $4}' | /usr/bin/cut -d "[" -f2 | /usr/bin/cut -d "]" -f1)
-      matchCount=$(/usr/bin/grep -c "SUOSUMobileSoftwareUpdateController: Download finished:" /private/var/log/install.log)
-      if [[ $matchCount -gt 0 ]]; then
-        index=0
-        while [ $index -lt $matchCount ]
-        do
-          index=$((index+1))
-          dlProcessID=$(/usr/bin/grep "SUOSUMobileSoftwareUpdateController: Download finished:" /private/var/log/install.log | /usr/bin/awk 'NR=='$index'{print $4}' | /usr/bin/cut -d "[" -f2 | /usr/bin/cut -d "]" -f1)
-          if [[ "$dlProcessID" == "$SUprocessID" ]]; then
-            log "Update found"
-            echo "yes"
-            return
-          fi
-        done
-        log "Update not downloaded"
-        echo "no"
-      else
-        log "Update not downloaded - none"
-        echo "no"
-      fi
+    #check directory exists
+    dirCount=$(find /System/Library/AssetsV2/com_apple_MobileAsset_MacSoftwareUpdate -maxdepth 1 -type d | /usr/bin/wc -l)
+    if [[ "$dirCount" -gt 1 ]]; then
+      #check for matching OS version
+      index=1
+      while [ $index -lt $dirCount ]
+      do
+        index=$((index+1))
+        updateDir=$(find /System/Library/AssetsV2/com_apple_MobileAsset_MacSoftwareUpdate -maxdepth 1 -type d | /usr/bin/awk 'NR=='$index'{print}')
+        msuPlist="$updateDir/Info.plist"
+        msuOSVersion=$(/usr/libexec/PlistBuddy -c "Print :MobileAssetProperties:OSVersion" "$msuPlist")
+        echo "$msuOSVersion"
+        if [[ $(version $msuOSVersion) -eq $(version $desiredOS) ]];  then
+          log "Download found"
+          echo "yes"
+          return
+        fi
+      done
+      log "Download found but not correct"
+      echo "no"
     else
-      log "Update download not started"
+      #download not started
+      log "Download not found"
       echo "no"
     fi
-    # productKey=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -A 2 "$desiredOS" | /usr/bin/awk 'NR==3{print $3}' | /usr/bin/tr -d '"')
-    # updatePath=$(/usr/bin/find /private/var/folders/zz -type d -name "*$productKey*" 2>/dev/null | grep "swcdn.apple.com")
-    # log "OSproductKey: $productKey"
-    # log "Update Path: $updatePath"
-    # if [ -d "$updatePath" ]; then
-    #   echo "yes"
-    # else
-    #   #update not found
-    #   echo "no"
-    # fi
   fi
 }
 
@@ -290,10 +280,18 @@ installUpdate () {
       #use productVersion
       log "mdmCommand InstallForceRestart ProductVersion $desiredOS"
       mdmCommand "InstallForceRestart" "ProductVersion" "$desiredOS"
+      #sleep 1 minute and InstallASAP if update not already started
+      sleep 60
+      log "mdmCommand InstallASAP ProductVersion $desiredOS"
+      mdmCommand "InstallASAP" "ProductVersion" "$desiredOS"
     else
       #use productKey
       log "mdmCommand InstallForceRestart ProductKey $desiredProductKey"
       mdmCommand "InstallForceRestart" "ProductKey" "$desiredProductKey"
+      #sleep 1 minute and InstallASAP if update not already started
+      sleep 60
+      log "mdmCommand InstallASAP ProductKey $desiredProductKey"
+      mdmCommand "InstallASAP" "ProductKey" "$desiredProductKey"
     fi
   fi
   echo "Installing"
