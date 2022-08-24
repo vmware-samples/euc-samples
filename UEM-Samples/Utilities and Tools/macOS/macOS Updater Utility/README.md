@@ -41,7 +41,7 @@ In order to make the MDM commands to download and install macOS updates, mUU uti
 4. On the "Details" tab you will do the following:
     1. Leave the "Language" as Bash and "Execution Context" as System
     2. The timeout will need to be set to 30 seconds longer than "promptTimer" which is explained in the [Profile](#profile) section below
-    3. Upload or copy/paste the contents of the `macOSupdater.sh` [file](https://github.com/vmware-samples/euc-samples/blob/73d2aef3746097bbd3ab3fadd5b7d51fdccb4066/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdater.sh)
+    3. Upload or copy/paste the contents of the `macOSupdater.sh` [file](https://github.com/mzaske3/euc-samples/blob/master/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdater.sh)
 5. After selecting "Next" you will configure the "Variables" section. It is very important that the variables names match exactly as below (see table and screenshot below).
 6. Then select "Save" and you will be taken back to the Scripts List View. Here you will select the bubble the left of your Script and select "Assign"
 7. Selct "New Assignement" and fill in the "Definition" tab as needed. Ensure to scope the assignment to only devices intended to upgrade using proper smart group.
@@ -63,7 +63,7 @@ The behavior the end user experiences is controlled by a configuration profile t
 1. Click **Add > Profile > macOS > Device** and complete the General information
     1. Ideally you would assign this profile to the same smart group that you assigned the Script to.
 2. Select the "Custom Settings" payload and select "Add" or "Configure"
-3. Paste in the XML content from the `macOSupdaterSettings.xml` [file](https://github.com/vmware-samples/euc-samples/blob/73d2aef3746097bbd3ab3fadd5b7d51fdccb4066/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdaterSettings.xml)
+3. Paste in the XML content from the `macOSupdaterSettings.xml` [file](https://github.com/mzaske3/euc-samples/blob/master/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdaterSettings.xml)
     1. Make any modifications as you see fit to the customizable options shown below.
 4. Save and Publish the profile once completed.
 
