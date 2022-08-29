@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
-loggedInUser=`python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = SCDynamicStoreCopyConsoleUser(None, None, None)[0]; sys.stdout.write(username + "\n");'`
+loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
 echo $loggedInUser
