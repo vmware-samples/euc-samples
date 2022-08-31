@@ -6,6 +6,8 @@
 # Originally developed by: John Richards, Daniel Kim, Sanjay Raveendar and Leon Letto
 # Copyright 2022 VMware Inc.
 #
+# revision 2 (August 30, 2022)
+#
 # macOS Migrator
 # This script orchestrates the migration process of a macOS device from one management
 # system to another. It is designed to be used with DEPNotify.
@@ -22,7 +24,6 @@ depnotifypath="/Applications/Utilities/DEPNotify.app"
 hubpath="https://packages.vmware.com/wsone/VMwareWorkspaceONEIntelligentHub.pkg"
 migratorpath="/Library/Application Support/VMware/migrator.sh"
 resourcesdir="/Library/Application Support/VMware/MigratorResources"
-hubDLpath="/private/var/tmp/hub.pkg"
 ldpath="/Library/LaunchDaemons/com.vmware.migrator.plist"
 ldidentifier="com.vmware.migrator"
 currentOS=$(sw_vers -productVersion)
@@ -37,7 +38,7 @@ postmigrationScript="/Library/Application Support/VMware/MigratorResources/postm
 ######## Functions ########
 
 # Logging Function for reporting actions
-log(){
+log() {
     DATE=`date +%Y-%m-%d\ %H:%M:%S`
     LOG="$migratorlog"
 
@@ -72,8 +73,48 @@ cleanup() {
   log "Attempting to remove LaunchDaemon from launchctl: $ldpath"
   /bin/launchctl remove "$ldpath"
 
+  if [[ "$adminGiven" = "yes" ]]; then
+    log "Removing admin privs from $currentUser"
+    /usr/sbin/dseditgroup -o edit -d "$currentUser" -t user admin
+  fi
+
   log "Cleanup done. Exiting........"
   exit 0
+}
+
+# verify input arguments
+verifyArgs() {
+  # set defaults if values not provided
+  #default values if not provided
+  if [[ "$origin" == "" ]]; then origin="custom"; fi
+  if [[ "$removalScript" == "" ]]; then removalScript="/Library/Application Support/VMware/MigratorResources/removemdm.sh"; fi
+  if [[ "$enrollmentProfilePath" == "" ]]; then enrollmentProfilePath="/Library/Application Support/VMware/MigratorResources/enroll.mobileconfig"; fi
+  if [[ "$registrationType" == "" ]]; then registrationType="none"; fi
+  if [[ "$apiurl" == "" ]]; then apiurl="$baseurl"; fi
+  if [[ "$promptType" == "" ]]; then promptType="username"; fi
+  #change hub path to environment specific
+  if [[ ! -z "$baseurl" ]]; then hubpath="$baseurl/DeviceServices/resources/VMwareWorkspaceONEIntelligentHub.pkg"; fi
+
+  # check for required args
+  if [[ "$origin" == "wsone" ]]; then
+    #check for origin wsone info
+    if [[ -z "$originurl" || -z "$origin_auth" || -z "$origin_token" ]]; then
+      log "Failed - Reason: missing origin WS1 environment info. Ensure origin-apiurl, origin-auth and origin-token are provided."
+      depnotify "Command: WindowStyle: Activate"
+      depnotify "Command: Quit: Unable to retrieve origin WS1 environment details."
+      cleanup
+    fi
+  fi
+
+  if [[ "$registrationType" == "local" || "$registrationType" == "prompt" ]]; then
+    #check for dest wsone info
+    if [[ -z "$baseurl" || -z "$dest_auth" || -z "$dest_token" ||  -z "$groupid" ]]; then
+      log "Failed - Reason: missing destination WS1 environment info. Ensure dest-baseurl, dest-auth, dest-token and dest-groupid are provided."
+      depnotify "Command: WindowStyle: Activate"
+      depnotify "Command: Quit: Unable to retrieve destination WS1 environment details."
+      cleanup
+    fi
+  fi
 }
 
 # grab all relevant device info
@@ -92,17 +133,16 @@ init_registration() {
   # delete registration done file if it exists
   /bin/rm -f /var/tmp/com.depnotify.registration.done
   # create plist for setup Registration fields in ~/Library/Preferences/menu.nomad.DEPNotify.plist
-  sudo -u $currentUser defaults write menu.nomad.DEPNotify pathToPlistFile /Users/Shared/UserInput.plist
-  sudo -u $currentUser defaults write menu.nomad.DEPNotify registrationButtonLabel "Continue"
-
+  depnotifyconfigpath="/Users/$currentUser/Library/Preferences/menu.nomad.DEPNotify.plist"
+  /usr/libexec/PlistBuddy -c "Add :pathToPlistFile string /Users/Shared/UserInput.plist" "$depnotifyconfigpath"
+  /usr/libexec/PlistBuddy -c "Add :registrationButtonLabel string Continue" "$depnotifyconfigpath"
+  /usr/libexec/PlistBuddy -c "Add :textField1IsOptional bool false" "$depnotifyconfigpath"
   if [[ "$promptType" = "username" ]]; then
-    sudo -u $currentUser defaults write menu.nomad.DEPNotify registrationMainTitle "Enter your username"
-    sudo -u $currentUser defaults write menu.nomad.DEPNotify textField1Label "Username"
-    sudo -u $currentUser defaults write menu.nomad.DEPNotify textField1RegexPattern '[A-Z0-9a-z.-_@]'
+    /usr/libexec/PlistBuddy -c "Add :registrationMainTitle string Enter your username" "$depnotifyconfigpath"
+    /usr/libexec/PlistBuddy -c "Add :textField1Label string Username" "$depnotifyconfigpath"
   else
-    sudo -u $currentUser defaults write menu.nomad.DEPNotify registrationMainTitle "Enter your email"
-    sudo -u $currentUser defaults write menu.nomad.DEPNotify textField1Label "Email"
-    sudo -u $currentUser defaults write menu.nomad.DEPNotify textField1RegexPattern '[A-Z0-9a-z.-_]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,3}'
+    /usr/libexec/PlistBuddy -c "Add :registrationMainTitle string Enter your email address" "$depnotifyconfigpath"
+    /usr/libexec/PlistBuddy -c "Add :textField1Label string Email" "$depnotifyconfigpath"
   fi
 }
 
@@ -131,7 +171,8 @@ wait_for_input() {
       sleep 2 # 300 tries every 2 seconds = 600seconds = 10 minute timeout
     fi
   done
-
+  #remove DEPNotify config plist
+  /bin/rm -f "$depnotifyconfigpath"
   if [[ "$value" = "" ]]; then
     #value is null - exit
     depnotify "Status: Migration has failed - Timeout after no input received."
@@ -149,9 +190,19 @@ registerDeviceWS1() {
   if [[ "$registrationType" = "prompt" ]]; then
     init_registration
     if [[ "$promptType" = "username" ]]; then
+      log "--prompt-username option used"
+      log "Invoking DEPNotify to prompt for enrollment username"
+      depnotify "Command: WindowStyle: Activate"
+      depnotify "Status: Click the button below and enter your username"
+      depnotify "Command: ContinueButtonRegister: Enter Username"
       username=$(wait_for_input)
     else
       #prompt user for Email
+      log "--prompt-email option used"
+      log "Invoking DEPNotify to prompt for enrollment user email"
+      depnotify "Command: WindowStyle: Activate"
+      depnotify "Status: Click the button below and enter your email"
+      depnotify "Command: ContinueButtonRegister: Enter Email"
       useremail=$(wait_for_input)
     fi
   else
@@ -203,16 +254,31 @@ registerDeviceWS1() {
   fi
 
   #check if no user found - exit
-  if [[ "$userID" == "" || -z "$userID" ]]; then  # if the above parsing comes back with nothing, quit
+  if [[ "$userID" == "" || "$userID" == "null" ]]; then  # if the above parsing comes back with nothing, quit
     log "Unknown WSONE User ID"
     depnotify "Command: WindowStyle: Activate"
     depnotify "Command: Quit: Unable to find user in WSONE, quitting..."
     cleanup
   fi
+
+  #get LocationGroupId using GroupID
+  url="$apiurl/api/system/groups/search?groupid=$groupid"
+  log "Querying server for LocationGroupIdID using groupID: $groupid"
+  log "GET - $url"
+  response=$(/usr/bin/curl -X GET $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json")
+  log "Raw Response: $response"
+  locationGroupID=$(echo $response | /usr/local/bin/jq -r ".LocationGroups[0].Id.Value")
+  if [[ "$userID" == "" || "$locationGroupID" == "null" ]]; then  # if the above parsing comes back with nothing, quit
+    log "Unknown WSONE LocationGroupID - ensure groupid provided is correct."
+    depnotify "Command: WindowStyle: Activate"
+    depnotify "Command: Quit: Unable to find group in WSONE, quitting..."
+    cleanup
+  fi
+
   #create registration entry to ws1
   log "User $username UserID is $userID"
   depnotify "Status: Registering device and getting enrollment token from Workspace ONE UEM..."
-  registration='{"PlatformId":10, "MessageType":0, "ToEmailAddress":"noreply@vmware.com", "Ownership":"C", "LocationGroupId":"'$groupid'", "SerialNumber":"'$serial'", "FriendlyName":"'$username' '$deviceType'"}'
+  registration='{"PlatformId":10, "MessageType":0, "ToEmailAddress":"noreply@vmware.com", "Ownership":"C", "LocationGroupId":"'$locationGroupID'", "SerialNumber":"'$serial'", "FriendlyName":"'$username' '$deviceType'"}'
 
   log "Registering device with..."
   log "$registration"
@@ -286,6 +352,79 @@ waitForUnenroll() {
   fi
 }
 
+# check if device is DEP enabled
+depCheck() {
+  #check if device is enrolled in DEP
+  depStatus=$(/usr/bin/profiles status -type enrollment | /usr/bin/awk 'NR==1{print $4}')
+  if [[ "$depStatus" == "No" ]]; then
+    echo "no"
+    log "Device is not enrolled in DEP/ABM"
+    return
+  fi
+  #check if profile name passed to change assigned DEP profile
+  if [[ "$depProfileName" == "" ]]; then
+    echo "yes"
+    log "Device is DEP enabled - marking as DEP. No profile name passed to assign"
+    return
+  fi
+  #check for DEP profileUUID - if response is empty return no
+  modProfileName=$(echo "$depProfileName" | sed -e 's/ /%20/g')
+  url="$apiurl/api/mdm/dep/profiles/search?SearchText=$modProfileName"
+  log "Using $modProfileName to search for DEP Profile UUID"
+  log "GET - $url"
+  #make API call
+  response=$(/usr/bin/curl -X GET $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json")
+  log "Raw Response: $response"
+  if [[ -z "$response" ]]; then
+    #api failed
+    log "No DEP Profile Found - marking non-DEP"
+    echo "no"
+    return
+  else
+    #extract profile identifier
+    profileID=""
+    profileCount=$(echo $response | /usr/local/bin/jq -r '.TotalResults')
+    if [[ $profileCount -gt 1 ]]; then
+      index=0
+      while [ $index -lt $profileCount ]
+      do
+        searchDepProfileName=$(echo $response | /usr/local/bin/jq -r ".ProfileList[$index].ProfileName")
+        if [[ "$depProfileName" == "$searchDepProfileName" ]]; then
+          profileID=$(echo $response | /usr/local/bin/jq -r ".ProfileList[$index].profile_identifier")
+          log "DEP Profile Identifier found $profileID"
+          break
+        fi
+        index=$((index+1))
+      done
+    else
+      profileID=$(echo $response | /usr/local/bin/jq -r ".ProfileList[0].profile_identifier")
+      log "DEP Profile Identifier found $profileID"
+    fi
+  fi
+  #ensure profileID is not null
+  if [[ "$profileID" == "" ]]; then
+    echo "no"
+    log "DEP Profile not found - marking non-DEP"
+    return
+  else
+    #check if device can be assigned to profileUUID - if error, return no
+    url="$apiurl/api/mdm/dep/profiles/$profileID/devices/$serial?action=assign"
+    log "Assigning DEP profile ID $profileID to device serial $serial"
+    log "PUT - $url"
+    #make API call
+    response=$(/usr/bin/curl -X PUT $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json" -H "Content-Length: 0")
+    log "Raw Response: $response"
+    if [[ ! -z "$response" ]]; then
+      #api failed
+      echo "no"
+      log "Unable to assign DEP profile to device - marking non-DEP"
+    else
+      echo "yes"
+      log "Successfully assigned DEP profile to device - continuing as DEP enrollment"
+    fi
+  fi
+}
+
 # enroll to WS1
 enrollWS1() {
   #trigger install of MDM profile and launch sys prefs for user
@@ -294,12 +433,23 @@ enrollWS1() {
   log "Opening profile to begin enrollment"
   if [[ $(version "$currentOS") -ge $(version "11.0") ]]; then
     sudo -u "$currentUser" /usr/bin/open "$enrollmentProfilePath"
-    sudo -u "$currentUser" /usr/bin/open -b com.apple.systempreferences /System/Library/PreferencePanes/Profiles.prefPane
+    sudo -u "$currentUser" /usr/bin/open "/System/Library/PreferencePanes/Profiles.prefPane"
   elif [[ $(version "$currentOS") -ge $(version "10.15.1") ]]; then
-    sudo -u "$currentUser" /usr/bin/open -a /System/Applications/System Preferences.app "$enrollmentProfilePath"
+    sudo -u $currentUser killall "System Preferences"
+    sudo -u "$currentUser" /usr/bin/open -a "/System/Applications/System Preferences.app" "$enrollmentProfilePath"
   else
-    sudo -u "$currentUser" /usr/bin/open -a /Applications/System Preferences.app "$enrollmentProfilePath"
+    sudo -u $currentUser killall "System Preferences"
+    sudo -u "$currentUser" /usr/bin/open -a "/Applications/System Preferences.app" "$enrollmentProfilePath"
   fi
+}
+
+# enroll to WS1 - DEP device
+depEnrollWS1() {
+  #trigger install of MDM profile and launch sys prefs for user
+  depnotify "Command: WindowStyle: Activate"
+  depnotify "Status: Please proceed through the System Prompts to install the enrollment profile"
+  log "Sending command to begin DEP enrollment"
+  /usr/bin/profiles renew -type enrollment
 }
 
 # verify enrollment
@@ -317,7 +467,11 @@ verifyEnrollment() {
       log "MDM profile not found, checking again..."
       if [[ $runcount -eq 45 || $runcount -eq 90 || $runcount -eq 135 || $runcount -eq 180 ]]; then
         #trigger profile install again
-        enrollWS1
+        if [[ "$depDevice" == "no" ]]; then
+          enrollWS1
+        else
+          depEnrollWS1
+        fi
       fi
     fi
     runcount=$((runcount+1))
@@ -332,8 +486,11 @@ hubInstall() {
   depnotify "Status: Downloading Workspace ONE Intelligent Hub..."
   #download hub
   log "Hub download location: $hubpath"
-  response=$(/usr/bin/curl -o "$hubDLpath" $hubpath)
-  if [[ ! -f  "$hubDLpath" ]]; then
+  #check if hub pkg was supplied in pkg and download if not
+  if [[ ! -f  "$resourcesdir/hub.pkg" ]]; then
+    response=$(/usr/bin/curl -o "$resourcesdir/hub.pkg" $hubpath)
+  fi
+  if [[ ! -f  "$resourcesdir/hub.pkg" ]]; then
     #download failed
     log "Failed - Error downloading Workspace ONE Intelligent Hub."
     depnotify "Command: WindowStyle: Activate"
@@ -344,10 +501,10 @@ hubInstall() {
   #install hub
   log "Installing Workspace ONE Intelligent Hub..."
   depnotify "Status: Installing Workspace ONE Intelligent Hub..."
-  /usr/sbin/installer -pkg "$hubDLpath" -target /
+  /usr/sbin/installer -pkg "$resourcesdir/hub.pkg" -target /
   depnotify "Status: Enrollment complete!"
   sleep 2
-  /bin/rm -rf "$hubDLpath"
+  /bin/rm -f "$resourcesdir/hub.pkg"
 }
 
 ######## main code ########
@@ -378,20 +535,15 @@ else
       "--dest-groupid") groupid="$1"; shift;;
       "--dest-apiurl") apiurl="$1"; shift;;
       "--user-prompt") promptType="$1"; shift;;
+      "--dep-profile-name") depProfileName="$1"; shift;;
       *                   ) echo "ERROR: Invalid option: \""$opt"\"" >&2
-                            exit 1;;
+                            shift;;
     esac
   done
 fi
 
-#default values if not provided
-if [[ "$origin" == "" ]]; then origin="custom"; fi
-if [[ "$removalScript" == "" ]]; then removalScript="/Library/Application Support/VMware/MigratorResources/removemdm.sh"; fi
-if [[ "$enrollmentProfilePath" == "" ]]; then enrollmentProfilePath="/Library/Application Support/VMware/MigratorResources/*.mobileconfig"; fi
-if [[ "$registrationType" == "" ]]; then registrationType="local"; fi
-if [[ "$apiurl" == "" ]]; then apiurl="$baseurl"; fi
-#change hub path to environment specific
-hubpath="$baseurl/DeviceServices/resources/VMwareWorkspaceONEIntelligentHub.pkg"
+#verify inputs
+verifyArgs
 
 #log device info
 getDeviceInfo
@@ -405,7 +557,7 @@ log "Initializing DEPNotify Log path at: $depnotifylog"
 /bin/chmod 644 "$depnotifylog"
 
 # run predepnotify_script
-/bin/bash "$predepnotifyScript"
+if [[ -f  "$predepnotifyScript" ]]; then /bin/bash "$predepnotifyScript"; fi
 sleep 1
 
 # launch depnotify
@@ -417,7 +569,7 @@ sleep 3
 if [[ ! "$registrationType" = "none" ]]; then registerDeviceWS1; fi
 
 # run premigration_script
-/bin/bash "$premigrationScript"
+if [[ -f  "$premigrationScript" ]]; then /bin/bash "$premigrationScript"; fi
 sleep 1
 
 # remove existing MDM
@@ -440,16 +592,29 @@ if [[ "$enrollStatus" = "enrolled" ]]; then
   cleanup
 fi
 
-#kill sys prefs
-sudo -u $currentUser killall "System Preferences"
-
 # run midmigration_script
-/bin/bash "$midmigrationScript"
+if [[ -f  "$midmigrationScript" ]]; then /bin/bash "$midmigrationScript"; fi
 depnotify "Status: Ready to enroll"
 sleep 1
 
+#verify user is admin - elevate if not
+adminCheck=$(/usr/bin/id -Gn "$currentUser" | /usr/bin/grep -ow admin)
+if [[ -z "$adminCheck" ]]; then
+  #elevate to admin in order to install MDM profile
+  log "Granting admin privs to $currentUser"
+  /usr/bin/dscl . -append /groups/admin GroupMembership "$currentUser"
+  adminGiven="yes"
+fi
+
+# check if device is DEP enabled
+depDevice=$(depCheck)
+
 # enroll to WS1
-enrollWS1
+if [[ "$depDevice" == "no" ]]; then
+  enrollWS1
+else
+  depEnrollWS1
+fi
 enrollStatus=$(verifyEnrollment)
 if [[ "$enrollStatus" = "no" ]]; then
   #device failed to enroll - quit
@@ -467,7 +632,7 @@ depnotify "Command: WindowStyle: Activate"
 if [ ! -d "/Applications/Workspace ONE Intelligent Hub.app" ]; then hubInstall; fi
 
 # run postmigration_script
-/bin/bash "$postmigrationScript"
+if [[ -f  "$postmigrationScript" ]]; then /bin/bash "$postmigrationScript"; fi
 sleep 1
 
 #cleanup and exit - reboot if needed

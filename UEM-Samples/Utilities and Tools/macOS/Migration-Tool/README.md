@@ -57,6 +57,7 @@ This tool installs a launchdaemon that executes a bash script to perform the mig
 | --dest-groupid | Yes if registration-type is not 'none' | Group1234 | Group ID of target Organization Group in destination environment |
 | --dest-apiURL | Yes if registration-type is not 'none' | https://as1688.awmdm.com | The WS1 API URL of destination environment  |
 | --user-prompt | Yes if registration-type set to 'prompt' | username or email | What value to request from the user during migration in order to find their user account in destination WS1 tenant |
+| --dep-profile-name | No | DEP Profile Name | Supply this value if you wish to apply a custom DEP profile to your devices that differs from the default profile that is automatically assigned to your devices in WS1 UEM. A use case for this might be to stage the devices to a staging user and rely on the script preregistration to assign device to correct user. |
 
 #### Registration Types
 In order to ensure the device is enrolled to the proper user in the destination Workspace ONE environment, there are 3 registration modes. It is important that regardless of mode used, there must be a match for the valid username in the destination environment: 
@@ -161,8 +162,9 @@ The tool can also be further customized through the use of add-on scripts. You w
 ## Required Changes/Updates
 
 - Updates to come:
-  - DEP enrollment functionality
+  - TBD
 
 ## Change Log
 
 - 2022-08-08: Created Initial File
+- 2022-08-30: Added fuctionality to enroll devices synced via ABM using profiles command
