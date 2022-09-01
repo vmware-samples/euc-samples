@@ -5,7 +5,7 @@
 # Developed by: Matt Zaske
 # July 2022
 #
-# revision 2 (August 19, 2022)
+# revision 3 (September 1, 2022)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -47,12 +47,11 @@ getToken () {
   #request access token
   oAuthToken=$(/usr/bin/curl -X POST $tokenURL -H  "accept: application/json" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials&client_id=$1&client_secret=$2")
   oAuthToken=$(echo $oAuthToken | /usr/bin/sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")
-  if [[ -n "$oAuthToken" ]]; then
-    log "auth token received"
-  else
-    log "failed to get API auth token, exiting....."
-    /bin/cp "$logLocation" "$ws1Log"
-    exit 0
+  if [[ "$oAuthToken" == '{"error":"invalid_client"}' || -z "$oAuthToken" ]]; then
+    #api failed
+    log "Failed to retrieve oAuth Token"
+    echo "no"
+    return
   fi
   echo "$oAuthToken"
 }
@@ -69,6 +68,12 @@ mdmCommand () {
   -d '{"CommandXML" : "<dict><key>RequestType</key><string>ScheduleOSUpdate</string><key>Updates</key><array><dict><key>InstallAction</key><string>'$1'</string><key>'$2'</key><string>'$3'</string></dict></array></dict>"}')
   log "API call sent - serial: $serial, action: $1, type: $2, value: $3"
   log "API Response: $response"
+  if [[ ! -z "$response" ]]; then
+    #api failed
+    echo "no"
+    log "Failed to send MDM command via API"
+    return
+  fi
   echo "command sent"
 }
 
@@ -147,7 +152,7 @@ dlInstaller () {
       mdmCommand "DownloadOnly" "ProductKey" "$desiredProductKey"
     fi
   fi
-  echo "Downloading"
+  #echo "Downloading"
 }
 
 # prompt user
@@ -295,7 +300,7 @@ installUpdate () {
       mdmCommand "InstallASAP" "ProductKey" "$desiredProductKey"
     fi
   fi
-  echo "Installing"
+  #echo "Installing"
 }
 
 ### main code
@@ -353,12 +358,21 @@ log "ProductKey: $desiredProductKey"
 
 #grab API info
 authToken=$(getToken $clientID $clientSec)
+if [[ "$authToken" == "no" ]]; then
+  log "oAuth token not found - check API variables, exiting....."
+  /bin/cp "$logLocation" "$ws1Log"
+  exit 0
+fi
 
 #check if update has downloaded, if not trigger download and exit
 downloadCheck=$(dlCheck "$updateType")
 if [[ "$downloadCheck" = "no" ]]; then
-  dlInstaller "$updateType"
-  log "installer download started, exiting....."
+  response=$(dlInstaller "$updateType")
+  if [[ "$response" == "no" ]]; then
+    log "API command to download installer failed, exiting....."
+  else
+    log "installer download started, exiting....."
+  fi
   /bin/cp "$logLocation" "$ws1Log"
   exit 0
 fi
@@ -386,7 +400,12 @@ if [[ $deferralCount -lt  $maxDeferrals ]]; then
   if [ "$userReturn" = "button returned:Upgrade, gave up:false" ]; then
     #trigger update and exit
     log "installing update"
-    installUpdate "$updateType"
+    response=$(installUpdate "$updateType")
+    if [[ "$response" == "no" ]]; then
+      log "API command to install update failed, exiting....."
+      /bin/cp "$logLocation" "$ws1Log"
+      exit 0
+    fi
   else
     #increase deferral count and exit
     log "user deferred"
@@ -400,6 +419,12 @@ else
   #trigger update
   log "installing update"
   installUpdate "$updateType"
+  response=$(installUpdate "$updateType")
+  if [[ "$response" == "no" ]]; then
+    log "API command to install update failed, exiting....."
+    /bin/cp "$logLocation" "$ws1Log"
+    exit 0
+  fi
 fi
 
 log ">>>>> Exiting macOS Updater Utility <<<<<"
