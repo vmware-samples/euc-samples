@@ -90,9 +90,9 @@ Here is a breakdown of the keys and their meaning:
 - Updates to come:
   - Icon file improvements
   - Battery and Disk Space verification
-  - Improved error handling
 
 ## Change Log
 
 - 2022-07-22: Created Initial File
 - 2022-08-19: Improved minor update download verification and installation methods
+- 2022-09-01: Enhanced logging and error handling for API failures
