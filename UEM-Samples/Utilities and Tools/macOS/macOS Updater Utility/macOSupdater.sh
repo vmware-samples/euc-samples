@@ -5,7 +5,7 @@
 # Developed by: Matt Zaske
 # July 2022
 #
-# revision 3 (September 1, 2022)
+# revision 2 (August 19, 2022)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -61,7 +61,7 @@ getToken () {
 # $1 - InstallAction, $2 - ProductKey or ProductVersion, $3 - productKey/version data
 mdmCommand () {
   # custom MDM command API
-  resppnse=$(/usr/bin/curl "$apiURL/api/mdm/devices/commands?command=CustomMdmCommand&searchby=SerialNumber&id=$serial" \
+  response=$(/usr/bin/curl "$apiURL/api/mdm/devices/commands?command=CustomMdmCommand&searchby=SerialNumber&id=$serial" \
   -X POST \
   -H "Authorization: Bearer $authToken" \
   -H "Accept: application/json;version=2" \
