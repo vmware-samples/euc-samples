@@ -5,7 +5,7 @@
 # Developed by: Matt Zaske
 # July 2022
 #
-# revision 4 (September 13, 2022)
+# revision 5 (September 13, 2022)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -305,7 +305,7 @@ installUpdate () {
 
 ### main code
 log "===== Launching macOS Updater Utility ====="
-log "=== Revision 4 ==="
+log "=== Revision 5 ==="
 
 #check if user is logged in
 if [[ "$currentUser" = "root" ]]; then exit 0; fi
@@ -401,6 +401,7 @@ if [[ $deferralCount -lt  $maxDeferrals ]]; then
   if [ "$userReturn" = "button returned:Upgrade, gave up:false" ]; then
     #trigger update and exit
     log "installing update"
+    /usr/bin/caffeinate -t 7200 & # prevent sleep while installing update
     response=$(installUpdate "$updateType")
     if [[ "$response" == "no" ]]; then
       log "API command to install update failed, exiting....."
@@ -419,6 +420,7 @@ else
   userPrompt "force"
   #trigger update
   log "installing update"
+  /usr/bin/caffeinate -t 7200 & # prevent sleep while installing update
   response=$(installUpdate "$updateType")
   if [[ "$response" == "no" ]]; then
     log "API command to install update failed, exiting....."
