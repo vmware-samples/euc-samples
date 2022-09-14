@@ -5,6 +5,8 @@
   <string>300</string>
   <key>maxDeferrals</key>
   <integer>10</integer>
+  <key>buttonLabel</key>
+  <string>Upgrade</string>
   <key>messageIcon</key>
   <string>/System/Applications/App Store.app/Contents/Resources/AppIcon.icns</string>
   <key>messageTitle</key>

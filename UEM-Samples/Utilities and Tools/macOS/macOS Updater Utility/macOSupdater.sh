@@ -5,7 +5,7 @@
 # Developed by: Matt Zaske
 # July 2022
 #
-# revision 6 (September 14, 2022)
+# revision 7 (September 14, 2022)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -165,10 +165,10 @@ userPrompt () {
   # $1 will tell us if deferral button should be present
   if [[ "$1" = "deferral" ]]; then
     #prompt user with buttons and deferral info
-    prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nYou have $deferrals deferrals remaining before the upgrade will automatically commence.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"Defer\", \"Upgrade\"} default button 2 giving up after $promptTimer")
+    prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nYou have $deferrals deferrals remaining before the upgrade will automatically commence.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"Defer\", \"$buttonLabel\"} default button 2 giving up after $promptTimer")
   else
     #prompt user with no buttons - message that upgrade is commencing, save all work and close all apps
-    prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nThe upgrade will begin momentarily. Please save any work and close all applications.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"Upgrade\"} default button 1 giving up after 300")
+    prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nThe upgrade will begin momentarily. Please save any work and close all applications.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"$buttonLabel\"} default button 1 giving up after 300")
   fi
   echo "$prompt"
 }
@@ -304,7 +304,7 @@ installUpdate () {
 
 ### main code
 log "===== Launching macOS Updater Utility ====="
-log "  --- Revision 6 ---  "
+log "  --- Revision 7 ---  "
 
 #check if user is logged in
 if [[ "$currentUser" = "root" ]]; then exit 0; fi
@@ -391,13 +391,14 @@ if [[ ! "$userStatus" = "PresentActive" ]]; then
 fi
 
 #prompt user to upgrade
+buttonLabel=$(/usr/libexec/PlistBuddy -c "Print :buttonLabel" "$managedPlist")
 #check if user has deferrals remaining
 if [[ $deferralCount -lt  $maxDeferrals ]]; then
   #prompt user to upgrade with deferral option
   log "prompting user with deferral"
   userReturn=$(userPrompt "deferral")
   #check user response
-  if [ "$userReturn" = "button returned:Upgrade, gave up:false" ]; then
+  if [ "$userReturn" = "button returned:$buttonLabel, gave up:false" ]; then
     #trigger update and exit
     log "installing update"
     /usr/bin/caffeinate -t 7200 & # prevent sleep while installing update
