@@ -5,7 +5,7 @@
 # Developed by: Matt Zaske
 # July 2022
 #
-# revision 5 (September 13, 2022)
+# revision 6 (September 14, 2022)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -117,7 +117,6 @@ dlCheck () {
         updateDir=$(find /System/Library/AssetsV2/com_apple_MobileAsset_MacSoftwareUpdate -maxdepth 1 -type d | /usr/bin/awk 'NR=='$index'{print}')
         msuPlist="$updateDir/Info.plist"
         msuOSVersion=$(/usr/libexec/PlistBuddy -c "Print :MobileAssetProperties:OSVersion" "$msuPlist")
-        echo "$msuOSVersion"
         if [[ $(version $msuOSVersion) -eq $(version $desiredOS) ]];  then
           log "Download found"
           echo "yes"
@@ -305,7 +304,7 @@ installUpdate () {
 
 ### main code
 log "===== Launching macOS Updater Utility ====="
-log "=== Revision 5 ==="
+log "  --- Revision 6 ---  "
 
 #check if user is logged in
 if [[ "$currentUser" = "root" ]]; then exit 0; fi
