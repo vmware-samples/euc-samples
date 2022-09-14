@@ -73,6 +73,7 @@ Here is a breakdown of the keys and their meaning:
 | desiredOSversion | string | 12.5 | The version of macOS want your devices to update to. Example: 12.4 |
 | promptTimer | string | 300 | The amount of time in seconds that the prompt to upgrade or defer is displayed to the user before it times out. If no action is taken and the prompt times out, it does count as a deferral to the user. |
 | maxDeferrals | integer | 10 | The number of times the user can defer the update before it is forced. |
+| buttonLabel | string | Upgrade | The text displayed on the button to the user that triggers the OS Update. |
 | messageIcon | string | /System/Applications/App Store.app/Contents/Resources/AppIcon.icns | The location of the icon to be used in the prompt to the user. Do not escape spaces in the path. |
 | messageTitle | string | Approved macOS Update Ready | The title of the prompt dialog box that is displayed to the user. |
 | messageBody | string | This will upgrade your computer the latest version of macOS. It will quit out of all open applications. Please make sure to save your documents and data before proceeding. This installation will restart your computer and may take several minutes to complete. If you have questions and/or concerns, please contact your IT Support team. | The message body of the prompt dialog box that is displayed to the user. |
@@ -96,3 +97,4 @@ Here is a breakdown of the keys and their meaning:
 - 2022-07-22: Created Initial File
 - 2022-08-19: Improved minor update download verification and installation methods
 - 2022-09-01: Enhanced logging and error handling for API failures
+- 2022-09-14: Various minor fixes and added functionality to customize button text displayed to user
