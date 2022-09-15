@@ -5,7 +5,7 @@
 # Developed by: Matt Zaske
 # July 2022
 #
-# revision 7 (September 14, 2022)
+# revision 8 (September 15, 2022)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -304,7 +304,7 @@ installUpdate () {
 
 ### main code
 log "===== Launching macOS Updater Utility ====="
-log "  --- Revision 7 ---  "
+log "  --- Revision 8 ---  "
 
 #check if user is logged in
 if [[ "$currentUser" = "root" ]]; then exit 0; fi
@@ -367,11 +367,18 @@ fi
 #check if update has downloaded, if not trigger download and exit
 downloadCheck=$(dlCheck "$updateType")
 if [[ "$downloadCheck" = "no" ]]; then
-  response=$(dlInstaller "$updateType")
-  if [[ "$response" == "no" ]]; then
-    log "API command to download installer failed, exiting....."
+  #differentiate between major and minor
+  if [[ "$updateType" = "major" ]]; then
+    #download major OS Installer
+    /usr/sbin/softwareupdate --fetch-full-installer --full-installer-version "$desiredOS" &
+    log "major update installer download started, exiting....."
   else
-    log "installer download started, exiting....."
+    response=$(dlInstaller "$updateType")
+    if [[ "$response" == "no" ]]; then
+      log "API command to download installer failed, exiting....."
+    else
+      log "minor update installer download started, exiting....."
+    fi
   fi
   /bin/cp "$logLocation" "$ws1Log"
   exit 0
@@ -392,6 +399,8 @@ fi
 
 #prompt user to upgrade
 buttonLabel=$(/usr/libexec/PlistBuddy -c "Print :buttonLabel" "$managedPlist")
+if [[ "$buttonLabel" == "" ]]; then buttonLabel="Upgrade"; fi
+
 #check if user has deferrals remaining
 if [[ $deferralCount -lt  $maxDeferrals ]]; then
   #prompt user to upgrade with deferral option
@@ -402,11 +411,16 @@ if [[ $deferralCount -lt  $maxDeferrals ]]; then
     #trigger update and exit
     log "installing update"
     /usr/bin/caffeinate -t 7200 & # prevent sleep while installing update
-    response=$(installUpdate "$updateType")
-    if [[ "$response" == "no" ]]; then
-      log "API command to install update failed, exiting....."
-      /bin/cp "$logLocation" "$ws1Log"
-      exit 0
+    cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string | grep -o "Intel")
+    if [[ "$updateType" == "major" &&  -n "$cpuType" ]]; then
+      installUpdate "$updateType"
+    else
+      response=$(installUpdate "$updateType")
+      if [[ "$response" == "no" ]]; then
+        log "API command to install update failed, exiting....."
+        /bin/cp "$logLocation" "$ws1Log"
+        exit 0
+      fi
     fi
   else
     #increase deferral count and exit
@@ -421,11 +435,16 @@ else
   #trigger update
   log "installing update"
   /usr/bin/caffeinate -t 7200 & # prevent sleep while installing update
-  response=$(installUpdate "$updateType")
-  if [[ "$response" == "no" ]]; then
-    log "API command to install update failed, exiting....."
-    /bin/cp "$logLocation" "$ws1Log"
-    exit 0
+  cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string | grep -o "Intel")
+  if [[ "$updateType" == "major" &&  -n "$cpuType" ]]; then
+    installUpdate "$updateType"
+  else
+    response=$(installUpdate "$updateType")
+    if [[ "$response" == "no" ]]; then
+      log "API command to install update failed, exiting....."
+      /bin/cp "$logLocation" "$ws1Log"
+      exit 0
+    fi
   fi
 fi
 
