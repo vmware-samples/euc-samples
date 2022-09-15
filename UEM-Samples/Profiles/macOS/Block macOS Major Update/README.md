@@ -28,6 +28,8 @@ The following delays Major OS updates (*enforcedSoftwareUpdateMajorOSDeferredIns
     <integer>7</integer>
     <key>PayloadUUID</key>
     <string>7E8B2E01-813F-4B4D-8DE6-D37792008851</string>
+    <key>PayloadIdentifier</key>
+    <string>com.apple.applicationaccess.7E8B2E01-813F-4B4D-8DE6-D37792008851</string>
 </dict>
 ```
 
