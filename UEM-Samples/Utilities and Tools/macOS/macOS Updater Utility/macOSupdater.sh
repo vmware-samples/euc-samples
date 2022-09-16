@@ -5,7 +5,7 @@
 # Developed by: Matt Zaske
 # July 2022
 #
-# revision 8 (September 15, 2022)
+# revision 9 (September 16, 2022)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -275,9 +275,6 @@ installUpdate () {
         mdmCommand "InstallASAP" "ProductKey" "$desiredProductKey"
       fi
     fi
-    #trigger script to notify user that upgrade is installing and reboot is imminent
-    log "triggering notification script"
-    installStatus
   else
     #install minor update
     #check if need to use ProductKey or ProductVersion (macOS 12+) in MDM command
@@ -304,7 +301,7 @@ installUpdate () {
 
 ### main code
 log "===== Launching macOS Updater Utility ====="
-log "  --- Revision 8 ---  "
+log "  --- Revision 9 ---  "
 
 #check if user is logged in
 if [[ "$currentUser" = "root" ]]; then exit 0; fi
@@ -422,6 +419,9 @@ if [[ $deferralCount -lt  $maxDeferrals ]]; then
         exit 0
       fi
     fi
+    #trigger script to notify user that upgrade is installing and reboot is imminent
+    log "triggering notification script"
+    installStatus
   else
     #increase deferral count and exit
     log "user deferred"
@@ -446,6 +446,9 @@ else
       exit 0
     fi
   fi
+  #trigger script to notify user that upgrade is installing and reboot is imminent
+  log "triggering notification script"
+  installStatus
 fi
 
 log ">>>>> Exiting macOS Updater Utility <<<<<"
