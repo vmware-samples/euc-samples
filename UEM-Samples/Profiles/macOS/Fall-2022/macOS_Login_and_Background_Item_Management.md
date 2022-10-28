@@ -6,29 +6,39 @@ Paste the entire XML snippet (`<dict>...</dict>`) into the Custom XML payload in
 
 ```xml
 <dict>
-    <key>PayloadDescription</key>
-    <string>Manage the items that run at start up</string>
-    <key>PayloadDisplayName</key>
-    <string>Service Management</string>
-    <key>PayloadIdentifier</key>
-    <string>com.apple.servicemanagement.10CB2AD2-A8AD-4C44-AA0F-EB8898E53D24</string>
-    <key>PayloadUUID</key>
-    <string>10CB2AD2-A8AD-4C44-AA0F-EB8898E53D24</string>
-    <key>PayloadOrganization</key>
-    <string>VMware</string>
-    <key>PayloadType</key>
-    <string>com.apple.servicemanagement</string>
-    <key>Rules</key>
-    <array>
-        <dict>
-            <key>RuleType</key>
-            <string>TeamIdentifier</string>
-            <key>RuleValue</key>
-            <string>S2ZMFGQM93</string>
-            <key>Comment</key>
-            <string>Wandering Wifi LLC</string>
-        </dict>
-    </array>
+	<key>Rules</key>
+	<array>
+		<dict>
+			<key>RuleType</key>
+			<string>TeamIdentifier</string>
+			<key>RuleValue</key>
+			<string>V4Y7PP8KCJ</string>
+			<key>Comment</key>
+			<string>WS1 Assist</string>
+		</dict>
+		<dict>
+			<key>RuleType</key>
+			<string>TeamIdentifier</string>
+			<key>RuleValue</key>
+			<string>S2ZMFGQM93</string>
+			<key>Comment</key>
+			<string>WS1 Intelligent Hub</string>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Payload for Background Service Management</string>
+	<key>PayloadDisplayName</key>
+	<string>Disable Login Items for user selection</string>
+	<key>PayloadIdentifier</key>
+	<string>4DB96276-2319-44C2-AE11-C6E761FB0304</string>
+	<key>PayloadUUID</key>
+	<string>A9BF8FA9-CEA3-42A2-B8C1-E1998B84CBB0</string>
+	<key>PayloadType</key>
+	<string>com.apple.servicemanagement</string>
+	<key>PayloadOrganization</key>
+	<string>My Great Company</string>
+	<key>PayloadScope</key>
+	<string>System</string>
 </dict>
 ```
 
