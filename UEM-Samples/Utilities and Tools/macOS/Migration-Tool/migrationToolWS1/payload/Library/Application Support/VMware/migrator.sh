@@ -2,11 +2,11 @@
 ##################################
 #
 #
-# Redeveloped by: Matt Zaske
+# Redeveloped by: Matt Zaske and Leon Letto
 # Originally developed by: John Richards, Daniel Kim, Sanjay Raveendar and Leon Letto
 # Copyright 2022 VMware Inc.
 #
-# revision 2 (August 30, 2022)
+# revision 2.1 (Nov 22, 2022)
 #
 # macOS Migrator
 # This script orchestrates the migration process of a macOS device from one management
@@ -35,19 +35,26 @@ premigrationScript="/Library/Application Support/VMware/MigratorResources/premig
 midmigrationScript="/Library/Application Support/VMware/MigratorResources/midmigration.sh"
 postmigrationScript="/Library/Application Support/VMware/MigratorResources/postmigration.sh"
 
+#check for depnotify installed correctly
+if [[ ! -d "$depnotifypath" ]]; then
+   if [[ -d /Applications/DEPNotify.app ]]; then
+      ln /Applications/DEPNotify.app "$depnotifypath"
+   fi
+fi
 ######## Functions ########
 
 # Logging Function for reporting actions
-log() {
+migLog() {
     DATE=`date +%Y-%m-%d\ %H:%M:%S`
-    LOG="$migratorlog"
-
-    echo "$DATE [Migrator]" " $1" >> $LOG
+    if [[ ! -f "$migratorlog" ]]; then
+      touch $migratorlog
+    fi
+    echo "$DATE [Migrator]" " $1" >> "$migratorlog"
 }
 
 # writing actions to depnotify log to control depnotify
 depnotify() {
-  log "[DEPNotify] $1"
+  migLog "[DEPNotify] $1"
   #write to depnotifylog
   echo "$1" >> $depnotifylog
 }
@@ -57,28 +64,35 @@ function version { echo "$@" | /usr/bin/awk -F. '{ printf("%d%03d%03d%03d\n", $1
 
 # clean up migrator files and exit
 cleanup() {
-  log "Cleaning up... DEPNotify.app will not be removed..."
-  log "Attempting to delete LaunchDaemon plist: $ldpath"
+  migLog "Cleaning up... DEPNotify.app will not be removed..."
+  migLog "Attempting to delete LaunchDaemon plist: $ldpath"
   /bin/rm -f "$ldpath"
 
-  log "Attempting to delete Migrator script: $migratorpath"
+  migLog "Attempting to delete Migrator script: $migratorpath"
   /bin/rm -f "$migratorpath"
 
-  log "Attempting to delete Migrator Resources directory: $resourcesdir"
+  migLog "Attempting to delete Migrator Resources directory: $resourcesdir"
   /bin/rm -rf "$resourcesdir"
 
-  log "Attempting to delete DEPNotify log: $depnotifylog"
+  migLog "Attempting to delete DEPNotify log: $depnotifylog"
   /bin/rm -f "$depnotifylog"
 
-  log "Attempting to remove LaunchDaemon from launchctl: $ldpath"
+  migLog "Attempting to remove LaunchDaemon from launchctl: $ldpath"
   /bin/launchctl remove "$ldpath"
 
+  ttt=$(pgrep DEPNotify)
+  while [ -n "$ttt" ]; do
+    kill -9 "$ttt"
+    sleep 1
+    ttt=$(pgrep DEPNotify)
+  done
+
   if [[ "$adminGiven" = "yes" ]]; then
-    log "Removing admin privs from $currentUser"
+    migLog "Removing admin privs from $currentUser"
     /usr/sbin/dseditgroup -o edit -d "$currentUser" -t user admin
   fi
 
-  log "Cleanup done. Exiting........"
+  migLog "Cleanup done. Exiting........"
   exit 0
 }
 
@@ -99,7 +113,7 @@ verifyArgs() {
   if [[ "$origin" == "wsone" ]]; then
     #check for origin wsone info
     if [[ -z "$originurl" || -z "$origin_auth" || -z "$origin_token" ]]; then
-      log "Failed - Reason: missing origin WS1 environment info. Ensure origin-apiurl, origin-auth and origin-token are provided."
+      migLog "Failed - Reason: missing origin WS1 environment info. Ensure origin-apiurl, origin-auth and origin-token are provided."
       depnotify "Command: WindowStyle: Activate"
       depnotify "Command: Quit: Unable to retrieve origin WS1 environment details."
       cleanup
@@ -109,7 +123,7 @@ verifyArgs() {
   if [[ "$registrationType" == "local" || "$registrationType" == "prompt" ]]; then
     #check for dest wsone info
     if [[ -z "$baseurl" || -z "$dest_auth" || -z "$dest_token" ||  -z "$groupid" ]]; then
-      log "Failed - Reason: missing destination WS1 environment info. Ensure dest-baseurl, dest-auth, dest-token and dest-groupid are provided."
+      migLog "Failed - Reason: missing destination WS1 environment info. Ensure dest-baseurl, dest-auth, dest-token and dest-groupid are provided."
       depnotify "Command: WindowStyle: Activate"
       depnotify "Command: Quit: Unable to retrieve destination WS1 environment details."
       cleanup
@@ -134,6 +148,9 @@ init_registration() {
   /bin/rm -f /var/tmp/com.depnotify.registration.done
   # create plist for setup Registration fields in ~/Library/Preferences/menu.nomad.DEPNotify.plist
   depnotifyconfigpath="/Users/$currentUser/Library/Preferences/menu.nomad.DEPNotify.plist"
+  if [[ -f "$depnotifyconfigpath" ]]; then
+    /bin/rm -f "$depnotifyconfigpath"
+  fi
   /usr/libexec/PlistBuddy -c "Add :pathToPlistFile string /Users/Shared/UserInput.plist" "$depnotifyconfigpath"
   /usr/libexec/PlistBuddy -c "Add :registrationButtonLabel string Continue" "$depnotifyconfigpath"
   /usr/libexec/PlistBuddy -c "Add :textField1IsOptional bool false" "$depnotifyconfigpath"
@@ -152,18 +169,18 @@ wait_for_input() {
   done="/var/tmp/com.depnotify.registration.done"
   runcount=0
   value=""
-  log "Waiting for user input..."
+  migLog "Waiting for user input..."
   while [ $runcount -lt 300 ]
   do
     if [[ -f "$done" ]]; then
       if [[ "$promptType" = "username" ]]; then
         value=$(/usr/libexec/PlistBuddy -c "Print Username" "$path")
-        log "User entered $value for username"
+        migLog "User entered $value for username"
         break
       else
         #prompt user for Email
         value=$(/usr/libexec/PlistBuddy -c "Print Email" "$path")
-        log "User entered $value for email"
+        migLog "User entered $value for email"
         break
       fi
     else
@@ -176,7 +193,7 @@ wait_for_input() {
   if [[ "$value" = "" ]]; then
     #value is null - exit
     depnotify "Status: Migration has failed - Timeout after no input received."
-    log "Migration has failed - Timeout after no input received."
+    migLog "Migration has failed - Timeout after no input received."
     depnotify "Command: WindowStyle: Activate"
     depnotify "Command: Quit: Migration has failed - Timeout after no input received."
     cleanup
@@ -190,16 +207,16 @@ registerDeviceWS1() {
   if [[ "$registrationType" = "prompt" ]]; then
     init_registration
     if [[ "$promptType" = "username" ]]; then
-      log "--prompt-username option used"
-      log "Invoking DEPNotify to prompt for enrollment username"
+      migLog "--prompt-username option used"
+      migLog "Invoking DEPNotify to prompt for enrollment username"
       depnotify "Command: WindowStyle: Activate"
       depnotify "Status: Click the button below and enter your username"
       depnotify "Command: ContinueButtonRegister: Enter Username"
       username=$(wait_for_input)
     else
       #prompt user for Email
-      log "--prompt-email option used"
-      log "Invoking DEPNotify to prompt for enrollment user email"
+      migLog "--prompt-email option used"
+      migLog "Invoking DEPNotify to prompt for enrollment user email"
       depnotify "Command: WindowStyle: Activate"
       depnotify "Status: Click the button below and enter your email"
       depnotify "Command: ContinueButtonRegister: Enter Email"
@@ -207,8 +224,8 @@ registerDeviceWS1() {
     fi
   else
     #use local username
-    log "Registration type set to local"
-    log "Using $currentUser for enrollment username"
+    migLog "Registration type set to local"
+    migLog "Using $currentUser for enrollment username"
     username="$currentUser"
   fi
 
@@ -217,17 +234,17 @@ registerDeviceWS1() {
   if [[ "$promptType" = "email" ]]; then
     #api search user by email
     url="$apiurl/api/system/users/search?email=$useremail"
-    log "Querying server for ID for $useremail"
-    log "GET - $url"
+    migLog "Querying server for ID for $useremail"
+    migLog "GET - $url"
   else
     #api search user by username
     url="$apiurl/api/system/users/search?username=$username"
-    log "Querying server for ID for $username"
-    log "GET - $url"
+    migLog "Querying server for ID for $username"
+    migLog "GET - $url"
   fi
   #make API call
-  response=$(/usr/bin/curl -X GET $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json")
-  log "Raw Response: $response"
+  response=$(/usr/bin/curl -L -X GET $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json")
+  migLog "Raw Response: $response"
 
   #check if multiple matches
   userID=""
@@ -240,22 +257,24 @@ registerDeviceWS1() {
       emailArray=$(echo $response | /usr/local/bin/jq -r ".Users[$index].Email")
       if [[ "$username" == "$userArray" ]]; then
         userID=$(echo $response | /usr/local/bin/jq -r ".Users[$index].Id.Value")
-        username="$userArray"
+        username="$(echo $response | /usr/local/bin/jq -r ".Users[$index].UserName")"
         break
       elif [[ "$useremail" == "$emailArray" ]]; then
         userID=$(echo $response | /usr/local/bin/jq -r ".Users[$index].Id.Value")
-        username="$userArray"
+        username="$(echo $response | /usr/local/bin/jq -r ".Users[$index].UserName")"
+        echo "username: $username"
         break
       fi
       index=$((index+1))
     done
   else
     userID=$(echo $response | /usr/local/bin/jq -r ".Users[0].Id.Value")
+    username="$(echo $response | /usr/local/bin/jq -r ".Users[0].UserName")"
   fi
 
   #check if no user found - exit
   if [[ "$userID" == "" || "$userID" == "null" ]]; then  # if the above parsing comes back with nothing, quit
-    log "Unknown WSONE User ID"
+    migLog "Unknown WSONE User ID"
     depnotify "Command: WindowStyle: Activate"
     depnotify "Command: Quit: Unable to find user in WSONE, quitting..."
     cleanup
@@ -263,53 +282,123 @@ registerDeviceWS1() {
 
   #get LocationGroupId using GroupID
   url="$apiurl/api/system/groups/search?groupid=$groupid"
-  log "Querying server for LocationGroupIdID using groupID: $groupid"
-  log "GET - $url"
-  response=$(/usr/bin/curl -X GET $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json")
-  log "Raw Response: $response"
+  migLog "Querying server for LocationGroupIdID using groupID: $groupid"
+  migLog "GET - $url"
+  response=$(/usr/bin/curl -L -X GET $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json")
+  migLog "Raw Response: $response"
   locationGroupID=$(echo $response | /usr/local/bin/jq -r ".LocationGroups[0].Id.Value")
   if [[ "$userID" == "" || "$locationGroupID" == "null" ]]; then  # if the above parsing comes back with nothing, quit
-    log "Unknown WSONE LocationGroupID - ensure groupid provided is correct."
+    migLog "Unknown WSONE LocationGroupID - ensure groupid provided is correct."
     depnotify "Command: WindowStyle: Activate"
     depnotify "Command: Quit: Unable to find group in WSONE, quitting..."
     cleanup
   fi
 
   #create registration entry to ws1
-  log "User $username UserID is $userID"
+  migLog "User $username UserID is $userID"
   depnotify "Status: Registering device and getting enrollment token from Workspace ONE UEM..."
   registration='{"PlatformId":10, "MessageType":0, "ToEmailAddress":"noreply@vmware.com", "Ownership":"C", "LocationGroupId":"'$locationGroupID'", "SerialNumber":"'$serial'", "FriendlyName":"'$username' '$deviceType'"}'
 
-  log "Registering device with..."
-  log "$registration"
+  migLog "Registering device with..."
+  migLog "$registration"
   url="$apiurl/api/system/users/$userID/registerdevice"
-  log "POST - $url"
+  migLog "POST - $url"
 
-  response=$(/usr/bin/curl -X POST $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json" -d "$registration")
+  response=$(/usr/bin/curl -L -X POST $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json" -d "$registration")
   #check if successful
-  if [[ ! -z "$response" ]]; then
+  if [[ -n "$response" ]]; then
+    migLog "Raw Response: $response"
+    #get token
+    regToken=$response
+    depnotify "Status: One-Time registration token created for User $username: $regToken"
+    migLog "Fetching enrollment profile with enrollment info:"
+    #generate random string for internal identifier
+    internalIdentifier="$(od -x /dev/urandom | head -1 | awk '{print $2$3$4$5$6$7$8$9}')"
+
+    enrollmentInfo='{
+    "Header":{
+        "Language":"en-US",
+        "ProcotolRevision":"5",
+        "Mode":"2"
+        },
+    "GroupId":'$regToken',
+    "CaptchaValue":"",
+    "GroupIDSource":"1",
+    "SamlCompleteUrl":"",
+    "Device":{
+        "Serial":"'$serial'",
+        "InternalIdentifier":"'$internalIdentifier'",
+        "Type":"10", "BundleIdentifier":"'$deviceUUID'",
+        "OsVersion":"'$currentOS'",
+        "Identifier":"'$deviceUUID'",
+        "Model":"'$deviceType'",
+        "Product":"'$deviceModel'"
+        }
+    }'
+
+
+#    migLog "enrollmentInfo: $enrollmentInfo"
+
+
+    url="$apiurl/DeviceServices/AirwatchEnroll.aws/Enrollment/validateGroupIdentifier"
+    response=$(/usr/bin/curl -L -D - -X POST $url -H "User-Agent: airwatchd (unknown version) CFNetwork/975.0.3 Darwin/18.2.0 (x86_64)" -H  "accept: application/json" -H "Content-Type: application/json" -d "$enrollmentInfo")
+    migLog "Raw Response: $response"
+    cookie=$(echo "${response}" | grep -i "Set-Cookie" | cut -d' ' -f2 | cut -d';' -f1)
+    jsonResponse=$(echo "${response}" | grep -i "{" | cut -d' ' -f2-)
+    migLog "json: $jsonResponse"
+    sid=$(echo "$jsonResponse" | /usr/local/bin/jq -r ".Header.SessionId")
+
+    enrollmentInfo='{
+    "Header":{
+        "Language":"en-US",
+        "ProcotolRevision":"5",
+        "Mode":"2",
+        "SessionId":"'$sid'"
+        },
+    "oem":"mac",
+    "Device":{
+        "Serial":"'$serial'",
+        "InternalIdentifier":"'$internalIdentifier'",
+        "Type":"10", "BundleIdentifier":"'$deviceUUID'",
+        "OsVersion":"'$currentOS'",
+        "Identifier":"'$deviceUUID'",
+        "Model":"'$deviceType'",
+        "Product":"'$deviceModel'"
+        }
+    }'
+
+    url="$apiurl/DeviceServices/AirwatchEnroll.aws/Enrollment/createMdmInstallUrl"
+    response=$(/usr/bin/curl -L -X POST $url -H "User-Agent: airwatchd (unknown version) CFNetwork/975.0.3 Darwin/18.2.0 (x86_64)" -H  "accept: application/json" -H "Content-Type: application/json" -H "Cookie: $cookie" -d "$enrollmentInfo")
+    migLog "createMdmInstallUrl response: $response"
+    enrollProfileURL=$(echo "$response" | /usr/local/bin/jq -r ".NextStep.InstallUrl")
+    migLog "Enrollment Profile URL: $enrollProfileURL"
+    depnotify "Status: Downloading enrollment profile..."
+    /usr/bin/curl -o "$enrollmentProfilePath" "$enrollProfileURL"
+  else
     #api failed
-    log "Failed - Reason: $response"
+    migLog "Failed - Reason: $response"
     depnotify "Command: WindowStyle: Activate"
     depnotify "Command: Quit: Unable to register device with WSONE"
     cleanup
   fi
+
+
 }
 
 # unenroll device from ws1
 removeWS1() {
-  log "Removing Workspace ONE UEM"
+  migLog "Removing Workspace ONE UEM"
   depnotify "Status: Unenrolling from previous Workspace ONE UEM environment"
   /bin/bash /Library/Scripts/hubuninstaller.sh
   /bin/rm -rf "/Library/Application Support/AirWatch/"
   # API Call to enterprise wipe device
   url="$originurl/api/mdm/devices/commands?command=EnterpriseWipe&searchBy=Serialnumber&id=$serial"
-  log "POST - $url"
-  response=$(/usr/bin/curl -X POST $url -H "Authorization: $origin_auth" -H "aw-tenant-code: $origin_token" -H  "accept: application/json" -H "Content-Type: application/json" -H "Content-Length: 0")
+  migLog "POST - $url"
+  response=$(/usr/bin/curl -L -X POST $url -H "Authorization: $origin_auth" -H "aw-tenant-code: $origin_token" -H  "accept: application/json" -H "Content-Type: application/json" -H "Content-Length: 0")
   #check if successful
   if [[ ! -z "$response" ]]; then
     #api failed
-    log "Failed - Reason: $response"
+    migLog "Failed - Reason: $response"
     depnotify "Command: WindowStyle: Activate"
     depnotify "Command: Quit: Unable to unenroll device from WSONE"
     cleanup
@@ -322,12 +411,12 @@ waitForUnenroll() {
   mdmProfile=$(/usr/bin/profiles -vP | /usr/bin/grep "com.apple.mdm")
   if [[ ! -z "$mdmProfile" ]]; then
     runcount=0
-    log "Device is enrolled - com.apple.mdm payload found"
+    migLog "Device is enrolled - com.apple.mdm payload found"
     while [ $runcount -lt 270 ]
     do
       mdmProfile=$(/usr/bin/profiles -vP | /usr/bin/grep "com.apple.mdm")
       if [[ ! -z "$mdmProfile" ]]; then
-        log "Still enrolled, waiting for unenrollment..."
+        migLog "Still enrolled, waiting for unenrollment..."
         #try force removing profiles
         # Get a list from all profiles installed on the computer and remove every one of the
         for identifier in $(sudo /usr/bin/profiles -L | awk "/attribute/" | awk '{print $4}')
@@ -338,7 +427,7 @@ waitForUnenroll() {
         do sudo -u $currentUser /usr/bin/profiles -R -p "$identifier"
         done
       else
-        log "Unenrollment detected - no com.apple.mdm payload found"
+        migLog "Unenrollment detected - no com.apple.mdm payload found"
         echo "no"
         return
       fi
@@ -347,7 +436,7 @@ waitForUnenroll() {
     done
     echo "enrolled"
   else
-    log "Device is not enrolled - no com.apple.mdm payload found"
+    migLog "Device is not enrolled - no com.apple.mdm payload found"
     echo "no"
   fi
 }
@@ -358,26 +447,26 @@ depCheck() {
   depStatus=$(/usr/bin/profiles status -type enrollment | /usr/bin/awk 'NR==1{print $4}')
   if [[ "$depStatus" == "No" ]]; then
     echo "no"
-    log "Device is not enrolled in DEP/ABM"
+    migLog "Device is not enrolled in DEP/ABM"
     return
   fi
   #check if profile name passed to change assigned DEP profile
   if [[ "$depProfileName" == "" ]]; then
     echo "yes"
-    log "Device is DEP enabled - marking as DEP. No profile name passed to assign"
+    migLog "Device is DEP enabled - marking as DEP. No profile name passed to assign"
     return
   fi
   #check for DEP profileUUID - if response is empty return no
   modProfileName=$(echo "$depProfileName" | sed -e 's/ /%20/g')
   url="$apiurl/api/mdm/dep/profiles/search?SearchText=$modProfileName"
-  log "Using $modProfileName to search for DEP Profile UUID"
-  log "GET - $url"
+  migLog "Using $modProfileName to search for DEP Profile UUID"
+  migLog "GET - $url"
   #make API call
   response=$(/usr/bin/curl -X GET $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json")
-  log "Raw Response: $response"
+  migLog "Raw Response: $response"
   if [[ -z "$response" ]]; then
     #api failed
-    log "No DEP Profile Found - marking non-DEP"
+    migLog "No DEP Profile Found - marking non-DEP"
     echo "no"
     return
   else
@@ -391,36 +480,36 @@ depCheck() {
         searchDepProfileName=$(echo $response | /usr/local/bin/jq -r ".ProfileList[$index].ProfileName")
         if [[ "$depProfileName" == "$searchDepProfileName" ]]; then
           profileID=$(echo $response | /usr/local/bin/jq -r ".ProfileList[$index].profile_identifier")
-          log "DEP Profile Identifier found $profileID"
+          migLog "DEP Profile Identifier found $profileID"
           break
         fi
         index=$((index+1))
       done
     else
       profileID=$(echo $response | /usr/local/bin/jq -r ".ProfileList[0].profile_identifier")
-      log "DEP Profile Identifier found $profileID"
+      migLog "DEP Profile Identifier found $profileID"
     fi
   fi
   #ensure profileID is not null
   if [[ "$profileID" == "" ]]; then
     echo "no"
-    log "DEP Profile not found - marking non-DEP"
+    migLog "DEP Profile not found - marking non-DEP"
     return
   else
     #check if device can be assigned to profileUUID - if error, return no
     url="$apiurl/api/mdm/dep/profiles/$profileID/devices/$serial?action=assign"
-    log "Assigning DEP profile ID $profileID to device serial $serial"
-    log "PUT - $url"
+    migLog "Assigning DEP profile ID $profileID to device serial $serial"
+    migLog "PUT - $url"
     #make API call
     response=$(/usr/bin/curl -X PUT $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json" -H "Content-Length: 0")
-    log "Raw Response: $response"
+    migLog "Raw Response: $response"
     if [[ ! -z "$response" ]]; then
       #api failed
       echo "no"
-      log "Unable to assign DEP profile to device - marking non-DEP"
+      migLog "Unable to assign DEP profile to device - marking non-DEP"
     else
       echo "yes"
-      log "Successfully assigned DEP profile to device - continuing as DEP enrollment"
+      migLog "Successfully assigned DEP profile to device - continuing as DEP enrollment"
     fi
   fi
 }
@@ -430,7 +519,7 @@ enrollWS1() {
   #trigger install of MDM profile and launch sys prefs for user
   depnotify "Command: WindowStyle: Activate"
   depnotify "Status: Please proceed through the System Prompts to install the enrollment profile"
-  log "Opening profile to begin enrollment"
+  migLog "Opening profile to begin enrollment"
   if [[ $(version "$currentOS") -ge $(version "11.0") ]]; then
     sudo -u "$currentUser" /usr/bin/open "$enrollmentProfilePath"
     sudo -u "$currentUser" /usr/bin/open "/System/Library/PreferencePanes/Profiles.prefPane"
@@ -448,7 +537,7 @@ depEnrollWS1() {
   #trigger install of MDM profile and launch sys prefs for user
   depnotify "Command: WindowStyle: Activate"
   depnotify "Status: Please proceed through the System Prompts to install the enrollment profile"
-  log "Sending command to begin DEP enrollment"
+  migLog "Sending command to begin DEP enrollment"
   /usr/bin/profiles renew -type enrollment
 }
 
@@ -460,11 +549,11 @@ verifyEnrollment() {
   do
     mdmProfile=$(/usr/bin/profiles -vP | /usr/bin/grep "$WorkspaceServicesProfile\|$DeviceManagerProfile")
     if [[ ! -z "$mdmProfile" ]]; then
-      log "Successfully Enrolled - Workspace ONE MDM profile detected"
+      migLog "Successfully Enrolled - Workspace ONE MDM profile detected"
       echo "enrolled"
       return
     else
-      log "MDM profile not found, checking again..."
+      migLog "MDM profile not found, checking again..."
       if [[ $runcount -eq 45 || $runcount -eq 90 || $runcount -eq 135 || $runcount -eq 180 ]]; then
         #trigger profile install again
         if [[ "$depDevice" == "no" ]]; then
@@ -482,24 +571,24 @@ verifyEnrollment() {
 
 # download and install ws1 intelligent hub
 hubInstall() {
-  log "Downloading Workspace ONE Intelligent Hub..."
+  migLog "Downloading Workspace ONE Intelligent Hub..."
   depnotify "Status: Downloading Workspace ONE Intelligent Hub..."
   #download hub
-  log "Hub download location: $hubpath"
+  migLog "Hub download location: $hubpath"
   #check if hub pkg was supplied in pkg and download if not
   if [[ ! -f  "$resourcesdir/hub.pkg" ]]; then
-    response=$(/usr/bin/curl -o "$resourcesdir/hub.pkg" $hubpath)
+    response=$(/usr/bin/curl -o "$resourcesdir/hub.pkg" "$hubpath")
   fi
   if [[ ! -f  "$resourcesdir/hub.pkg" ]]; then
     #download failed
-    log "Failed - Error downloading Workspace ONE Intelligent Hub."
+    migLog "Failed - Error downloading Workspace ONE Intelligent Hub."
     depnotify "Command: WindowStyle: Activate"
     depnotify "Status: Error downloading Workspace ONE Intelligent Hub. Download manually from getwsone.com."
     depnotify "Command: Quit: Your device is now migrated."
     cleanup
   fi
   #install hub
-  log "Installing Workspace ONE Intelligent Hub..."
+  migLog "Installing Workspace ONE Intelligent Hub..."
   depnotify "Status: Installing Workspace ONE Intelligent Hub..."
   /usr/sbin/installer -pkg "$resourcesdir/hub.pkg" -target /
   depnotify "Status: Enrollment complete!"
@@ -508,7 +597,7 @@ hubInstall() {
 }
 
 ######## main code ########
-log "===== Beginning migration run ====="
+migLog "===== Beginning migration run ====="
 
 #read configured Options
 if [[ "$1" =~ ^((-{1,2})([Hh]$|[Hh][Ee][Ll][Pp])|)$ ]]; then
@@ -547,11 +636,11 @@ verifyArgs
 
 #log device info
 getDeviceInfo
-log "Device info- Serial: $serial OS: $currentOS DeviceType: $deviceType DeviceModel: $deviceModel"
-log "Current logged in username is: $currentUser UID: $currentUID"
+migLog "Device info- Serial: $serial OS: $currentOS DeviceType: $deviceType DeviceModel: $deviceModel DeviceUUID: $deviceUUID"
+migLog "Current logged in username is: $currentUser UID: $currentUID"
 
 # Create new log file for DEPNotify to watch
-log "Initializing DEPNotify Log path at: $depnotifylog"
+migLog "Initializing DEPNotify Log path at: $depnotifylog"
 /bin/rm -f "$depnotifylog"
 /usr/bin/touch "$depnotifylog"
 /bin/chmod 644 "$depnotifylog"
@@ -560,10 +649,21 @@ log "Initializing DEPNotify Log path at: $depnotifylog"
 if [[ -f  "$predepnotifyScript" ]]; then /bin/bash "$predepnotifyScript"; fi
 sleep 1
 
-# launch depnotify
-log "Opening DEPNotify for user: $currentUser"
-sudo -u $currentUser /usr/bin/open -a "$depnotifypath"
-sleep 3
+#launchdepnotify
+migLog "Opening DEPNotify for user: $currentUser"
+sudo -u "$currentUser" /usr/bin/open -a "$depnotifypath"
+#waitforDEPNotifytoopen
+timer=0
+until pgrep DEPNotify >/dev/null; do
+    sleep5
+    timeC=$((timer*5))
+    migLog "Waiting for DEPNotify to open - $timeC Seconds..."
+    timer=$((timer+1))
+    if [[ $timer -gt 6 ]];then
+        migLog "DEPNotify did not open in 30 Seconds time,continuing anyway..."
+        break
+    fi
+done
 
 # register device to user in WS1 destination
 if [[ ! "$registrationType" = "none" ]]; then registerDeviceWS1; fi
@@ -574,7 +674,7 @@ sleep 1
 
 # remove existing MDM
 if [[ "$origin" = "custom" ]]; then
-  log "Removing Custom"
+  migLog "Removing Custom"
   depnotify "Status: Removing prior management"
   /bin/bash "$removalScript"
 elif [[ "$origin" = "wsone" ]]; then
@@ -585,7 +685,7 @@ fi
 enrollStatus=$(waitForUnenroll)
 if [[ "$enrollStatus" = "enrolled" ]]; then
   #device failed to unenroll - quit
-  log "Failed - Reason: device is still enrolled to prior MDM"
+  migLog "Failed - Reason: device is still enrolled to prior MDM"
   depnotify "Command: WindowStyle: Activate"
   depnotify "Status: Unable to remove prior MDM"
   depnotify "Command: Quit: Unable to unenroll device"
@@ -601,7 +701,7 @@ sleep 1
 adminCheck=$(/usr/bin/id -Gn "$currentUser" | /usr/bin/grep -ow admin)
 if [[ -z "$adminCheck" ]]; then
   #elevate to admin in order to install MDM profile
-  log "Granting admin privs to $currentUser"
+  migLog "Granting admin privs to $currentUser"
   /usr/bin/dscl . -append /groups/admin GroupMembership "$currentUser"
   adminGiven="yes"
 fi
@@ -618,7 +718,7 @@ fi
 enrollStatus=$(verifyEnrollment)
 if [[ "$enrollStatus" = "no" ]]; then
   #device failed to enroll - quit
-  log "Failed - Enrollment has failed - MDM Profile not found."
+  migLog "Failed - Enrollment has failed - MDM Profile not found."
   depnotify "Command: WindowStyle: Activate"
   depnotify "Status: Enrollment has failed - MDM Profile not found."
   depnotify "Command: Quit: Enrollment has failed - MDM Profile not found"
@@ -638,4 +738,5 @@ sleep 1
 #cleanup and exit - reboot if needed
 depnotify "Command: WindowStyle: Activate"
 depnotify "Command: Quit: Your device is now migrated."
-cleanup
+#cleanup
+exit 0
