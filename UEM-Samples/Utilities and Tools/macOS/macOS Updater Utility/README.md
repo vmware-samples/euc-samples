@@ -6,7 +6,7 @@
 - **Email**: mzaske@vmware.com
 - **Date Created**: 7/22/2022
 - **Supported Platforms**: Workspace ONE UEM with Freestyle Workflow Engine (Scripts engine required) 
-- **Tested on macOS Versions**: macOS Big Sur and Monterey (Intel and Apple Silicon CPU)
+- **Tested on macOS Versions**: macOS 11+ (Intel and Apple Silicon CPU)
 
 ## Purpose
 
