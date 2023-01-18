@@ -2,11 +2,11 @@
 
 ## Overview
 
-- **Authors**: Matt Zaske
+- **Authors**: Matt Zaske, Leon Letto, and others
 - **Email**: mzaske@vmware.com
 - **Date Created**: 7/22/2022
-- **Supported Platforms**: Workspace ONE UEM v2204
-- **Tested on macOS Versions**: macOS Big Sur and Monterey (Intel and Apple Silicon CPU)
+- **Supported Platforms**: Workspace ONE UEM with Freestyle Workflow Engine (Scripts engine required) 
+- **Tested on macOS Versions**: macOS 11+ (Intel and Apple Silicon CPU)
 
 ## Purpose
 
@@ -77,6 +77,7 @@ Here is a breakdown of the keys and their meaning:
 | messageIcon | string | /System/Applications/App Store.app/Contents/Resources/AppIcon.icns | The location of the icon to be used in the prompt to the user. Do not escape spaces in the path. |
 | messageTitle | string | Approved macOS Update Ready | The title of the prompt dialog box that is displayed to the user. |
 | messageBody | string | This will upgrade your computer the latest version of macOS. It will quit out of all open applications. Please make sure to save your documents and data before proceeding. This installation will restart your computer and may take several minutes to complete. If you have questions and/or concerns, please contact your IT Support team. | The message body of the prompt dialog box that is displayed to the user. |
+| proxy | string | This will be used by the tool to help the device connect to the API and Token URLs if required. If the device can connect freely to the API and Token endpoints then this is not needed to be included. |
 
 ## Notes
 - Action is only taken on the device (i.e. user prompted) if both the Script and Profile are deployed to the device and the following criteria are met:
@@ -85,12 +86,16 @@ Here is a breakdown of the keys and their meaning:
 - The tool will log to `/Library/Logs/macOSupdater.log`
     - This log can also be retrieved via the Workspace ONE UEM console using the "More Actions > Retrieve Device Log" functionality.
     - Once the log bundle is retrieved you will find the log in the `/data/ProductsNew` directory
+- New logging and comparison functions added in Revision 10
+    - Logger: https://github.com/leonletto/bashLogger 
+    - Compare Numbers: https://github.com/leonletto/bash_compare_numbers
 
 ## Required Changes/Updates
 
 - Updates to come:
   - Icon file improvements
   - Battery and Disk Space verification
+  - Deadline functionality
 
 ## Change Log
 
@@ -98,3 +103,9 @@ Here is a breakdown of the keys and their meaning:
 - 2022-08-19: Improved minor update download verification and installation methods
 - 2022-09-01: Enhanced logging and error handling for API failures
 - 2022-09-14: Various minor fixes and added functionality to customize button text displayed to user
+- 2022-01-18: Revision 10:
+    - New logging
+        - Check out here: https://github.com/leonletto/bashLogger 
+    - Fix for macOS 13 major update download
+    - Added proxy support for API connection
+    - Minor product key enhancement (used for macOS 11 and below)
