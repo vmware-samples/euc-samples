@@ -778,7 +778,6 @@ installStatus() {
     #create script and call it to notify user update is installing and reboot coming
     /bin/cat <<"EOT" >installStatus.sh
   #!/bin/bash
-
   #notify user that migration is underway - intelligent hub is downloading and installing
   alertText="macOS Update Installation In Progress..."
   alertMessage="The macOS Update is now being prepared. Please save any work and close all applications as your Mac will be rebooted as soon as it has completed installation."
@@ -788,7 +787,6 @@ installStatus() {
   #/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$alertMessage\" with title \"$alertText\" with icon stop buttons {\"OK\"}" &
   updateProgress=$(/usr/bin/grep -e "Progress: phase:PREPARING_UPDATE stalled:NO portionComplete:" "$installLog" | /usr/bin/awk 'END{print substr($8,19,2)}')
   updatePrepDone=$(/usr/bin/grep -e "Progress: phase:COMPLETED stalled:NO portionComplete:1.000000" "$installLog")
-
   #report update prep %
   count=0
   while [ -z "$updatePrepDone" ]
@@ -813,7 +811,6 @@ installStatus() {
     count=$((count+1))
     sleep 1
   done
-
   #done - reboot
   count=0
   updateSuccess=$(/usr/bin/grep -e "Apply succeeded, proceeding with reboot" "$installLog")
@@ -1016,7 +1013,9 @@ if le "$currentMajor" "11"; then
 fi
 
 #grab proxy info
-proxy=$(/usr/libexec/PlistBuddy -c "Print :proxy" "$managedPlist")
+if /usr/bin/grep -Fxq "<key>proxy</key>" "$managedPlist"; then
+  proxy=$(/usr/libexec/PlistBuddy -c "Print :proxy" "$managedPlist")
+fi
 
 #grab API info
 authToken=$(getToken $clientID $clientSec)
