@@ -103,9 +103,10 @@ Here is a breakdown of the keys and their meaning:
 - 2022-08-19: Improved minor update download verification and installation methods
 - 2022-09-01: Enhanced logging and error handling for API failures
 - 2022-09-14: Various minor fixes and added functionality to customize button text displayed to user
-- 2022-01-18: Revision 10:
+- 2023-01-18: Revision 10:
     - New logging
         - Check out here: https://github.com/leonletto/bashLogger 
     - Fix for macOS 13 major update download
     - Added proxy support for API connection
     - Minor product key enhancement (used for macOS 11 and below)
+- 2023-01-26: Update to revision 10, fix proxy error when proxy not supplied
