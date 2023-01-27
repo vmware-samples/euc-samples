@@ -21,13 +21,13 @@ else
   deferralCount=$(/usr/libexec/PlistBuddy -c "Print deferralCount" "$counterFile")
   maxDeferrals=$(/usr/libexec/PlistBuddy -c "Print maxDeferrals" "$managedPlist")
 
-  if [[ -z $deferredTimes ]]; then
+  if [[ -z $deferralCount ]]; then
 
-    echo "No Updates needed"
+    echo "No Updates Available"
 
   else
 
-    echo "$deferredTimes $maxDeferrals"
+    echo "$deferralCount $maxDeferrals"
 
   fi
 
