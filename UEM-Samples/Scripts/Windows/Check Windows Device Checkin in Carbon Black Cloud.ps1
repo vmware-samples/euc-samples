@@ -1,6 +1,6 @@
-﻿# Check Windows Device Checkin in Carbon Black Cloud
+# Description: Check Windows Device Checkin in Carbon Black Cloud
 # Execution Context: System
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Timeout: 30
 # Variables: email,{Email}; WS1User,{EnrollmentUser}
 
@@ -16,4 +16,5 @@ if (Test-Path -LiteralPath $CBCommand) {
 }
 # 0 sucessfull - anything else failure
 Exit $found
+
 
