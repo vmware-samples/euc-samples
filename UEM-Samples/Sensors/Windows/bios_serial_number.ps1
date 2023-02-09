@@ -1,5 +1,7 @@
-# Returns the device's serial number
-# Return Type: String
-# Execution Context: User
-$os=Get-WmiObject Win32_bios -ComputerName $env:computername -ea silentlycontinue
-write-output $os.SerialNumber
+# Description: Returns the device's serial number
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
+$bios = (Get-WmiObject -Class Win32_bios).SerialNumber
+return $bios

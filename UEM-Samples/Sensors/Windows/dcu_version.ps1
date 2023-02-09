@@ -1,6 +1,7 @@
-# Returns Dell Command Update Version
-# Return Type: String
-# Execution Context: System
+# Description: Returns Dell Command Update Version
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
 $DCU=(Get-ItemProperty "HKLM:\SOFTWARE\Dell\UpdateService\Clients\CommandUpdate\Preferences\Settings" -ErrorVariable err -ErrorAction SilentlyContinue)
 if ($err.Count -eq 0) {
@@ -8,4 +9,4 @@ if ($err.Count -eq 0) {
 }else{
  $DCU = "Dell Command | Update Not Installed"
 }
-write-output $DCU
+return $DCU

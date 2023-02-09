@@ -4,3 +4,7 @@ if [ -f "/Applications/Enterprise Connect.app/Contents/Info.plist" ] ; then
 else
    echo "0" ;
 fi
+
+# Description: Return Apple Enterprise Connect version info
+# Execution Context: SYSTEM
+# Return Type: STRING

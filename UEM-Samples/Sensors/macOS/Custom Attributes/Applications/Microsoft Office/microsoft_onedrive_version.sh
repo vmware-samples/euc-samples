@@ -4,3 +4,7 @@ if [ -f "/Applications/OneDrive.app/Contents/Info.plist" ] ; then
 else
     echo "0" ;
 fi
+
+# Description: Return Microsoft OneDrive version info
+# Execution Context: SYSTEM
+# Return Type: STRING

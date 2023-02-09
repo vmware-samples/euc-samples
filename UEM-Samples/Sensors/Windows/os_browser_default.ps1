@@ -1,6 +1,8 @@
-# Returns the users default web browser.
-# Return Type: String
-# Execution Context: User
+# Description: Returns the users default web browser.
+# Execution Context: USER
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $browser = Get-ItemProperty HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice | Select-Object -ExpandProperty ProgId
 Switch -regex ($browser) { 
 <#
@@ -11,5 +13,6 @@ Switch -regex ($browser) {
     "IE.HTTP" { Write-Output "Internet Explorer" }
     "\bFirefoxURL\b" { Write-Output "Mozilla FireFox" }
     "AppXq0fevzme2pys62n3e0fbqa7peapykr8v" { Write-Output "Microsoft Edge" }
-    default {Write-Output $browser}
+    default {Return $browser}
 }
+

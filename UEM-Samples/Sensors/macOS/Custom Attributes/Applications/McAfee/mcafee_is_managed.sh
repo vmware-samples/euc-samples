@@ -10,3 +10,7 @@ else
 fi
 
 echo $result
+
+# Description: Return Managed or Unmanaged status for McAfee Virus Scan
+# Execution Context: SYSTEM
+# Return Type: STRING

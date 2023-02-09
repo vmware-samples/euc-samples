@@ -1,15 +1,12 @@
-# Returns the estimated remaining charge on the battery
-# Return Type: String
-# Execution Context: System
+# Description: Returns the estimated remaining charge on the battery
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: INTEGER
 
-# Check for existence of battery
-if ((Get-WmiObject -Class Win32_Battery).count -ne 0)
-{
-	
+if ((Get-WmiObject -Class Win32_Battery).count -ne 0) {
 	$battery_remain = (Get-WmiObject win32_battery).estimatedChargeRemaining
-    write-output "$battery_remain%"
+  return $battery_remain
+} else {
+	return 0
 }
-else
-{
-	Write-Output "No battery found"
-}
+

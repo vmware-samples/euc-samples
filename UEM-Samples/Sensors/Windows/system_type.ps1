@@ -1,5 +1,7 @@
-# Returns the system type.
-# Return Type: String
-# Execution Context: User
+# Description: Returns the system type.
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $computer = Get-WmiObject -Class Win32_ComputerSystem 
-write-output $computer.SystemType
+return $computer.SystemType

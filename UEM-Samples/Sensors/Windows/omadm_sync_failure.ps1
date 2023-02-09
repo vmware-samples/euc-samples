@@ -1,7 +1,12 @@
-﻿# Returns the last date and time that the device failed the OMA-DM sync.
-# Return Type: DateTime
-# Execution Context: System
-$Account = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts
-$FailTime = Get-ItemProperty -Path "Registry::$($Account.Name)\Protected\ConnInfo" -Name ServerLastFailureTime
-$FailTime = [Datetime]::ParseExact($FailTime.ServerLastFailureTime.ToString(), 'yyyyMMdd\THHmmss\Z', $null)
-Write-Output $FailTime
+# Description: Returns the last date and time that the device failed the OMA-DM sync.
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: DATETIME
+
+$Account = Get-ChildItem -Path "Registry::HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts" -ErrorAction SilentlyContinue
+$ConnInfo = Get-ItemPropertyValue -Path "Registry::$($Account.Name)\Protected\ConnInfo" -Name "ServerLastFailureTime" -ErrorAction SilentlyContinue
+if($ConnInfo){
+  $FailTime = [Datetime]::ParseExact($ConnInfo.ServerLastFailureTime.ToString(), 'yyyyMMdd\THHmmss\Z', $null)
+  Return $FailTime
+}
+

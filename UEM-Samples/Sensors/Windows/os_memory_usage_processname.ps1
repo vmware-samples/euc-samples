@@ -1,9 +1,10 @@
-# Returns the average amount of non-paged and paged memory that the process is using, in kilobytes.
-# Return Type: Integer
-# Execution Context: User
-# change TaskScheduler to your process name
+# Description: Returns the average amount of non-paged and paged memory that a defined process is using (in KB). Example returns usage for TaskScheduler.
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
 $PM = get-process TaskScheduler |Measure-object -property PM -Average -ErrorVariable err -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Average
 $NPM = get-process TaskScheduler |Measure-object -property NPM -Average -ErrorVariable err -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Average
-$memory = [System.Math]::Round(($PM+$NPM)/1KB)
-write-output ([System.Math]::Round($memory))
+$memory = [System.Math]::Round(($PM+$NPM)/1MB)
+Return "$memory MB"
+

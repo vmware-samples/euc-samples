@@ -4,3 +4,7 @@ if [ -f "/Applications/SecurID.app/Contents/Info.plist" ] ; then
 else
     echo "0" ;
 fi
+
+# Description: Return RSA SecureID version info
+# Execution Context: SYSTEM
+# Return Type: STRING

@@ -1,5 +1,8 @@
-# Returns Windows 10 Edition (e.g. Enterprise, Education, Home, Professional)
-# Return Type: String
-# Execution Context: System
+# Description: Returns Windows Edition (e.g. Enterprise, Education, Home, Professional)
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $os=Get-WindowsEdition -online
-write-output $os.Edition
+Return $os.Edition
+

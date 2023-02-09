@@ -1,16 +1,18 @@
-# Returns the type of system in use. Possible values: Unspecified, Desktop, Mobile, Workstation, Enterprise Server, SOHO Server, Appliance PC, Performance Server, Slate, Maximum. 
-# Return Type: String
-# Execution Context: User
+# Description: Returns the type of system in use. Possible values: Unspecified, Desktop, Mobile, Workstation, Enterprise Server, SOHO Server, Appliance PC, Performance Server, Slate, Maximum. 
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $computer = Get-WmiObject -Class Win32_ComputerSystem 
 switch ($computer.PCSystemTypeEx) {
-0 {"Unspecified"}
-1 {"Desktop"}
-2 {"Mobile"}
-3 {"Workstation"}
-4 {"Enterprise Server"}
-5 {"SOHO Server"}
-6 {"Appliance PC"}
-7 {"Performance Server"}
-8 {"Slate"}
-9 {"Maximum"}
+  0 {return "Unspecified"}
+  1 {return "Desktop"}
+  2 {return "Mobile"}
+  3 {return "Workstation"}
+  4 {return "Enterprise Server"}
+  5 {return "SOHO Server"}
+  6 {return "Appliance PC"}
+  7 {return "Performance Server"}
+  8 {return "Slate"}
+  9 {return "Maximum"}
 }

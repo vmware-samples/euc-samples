@@ -1,9 +1,7 @@
-﻿# Returns Branch Cache Client Status details BranchCacheServiceStartType
-# Example - Manual, Automatic
-# Get-BCStatus | Select-Object -ExpandProperty BranchCacheServiceStartType
-# Return Type: String
-# Execution Context: System
-$branchcache = Get-BCStatus
-write-output $branchcache.BranchCacheServiceStartType
+# Description: Returns Branch Cache Client Service Startup Type
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
-
+$branchcache = (Get-BCStatus).BranchCacheServiceStartType
+return $branchcache

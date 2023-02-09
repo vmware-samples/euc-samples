@@ -1,6 +1,9 @@
-# Returns used network in bytes
-# Return Type: Integer
-# Execution Context: User
+# Description: Returns network usage (in KB)
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $Total_bytes=Get-WmiObject -class Win32_PerfFormattedData_Tcpip_NetworkInterface |Measure-Object -property BytesTotalPersec -Average |Select-Object -ExpandProperty Average
-write-output ([System.Math]::Round($Total_bytes))
+$totalKilobytes = ([System.Math]::Round($Total_bytes)/1KB).ToString("0.00")
+Return "$totalKilobytes KB"
 

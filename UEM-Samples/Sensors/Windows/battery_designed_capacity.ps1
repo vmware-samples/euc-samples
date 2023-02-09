@@ -1,17 +1,14 @@
-﻿# Returns the max charge capacity of the batteries in mWh (megawatt hour)
-# Return Type: String
-# Execution Context: System
-# Author: Bpeppin
+# Description: Returns the max charge capacity of the batteries in mWh (megawatt hour)
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: INTEGER
 
-# Check for existence of battery
-if ((Get-WmiObject -Class Win32_Battery).count -ne 0)
-{
-	
+if ((Get-WmiObject -Class Win32_Battery).count -ne 0) {
 	$designedCapacity = (Get-WmiObject -Class "BatteryStaticData" -Namespace "ROOT\WMI").DesignedCapacity
-	$designedCapacity = '{0:N0}' -f $designedCapacity
-	Write-Output "$designedCapacity mWh"
+	# add the following line to add formatting for thousands
+	#$designedCapacity = '{0:N0}' -f $designedCapacity
+	return $designedCapacity
+} else {
+	return 0
 }
-else
-{
-	Write-Output "No battery found"
-}
+

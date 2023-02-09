@@ -1,7 +1,8 @@
-﻿# Returns Branch Cache NetworkConfiguration details 
-# Example - True,False
-# Get-BCStatus | Select-Object -ExpandProperty NetworkConfiguration | Select-Object -ExpandProperty HostedCacheClientFirewallRulesEnabled
-# Return Type: String
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty NetworkConfiguration
-write-output $branchcache.HostedCacheClientFirewallRulesEnabled
+# Description: Returns Branch Cache NetworkConfiguration HostedCacheClientFirewallRulesEnabled status. Returns true/false
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: BOOLEAN
+
+$branchcache = (Get-BCStatus).NetworkConfiguration.HostedCacheClientFirewallRulesEnabled
+return $branchcache
+

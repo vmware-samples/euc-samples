@@ -1,7 +1,7 @@
-﻿# Returns Branch Cache HashCache details 
-# Example - CurrentSizeOnDiskAsNumberOfBytes
-# Get-BCStatus | Select-Object -ExpandProperty HashCache | Select-Object -ExpandProperty CurrentSizeOnDiskAsNumberOfBytes
-# Return Type: Integer
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty HashCache
-write-output $branchcache.CurrentSizeOnDiskAsNumberOfBytes
+# Description: Returns Branch Cache HashCache CurrentSizeOnDiskAsNumberOfBytes details
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: INTEGER
+
+$branchcache = (Get-BCStatus).HashCache.CurrentSizeOnDiskAsNumberOfBytes
+return $branchcache

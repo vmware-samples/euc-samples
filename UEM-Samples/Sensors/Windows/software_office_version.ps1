@@ -1,6 +1,8 @@
-# Returns the current O365 Version
-# Execution Context: System
-$key = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, [Microsoft.Win32.RegistryView]::Registry64)
-$subKey = $key.OpenSubKey("SOFTWARE\Microsoft\Office\ClickToRun\Configuration")
-$regkey_value = $subKey.GetValue("ClientVersionToReport")
-return $regkey_value
+# Description: Returns the MS Office (O365) version
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
+$officeversion = Get-ItemPropertyValue -Path "Registry::HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" -Name "ClientVersionToReport" -ErrorAction SilentlyContinue
+return $officeversion
+

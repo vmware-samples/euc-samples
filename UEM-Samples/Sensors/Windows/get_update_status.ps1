@@ -1,28 +1,8 @@
-<# 
-  .Synopsis
-  Report Status of Windows Update - Up-To-Date/Pending Reboot/Out-of-Date/Update-Failed/No Status
-  .NOTES
-  Created:	October, 2022
-  Created by:	Bo Leksono
-  Organization:	VMware, Inc.
-  .DESCRIPTION
-  Used to report the status of Windows Update of a device, rather than individual updates.
-  Status reported includes:
-  - No Connection
-  - Pending Reboot
-  - Update Search Failed
-  - Updates Failed
-  - Updates Available
-  - Up To Date
-  - action timed out
+# Description: Report Status of Windows Update of a device, rather than individual updates. Responses include - Up-To-Date | Pending Reboot | Out-of-Date | Update-Failed | No Status
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
-  Based on https://docs.microsoft.com/en-us/windows/win32/wua_sdk/searching--downloading--and-installing-updates
-  Criteria - https://docs.microsoft.com/en-us/windows/win32/api/wuapi/nf-wuapi-iupdatesearcher-search
-
-  Return Type: String
-  Execution Context: System
-  Execution Architecture: Auto
-#>
 $timeout = 120 ## seconds
 
 #script block for background job
@@ -106,3 +86,4 @@ else{
     #return timeout if no result returned before
     return "action timed out"
 }
+

@@ -1,8 +1,13 @@
 #!/bin/bash
 
-recoveryHDPresent=$(/usr/sbin/diskutil list | grep "Apple_Boot" | awk '{ print $2 }')
+recoveryHDPresent=$(/usr/sbin/diskutil list | grep "Apple_Boot" | awk '{print $2}')
 if [ "$recoveryHDPresent" = "" ]; then
-   echo "FALSE"
+   echo "false"
 else
-   echo "TRUE"
+   echo "true"
 fi
+
+# Description: Return true or false if recovery partition is enabled
+# Execution Context: SYSTEM
+# Execution Architecture: UNKNOWN
+# Return Type: BOOLEAN

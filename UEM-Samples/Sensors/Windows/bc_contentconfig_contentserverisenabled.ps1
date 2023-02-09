@@ -1,7 +1,8 @@
-﻿# Returns Branch Cache ContentServerConfiguration details 
-# Example - True,False
-# Get-BCStatus | Select-Object -ExpandProperty ContentServerConfiguration | Select-Object -ExpandProperty ContentServerIsEnabled
-# Return Type: String
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty ContentServerConfiguration
-write-output $branchcache.ContentServerIsEnabled
+# Description: Returns Branch Cache ContentServerConfiguration details. Returns - True/False
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: BOOLEAN
+
+$branchcache = (Get-BCStatus).ContentServerConfiguration.ContentServerIsEnabled
+return $branchcache
+

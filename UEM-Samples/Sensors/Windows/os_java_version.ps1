@@ -1,6 +1,7 @@
-# Returns Java Version e.g. 8.0.1910.12
-# Return Type: String
-# Execution Context: User
+# Description: Returns Java Version e.g. 8.0.1910.12
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
 $javaver=(Get-Command java -ErrorVariable err -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Version)
 
@@ -12,4 +13,5 @@ else
  $javaver = "JAVA not found"
 }
 
-write-output $javaver.ToString()
+Return $javaver.ToString()
+

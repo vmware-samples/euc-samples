@@ -4,3 +4,7 @@ if [ -f "/Applications/Microsoft OneNote.app/Contents/Info.plist" ] ; then
 else
     echo "0" ;
 fi
+
+# Description: Return Microsoft OneNote version info
+# Execution Context: SYSTEM
+# Return Type: STRING

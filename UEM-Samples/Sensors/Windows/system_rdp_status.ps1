@@ -1,6 +1,7 @@
-﻿# Returns the status of Remote Desktop Service
-# Return Type: String
-# Execution Context: System
+# Description: Returns the status of Remote Desktop Service
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
 $rdp = Get-WmiObject -Class Win32_TerminalServiceSetting -Namespace root\CIMV2\TerminalServices -ErrorAction SilentlyContinue -ErrorVariable err
 $rdpstatus = "Undefined"
@@ -20,4 +21,4 @@ if ($err.Count -eq 0) {
       }
     }
 }
-Write-Output $rdpstatus
+return $rdpstatus

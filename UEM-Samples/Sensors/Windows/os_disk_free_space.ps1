@@ -1,7 +1,7 @@
-# Returns free space on System Drive
-# Return Type: Integer
-# Execution Context: System 
-# Execution Architecture: Auto
+# Description: Returns free space on System Drive (in GB)
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
 $drives = get-disk
 foreach ($drive in $drives){
@@ -10,6 +10,7 @@ foreach ($drive in $drives){
         $systemdriveletter = $pwd.drive.Name
         $drv = Get-Volume | Where-Object {$_.DriveLetter -eq $systemdriveletter}
         $sizeremaining = [int]($drv.SizeRemaining /1GB)
-        return $sizeremaining
+        return "$sizeremaining GB"
     }
 }
+

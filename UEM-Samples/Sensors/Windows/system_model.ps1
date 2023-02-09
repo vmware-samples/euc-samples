@@ -1,5 +1,7 @@
-# Returns the name of the systems Model
-# Return Type: String
-# Execution Context: User
+# Description: Returns the name of the systems Model
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $computer = Get-WmiObject -Class Win32_ComputerSystem 
-write-output $computer.Model
+return $computer.Model

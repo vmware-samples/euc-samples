@@ -1,5 +1,7 @@
-# Returns True if a hypervisor is present
-# Return Type: Boolean
-# Execution Context: User
+# Description: Returns True/False if a hypervisor is/is not present
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: BOOLEAN
+
 $computer = Get-WmiObject -Class Win32_ComputerSystem 
-write-output $computer.HypervisorPresent
+return $computer.HypervisorPresent

@@ -7,3 +7,8 @@ if [ "$status" = "1"]; then
 else
     echo "Disabled";
 fi
+
+# Description: Returns Apple firewall enabled / disabled status
+# Execution Context: SYSTEM
+# Execution Architecture: UNKNOWN
+# Return Type: STRING

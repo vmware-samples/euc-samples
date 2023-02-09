@@ -1,5 +1,8 @@
-﻿# Returns the computer name according to the DNS.
-# Return Type: String
-# Execution Context: User
+# Description: Returns the computer name according to the DNS.
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $computer = Get-WmiObject -Class Win32_ComputerSystem 
-write-output $computer.DNSHostName
+Return $computer.DNSHostName
+

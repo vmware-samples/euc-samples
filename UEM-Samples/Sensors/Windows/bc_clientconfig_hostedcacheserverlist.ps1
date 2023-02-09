@@ -1,8 +1,7 @@
-﻿# Returns Branch Cache Client Configuration details HostedCacheServerList
-# Example - Servers of the hosted Cache mode.
-# Get-BCStatus | Select-Object -ExpandProperty ClientConfiguration | Select-Object -ExpandProperty HostedCacheServerList
-# Return Type: String
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty ClientConfiguration
-write-output $branchcache.HostedCacheServerList
+# Description: Returns BranchCache Client Configuration details HostedCacheServerList
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
+$branchcache = (Get-BCStatus).ClientConfiguration.HostedCacheServerList
+return $branchcache

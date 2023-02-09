@@ -9,3 +9,7 @@ if [ "$result" = "1" ]; then
 else
     echo "Disabled"
 fi
+
+# Description: Return Enabled or Disabled for McAfee Firewall Status
+# Execution Context: SYSTEM
+# Return Type: STRING

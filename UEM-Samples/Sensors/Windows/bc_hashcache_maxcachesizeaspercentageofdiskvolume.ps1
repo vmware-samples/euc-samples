@@ -1,7 +1,7 @@
-﻿# Returns Branch Cache HashCache details 
-# Example - 5
-# Get-BCStatus | Select-Object -ExpandProperty HashCache | Select-Object -ExpandProperty MaxCacheSizeAsPercentageOfDiskVolume
-# Return Type: Integer
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty HashCache
-write-output $branchcache.MaxCacheSizeAsPercentageOfDiskVolume
+# Description: Returns Branch Cache HashCache MaxCacheSizeAsPercentageOfDiskVolume details
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: INTEGER
+
+$branchcache = (Get-BCStatus).HashCache.MaxCacheSizeAsPercentageOfDiskVolume
+return $branchcache

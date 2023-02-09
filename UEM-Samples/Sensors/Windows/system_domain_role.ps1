@@ -1,6 +1,8 @@
-# Returns the domain domain role of the system. Possible values include: Standalone Workstation, Member Workstation, Standalone Server, Member Server, Backup Domain Controller, Primary Domain Controller. 
-# Return Type: String
-# Execution Context: User
+# Description: Returns the domain role of the system. 
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $computer = Get-WmiObject -Class Win32_ComputerSystem 
 switch ($computer.DomainRole) {
 0 {"Standalone Workstation"}
@@ -10,3 +12,4 @@ switch ($computer.DomainRole) {
 4 {"Backup Domain Controller"}
 5 {"Primary Domain Controller"}
 }
+

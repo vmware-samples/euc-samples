@@ -4,3 +4,7 @@ if [ -f "/Applications/Skype for Business.app/Contents/Info.plist" ] ; then
 else
     echo "0" ;
 fi
+
+# Description: Return Skype for Business version info
+# Execution Context: SYSTEM
+# Return Type: STRING

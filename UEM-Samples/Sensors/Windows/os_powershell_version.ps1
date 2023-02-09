@@ -1,6 +1,8 @@
-# Returns the PowerShell Version in Major.Minor.Build.Revision format
-# Return Type: String
-# Execution Context: User
+# Description: Returns the PowerShell Version in Major.Minor.Build.Revision format
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
 $ps = $PSVersionTable.PSVersion
-write-output "$($ps.Major).$($ps.Minor).$($ps.Build).$($ps.Revision)"
+Return "$($ps.Major).$($ps.Minor).$($ps.Build).$($ps.Revision)"
 

@@ -1,5 +1,8 @@
-# Returns True/False whether the TPM is locked out
-# Return Type: Boolean
-# Execution Context: System
+# Description: Returns True/False whether the TPM is locked out
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: BOOLEAN
+
 $tpm=get-tpm
-write-output $tpm.LockedOut
+$status = $tpm.LockedOut
+return $status

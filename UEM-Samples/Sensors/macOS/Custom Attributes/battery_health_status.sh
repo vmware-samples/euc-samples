@@ -1,9 +1,14 @@
 #!/bin/bash
 
-result=`ioreg -r -c "AppleSmartBattery" | grep "PermanentFailureStatus" | awk '{print $3}' | sed s/\"//g`
+result=$(ioreg -n AppleSmartBattery -r | awk '/"PermanentFailureStatus" = /{print $3}')
 if [ "$result" == "1" ]; then
-  result="Failure"
+  result="TRUE"
 elif [ "$result" == "0" ]; then
-  result="OK"
+  result="FALSE"
 fi
 echo $result
+
+# Description: Returns true or false of Battery PrematureFailureStatus
+# Execution Context: SYSTEM
+# Execution Architecture: UNKNOWN
+# Return Type: BOOLEAN

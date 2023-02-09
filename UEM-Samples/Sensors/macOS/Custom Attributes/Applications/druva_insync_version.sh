@@ -8,3 +8,7 @@ else
         echo "0" ;
     fi
 fi
+
+# Description: Return Druva InSync version info
+# Execution Context: SYSTEM
+# Return Type: STRING

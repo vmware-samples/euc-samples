@@ -1,7 +1,7 @@
-﻿# Returns Branch Cache Client Configuration details CurrentClientMode
-# Example - True, False
-# Get-BCStatus | Select-Object -ExpandProperty ClientConfiguration | Select-Object -ExpandProperty HostedCacheDiscoveryEnabled
-# Return Type: String
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty ClientConfiguration
-write-output $branchcache.HostedCacheDiscoveryEnabled
+# Description: Returns Branch Cache Client Configuration details CurrentClientMode. Returns - True, False
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: BOOLEAN
+
+$branchcache = (Get-BCStatus).ClientConfiguration.HostedCacheDiscoveryEnabled
+return $branchcache

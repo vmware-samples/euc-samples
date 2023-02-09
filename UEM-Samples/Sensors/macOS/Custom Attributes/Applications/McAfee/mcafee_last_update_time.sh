@@ -6,3 +6,7 @@ if [ -f "/Library/Preferences/com.mcafee.ssm.antimalware.plist" ]; then
 else
     echo "Not installed"
 fi
+
+# Description: Return McAfee Virus Scan last update date
+# Execution Context: SYSTEM
+# Return Type: STRING

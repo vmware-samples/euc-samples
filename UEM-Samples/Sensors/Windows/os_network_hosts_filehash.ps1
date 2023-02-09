@@ -1,22 +1,16 @@
-<#
-Returns the sha256 hash of the hosts file on a system.
-
-DATE        EDITOR          DESCRIPTION OF CHANGE
-2022-06-27  Brian Deyo      Initial sensor script
-2022-06-28  Brian Deyo      Removed non-standard hash detection. That will be better setup downstream.
-
-#>
+# Description: Returns the sha256 hash of the hosts file on a system.
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
 
 [string]$hostsFileHash
 $hosts = "$($env:windir)\System32\drivers\etc\hosts"
-
-
-
-if (test-Path $hosts) {
+if (test-Path $hosts)
+{
     $hostsFileHash = Get-FileHash -Path $hosts -Algorithm:SHA256
-    $hostsFileHash = $hostsFileHash.hash 
+    $FileHash = ($hostsFileHash.hash).trim()
+    return $FileHash
 }
-else {
-    $hostsFileHash = "Hosts file not located via Sensor"
-}
-return $hostsFileHash
+else 
+{$hostsFileHash = "Hosts file not located via Sensor"}
+

@@ -1,7 +1,7 @@
-﻿# Returns Branch Cache DataCache details 
-# Example - CurrentActiveCacheSize
-# Get-BCStatus | Select-Object -ExpandProperty DataCache | Select-Object -ExpandProperty CurrentActiveCacheSize
-# Return Type: Integer
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty DataCache
-write-output $branchcache.CurrentActiveCacheSize
+# Description: Returns Branch Cache DataCache details
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: INTEGER
+
+$branchcache = (Get-BCStatus).DataCache.CurrentActiveCacheSize
+return $branchcache

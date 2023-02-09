@@ -1,7 +1,7 @@
-# Return highest TPM Version the device supports
-# Return Type: Integer
-# Execution Context: System 
-# Execution Architecture: Auto
+# Description: Return highest TPM Version the device supports
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: INTEGER
 
 $NameSpace= "root\cimv2\security\microsofttpm"
 $tpm = Get-WmiObject -Namespace $NameSpace -Query "Select * from win32_tpm"
@@ -19,3 +19,4 @@ if ($tpm){
   $highesttpmversion = ($tpmversionsarray| Measure-Object -Maximum).Maximum
   if ($highesttpmversion){return $highesttpmversion}  
 }else{return 0}
+

@@ -1,5 +1,8 @@
-# Returns True/False whether TPM is Ready to be used
-# Return Type: Boolean
-# Execution Context: System
+# Description: Returns True/False whether TPM is Ready to be used
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: BOOLEAN
+
 $tpm=get-tpm
-write-output $tpm.TpmReady
+$status = $tpm.TpmReady
+return $status

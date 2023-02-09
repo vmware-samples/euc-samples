@@ -1,7 +1,7 @@
-﻿# Returns Branch Cache HashCache details 
-# Example - Filepath, default
-# Get-BCStatus | Select-Object -ExpandProperty HashCache | Select-Object -ExpandProperty CacheFileDirectoryPath
-# Return Type: String
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty HashCache
-write-output $branchcache.CacheFileDirectoryPath
+# Description: Returns Branch Cache HashCache CacheFileDirectoryPath. Returns default/file path
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: STRING
+
+$branchcache = (Get-BCStatus).HashCache.CacheFileDirectoryPath
+return $branchcache

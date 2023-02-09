@@ -1,7 +1,8 @@
-﻿# Returns Branch Cache NetworkConfiguration details 
-# Example - True,False
-# Get-BCStatus | Select-Object -ExpandProperty NetworkConfiguration | Select-Object -ExpandProperty ContentRetrievalFirewallRulesEnabled
-# Return Type: String
-# Execution Context: System
-$branchcache = Get-BCStatus | Select-Object -ExpandProperty NetworkConfiguration
-write-output $branchcache.ContentRetrievalFirewallRulesEnabled
+# Description: Returns Branch Cache NetworkConfiguration ContentRetrievalFirewallRulesEnabled details. Returns true/false 
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Return Type: BOOLEAN
+
+$branchcache = (Get-BCStatus).NetworkConfiguration.ContentRetrievalFirewallRulesEnabled
+return $branchcache
+
