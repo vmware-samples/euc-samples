@@ -1,6 +1,6 @@
 # Description: Returns the sha256 hash of the hosts file on a system.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 [string]$hostsFileHash

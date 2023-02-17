@@ -1,6 +1,6 @@
 # Description: Returns the type of system in use. Possible values: Unspecified, Desktop, Mobile, Workstation, Enterprise Server, SOHO Server, Appliance PC, Performance Server, Slate, Maximum. 
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $computer = Get-WmiObject -Class Win32_ComputerSystem 

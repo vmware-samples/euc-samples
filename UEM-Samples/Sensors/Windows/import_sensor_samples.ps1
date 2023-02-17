@@ -22,7 +22,7 @@
     For Windows Samples be sure to use the following format when creating new samples so that they are imported correctly:
     # Description: Description
     # Execution Context: SYSTEM | USER
-    # Execution Architecture: EITHER_64BIT_OR_32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
+    # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
     # Return Type: INTEGER | BOOLEAN | STRING | DATETIME
     # Variables: KEY,VALUE; KEY,VALUE
     <YOUR POWERSHELL COMMANDS>
@@ -701,7 +701,7 @@ do {
     # Execution Context: USER, SYSTEM
     $c = $content | Select-String -Pattern 'Execution Context: ' -Raw
     $Context = $c.Substring(($c.LastIndexOf('Execution Context: ')+19))  -replace '[#]' -replace '"',"" -replace "'",""
-    # Execution Architecture: EITHER_64BIT_OR_32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
+    # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
     $a = $content | Select-String -Pattern 'Execution Architecture: ' -Raw
     $Architecture = $a.Substring(($a.LastIndexOf('Execution Architecture: ')+24))  -replace '[#]' -replace '"',"" -replace "'",""
     # Return Type: INTEGER, BOOLEAN, STRING, DATETIME

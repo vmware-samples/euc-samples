@@ -1,6 +1,6 @@
 # Description: Returns user logon event info for past 1 day found in Windows Security Event Log. Excludes SYSTEM logon events, preventing reporting of system services
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 #Variables to modify

@@ -1,6 +1,6 @@
 # Description: Returns network usage (in KB)
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $Total_bytes=Get-WmiObject -class Win32_PerfFormattedData_Tcpip_NetworkInterface |Measure-Object -property BytesTotalPersec -Average |Select-Object -ExpandProperty Average

@@ -1,6 +1,6 @@
 # Description: Returns the Windows SID for the current logged in user. 
 # Execution Context: USER
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $SID = ([Security.Principal.WindowsIdentity]::GetCurrent().user).value

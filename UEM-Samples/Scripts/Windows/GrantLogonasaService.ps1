@@ -1,6 +1,6 @@
 # Description: This powershell script grants the "Log on as a Service" User Rights Assignment to the user specified by the $ServiceAccount param
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Timeout: 30
 # Variables: RegPath,"Registry::HKLM:\SOFTWARE\AIRWATCH"; Regkey,"EAUATScript"; RegValue,"UAT Script run in System Context"
 

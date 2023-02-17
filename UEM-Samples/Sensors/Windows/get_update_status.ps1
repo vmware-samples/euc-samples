@@ -1,6 +1,6 @@
 # Description: Report Status of Windows Update of a device, rather than individual updates. Responses include - Up-To-Date | Pending Reboot | Out-of-Date | Update-Failed | No Status
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $timeout = 120 ## seconds

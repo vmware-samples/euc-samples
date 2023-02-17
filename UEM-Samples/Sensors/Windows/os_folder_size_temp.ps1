@@ -1,6 +1,6 @@
 # Description: Returns the total size of a defined folder in MB
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $folder = "C:\Temp"

@@ -1,6 +1,6 @@
 # Description: Returns the average amount of non-paged and paged memory that a defined process is using (in KB). Example returns usage for TaskScheduler.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $PM = get-process TaskScheduler |Measure-object -property PM -Average -ErrorVariable err -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Average

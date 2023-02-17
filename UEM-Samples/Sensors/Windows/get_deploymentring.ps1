@@ -1,6 +1,6 @@
 # Description: Use this sensor to write a random number to the registry if not already set and return the value to WS1 Intelligence. Can be used to create dynamic SmartGroups for Windows Update Deployment Rings.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: INTEGER
 
 $value = Get-Random -Minimum 1 -Maximum 10

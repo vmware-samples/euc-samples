@@ -1,6 +1,6 @@
 # Description: Returns load capacity of each processor, averaged to the last second.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: INTEGER
 # V@riables: process,win32_processor
 # add ability to use Variables

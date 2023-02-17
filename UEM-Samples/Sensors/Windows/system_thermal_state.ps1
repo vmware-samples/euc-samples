@@ -1,6 +1,6 @@
 # Description: Returns the thermal state of the system when last booted. Possible values include: other, unknown, safe, warning, critical, and non-recoverable.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $computer = Get-WmiObject -Class Win32_ComputerSystem 

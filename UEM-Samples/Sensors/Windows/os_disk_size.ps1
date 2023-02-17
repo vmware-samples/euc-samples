@@ -1,6 +1,6 @@
 # Description: Returns size of the System Drive (in GB)
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $drives = get-disk

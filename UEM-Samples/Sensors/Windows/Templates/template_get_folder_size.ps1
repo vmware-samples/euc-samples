@@ -1,6 +1,6 @@
 # Description: Returns the total size of a folder in MB
 # Execution Context: SYSTEM | USER
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: INTEGER
 
 $picturesfolder = [Environment]::GetFolderPath(“MyPictures”)

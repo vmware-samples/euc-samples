@@ -1,6 +1,6 @@
 # Description: Returns value of 1 if Event ID is found in Windows Event Log
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: INTEGER
 # V@riables: Log,System; Id,8
 # future add ability to use variable to specify the log and event id to return

@@ -1,6 +1,6 @@
 # Description
 # Execution Context: System | User
-# Execution Architecture: EITHER_64BIT_OR_32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
+# Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
 # Timeout: ## greater than 0
 # Variables: KEY,VALUE; KEY,VALUE
 

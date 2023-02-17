@@ -1,6 +1,6 @@
 # Description: Returns the last date and time that the device failed the OMA-DM sync.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: DATETIME
 
 $Account = Get-ChildItem -Path "Registry::HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts" -ErrorAction SilentlyContinue

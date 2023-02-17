@@ -1,6 +1,6 @@
 # Description: Use this sensor to determine the Country or Region or City of the device based upon the NAT'd Public IP.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 #     
 #Might not be accurate for networks with centralized Internet Gateways.

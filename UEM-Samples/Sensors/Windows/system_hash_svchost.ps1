@@ -1,6 +1,6 @@
 # Description: Returns the file hash using MD5 Algorithm
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 # V@riables: folder,[Environment]::SystemDirectory; file,svchost.exe
 # future to add ability to use variables.

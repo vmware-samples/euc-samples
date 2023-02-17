@@ -1,6 +1,6 @@
 # Description: Return / Create and return random number used to create Deployment Rings
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: INTEGER
 
 $value = Get-Random -Minimum 1 -Maximum 10

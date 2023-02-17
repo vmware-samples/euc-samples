@@ -1,6 +1,6 @@
 # Description: Returns Horizon Broker URL from Horizon Volatile Registry Key
 # Execution Context: USER
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $registryKey = Get-ItemProperty -Path "HKCU:\Volatile Environment\1" -ErrorVariable err -ErrorAction SilentlyContinue

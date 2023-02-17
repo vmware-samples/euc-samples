@@ -1,6 +1,6 @@
 # Description: Returns true or false if Event ID is found in Windows Event Log. Use this sensor to report if an Event ID is reported in a Windows Event Log within the time window. Will return true if it finds an event with matching event id in matching event log
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: BOOLEAN
 
 #Variables to modify

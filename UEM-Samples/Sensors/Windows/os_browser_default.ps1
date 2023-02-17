@@ -1,6 +1,6 @@
 # Description: Returns the users default web browser.
 # Execution Context: USER
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $browser = Get-ItemProperty HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice | Select-Object -ExpandProperty ProgId

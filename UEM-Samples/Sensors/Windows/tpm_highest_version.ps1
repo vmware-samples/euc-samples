@@ -1,6 +1,6 @@
 # Description: Return highest TPM Version the device supports
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: INTEGER
 
 $NameSpace= "root\cimv2\security\microsofttpm"

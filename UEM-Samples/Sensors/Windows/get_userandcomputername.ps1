@@ -1,6 +1,6 @@
 # Description: Return current logged in user comma computername
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $domainuser = Get-WmiObject -Class "Win32_ComputerSystem" | select username

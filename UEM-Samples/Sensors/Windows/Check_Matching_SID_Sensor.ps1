@@ -1,6 +1,6 @@
 # Description: Queries Windows SID with MDM Enrollment and matches it against current logged in user.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $script:SID = ([Security.Principal.WindowsIdentity]::GetCurrent().user).value

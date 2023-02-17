@@ -1,6 +1,6 @@
 # Description: Returns "Charging" or "Not Charging" if the battery is charging or not
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 if ((Get-WmiObject -Class Win32_Battery).count -ne 0) {

@@ -1,6 +1,6 @@
 # Description: Returns boolean status if Dell Command | Update UI is Locked. If DCU is not installed, returns False.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $DCU=(Get-ItemProperty "HKLM:\SOFTWARE\Dell\UpdateService\Clients\CommandUpdate\Preferences\CFG" -ErrorVariable err -ErrorAction SilentlyContinue)

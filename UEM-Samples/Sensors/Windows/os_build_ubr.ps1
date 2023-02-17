@@ -1,6 +1,6 @@
 # Description: Returns Windows version Major.Minor.Build.Revision (e.g. 10.0.22000.1455)
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $WinVer = New-Object -TypeName PSObject

@@ -1,6 +1,6 @@
 # Description: Returns the event that casued the system to power up. Possible values include: other, unknown, APM Timer, Modem Ring, LAN Remote, Power Switch, PCI PME#, or AC Power Restored.
 # Execution Context: SYSTEM
-# Execution Architecture: EITHER_64BIT_OR_32BIT
+# Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
 $computer = Get-WmiObject -Class Win32_ComputerSystem 
