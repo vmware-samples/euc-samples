@@ -5,13 +5,13 @@
 - **Authors**:Bhavya Bandi, Varun Murthy, Josue Negron, Brooks Peppin, Aaron Black, Mike Nelson, Chris Halstead, Justin Sheets, Andreano Lanusse, Adarsh Kesari, Saurabh Jhunjhunwala, Robert Terakedis, Phil Helmling
 - **Email**: bbandi@vmware.com, vmurthy@vmware.com, jnegron@vmware.com, bpeppin@vmware.com, aaronb@vmware.com, miken@vmware.com, chalstead@vmware.com, jsheets@vmware.com, aguedesrocha@vmware.com, kesaria@vmware.com, sjhunjhunwal@vmware.com, rterakedis@vmware.com, helmlingp@vmware.com
 - **Date Created**: 11/14/2018
-- **Updated**: 9/24/2021
+- **Updated**: 2/17/2023
 - **Supported Platforms**: Workspace ONE 1811+
 - **Tested on**: Windows 10 Pro/Enterprise 1803+
 
 
 ## Purpose
-These Workspace ONE Sensor samples contain PowerShell command lines or scripts that can be used in a **Devices > Sensors** payload to report back information about the Windows 10 or macOS device back to Workspace ONE.
+These Workspace ONE Sensor samples contain PowerShell command lines or scripts that can be used in a **Devices > Sensors** payload to report back information about the Windows 10, macOS or Linux device back to Workspace ONE.
 
 ## Description 
 There are Sensor samples, templates, and a script `import_sensor_samples.ps1` to populate your environment with all of the samples.    
@@ -19,20 +19,19 @@ There are Sensor samples, templates, and a script `import_sensor_samples.ps1` to
 ## Required Changes/Updates
 You will want to leverage the `template_`  samples and modify any of the data, or leverage the existing samples. You can also leverage the `import_sensor_samples.ps1` script to upload the samples to your environment. Only the templates and the Sensor Importer require changes. Samples work as is, but can also be modified for your needs. 
 
-For Windows 10 Samples be sure to use the following format when creating new samples so that they are imported correctly:
-
-    # Description
-    # Return Type: String | Integer | Boolean | DateTime
-    # Execution Context: System | User
-	<YOUR POWERSHELL COMMANDS>
+For Windows Samples be sure to use the following format when creating new samples so that they are imported correctly:
+    # Description: Description
+    # Execution Context: SYSTEM | USER
+    # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
+    # Return Type: INTEGER | BOOLEAN | STRING | DATETIME
+    <YOUR POWERSHELL COMMANDS>
 
 For macOS Samples be sure to use the following format when creating new samples so that they are imported correctly:
-	    
-	<YOUR SENSOR COMMANDS>
-	# Description
-    # Return Type: String | Integer | Boolean | DateTime
-    # Execution Context: System | User
-
+    <YOUR SENSOR COMMANDS>
+    # Description: Description
+    # Execution Context: SYSTEM | USER
+    # Return Type: INTEGER | BOOLEAN | STRING | DATETIME
+    # Variables: KEY,VALUE; KEY,VALUE
 
 ### WMI Query Template
     $wmi=(Get-WmiObject WMI_Class_Name)
@@ -58,7 +57,7 @@ For macOS Samples be sure to use the following format when creating new samples 
 This Powershell script allows you to automatically import PowerShell/Shell (.sh & .zsh)/Python scripts (Sensor Samples) as Workspace ONE Sensors in the Workspace ONE UEM Console. MUST RUN AS ADMIN
 
 ### Description 
-Place this PowerShell script in the same directory of all of your samples (.ps1/.sh/.zsh/.py files, note file extension is not required, sha-bang will be used to determine scripting language) or use the `-SensorsDirectory` parameter to specify your directory. This script when run will parse the sensor sample scripts, check if they already exist, then upload to Workspace ONE UEM via the REST API.
+Place this PowerShell script in the same directory of all of your samples (.ps1/.sh/.zsh/.py files, note file extension is not required, sha-bang will be used to determine scripting language) or use the `-SensorsDirectory` parameter to specify your directory. This script when run will parse the sensor sample scripts, check if they already exist, then upload to Workspace ONE UEM via the REST API. If the `-UpdateSensors` parameter is provided, existing sensors with the same name will have the Description, Platform Architecture, Return Type and Sensor Code updated in the console.
 
 ### Examples 
 
@@ -81,7 +80,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1/
         -OrganizationGroupName 'Digital Workspace Tech Zone' `
 		-SensorsDirectory 'C:\Users\G.P.Burdell\Downloads\Sensors'
 
-- **Assign to Smart Group**: using the `-SmartGroupID` or `-SmartGroupName` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
+- **Assign to Smart Group**: using the `-SmartGroupID` or `-SmartGroupName` parameter will assign the Sensors which were uploaded to that chosen Smart Group with a. This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL to use `-SmartGroupID`. The `-SmartGroupName` parameter uses a search function. If multiple Smart Groups are returned, a choice prompt will allow selection of the correct Smart Group.
 
     	.\import_sensor_samples.ps1 `
         -WorkspaceONEServer 'https://as###.awmdm.com' `
@@ -91,7 +90,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1/
         -OrganizationGroupName 'Digital Workspace Tech Zone' `
         -SmartGroupName 'All Devices' `
 
-- **Assign to Smart Group and Set EVENT Triggers**: using the `-SmartGroupID` or `-SmartGroupName` parameter will assign ALL Sensors which were uploaded and that already exist to that chosen Smart Group. ***Existing Smart Group memberships will be overwritten!*** This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL. 
+- **Assign to Smart Group and Set EVENT Triggers**: using the `-SmartGroupID` or `-SmartGroupName` parameter will assign the Sensors which were uploaded to that chosen Smart Group with the provided trigger event such as `-LOGIN`, `-LOGOUT`, `-STARTUP` or `-USER_SWITCH`. This command is used best in a test environment to quickly test Sensors before moving Sensors to production. Obtain the Smart Group ID via API or by hovering over the Smart Group name in the console and looking at the ID at the end of the URL to use `-SmartGroupID`. The `-SmartGroupName` parameter uses a search function. If multiple Smart Groups are returned, a choice prompt will allow selection of the correct Smart Group.
 
     	.\import_sensor_samples.ps1 `
         -WorkspaceONEServer 'https://as###.awmdm.com' `
@@ -113,7 +112,7 @@ Place this PowerShell script in the same directory of all of your samples (.ps1/
         -OrganizationGroupName 'Digital Workspace Tech Zone' `
 		-DeleteSensors
 
-- **Update Sensors or Overwrite Existing Sensors**: using the `-UpdateSensors` switch parameter will update ALL Sensors that already exist which the version in the Sensor samples. This is best used when updates and fixes are published to the source Sensor samples.
+- **Update Sensors or Overwrite Existing Sensors**: using the `-UpdateSensors` switch parameter will update the Sensors uploaded that already exist with the version in the Sensor samples. This is best used when updates and fixes are published to the source Sensor samples.
 
     	.\import_sensor_samples.ps1 `
         -WorkspaceONEServer 'https://as###.awmdm.com' `
@@ -134,27 +133,27 @@ Place this PowerShell script in the same directory of all of your samples (.ps1/
 and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access. 
 ![](https://i.imgur.com/CjiC2Qt.png)
 
-**OrganizationGroupName**: The display name of the Organization Group. You can find this at the top of the console, normally your company's name. **Required to provide OrganizationGroupName or OrganizationGroupID.**
+**OrganizationGroupName**: The display name of the Organization Group. You can find this at the top of the console, normally your company's name. This parameter uses a function to search the tenant for the OrganizationGroupName. If multiple Organization Groups are returned, a choice prompt will allow selection of the correct Organization Group. **Required to provide OrganizationGroupName or OrganizationGroupID.** 
 
 **OrganizationGroupID**: The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console. **Required to provide OrganizationGroupName or OrganizationGroupID.**
 ![](https://i.imgur.com/lWjWBsF.png)
 
 **SensorsDirectory**: (OPTIONAL) The directory your sensors samples are located, default location is the current PowerShell directory of this script. 
 
-**SmartGroupName**: (OPTIONAL) If provided, all scripts in your environment will be assigned to this Smart Group. Existing assignments will be overwritten. Navigate to **Groups & Settings > Groups > Assignment Groups**. The Smart Group Name is the friendly name displayed in the Groups column. The script will default to using Managed By = Organization Group used above. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
+**SmartGroupName**: (OPTIONAL) If provided, sensors imported will be assigned to this Smart Group. Existing assignments will NOT be overwritten, only added to. Navigate to **Groups & Settings > Groups > Assignment Groups**. The Smart Group Name is the friendly name displayed in the Groups column. The script will default to using Managed By = Organization Group used above. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
 
-**SmartGroupID**: (OPTIONAL) If provided, all scripts in your environment will be assigned to this Smart Group. Existing assignments will be overwritten. Navigate to **Groups & Settings > Groups > Assignment Groups**. Hover over the Smart Group, then look for the number at the end of the URL, this is your Smart Group ID. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
+**SmartGroupID**: (OPTIONAL) If provided, sensors imported will be assigned to this Smart Group. Existing assignments will NOT be overwritten, only added to. Navigate to **Groups & Settings > Groups > Assignment Groups**. Hover over the Smart Group, then look for the number at the end of the URL, this is your Smart Group ID. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
 ![](https://i.imgur.com/IjvkoGC.png)
 
 **DeleteSensors**: (OPTIONAL) If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
 
-**UpdateSensors** (OPTIONAL) If enabled, all sensors that match will be updated with the version in the Sensor samples.
+**UpdateSensors** (OPTIONAL) If enabled, sensors imported that match existing version by name in the tenant will have the Description, Platform Architecture, Return Type and Sensor Code updated in the console.
 
-**Platform** (OPTIONAL) Keep disabled to import all platforms. If enabled, determines what platform's sensors to import. Supported values are **Windows** or **macOS**.
+**Platform** (OPTIONAL) Keep disabled to import all platforms. If enabled, determines what platform's sensors to import. Supported values are **Windows**, **macOS** or **Linux**.
 
 **ExportSensors** (OPTIONAL) If enabled, all sensors will be downloaded locally, this is a good option for backuping up sensors before making updates. 
 
-**TriggerType** (OPTIONAL) When bulk assigning, provide the Trigger Type: **SCHEDULE**, **EVENT**, or **SCHEDULEANDEVENT**
+**TriggerType** (OPTIONAL) When bulk assigning, provide the Trigger Type: **SCHEDULE**, **EVENT**, or **SCHEDULEANDEVENT**. By default, all sensors assigned to a Smart Group will have a Trigger Type of Schedule with 4 hours.
 
 **LOGIN** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
 
@@ -169,7 +168,8 @@ and you will find the key in the API Key field.  If it is not there you may need
 - [macOS Custom Attributes Repo](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/CustomAttributes)
 
 ## Change Log
-- 9/24/2021 - Added sensors to assist with Windows 11 Readiness dashboards and reports
+- 2/17/2023 - added new sensors, update import_sensor_samples.ps1 script, add standardized header format to enable more reliable import.
+- 9/24/2021 - Added sensors to assist with Windows 11 Readiness dashboards and reports.
 - 2/1/2021 - Updated README.md. Added ability to use Organization Group ID or Name and Smart Group ID or Name. 
 - 1/15/2021 - Added support for macOS. The script will now import macOS sensors automatically. Support downloading macOS sensors. Added new platform parameter to force only "Windows" or "macOS" sensors to be imported. Updated OrganizationGroupID back to OrganizationGroupName and takes in the friendly name or customer name value and NOT group ID. e.g. ACME Corp, Inc. and not acme1234. 
 - 1/6/2021 - fixed issue with OrganizationGroupName; renamed to OrganizationGroupID

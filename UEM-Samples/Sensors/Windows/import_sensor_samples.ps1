@@ -24,7 +24,6 @@
     # Execution Context: SYSTEM | USER
     # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
     # Return Type: INTEGER | BOOLEAN | STRING | DATETIME
-    # Variables: KEY,VALUE; KEY,VALUE
     <YOUR POWERSHELL COMMANDS>
 
     For macOS Samples be sure to use the following format when creating new samples so that they are imported correctly:
