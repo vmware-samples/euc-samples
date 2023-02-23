@@ -1,8 +1,8 @@
-# Description: Returns build number e.g. 190454
+# Description: Returns build number e.g. 19041
 # Execution Context: SYSTEM
 # Execution Architecture: EITHER64OR32BIT
-# Return Type: STRING
+# Return Type: INTEGER
 
-$BuildNumber=(Get-WmiObject Win32_OperatingSystem).Buildnumber
+[int]$BuildNumber=(Get-WmiObject Win32_OperatingSystem).Buildnumber
 return $BuildNumber
 
