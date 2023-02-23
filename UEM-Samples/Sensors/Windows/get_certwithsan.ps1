@@ -1,5 +1,5 @@
 # Description: Sensor to find certificate in CurrentUser with specific SAN and return TRUE | FALSE
-# Execution Context: SYSTEM
+# Execution Context: USER
 # Execution Architecture: EITHER64OR32BIT
 # Return Type: BOOLEAN
 
