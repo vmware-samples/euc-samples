@@ -67,7 +67,7 @@ cleanup() {
     tmp_dir="/private/var/tmp"
     tmp_log_dir="/private/var/tmp/migratorLogs"
     dateForFileName=$(date +%Y%m%d_%H%M)
-    log_info "Gathering Logs and saving for analysis"
+    migLog "Gathering Logs and saving for analysis"
 
     softwareUpdatedLog="/private/var/log/install.log"
 
@@ -131,21 +131,14 @@ cleanup() {
     fi
 
     spFile="/tmp/SPHardwareDataType.plist"
-    test=$( (/usr/sbin/system_profiler -xml SPHardwareDataType > "$spFile") 2>profilerOutput.txt)
-    cp profilerOutput.txt "$tmp_log_dir"
-#    /usr/sbin/system_profiler -xml SPHardwareDataType > "$spFile"
+    /usr/sbin/system_profiler -xml SPHardwareDataType > "$spFile"
     deviceSerial=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:serial_number" "$spFile")
     deviceType=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:machine_name" "$spFile")
     deviceModel=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:machine_model" "$spFile")
     deviceUUID=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:platform_UUID" "$spFile")
-    deviceName=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:device_name" "$spFile")
-    deviceOS=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:os_version" "$spFile")
-    deviceBuild=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:build_version" "$spFile")
 
-
-
-    deviceDetailsJson="{\"OS\":\"$currentOS\",\"currentUser\":\"$currentUser\",\"currentUID\":\"$currentUID\",\"DeviceType\":\"$deviceType\",\"DeviceModel\":\"$deviceModel\",\"DeviceUUID\":\"$deviceUUID\",\"DeviceName\":\"$deviceName\",\"DeviceOS\":\"$deviceOS\",\"DeviceBuild\":\"$deviceBuild\",\"DeviceSerial\":\"$deviceSerial\"}"
-    echo "$deviceDetailsJson" >"$tmp_log_dir/deviceDetailsJson.json"
+    deviceDetailsJson="{\"OS\":\"$currentOS\",\"currentUser\":\"$currentUser\",\"currentUID\":\"$currentUID\",\"DeviceType\":\"$deviceType\",\"DeviceModel\":\"$deviceModel\",\"DeviceUUID\":\"$deviceUUID\",\"DeviceSerial\":\"$deviceSerial\"}"
+    echo "$deviceDetailsJson" > "$tmp_log_dir/deviceDetailsJson.json"
     echo "Contents of temp directory for saved files" >> "$tmp_log_dir/ls.txt"
     ls -l "$tmp_log_dir" >> "$tmp_log_dir/ls.txt"
     # zip up the logs
