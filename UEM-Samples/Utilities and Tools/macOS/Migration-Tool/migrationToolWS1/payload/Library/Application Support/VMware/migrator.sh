@@ -113,6 +113,7 @@ cleanup() {
     fi
     /bin/rm -rf "$resourcesdir"
 
+
     migLog "Attempting to delete DEPNotify log: $depnotifylog"
     if [ -f "$depnotifylog" ]; then
         ls -l "$depnotifylog" >> "$tmp_log_dir/ls.txt"
