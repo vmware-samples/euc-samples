@@ -2,11 +2,11 @@
 ##################################
 #
 #
-# Redeveloped by: Matt Zaske and Leon Letto
+# Redeveloped by: Matt Zaske
 # Originally developed by: John Richards, Daniel Kim, Sanjay Raveendar and Leon Letto
 # Copyright 2022 VMware Inc.
 #
-# revision 2.2 (Feb 22, 2023)
+# revision 2 (August 30, 2022)
 #
 # macOS Migrator
 # This script orchestrates the migration process of a macOS device from one management
@@ -38,7 +38,7 @@ postmigrationScript="/Library/Application Support/VMware/MigratorResources/postm
 #check for depnotify installed correctly
 if [[ ! -d "$depnotifypath" ]]; then
    if [[ -d /Applications/DEPNotify.app ]]; then
-      ln /Applications/DEPNotify.app "$depnotifypath"
+      ln -s /Applications/DEPNotify.app "$depnotifypath"
    fi
 fi
 ######## Functions ########
@@ -75,39 +75,47 @@ cleanup() {
         mkdir -p "$tmp_log_dir"
     fi
     if [ -f "$softwareUpdatedLog" ]; then
+        ls -l "$softwareUpdatedLog" >> "$tmp_log_dir/ls.txt"
         cp "$softwareUpdatedLog" "$tmp_log_dir"
     fi
     if [ -f "$migratorlog" ]; then
+        ls -l "$migratorlog" >> "$tmp_log_dir/ls.txt"
         cp "$migratorlog" "$tmp_log_dir"
     fi
     if [ -f "$depnotifyconfigpath" ]; then
+        ls -l "$depnotifyconfigpath" >> "$tmp_log_dir/ls.txt"
         mv "$depnotifyconfigpath" "$tmp_log_dir"
     fi
     if [ -f "/Users/Shared/UserInput.plist" ]; then
+        ls -l "/Users/Shared/UserInput.plist" >> "$tmp_log_dir/ls.txt"
         mv "/Users/Shared/UserInput.plist" "$tmp_log_dir"
     fi
 
     migLog "Cleaning up... DEPNotify.app will not be removed..."
     migLog "Attempting to delete LaunchDaemon plist: $ldpath"
     if [ -f "$ldpath" ]; then
+        ls -l "$ldpath" >> "$tmp_log_dir/ls.txt"
         cp "$ldpath" "$tmp_log_dir"
     fi
     /bin/rm -f "$ldpath"
 
     migLog "Attempting to delete Migrator script: $migratorpath"
     if [ -f "$migratorpath" ]; then
+        ls -l "$migratorpath" >> "$tmp_log_dir/ls.txt"
         cp "$migratorpath" "$tmp_log_dir"
     fi
     /bin/rm -f "$migratorpath"
 
     migLog "Attempting to delete Migrator Resources directory: $resourcesdir"
     if [ -d "$resourcesdir" ]; then
+        ls -l "$resourcesdir" >> "$tmp_log_dir/ls.txt"
         cp -r "$resourcesdir" "$tmp_log_dir/resourcesDir"
     fi
     /bin/rm -rf "$resourcesdir"
 
     migLog "Attempting to delete DEPNotify log: $depnotifylog"
     if [ -f "$depnotifylog" ]; then
+        ls -l "$depnotifylog" >> "$tmp_log_dir/ls.txt"
         cp "$depnotifylog" "$tmp_log_dir"
     fi
     /bin/rm -f "$depnotifylog"
@@ -115,12 +123,7 @@ cleanup() {
     migLog "Attempting to remove LaunchDaemon from launchctl: $ldpath"
     /bin/launchctl remove "$ldpath"
 
-    ttt=$(pgrep DEPNotify)
-    while [ -n "$ttt" ]; do
-        kill -9 "$ttt"
-        sleep 1
-        ttt=$(pgrep DEPNotify)
-    done
+
 
     if [[ "$adminGiven" = "yes" ]]; then
         migLog "Removing admin privs from $currentUser"
@@ -128,7 +131,9 @@ cleanup() {
     fi
 
     spFile="/tmp/SPHardwareDataType.plist"
-    /usr/sbin/system_profiler -xml SPHardwareDataType > "$spFile"
+    test=$( (/usr/sbin/system_profiler -xml SPHardwareDataType > "$spFile") 2>profilerOutput.txt)
+    cp profilerOutput.txt "$tmp_log_dir"
+#    /usr/sbin/system_profiler -xml SPHardwareDataType > "$spFile"
     deviceSerial=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:serial_number" "$spFile")
     deviceType=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:machine_name" "$spFile")
     deviceModel=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:machine_model" "$spFile")
@@ -136,20 +141,30 @@ cleanup() {
     deviceName=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:device_name" "$spFile")
     deviceOS=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:os_version" "$spFile")
     deviceBuild=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:build_version" "$spFile")
-    rm "$spFile"
+
 
 
     deviceDetailsJson="{\"OS\":\"$currentOS\",\"currentUser\":\"$currentUser\",\"currentUID\":\"$currentUID\",\"DeviceType\":\"$deviceType\",\"DeviceModel\":\"$deviceModel\",\"DeviceUUID\":\"$deviceUUID\",\"DeviceName\":\"$deviceName\",\"DeviceOS\":\"$deviceOS\",\"DeviceBuild\":\"$deviceBuild\",\"DeviceSerial\":\"$deviceSerial\"}"
     echo "$deviceDetailsJson" >"$tmp_log_dir/deviceDetailsJson.json"
+    echo "Contents of temp directory for saved files" >> "$tmp_log_dir/ls.txt"
+    ls -l "$tmp_log_dir" >> "$tmp_log_dir/ls.txt"
     # zip up the logs
     zip -qr "$tmp_dir/migratorLogs$dateForFileName.zip" "$tmp_log_dir"
     # remove logs older than 48 hours
     find "$tmp_dir" -name "migratorLogs*.zip" -type f -mtime +2 -exec rm {} \;
     # remove the logs
     rm -rf "$tmp_log_dir"
+    rm "$spFile"
 
     log_info "Saving logs to $tmp_dir/migratorLogs$dateForFileName.zip"
     depnotify "Status: Saving logs to $tmp_dir/migratorLogs$dateForFileName.zip"
+
+    ttt=$(pgrep DEPNotify)
+    while [ -n "$ttt" ]; do
+        kill -9 "$ttt"
+        sleep 1
+        ttt=$(pgrep DEPNotify)
+    done
 
     migLog "Cleanup done. Exiting........"
     exit 0
@@ -203,6 +218,14 @@ getDeviceInfo() {
 
 # prompt user to input data - username, email
 init_registration() {
+    #check that /Users/Shared has 775 permissions and that the group is set to the current users group
+    currentGroup=$(id -gn "$currentUser")
+    if [[ $(/usr/bin/stat -f%p /Users/Shared) != "40775" ]]; then
+        /usr/sbin/chown root:"$currentGroup" /Users/Shared
+        /bin/chmod -R 775 /Users/Shared
+    fi
+
+
   # delete registration done file if it exists
   /bin/rm -f /var/tmp/com.depnotify.registration.done
   # create plist for setup Registration fields in ~/Library/Preferences/menu.nomad.DEPNotify.plist
