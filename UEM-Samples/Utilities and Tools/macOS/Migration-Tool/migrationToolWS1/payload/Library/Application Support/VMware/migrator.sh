@@ -2,11 +2,11 @@
 ##################################
 #
 #
-# Redeveloped by: Matt Zaske and Leon Letto
+# Redeveloped by: Matt Zaske
 # Originally developed by: John Richards, Daniel Kim, Sanjay Raveendar and Leon Letto
 # Copyright 2022 VMware Inc.
 #
-# revision 2.1 (Nov 22, 2022)
+# revision 2 (August 30, 2022)
 #
 # macOS Migrator
 # This script orchestrates the migration process of a macOS device from one management
@@ -38,7 +38,7 @@ postmigrationScript="/Library/Application Support/VMware/MigratorResources/postm
 #check for depnotify installed correctly
 if [[ ! -d "$depnotifypath" ]]; then
    if [[ -d /Applications/DEPNotify.app ]]; then
-      ln /Applications/DEPNotify.app "$depnotifypath"
+      ln -s /Applications/DEPNotify.app "$depnotifypath"
    fi
 fi
 ######## Functions ########
@@ -64,36 +64,103 @@ function version { echo "$@" | /usr/bin/awk -F. '{ printf("%d%03d%03d%03d\n", $1
 
 # clean up migrator files and exit
 cleanup() {
-  migLog "Cleaning up... DEPNotify.app will not be removed..."
-  migLog "Attempting to delete LaunchDaemon plist: $ldpath"
-  /bin/rm -f "$ldpath"
+    tmp_dir="/private/var/tmp"
+    tmp_log_dir="/private/var/tmp/migratorLogs"
+    dateForFileName=$(date +%Y%m%d_%H%M)
+    migLog "Gathering Logs and saving for analysis"
 
-  migLog "Attempting to delete Migrator script: $migratorpath"
-  /bin/rm -f "$migratorpath"
+    softwareUpdatedLog="/private/var/log/install.log"
 
-  migLog "Attempting to delete Migrator Resources directory: $resourcesdir"
-  /bin/rm -rf "$resourcesdir"
+    if [ ! -d "$tmp_log_dir" ]; then
+        mkdir -p "$tmp_log_dir"
+    fi
+    if [ -f "$softwareUpdatedLog" ]; then
+        ls -l "$softwareUpdatedLog" >> "$tmp_log_dir/ls.txt"
+        cp "$softwareUpdatedLog" "$tmp_log_dir"
+    fi
+    if [ -f "$migratorlog" ]; then
+        ls -l "$migratorlog" >> "$tmp_log_dir/ls.txt"
+        cp "$migratorlog" "$tmp_log_dir"
+    fi
+    if [ -f "$depnotifyconfigpath" ]; then
+        ls -l "$depnotifyconfigpath" >> "$tmp_log_dir/ls.txt"
+        mv "$depnotifyconfigpath" "$tmp_log_dir"
+    fi
+    if [ -f "/Users/Shared/UserInput.plist" ]; then
+        ls -l "/Users/Shared/UserInput.plist" >> "$tmp_log_dir/ls.txt"
+        mv "/Users/Shared/UserInput.plist" "$tmp_log_dir"
+    fi
 
-  migLog "Attempting to delete DEPNotify log: $depnotifylog"
-  /bin/rm -f "$depnotifylog"
+    migLog "Cleaning up... DEPNotify.app will not be removed..."
+    migLog "Attempting to delete LaunchDaemon plist: $ldpath"
+    if [ -f "$ldpath" ]; then
+        ls -l "$ldpath" >> "$tmp_log_dir/ls.txt"
+        cp "$ldpath" "$tmp_log_dir"
+    fi
+    /bin/rm -f "$ldpath"
 
-  migLog "Attempting to remove LaunchDaemon from launchctl: $ldpath"
-  /bin/launchctl remove "$ldpath"
+    migLog "Attempting to delete Migrator script: $migratorpath"
+    if [ -f "$migratorpath" ]; then
+        ls -l "$migratorpath" >> "$tmp_log_dir/ls.txt"
+        cp "$migratorpath" "$tmp_log_dir"
+    fi
+    /bin/rm -f "$migratorpath"
 
-  ttt=$(pgrep DEPNotify)
-  while [ -n "$ttt" ]; do
-    kill -9 "$ttt"
-    sleep 1
+    migLog "Attempting to delete Migrator Resources directory: $resourcesdir"
+    if [ -d "$resourcesdir" ]; then
+        ls -l "$resourcesdir" >> "$tmp_log_dir/ls.txt"
+        cp -r "$resourcesdir" "$tmp_log_dir/resourcesDir"
+    fi
+    /bin/rm -rf "$resourcesdir"
+
+    migLog "Attempting to delete DEPNotify log: $depnotifylog"
+    if [ -f "$depnotifylog" ]; then
+        ls -l "$depnotifylog" >> "$tmp_log_dir/ls.txt"
+        cp "$depnotifylog" "$tmp_log_dir"
+    fi
+    /bin/rm -f "$depnotifylog"
+
+    migLog "Attempting to remove LaunchDaemon from launchctl: $ldpath"
+    /bin/launchctl remove "$ldpath"
+
+
+
+    if [[ "$adminGiven" = "yes" ]]; then
+        migLog "Removing admin privs from $currentUser"
+        /usr/sbin/dseditgroup -o edit -d "$currentUser" -t user admin
+    fi
+
+    spFile="/tmp/SPHardwareDataType.plist"
+    /usr/sbin/system_profiler -xml SPHardwareDataType > "$spFile"
+    deviceSerial=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:serial_number" "$spFile")
+    deviceType=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:machine_name" "$spFile")
+    deviceModel=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:machine_model" "$spFile")
+    deviceUUID=$(/usr/libexec/PlistBuddy -c "Print :0:_items:0:platform_UUID" "$spFile")
+
+    deviceDetailsJson="{\"OS\":\"$currentOS\",\"currentUser\":\"$currentUser\",\"currentUID\":\"$currentUID\",\"DeviceType\":\"$deviceType\",\"DeviceModel\":\"$deviceModel\",\"DeviceUUID\":\"$deviceUUID\",\"DeviceSerial\":\"$deviceSerial\"}"
+    echo "$deviceDetailsJson" > "$tmp_log_dir/deviceDetailsJson.json"
+    echo "Contents of temp directory for saved files" >> "$tmp_log_dir/ls.txt"
+    ls -l "$tmp_log_dir" >> "$tmp_log_dir/ls.txt"
+    # zip up the logs
+    zip -qr "$tmp_dir/migratorLogs$dateForFileName.zip" "$tmp_log_dir"
+    # remove logs older than 48 hours
+    find "$tmp_dir" -name "migratorLogs*.zip" -type f -mtime +2 -exec rm {} \;
+    # remove the logs
+    rm -rf "$tmp_log_dir"
+    rm "$spFile"
+
+    log_info "Saving logs to $tmp_dir/migratorLogs$dateForFileName.zip"
+    depnotify "Status: Saving logs to $tmp_dir/migratorLogs$dateForFileName.zip"
+
     ttt=$(pgrep DEPNotify)
-  done
+    while [ -n "$ttt" ]; do
+        kill -9 "$ttt"
+        sleep 1
+        ttt=$(pgrep DEPNotify)
+    done
 
-  if [[ "$adminGiven" = "yes" ]]; then
-    migLog "Removing admin privs from $currentUser"
-    /usr/sbin/dseditgroup -o edit -d "$currentUser" -t user admin
-  fi
-
-  migLog "Cleanup done. Exiting........"
-  exit 0
+    migLog "Cleanup done. Exiting........"
+    exit 0
 }
 
 # verify input arguments
@@ -144,6 +211,14 @@ getDeviceInfo() {
 
 # prompt user to input data - username, email
 init_registration() {
+    #check that /Users/Shared has 775 permissions and that the group is set to the current users group
+    currentGroup=$(id -gn "$currentUser")
+    if [[ $(/usr/bin/stat -f%p /Users/Shared) != "40775" ]]; then
+        /usr/sbin/chown root:"$currentGroup" /Users/Shared
+        /bin/chmod -R 775 /Users/Shared
+    fi
+
+
   # delete registration done file if it exists
   /bin/rm -f /var/tmp/com.depnotify.registration.done
   # create plist for setup Registration fields in ~/Library/Preferences/menu.nomad.DEPNotify.plist
@@ -174,12 +249,12 @@ wait_for_input() {
   do
     if [[ -f "$done" ]]; then
       if [[ "$promptType" = "username" ]]; then
-        value=$(/usr/libexec/PlistBuddy -c "Print Username" "$path")
+        value=$(/usr/libexec/PlistBuddy -c "Print Username" "$path" 2> /dev/null || printf '0' )
         migLog "User entered $value for username"
         break
       else
         #prompt user for Email
-        value=$(/usr/libexec/PlistBuddy -c "Print Email" "$path")
+        value=$(/usr/libexec/PlistBuddy -c "Print Email" "$path" /dev/null || printf '0' )
         migLog "User entered $value for email"
         break
       fi
@@ -189,7 +264,7 @@ wait_for_input() {
     fi
   done
   #remove DEPNotify config plist
-  /bin/rm -f "$depnotifyconfigpath"
+#  /bin/rm -f "$depnotifyconfigpath"
   if [[ "$value" = "" ]]; then
     #value is null - exit
     depnotify "Status: Migration has failed - Timeout after no input received."
@@ -304,7 +379,9 @@ registerDeviceWS1() {
   url="$apiurl/api/system/users/$userID/registerdevice"
   migLog "POST - $url"
 
-  response=$(/usr/bin/curl -L -X POST $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json" -d "$registration")
+  contentLength=$(echo -n "$registration" | wc -c)
+
+  response=$(/usr/bin/curl -L -X POST $url -H "Authorization: $dest_auth" -H "aw-tenant-code: $dest_token" -H  "accept: application/json" -H "Content-Type: application/json"  -H "Content-Length: $contentLength" -d "$registration")
   #check if successful
   if [[ -n "$response" ]]; then
     migLog "Raw Response: $response"
@@ -338,11 +415,18 @@ registerDeviceWS1() {
 
 
 #    migLog "enrollmentInfo: $enrollmentInfo"
+    contentLength=$(echo -n "$enrollmentInfo" | wc -c)
 
 
-    url="$apiurl/DeviceServices/AirwatchEnroll.aws/Enrollment/validateGroupIdentifier"
-    response=$(/usr/bin/curl -L -D - -X POST $url -H "User-Agent: airwatchd (unknown version) CFNetwork/975.0.3 Darwin/18.2.0 (x86_64)" -H  "accept: application/json" -H "Content-Type: application/json" -d "$enrollmentInfo")
-    migLog "Raw Response: $response"
+    url="$baseurl/DeviceServices/AirwatchEnroll.aws/Enrollment/validateGroupIdentifier"
+
+    migLog "405 POST - $url"
+    migLog "406 enrollmentInfo: $enrollmentInfo"
+
+    response=$(/usr/bin/curl -L -D - -X POST "$url" -H "User-Agent: hubd/22.08.1.6 CFNetwork/1335.0.3 Darwin/21.6.0" -H  "accept: application/json" -H "Content-Type: application/json" -H "Content-Length: $contentLength" -d "$enrollmentInfo")
+
+    migLog "Raw Response: ${response[*]}"
+
     cookie=$(echo "${response}" | grep -i "Set-Cookie" | cut -d' ' -f2 | cut -d';' -f1)
     jsonResponse=$(echo "${response}" | grep -i "{" | cut -d' ' -f2-)
     migLog "json: $jsonResponse"
@@ -367,8 +451,12 @@ registerDeviceWS1() {
         }
     }'
 
-    url="$apiurl/DeviceServices/AirwatchEnroll.aws/Enrollment/createMdmInstallUrl"
-    response=$(/usr/bin/curl -L -X POST $url -H "User-Agent: airwatchd (unknown version) CFNetwork/975.0.3 Darwin/18.2.0 (x86_64)" -H  "accept: application/json" -H "Content-Type: application/json" -H "Cookie: $cookie" -d "$enrollmentInfo")
+    contentLength=$(echo -n "$enrollmentInfo" | wc -c)
+
+    url="$baseurl/DeviceServices/AirwatchEnroll.aws/Enrollment/createMdmInstallUrl"
+    migLog "437 POST - $url"
+    migLog "438 enrollmentInfo: $enrollmentInfo"
+    response=$(/usr/bin/curl -L -X POST $url -H "User-Agent: hubd/22.08.1.6 CFNetwork/1335.0.3 Darwin/21.6.0" -H  "accept: application/json" -H "Content-Type: application/json" -H "Cookie: $cookie"  -H "Content-Length: $contentLength" -d "$enrollmentInfo")
     migLog "createMdmInstallUrl response: $response"
     enrollProfileURL=$(echo "$response" | /usr/local/bin/jq -r ".NextStep.InstallUrl")
     migLog "Enrollment Profile URL: $enrollProfileURL"
@@ -738,5 +826,5 @@ sleep 1
 #cleanup and exit - reboot if needed
 depnotify "Command: WindowStyle: Activate"
 depnotify "Command: Quit: Your device is now migrated."
-#cleanup
+cleanup
 exit 0

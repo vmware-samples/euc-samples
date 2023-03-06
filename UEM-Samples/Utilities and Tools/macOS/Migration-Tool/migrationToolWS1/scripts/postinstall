@@ -1,6 +1,12 @@
 #!/bin/bash
 
 /bin/chmod 644 /Library/LaunchDaemons/com.vmware.migrator.plist
+/bin/launchctl unload /Library/LaunchDaemons/com.vmware.migrator.plist
 /bin/launchctl load /Library/LaunchDaemons/com.vmware.migrator.plist
+
+chmod +x /usr/local/bin/jq
+chmod +x /Library/Application\ Support/VMware/migrator.sh
+chmod +x /Library/Application\ Support/VMware/MigratorResources/*
+chmod +x /Applications/DEPNotify.app/Contents/MacOS/DEPNotify
 
 exit 0
