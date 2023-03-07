@@ -260,16 +260,16 @@ $chunksUploaded = 0;
 # until the entire file has been uploaded and associated by incrementing the $ChunkSequenceNumber
 Write-Host "Starting to upload app chunks, depending on app size this may take some time"
 while($chunksRead = $fileStream.Read($chunk, 0, $ChunkSize)) {
-    #Prepare chunk for upload
-    $currentSize = $chunk.Length
-    $b64Chunk = [System.Convert]::ToBase64String($chunk)
+    #Prepare chunk for upload, take only $chunksRead number of bytes from the chunk array
+    #as last chunk can have lesser bytes than $ChunkSize
+    $b64Chunk = [System.Convert]::ToBase64String($chunk[0..($chunksRead-1)])
     
     $body = @{
         TransactionId = $TransactionID
         ChunkData = $b64Chunk
         ChunkSequenceNumber = $ChunkSequenceNumber
         TotalApplicationSize = $TotalAppSize
-        ChunkSize = $currentSize
+        ChunkSize = $ChunkSize
     }
 
     $body = $body | ConvertTo-Json
