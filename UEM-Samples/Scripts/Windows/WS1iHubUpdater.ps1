@@ -10,6 +10,12 @@ $DateNow = Get-Date -Format "yyyyMMdd_hhmm";
 $pathfile = "C:\Program Files (x86)\Airwatch\AgentUI\Update_$DateNow";
 $logLocation = "$pathfile.log";
 $Updater = "C:\Program Files (x86)\Airwatch\AgentUI\AW.WinPC.Updater.exe"
+Set-ItemProperty -Path $env:RegPath -Name $env:Regkey -Value $env:RegValue
+if($env:url){
+  $downloadurl = $env:url
+} else {
+  $downloadurl = "https://packages.vmware.com/wsone/AirwatchAgent.msi"
+}
 
 function Write-Log2{
     [CmdletBinding()]
@@ -35,10 +41,9 @@ function Invoke-DownloadAirwatchAgent {
   try
   {
       [Net.ServicePointManager]::SecurityProtocol = 'Tls11,Tls12'
-      #$url = "https://packages.vmware.com/wsone/AirwatchAgent.msi"
       
       $output = $agent
-      $Response = Invoke-WebRequest -Uri $env:url -OutFile $output
+      $Response = Invoke-WebRequest -Uri $downloadurl -OutFile $output
       # This will only execute if the Invoke-WebRequest is successful.
       $StatusCode = $Response.StatusCode
   } catch {
