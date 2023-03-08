@@ -2,8 +2,8 @@
 # Execution Context: System
 # Execution Architecture: EITHER64OR32BIT
 # Timeout: 30
-# Variables: url,"https://packages.vmware.com/wsone/AirwatchAgent.msi"
-# alternatively download from https://<DS_FQDN>/agents/ProtectionAgent_AutoSeed/AirwatchAgent.msi
+# Variables: url,https://<DS_FQDN>/agents/ProtectionAgent_AutoSeed/AirwatchAgent.msi
+# Will download from https://getwsone.com if url variable not provided
 
 $agent = "C:\Program Files (x86)\Airwatch\AgentUI\Update\AirwatchAgent.msi"
 $DateNow = Get-Date -Format "yyyyMMdd_hhmm";
