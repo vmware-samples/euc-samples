@@ -10,7 +10,7 @@ $DateNow = Get-Date -Format "yyyyMMdd_hhmm";
 $pathfile = "C:\Program Files (x86)\Airwatch\AgentUI\Update_$DateNow";
 $logLocation = "$pathfile.log";
 $Updater = "C:\Program Files (x86)\Airwatch\AgentUI\AW.WinPC.Updater.exe"
-Set-ItemProperty -Path $env:RegPath -Name $env:Regkey -Value $env:RegValue
+
 if($env:url){
   $downloadurl = $env:url
 } else {
