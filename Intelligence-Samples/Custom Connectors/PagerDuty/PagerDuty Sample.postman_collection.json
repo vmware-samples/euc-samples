@@ -8,6 +8,7 @@
 	"item": [
 		{
 			"name": "Create Incident",
+            "id": "createIncident",
 			"request": {
 				"method": "POST",
 				"header": [

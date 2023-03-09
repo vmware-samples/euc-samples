@@ -7,6 +7,7 @@
 	"item": [
 		{
 			"name": "CustomMDMCommand-RestartDevice",
+            "id": "customCommandRestartDevice",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true,
@@ -167,6 +168,7 @@
 		},
 		{
 			"name": "CustomMDMCommand-RecommendationCadence",
+            "id": "customCommandRecommendationCadence",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true,
@@ -327,6 +329,7 @@
 		},
 		{
 			"name": "CustomMDMCommand-RefreshCellularPlan-Tmobile",
+            "id": "customCommandRefreshCellularPlanTmobile",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true,
@@ -487,6 +490,7 @@
 		},
 		{
 			"name": "CustomMDMCommand-RefreshCellularPlan-Verizon",
+            "id": "customCommandRefreshCellularPlanVerizon",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true,
@@ -647,6 +651,7 @@
 		},
 		{
 			"name": "CustomMDMCommand-RefreshCellularPlan-ATT",
+            "id": "customCommandRefreshCellularPlanATT",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true,

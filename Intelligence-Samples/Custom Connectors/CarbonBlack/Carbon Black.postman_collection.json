@@ -8,6 +8,7 @@
 	"item": [
 		{
 			"name": "Quarantine Device",
+            "id": "quarantineDevice",
             "description" : "Perform Quarantine device action on devices within Carbon Black Cloud Sensor installed. The API Key must be assigned to a role with permission to execute quarantine device action",
 			"request": {
 				"method": "POST",
@@ -141,6 +142,7 @@
 		},
 		{
 			"name": "Change Device Policy",
+            "id": "changeDevicePolicy",
 			"description": "Perform update policy action on devices within Carbon Black Cloud Sensor installed. The API Key must be assigned to a role with permission to update device policy",
 			"request": {
 				"method": "POST",

@@ -8,6 +8,7 @@
 	"item": [
 		{
 			"name": "Create Jira Bug",
+            "id": "createJiraBug",
 			"request": {
 				"auth": {
 					"type": "basic",
@@ -136,6 +137,7 @@
 		},
 		{
 			"name": "Create Jira Task",
+            "id": "createJiraTask",
 			"request": {
 				"auth": {
 					"type": "basic",
@@ -260,6 +262,7 @@
 		},
 		{
 			"name": "Create Service Desk Request",
+            "id": "createServiceDeskRequest",
 			"request": {
 				"auth": {
 					"type": "basic",

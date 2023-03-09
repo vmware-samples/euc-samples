@@ -8,6 +8,7 @@
 	"item": [
 		{
 			"name": "Basic Message",
+            "id": "basicMessage",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -126,6 +127,7 @@
 		},
 		{
 			"name": "Advanced Format Message",
+            "id": "advancedFormatMessage",
 			"request": {
 				"auth": {
 					"type": "noauth"

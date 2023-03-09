@@ -8,6 +8,7 @@
 	"item": [
 		{
 			"name": "Create Ticket",
+            "id": "createTicket",
 			"request": {
 				"auth": {
 					"type": "basic",

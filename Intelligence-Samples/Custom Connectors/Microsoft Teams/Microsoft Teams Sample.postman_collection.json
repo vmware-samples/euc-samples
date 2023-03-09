@@ -8,6 +8,7 @@
 	"item": [
 		{
 			"name": "Create Simple Message",
+            "id": "createSimpleMessage",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -142,6 +143,7 @@
 		},
 		{
 			"name": "Create Card",
+            "id": "createCard",
 			"request": {
 				"auth": {
 					"type": "noauth"
