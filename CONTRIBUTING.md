@@ -9,7 +9,8 @@
 
 ## Getting started with Git and VMware-Samples 
 
-1. Create your own [git account](https://github.com/join) & sign in 
+1. Create your own [git account](https://github.com/join) & sign in
+2. Please [read and sign our Develop Certificate of Origin](#Developer-Certificate-of-Origin). 
 1. Get your own copy of the VMware-Samples repo ([https://help.github.com/articles/fork-a-repo/](https://help.github.com/articles/fork-a-repo/)) 
 	1. Go to [https://github.com/vmware-samples/euc-samples ](https://github.com/vmware-samples/euc-samples )
 	1. Fork the repo to your account 
@@ -40,6 +41,11 @@
 	1. This will now list 4 records, 2 pointing to your Remote, and 2 pointing to Main, nicknamed 'Upstream'. Now you can reference the Remote without listing the whole URL, but simply by saying 'origin' in your commands.
 2. Now you're all set to begin making your changes 
 
+
+## Developer Certificate of Origin
+The EUC-samples project team welcomes contributions from the community. Before you start working with EUC-samples, please read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch.
+
+
 ## How to contribute to EUC-Samples 
 
 
@@ -54,13 +60,18 @@
 		git branch feature-name 
 
 1. Make your changes (like copying files over, editing files, etc.)
-2. Once you're happy with a set of changes, make your commit (be sure to sign your commit) 
+2. Set up your username and email for commit signing. ***Note**: The e-mail address used to sign must match the e-mail address of the Git author.*
+
+    	git config --global user.name "Your Name"
+    	git config --global user.email "youremail@yourdomain.com"
+
+2. Once you're happy with a set of changes, make your commit (be sure to sign your commit, the `-s` below will sign your commit) 
 
 		git add . 
 
 		git commit -s -m 'your commit message here' 
 
-1. Continue making changes and committing locally (sign every commit)
+1. Continue making changes and committing locally (sign every commit, again `git commit -s` will do this for you)
 2. Once you're ready to push these commits to Remote, run the following command to create the feature branch on your Remote 
 
 		git push origin feature-name 

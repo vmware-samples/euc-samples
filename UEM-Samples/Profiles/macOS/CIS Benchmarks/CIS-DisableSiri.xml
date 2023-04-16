@@ -1,0 +1,34 @@
+<dict>
+	<key>PayloadUUID</key>
+	<string>A00FF910-098E-4D32-8D87-E6EA4DEEAF60</string>
+	<key>PayloadType</key>
+	<string>com.apple.ManagedClient.preferences</string>
+	<key>PayloadOrganization</key>
+	<string>VMware</string>
+	<key>PayloadIdentifier</key>
+	<string>com.apple.assistant.support.A00FF910-098E-4D32-8D87-E6EA4DEEAF60</string>
+	<key>PayloadDisplayName</key>
+	<string>Disable Siri</string>
+	<key>PayloadDescription</key>
+	<string>This blocks Siri</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+	<key>PayloadEnabled</key>
+	<true/>
+	<key>PayloadContent</key>
+	<dict>
+		<key>com.apple.assistant.support</key>
+		<dict>
+			<key>Forced</key>
+			<array>
+				<dict>
+					<key>mcx_preference_settings</key>
+					<dict>
+						<key>Assistant Enabled</key>
+						<false/>
+					</dict>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+</dict>
