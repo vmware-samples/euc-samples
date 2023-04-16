@@ -1,0 +1,3 @@
+#!/bin/bash
+/bin/chmod 644 /Library/LaunchDaemons/com.vmware.migrator.plist
+/bin/launchctl load /Library/LaunchDaemons/com.vmware.migrator.plist

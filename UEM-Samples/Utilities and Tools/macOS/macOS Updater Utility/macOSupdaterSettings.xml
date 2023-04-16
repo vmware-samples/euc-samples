@@ -1,0 +1,30 @@
+<dict>
+  <key>desiredOSversion</key>
+  <string>12.5</string>
+  <key>promptTimer</key>
+  <string>300</string>
+  <key>maxDeferrals</key>
+  <integer>10</integer>
+  <key>buttonLabel</key>
+  <string>Upgrade</string>
+  <key>messageIcon</key>
+  <string>/System/Applications/App Store.app/Contents/Resources/AppIcon.icns</string>
+  <key>messageTitle</key>
+  <string>Approved macOS Update Ready</string>
+  <key>messageBody</key>
+  <string>This will upgrade your computer the latest version of macOS. It will quit out of all open applications. Please make sure to save your documents and data before proceeding. This installation will restart your computer and may take several minutes to complete. If you have questions and/or concerns, please contact your IT Support team.</string>
+  <key>PayloadIdentifier</key>
+  <string>com.macOSupdater.settings.B11EB268-A733-4BE3-8CF2-9989344E26C0</string>
+  <key>PayloadUUID</key>
+  <string>B11EB268-A733-4BE3-8CF2-9989344E26C0</string>
+  <key>PayloadOrganization</key>
+  <string>Workspace ONE</string>
+  <key>PayloadType</key>
+  <string>com.macOSupdater.settings</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
+  <key>PayloadDisplayName</key>
+  <string>macOS Updater Settings</string>
+  <key>PayloadDescription</key>
+  <string>Settings to control macOS Updater behavior</string>
+</dict>

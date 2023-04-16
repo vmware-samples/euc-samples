@@ -1,0 +1,23 @@
+<dict>
+        <key>HiddenPreferencePanes</key>
+        <array>
+          <string>com.apple.preference.speech</string>
+          <string>com.apple.preferences.FamilySharingPrefPane</string>
+        </array>
+        <key>RestrictSystemPreferences</key>
+        <true />
+        <key>PayloadDisplayName</key>
+        <string>Preferences</string>
+        <key>PayloadDescription</key>
+        <string>Hide Siri and Family Sharing</string>
+        <key>PayloadOrganization</key>
+        <string>VMware</string>
+        <key>PayloadType</key>
+        <string>com.apple.systempreferences</string>
+        <key>PayloadUUID</key>
+        <string>393A728B-FD41-4FBF-B5C4-38586C392A36</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>PayloadIdentifier</key>
+        <string>393A728B-FD41-4FBF-B5C4-38586C392A36.Preferences</string>
+</dict>

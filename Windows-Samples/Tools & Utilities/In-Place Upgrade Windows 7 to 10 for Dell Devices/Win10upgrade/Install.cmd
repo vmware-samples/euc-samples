@@ -1,2 +1,0 @@
-REM Update pkey with PRODUCT KEY & File path of setup.exe
-start /wait C:\DeplymentShare\Win10upgrade\Win10\setup.exe /auto upgrade /migratedrivers all /dynamicupdate disable /showoobe none /pkey {PRODUCT KEY}

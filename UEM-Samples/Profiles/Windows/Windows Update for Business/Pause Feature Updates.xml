@@ -1,0 +1,53 @@
+<Replace>
+  <CmdID>ab8081fa-57d5-45b6-8219-cdf5f7dd678b</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/PauseFeatureUpdates</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>1</Data>
+  </Item>
+</Replace>
+<Replace>
+  <CmdID>82a55f88-2186-406b-994f-1ec415998ebd</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/PauseFeatureUpdatesStartTime</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data>YYYY-MM-DD</Data>
+  </Item>
+</Replace>
+
+<Delete>
+  <CmdID>ab8081fa-57d5-45b6-8219-cdf5f7dd678b</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/PauseFeatureUpdates</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">int</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>
+<Delete>
+  <CmdID>82a55f88-2186-406b-994f-1ec415998ebd</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Device/Vendor/MSFT/Policy/Config/Update/PauseFeatureUpdatesStartTime</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">chr</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Delete>

@@ -1,0 +1,43 @@
+<dict>
+	<key>Restrictions</key>
+	<array>
+		<dict>
+			<key>Attributes</key>
+			<dict>
+				<key>name</key>
+				<array>
+					<string>Install macOS Monterey</string>
+					<string>Install macOS Monterey Beta</string>
+				</array>
+				<key>bundleId</key>
+				<array>
+					<string>com.apple.InstallAssistant.Monterey</string>
+					<string>com.apple.InstallAssistant.macOSMonterey</string>
+					<string>com.apple.InstallAssistant.Seed.macOS12Seed1</string>
+				</array>
+				<key>cdhash</key>
+				<array>
+					<string>315413acae0f4d1063691c9ecfd3c8d625196353</string>
+				</array>
+			</dict>
+			<key>Actions</key>
+			<array>
+			<integer>1</integer>
+			</array>
+			<key>Message</key>
+			<string>You are not permitted to install macOS Monterey.</string>
+		</dict>
+	</array>
+	<key>PayloadDisplayName</key>
+	<string>Restricted Software Policy</string>
+	<key>PayloadOrganization</key>
+	<string>VMware</string>
+	<key>PayloadType</key>
+	<string>com.vmware.hub.mac.restrictions</string>
+	<key>PayloadUUID</key>
+	<string>928E9628-01D8-40D9-A630-23B6E32CB3ED</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+  <key>PayloadIdentifier</key>
+	<string>com.vmware.hub.mac.restrictions.928E9628-01D8-40D9-A630-23B6E32CB3ED</string>
+</dict>

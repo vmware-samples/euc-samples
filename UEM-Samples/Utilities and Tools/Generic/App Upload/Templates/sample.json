@@ -1,0 +1,79 @@
+{
+    "BlobId": 0,
+    "IconBlobUuId": "",
+    "TransactionId": "",
+    "ApplicationName": "TODO - Fill in",
+    "PushMode": "0",
+    "Description": "",
+    "SupportEmail": "",
+    "SupportPhone": "",
+    "Developer": "",
+    "DeveloperEmail": "",
+    "DeveloperPhone": "",
+    "AutoUpdateVersion": false,
+    "LocationGroupId": 0,
+    "AppVersion": "1.0.0",
+    "EnableProvisioning": false,
+    "FileName": "placeholder.zip",
+    "SupportedProcessorArchitecture": "TODO - x86 or x64",
+    "IsDependencyFile": false,
+    "DeviceType": "WinRT",
+    "SupportedModels": {
+        "Model": [
+            {
+                "ModelId": 83,
+                "ModelName": "Desktop"
+            }
+        ]
+    },
+    "DeploymentOptions": {
+        "WhenToInstall": {
+            "DataContingencies": [],
+            "DiskSpaceRequiredInKb": 0,
+            "DevicePowerRequired": 0,
+            "RamRequiredInMb": 0
+        },
+        "HowToInstall": {
+            "InstallContext": "Device",
+            "InstallCommand": "TODO Command to install",
+            "AdminPrivileges": true,
+            "DeviceRestart": "DoNotRestart",
+            "RetryCount": 3,
+            "RetryIntervalInMinutes": 5,
+            "InstallTimeoutInMinutes": 60,
+            "InstallerRebootExitCode": "",
+            "InstallerSuccessExitCode": ""
+        },
+        "WhenToCallInstallComplete": {
+            "UseAdditionalCriteria": true,
+            "IdentifyApplicationBy": "DefiningCriteria",
+            "CriteriaList": [
+                {
+                    "CriteriaType": "AppExists",
+                    "AppCriteria": {
+                        "ApplicationIdentifier": "TODO App Identifier",
+                        "VersionCondition": "Any",
+                        "MajorVersion": 0,
+                        "MinorVersion": 0,
+                        "RevisionNumber": 0,
+                        "BuildNumber": 0
+                    },
+                    "LogicalCondition": "End"
+                }                
+            ]
+        }
+    },
+    "FilesOptions": {
+        "AppDependenciesList": [],
+        "AppTransformsList": [],
+        "AppPatchesList": [],
+        "ApplicationUnInstallProcess": {
+            "UseCustomScript": true,
+            "CustomScript": {
+                "CustomScriptType": "Input",
+                "UninstallCommand": "uninstall.exe",
+                "UninstallScriptBlobId": 0
+            }
+        }
+    }
+}
