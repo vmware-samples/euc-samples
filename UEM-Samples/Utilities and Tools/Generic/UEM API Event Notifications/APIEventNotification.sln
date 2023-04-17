@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIEventNotification", "APIEventNotification\APIEventNotification.csproj", "{98D62AE2-6021-40BC-9852-5A7FD71C21F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98D62AE2-6021-40BC-9852-5A7FD71C21F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98D62AE2-6021-40BC-9852-5A7FD71C21F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98D62AE2-6021-40BC-9852-5A7FD71C21F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98D62AE2-6021-40BC-9852-5A7FD71C21F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {10D7D354-FA29-4CB6-8BB8-E68CDF88077A}
+	EndGlobalSection
+EndGlobal
