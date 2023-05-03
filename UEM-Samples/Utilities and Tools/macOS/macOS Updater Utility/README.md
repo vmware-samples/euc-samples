@@ -70,7 +70,7 @@ The behavior the end user experiences is controlled by a configuration profile t
 Here is a breakdown of the keys and their meaning:
 | Key | Type | Default | Function |
 |---|---|---| ---|
-| desiredOSversion | string | 12.5 | The version of macOS want your devices to update to. Example: 12.4 |
+| desiredOSversion | string | 12.5 | The version of macOS want your devices to update to. Set this value to 'latest' in order to enforce the most recent minor build for a given device. RSR patch can be enforced as well using '(a)' after the desired OS version. Examples: 12.4, latest, 13.3.1 (a) |
 | promptTimer | string | 300 | The amount of time in seconds that the prompt to upgrade or defer is displayed to the user before it times out. If no action is taken and the prompt times out, it does count as a deferral to the user. |
 | maxDeferrals | integer | 10 | The number of times the user can defer the update before it is forced. |
 | buttonLabel | string | Upgrade | The text displayed on the button to the user that triggers the OS Update. |
@@ -110,3 +110,9 @@ Here is a breakdown of the keys and their meaning:
     - Added proxy support for API connection
     - Minor product key enhancement (used for macOS 11 and below)
 - 2023-01-26: Update to revision 10, fix proxy error when proxy not supplied
+- 2023-05-03: Revision 11:
+    - Latest Mode:
+        - Enable this feature to have the mUU always enforce the latest minor build on your devices once it is released by Apple.
+    - Rapid Security Response (RSR) Support:
+        - You will now be able to enforce RSR patch installs on your devices.
+        - See the Sensors directory for additional reporting in this area as well. 
