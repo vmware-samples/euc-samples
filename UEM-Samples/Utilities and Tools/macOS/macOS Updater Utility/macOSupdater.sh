@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 10 (Jan 18, 2023)
+# revision 11 (May 2, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -547,12 +547,24 @@ gatherLogs() {
 # get productKey if needed
 getProductKey() {
     desiredProductKey=""
+    suPlist="/Library/Preferences/com.apple.SoftwareUpdate.plist"
     if [[ "$1" == "major" ]]; then
         desiredProductKey="_MACOS_"$desiredOS
+    elif [[ "$rsrMode" == 1 ]]; then
+      declare -a rsrKeys=($(/usr/libexec/PlistBuddy -c "Print :ManagedProductKeys" "$suPlist" | sed -e 1d -e '$d'))
+      subString=$desiredOS"_rsr"
+      ## now loop through the above array
+      for key in "${rsrKeys[@]}"
+      do
+         if [[ "$key" == *"$subString" ]]; then
+           desiredProductKey=$key
+           break
+         fi
+      done
+      log_info "product key found for $desiredOS RSR: $desiredProductKey"
     else
         # osBuild=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -B 1 "$desiredOS" | /usr/bin/awk 'NR==1{print $3}' | /usr/bin/tr -d '"')
         # desiredProductKey="MSU_UPDATE_"$osBuild"_patch_"$desiredOS
-        suPlist="/Library/Preferences/com.apple.SoftwareUpdate.plist"
         availUpdates=$(/usr/libexec/PlistBuddy -c "Print :LastUpdatesAvailable" "$suPlist")
         index=0
         while [ $index -lt $availUpdates ]; do
@@ -688,6 +700,35 @@ dlCheck() {
             echo "no"
             ;;
         esac
+    elif [[ "$rsrMode" == 1 ]]; then
+        #find RSR download
+        log_info "checking for RSR update download"
+        #check directory exists
+        dirCount=$(find /System/Library/AssetsV2/com_apple_MobileAsset_MacSplatSoftwareUpdate -maxdepth 1 -type d | /usr/bin/wc -l)
+        if [[ "$dirCount" -gt 1 ]]; then
+            #check for matching OS version
+            index=1
+            while [ $index -lt $dirCount ]; do
+                index=$((index + 1))
+                updateDir=$(find /System/Library/AssetsV2/com_apple_MobileAsset_MacSplatSoftwareUpdate -maxdepth 1 -type d | /usr/bin/awk 'NR=='$index'{print}')
+                msuPlist="$updateDir/Info.plist"
+                msuOSVersion=$(/usr/libexec/PlistBuddy -c "Print :MobileAssetProperties:OSVersion" "$msuPlist")
+                msuRSRVersion=$(/usr/libexec/PlistBuddy -c "Print :MobileAssetProperties:ProductVersionExtra" "$msuPlist")
+                if [[ $(version $msuOSVersion) -eq $(version $desiredOS) ]] && [[ "$msuRSRVersion" == "$rsrVersion" ]]; then
+                    log_info "Download found"
+                    echo "yes"
+                    return
+                fi
+            done
+            log_error "Download found but not correct"
+            log_debug "desiredOS: $desiredOS msuOSVersion: $msuOSVersion"
+            echo "no"
+        else
+            #download not started
+            log_info "Download not found"
+            log_debug "dirCount: $dirCount"
+            echo "no"
+        fi
     else
         #find minor update then search if downloaded
         log_info "checking for minor update download"
@@ -739,7 +780,7 @@ dlInstaller() {
         #check if need to use ProductKey or ProductVersion (macOS 12+) in MDM command
         log_debug "downloading $1 update"
         log_debug "currentMajor: $currentMajor"
-        if [[ "$currentMajor" -ge "12" ]]; then
+        if [[ "$currentMajor" -ge "12" ]] && [[ "$rsrMode" == 0 ]]; then
             #use productVersion
             log_info "mdmCommand DownloadOnly ProductVersion $desiredOS"
             mdmCommand "DownloadOnly" "ProductVersion" "$desiredOS"
@@ -884,7 +925,7 @@ installUpdate() {
         #install minor update
         #check if need to use ProductKey or ProductVersion (macOS 12+) in MDM command
         log_debug "installUpdate: minor currentMajor: $currentMajor"
-        if [[ "$currentMajor" -ge "12" ]]; then
+        if [[ "$currentMajor" -ge "12" ]] && [[ "$rsrMode" == 0 ]]; then
             #use productVersion
             log_info "mdmCommand InstallForceRestart ProductVersion $desiredOS"
             mdmResponse=$(mdmCommand "InstallForceRestart" "ProductVersion" "$desiredOS")
@@ -921,7 +962,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 10 ---  "
+log_info "  --- Revision 11 ---  "
 
 
 #Setup ManagePlist
@@ -972,15 +1013,45 @@ if [ ! -f "$managedPlist" ]; then
     exit 0
 fi
 
+#check which mode is enabled - latest, RSR or none (normal)
+rsrMode=0
+desiredOS=$(/usr/libexec/PlistBuddy -c "Print :desiredOSversion" "$managedPlist")
+if [[ "$desiredOS" == "latest" ]]; then
+    log_info "latest mode enabled - retrieving latest minor version release"
+    #get latest version
+    /usr/bin/curl "https://gdmf.apple.com/v2/pmv" -o "/private/var/macOSupdater/appleOS.json"
+    /usr/bin/plutil -convert xml1 "/private/var/macOSupdater/appleOS.json" -o "/private/var/macOSupdater/OS.plist"
+    currentMajor=$(echo $currentOS | /usr/bin/cut -f1 -d ".")
+    desiredOS=$(/usr/libexec/PlistBuddy -c "Print :PublicAssetSets:macOS" "/private/var/macOSupdater/OS.plist" | /usr/bin/grep "ProductVersion = $currentMajor" | /usr/bin/awk '{print $3}')
+    log_info "latest mode - desiredOS set to: $desiredOS"
+#check if RSR is being requested
+elif [[ "${desiredOS: -1}" == ")" ]]; then
+  rsrMode=1
+  rsrVersion=$(echo "$desiredOS" | cut -f2 -d " ")
+  desiredOS=$(echo "$desiredOS" | cut -f1 -d " ")
+fi
 
 #check if mac is already on desired version or higher
-desiredOS=$(/usr/libexec/PlistBuddy -c "Print :desiredOSversion" "$managedPlist")
 if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
-    #clean up counter file and Exit
-    rm -rf "$counterFile"
-    log_info "device is up to date, exiting....."
-    gatherLogs
-    exit 0
+    #verify if rsr check is needed
+    if [[ "$rsrMode" == 1 ]]; then
+      #verify if RSR is applied
+      currentRSR=$(sw_vers -ProductVersionExtra)
+      if [[ "$currentRSR" == "$rsrVersion" ]]; then
+        #clean up counter file and Exit
+        rm -rf "$counterFile"
+        log_info "device is up to date, exiting....."
+        gatherLogs
+        exit 0
+      fi
+      log_info "need to apply RSR - $rsrVersion"
+    else
+      #clean up counter file and Exit
+      rm -rf "$counterFile"
+      log_info "device is up to date, exiting....."
+      gatherLogs
+      exit 0
+    fi
 fi
 log_info "upgrade needed - currentOS: $currentOS : desiredOS: $desiredOS"
 
@@ -998,9 +1069,9 @@ desiredMajor=$(echo $desiredOS | /usr/bin/cut -f1 -d ".")
 if [ $currentMajor -lt $desiredMajor ]; then updateType="major"; else updateType="minor"; fi
 log_info "$updateType update requested"
 
-#grab desired product key if needed - currentOS < 12.0
+#grab desired product key if needed - currentOS < 12.0 OR RSR Mode
 #check major or minor
-if le "$currentMajor" "11"; then
+if le "$currentMajor" "11" || [[ "$rsrMode" == 1 ]]; then
     desiredProductKey=$(getProductKey "$updateType")
     log_info "ProductKey: $desiredProductKey"
 
@@ -1068,9 +1139,11 @@ if [[ ! "$userStatus" = "PresentActive" ]]; then
 fi
 
 #prompt user to upgrade
-buttonLabel=$(/usr/libexec/PlistBuddy -c "Print :buttonLabel" "$managedPlist")
-if [[ "$buttonLabel" == "" ]]; then buttonLabel="Upgrade"; fi
-log_info "buttonLabel: $buttonLabel"
+if /usr/bin/grep -Fxq "<key>buttonLabel</key>" "$managedPlist"; then
+  buttonLabel=$(/usr/libexec/PlistBuddy -c "Print :buttonLabel" "$managedPlist")
+else
+  buttonLabel="Upgrade"; fi
+echo "buttonLabel: $buttonLabel"
 
 #check if user has deferrals remaining
 if [[ $deferralCount -lt $maxDeferrals ]]; then
