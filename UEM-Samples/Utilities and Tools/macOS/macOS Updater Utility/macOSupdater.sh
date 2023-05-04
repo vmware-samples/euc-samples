@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 11.1 (May 4, 2023)
+# revision 11.2 (May 4, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -561,6 +561,24 @@ getProductKey() {
            break
          fi
       done
+
+      availUpdates=$(/usr/libexec/PlistBuddy -c "Print :LastUpdatesAvailable" "$suPlist")
+      index=0
+      while [ $index -lt $availUpdates ]; do
+          updateVersion=$(/usr/libexec/PlistBuddy -c "Print :RecommendedUpdates:$index:Display\ Version" "$suPlist")
+          desiredVersion="$desiredOS $rsrVersion"
+          if [[ "$desiredVersion" == "$updateVersion" ]]; then
+              desiredProductKey=$(/usr/libexec/PlistBuddy -c "Print :RecommendedUpdates:$index:Product\ Key" "$suPlist")
+              log_info "product found for $updateVersion: $desiredProductKey"
+              break
+          fi
+          index=$((index + 1))
+      done
+
+      if [ "$desiredProductKey" = "" ]; then
+          log_info "No product key found, kickstarting softwareupdate and will retry on the next run"
+          sudo launchctl kickstart -k system/com.apple.softwareupdated
+      fi
     else
         # osBuild=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -B 1 "$desiredOS" | /usr/bin/awk 'NR==1{print $3}' | /usr/bin/tr -d '"')
         # desiredProductKey="MSU_UPDATE_"$osBuild"_patch_"$desiredOS
@@ -589,6 +607,7 @@ getProductKey() {
             osBuild=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -B 1 "$desiredOS" | /usr/bin/awk 'NR==1{print $3}' | /usr/bin/tr -d '"')
             desiredProductKey="MSU_UPDATE_"$osBuild"_patch_"$desiredOS
             log_info "product created for $updateVersion: $desiredProductKey"
+            sudo launchctl kickstart -k system/com.apple.softwareupdated
         fi
     fi
     echo "$desiredProductKey"
@@ -962,7 +981,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 11.1 ---  "
+log_info "  --- Revision 11.2 ---  "
 
 
 #Setup ManagePlist
