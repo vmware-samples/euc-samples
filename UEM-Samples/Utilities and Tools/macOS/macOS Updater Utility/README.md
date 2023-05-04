@@ -121,3 +121,6 @@ Here is a breakdown of the keys and their meaning:
     - Logic improvements:
         - Latest Mode will now also enforce the latest RSR if available
         - When specifying a RSR patch in desiredOS (i.e. 13.3.1 (a)) the tool will first ensure the device is on 13.3.1 before it will try to install RSR patch
+- 2023-05-04: Revision 11.2: 
+    - Added fallback logic for obtaining productKey for RSR installation
+      
