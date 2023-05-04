@@ -116,3 +116,8 @@ Here is a breakdown of the keys and their meaning:
     - Rapid Security Response (RSR) Support:
         - You will now be able to enforce RSR patch installs on your devices.
         - See the Sensors directory for additional reporting in this area as well. 
+- 2023-05-04: Revision 11.1:
+    - Minor fix to RSR install verification
+    - Logic improvements:
+        - Latest Mode will now also enforce the latest RSR if available
+        - When specifying a RSR patch in desiredOS (i.e. 13.3.1 (a)) the tool will first ensure the device is on 13.3.1 before it will try to install RSR patch
