@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 11 (May 2, 2023)
+# revision 11.1 (May 2, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -16,7 +16,6 @@
 ##################################
 
 set -o errexit
-set -o nounset
 set -o pipefail
 if [[ "${TRACE-0}" == "1" ]]; then set -o xtrace; fi
 ###SOF###logger.sh
@@ -551,17 +550,17 @@ getProductKey() {
     if [[ "$1" == "major" ]]; then
         desiredProductKey="_MACOS_"$desiredOS
     elif [[ "$rsrMode" == 1 ]]; then
-      declare -a rsrKeys=($(/usr/libexec/PlistBuddy -c "Print :ManagedProductKeys" "$suPlist" | sed -e 1d -e '$d'))
+      declare -a rsrKeys=($(/usr/libexec/PlistBuddy -c "Print :ManagedProductKeys" "$suPlist" 2>/dev/null | /usr/bin/sed -e 1d -e '$d'))
       subString=$desiredOS"_rsr"
       ## now loop through the above array
       for key in "${rsrKeys[@]}"
       do
          if [[ "$key" == *"$subString" ]]; then
            desiredProductKey=$key
+           log_info "product key found for $desiredOS RSR: $desiredProductKey"
            break
          fi
       done
-      log_info "product key found for $desiredOS RSR: $desiredProductKey"
     else
         # osBuild=$(/usr/bin/plutil -p /Library/Updates/ProductMetadata.plist | /usr/bin/grep -w -B 1 "$desiredOS" | /usr/bin/awk 'NR==1{print $3}' | /usr/bin/tr -d '"')
         # desiredProductKey="MSU_UPDATE_"$osBuild"_patch_"$desiredOS
@@ -610,6 +609,7 @@ getToken() {
         echo "no"
     fi
     echo "$oAuthToken"
+    log_info "Oauth token retrieved"
 }
 
 # MDM command via api
@@ -962,7 +962,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 11 ---  "
+log_info "  --- Revision 11.1 ---  "
 
 
 #Setup ManagePlist
@@ -1015,28 +1015,34 @@ fi
 
 #check which mode is enabled - latest, RSR or none (normal)
 rsrMode=0
+latestMode=0
+rsrVersion=""
 desiredOS=$(/usr/libexec/PlistBuddy -c "Print :desiredOSversion" "$managedPlist")
 if [[ "$desiredOS" == "latest" ]]; then
-    log_info "latest mode enabled - retrieving latest minor version release"
-    #get latest version
-    /usr/bin/curl "https://gdmf.apple.com/v2/pmv" -o "/private/var/macOSupdater/appleOS.json"
-    /usr/bin/plutil -convert xml1 "/private/var/macOSupdater/appleOS.json" -o "/private/var/macOSupdater/OS.plist"
-    currentMajor=$(echo $currentOS | /usr/bin/cut -f1 -d ".")
-    desiredOS=$(/usr/libexec/PlistBuddy -c "Print :PublicAssetSets:macOS" "/private/var/macOSupdater/OS.plist" | /usr/bin/grep "ProductVersion = $currentMajor" | /usr/bin/awk '{print $3}')
-    log_info "latest mode - desiredOS set to: $desiredOS"
+  latestMode=1
+  log_info "latest mode enabled - retrieving latest minor version release"
+  #get latest version
+  /usr/bin/curl "https://gdmf.apple.com/v2/pmv" -o "/private/var/macOSupdater/appleOS.json"
+  /usr/bin/plutil -convert xml1 "/private/var/macOSupdater/appleOS.json" -o "/private/var/macOSupdater/OS.plist"
+  currentMajor=$(echo $currentOS | /usr/bin/cut -f1 -d ".")
+  desiredOS=$(/usr/libexec/PlistBuddy -c "Print :PublicAssetSets:macOS" "/private/var/macOSupdater/OS.plist" | /usr/bin/grep "ProductVersion = $currentMajor" | /usr/bin/awk '{print $3}')
+  log_info "latest mode - desiredOS set to: $desiredOS"
 #check if RSR is being requested
 elif [[ "${desiredOS: -1}" == ")" ]]; then
-  rsrMode=1
   rsrVersion=$(echo "$desiredOS" | cut -f2 -d " ")
   desiredOS=$(echo "$desiredOS" | cut -f1 -d " ")
+  log_info "RSR Mode requested - RSR requested: $rsrVersion desiredOS: $desiredOS"
+  log_info "Need to ensure device is on desiredOS before applying RSR"
 fi
 
 #check if mac is already on desired version or higher
 if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
-    #verify if rsr check is needed
-    if [[ "$rsrMode" == 1 ]]; then
+    #check if RSR is requested
+    if [[ ! -z "$rsrVersion" ]]; then
       #verify if RSR is applied
+      log_info "checking if RSR requested needs to be applied"
       currentRSR=$(sw_vers -ProductVersionExtra)
+      log_info "current RSR: $currentRSR"
       if [[ "$currentRSR" == "$rsrVersion" ]]; then
         #clean up counter file and Exit
         rm -rf "$counterFile"
@@ -1045,6 +1051,26 @@ if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
         exit 0
       fi
       log_info "need to apply RSR - $rsrVersion"
+      rsrMode=1
+    #check if RSR available if using latest
+    elif [[ "$latestMode" == 1 ]]; then
+      #find most recent rsrVersion if there is one, if not dont set rsrMode
+      log_info "device up to date - checking if RSR available"
+      rsrVersion=$(/usr/libexec/PlistBuddy -c "Print :PublicRapidSecurityResponses:macOS" "/private/var/macOSupdater/OS.plist" 2>/dev/null | /usr/bin/awk '/ProductVersion = '$currentMajor'/{ getline; print $3}')
+      if [[ ! -z "$rsrVersion" ]]; then
+        log_info "RSR available - check if needs to be applied. RSR Version: $rsrVersion"
+        currentRSR=$(sw_vers -ProductVersionExtra)
+        log_info "current RSR: $currentRSR"
+        if [[ "$currentRSR" == "$rsrVersion" ]]; then
+          #clean up counter file and Exit
+          rm -rf "$counterFile"
+          log_info "device is up to date, exiting....."
+          gatherLogs
+          exit 0
+        fi
+        log_info "need to apply RSR - $rsrVersion"
+        rsrMode=1
+      fi
     else
       #clean up counter file and Exit
       rm -rf "$counterFile"
@@ -1089,6 +1115,7 @@ if /usr/bin/grep -Fxq "<key>proxy</key>" "$managedPlist"; then
 fi
 
 #grab API info
+log_info "retrieving oauth token"
 authToken=$(getToken $clientID $clientSec)
 if [[ "$authToken" == "no" ]]; then
     log_info "oAuth token not found - check API variables, exiting....."
@@ -1143,7 +1170,7 @@ if /usr/bin/grep -Fxq "<key>buttonLabel</key>" "$managedPlist"; then
   buttonLabel=$(/usr/libexec/PlistBuddy -c "Print :buttonLabel" "$managedPlist")
 else
   buttonLabel="Upgrade"; fi
-echo "buttonLabel: $buttonLabel"
+log_info "buttonLabel set to: $buttonLabel"
 
 #check if user has deferrals remaining
 if [[ $deferralCount -lt $maxDeferrals ]]; then
