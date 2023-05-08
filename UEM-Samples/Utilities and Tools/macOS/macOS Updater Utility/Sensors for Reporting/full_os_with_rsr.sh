@@ -1,5 +1,8 @@
 #!/bin/bash
 
 os=$(sw_vers -ProductVersion)
-RSR=$(sw_vers -ProductVersionExtra &>/dev/null)
-echo "$os $RSR"
+rsr=$(sw_vers -ProductVersionExtra)
+if [[ "$rsr" == "Usage"* ]]; then
+	rsr=""
+fi
+echo "$os $rsr"
