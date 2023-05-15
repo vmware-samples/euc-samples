@@ -24,7 +24,6 @@
     # Execution Context: SYSTEM | USER
     # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
     # Return Type: INTEGER | BOOLEAN | STRING | DATETIME
-    # Variables: KEY,VALUE; KEY,VALUE
     <YOUR POWERSHELL COMMANDS>
 
     For macOS Samples be sure to use the following format when creating new samples so that they are imported correctly:
@@ -180,20 +179,6 @@
         [Parameter(Mandatory=$False)]
         [switch]$USER_SWITCH
 )
-
-# Forces the use of TLS 1.2
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-$URL = $WorkspaceONEServer + "/API"
-$global:CurrentSensorUUID = ""
-
-# If a custom sensors directory is not provided then use current directory of import_sensor_samples.ps1 
-if (!$SensorsDirectory) {$SensorsDirectory = Get-Location}
-
-# Base64 Encode Workspace ONE UEM Username and Password for API Access
-$combined = $WorkspaceONEAdmin + ":" + $WorkspaceONEAdminPW
-$encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
-$cred = [Convert]::ToBase64String($encoding)
 
 # Returns the Numerial Organization ID for the Organizational Group Name Provided
 Function Get-OrganizationIDbyName {
@@ -619,13 +604,61 @@ Function Export-Sensors($path) {
                 if($ScriptBody){[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($ScriptBody)) | Out-File -Encoding "UTF8" "$($download_path)\$($Sensor.Name).sh" -Force}
             }
         }
+        #export the execution context, execution architecture, return type etc and automatically add as comment to exported file
         $Num--
     } While ($Num -ge 0)
 }
 
-Write-Host("*****************************************************************") -ForegroundColor Yellow 
-Write-Host("               Starting up the Import Process") -ForegroundColor Yellow 
-Write-Host("*****************************************************************") -ForegroundColor Yellow 
+Function usage {
+    param (
+        [Parameter(Mandatory=$True)]
+        [string]$ScriptName
+    )
+
+    Write-Host("*****************************************************************") -ForegroundColor Yellow 
+    Write-Host("               $SensorName Header Missing ") -ForegroundColor Yellow 
+    Write-Host("*****************************************************************") -ForegroundColor Yellow 
+    Write-Host "`rPlease ensure that $SensorName script includes the required header so that it can be imported correctly.`r" -ForegroundColor Yellow
+
+    Write-Host "Example Windows Sensor Header`r" -ForegroundColor Green
+    Write-Host "# Description: Description`r"
+    Write-Host "# Execution Context: System | User`r"
+    Write-Host "# Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY`r"
+    Write-Host "# Return Type: INTEGER | BOOLEAN | STRING | DATETIME`r"
+    Write-Host "<YOUR POWERSHELL COMMANDS>`r`n"
+
+    Write-Host "Example macOS Sensor Header`r" -ForegroundColor Green
+    Write-Host "<YOUR SCRIPT COMMANDS>`r"
+    Write-Host "# Description: Description`r"
+    Write-Host "# Execution Context: System | User`r"
+    Write-Host "# Return Type: INTEGER | BOOLEAN | STRING | DATETIME`r"
+    Write-Host "# Variables: KEY,VALUE; KEY,VALUE`r"
+
+    Write-Host "Example macOS Sensor Header`r" -ForegroundColor Green
+    Write-Host "<YOUR SCRIPT COMMANDS>`r"
+    Write-Host "# Description: Description`r"
+    Write-Host "# Execution Context: System | User`r"
+    Write-Host "# Return Type: INTEGER | BOOLEAN | STRING | DATETIME`r"
+    Write-Host "# Variables: KEY,VALUE; KEY,VALUE`r"
+    Write-Host "# Platform: LINUX`r"
+
+    Write-Host "Note: The ""Variables:"" metadata in macOS/Linux scripts are optional. Please do not include if not relevant.`r`n"
+    Read-Host -Prompt "Press any key to continue"
+}
+
+# Forces the use of TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+$URL = $WorkspaceONEServer + "/API"
+$global:CurrentSensorUUID = ""
+
+# If a custom sensors directory is not provided then use current directory of import_sensor_samples.ps1 
+if (!$SensorsDirectory) {$SensorsDirectory = Get-Location}
+
+# Base64 Encode Workspace ONE UEM Username and Password for API Access
+$combined = $WorkspaceONEAdmin + ":" + $WorkspaceONEAdminPW
+$encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
+$cred = [Convert]::ToBase64String($encoding)
 
 # Contruct REST HEADER
 $header = @{
@@ -640,6 +673,9 @@ $headerv2 = @{
 "Accept"		 = "application/json;version=2";
 "Content-Type"   = "application/json";}
 
+Write-Host("*****************************************************************") -ForegroundColor Yellow 
+Write-Host("               Starting up the Import Process") -ForegroundColor Yellow 
+Write-Host("*****************************************************************") -ForegroundColor Yellow 
                 
 # Get ogID and UUID from Organizational Group Name
 if ($WorkspaceONEOgId -eq $null){
@@ -691,28 +727,31 @@ do {
     $Sensor = $PSSensors[$NumSensors]
     $SensorName = $sensor.Name.ToLower()
     Write-Host("Working on $SensorName") -ForegroundColor Green
-   
+    $usageflag = $false
+
     #Get the actual content
     $content = Get-Content -Path $Sensor.FullName
     
     # Description: Removes Comment # and Quotes
     $d = $content | Select-String -Pattern 'Description: ' -Raw
-    if($d){$Description = $d.Substring($d.LastIndexOf('Description: ')+13) -replace '[#]' -replace '"',"" -replace "'",""}
+    if($d){$Description = $d.Substring($d.LastIndexOf('Description: ')+13) -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Execution Context: USER, SYSTEM
     $c = $content | Select-String -Pattern 'Execution Context: ' -Raw
-    if($c){$Context = $c.Substring(($c.LastIndexOf('Execution Context: ')+19))  -replace '[#]' -replace '"',"" -replace "'",""}
+    if($c){$Context = $c.Substring(($c.LastIndexOf('Execution Context: ')+19))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
     $a = $content | Select-String -Pattern 'Execution Architecture: ' -Raw
-    if($a){$Architecture = $a.Substring(($a.LastIndexOf('Execution Architecture: ')+24))  -replace '[#]' -replace '"',"" -replace "'",""}
+    if($a){$Architecture = $a.Substring(($a.LastIndexOf('Execution Architecture: ')+24))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Return Type: INTEGER, BOOLEAN, STRING, DATETIME
     $r = $content | Select-String -Pattern 'Return Type: ' -Raw
-    if($r){$ResponseType = $r.Substring(($r.LastIndexOf('Return Type: ')+13))  -replace '[#]' -replace '"',"" -replace "'",""}
+    if($r){$ResponseType = $r.Substring(($r.LastIndexOf('Return Type: ')+13))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Variables: Key, Value; Key, Value
     $v = $content | Select-String -Pattern 'Variables: ' -Raw
-    if($v){$Varibles = $v.Substring(($v.LastIndexOf('Variables: ')+8))  -replace '[#]' -replace '"',"" -replace "'",""}
+    if($v){$Varibles = $v.Substring(($v.LastIndexOf('Variables: ')+8))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Platform: WIN_RT | APPLE_OSX | LINUX
     $p = $content | Select-String -Pattern 'Platform: ' -Raw
-    if($p){$Platform = $p.Substring(($p.LastIndexOf('Platform: ')+10))  -replace '[#]' -replace '"',"" -replace "'",""}
+    if($p){$Platform = $p.Substring(($p.LastIndexOf('Platform: ')+10))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
+    
+    if($usageflag){usage -ScriptName $ScriptName;$NumScripts--;Continue}
     
     # Encode Script
     $Data = Get-Content -Path $Sensor.FullName -Encoding UTF8 -Raw
@@ -816,7 +855,6 @@ do {
     } else {
         # Import new Sensor
         if(!$Platform -or (($Platform -eq 'Windows' -and $os -eq 'WIN_RT') -or ($Platform -eq 'macOS' -and $os -eq 'APPLE_OSX') -or ($Platform -eq 'LINUX' -and $os -eq 'LINUX'))){
-            write-host "-Description $Description -Context $Context -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles"
             $addsensor = Set-Sensors -Description $Description -Context $Context -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles
             $SensorUUID=$addsensor.uuid
         }else{
@@ -824,7 +862,7 @@ do {
         }
     }
     if(($SmartGroupID -ne 0) -or $SmartGroupName){
-        Write-Host("Assigning Sensors to Smart Group") -ForegroundColor Green
+        Write-Host("Assigning Sensors to Smart Group $SmartGroupName") -ForegroundColor Green
         if($SmartGroupID){
             Get-SmartGroupUUIDbyID -SGID $SmartGroupID
         }elseif($SmartGroupName){

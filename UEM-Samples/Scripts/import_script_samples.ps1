@@ -18,7 +18,7 @@
     specified Smart Group. There is also an ability to delete or export all sensors.
     
     For Windows Samples be sure to use the following format when creating new samples so that they are imported correctly:
-    # Description
+    # Description: Description
     # Execution Context: System | User
     # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
     # Timeout: ## greater than 0
@@ -27,7 +27,7 @@
 
     For macOS/Linux Samples be sure to use the following format when creating new samples so that they are imported correctly:
     <YOUR SCRIPT COMMANDS>
-    # Description
+    # Description: Description
     # Execution Context: System | User
     # Execution Architecture: UNKNOWN
     # Timeout: ## greater than 0
@@ -185,20 +185,6 @@
         [string]$SCHEDULE
 )
 
-# Forces the use of TLS 1.2
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-$URL = $WorkspaceONEServer + "/API"
-$global:CurrentScriptUUID = ""
-
-# If a custom script directory is not provided then use current directory of import_script_samples.ps1 
-if (!$ScriptsDirectory) {$ScriptsDirectory = Get-Location}
-
-# Base64 Encode Workspace ONE UEM Username and Password for API Access
-$combined = $WorkspaceONEAdmin + ":" + $WorkspaceONEAdminPW
-$encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
-$cred = [Convert]::ToBase64String($encoding)
-
 # Returns the Numerial Organization ID Name & UUID for the Organizational Group Name Provided
 Function Get-OrganizationIDbyName {
     param (
@@ -267,7 +253,7 @@ Function Get-OrganizationIDbyID {
     If ($WorkspaceONEOgId -eq $OrganizationGroupID) {
         $script:OrganizationGroupName = $webReturn.Name
         $script:WorkspaceONEGroupUUID = $webReturn.Uuid
-        Write-Host("Organization Name for $WorkspaceONEOgId = $OrganizationGroupName with UUID = $WorkspaceONEGroupUUID")
+        #Write-Host("Organization Name for $WorkspaceONEOgId = $OrganizationGroupName with UUID = $WorkspaceONEGroupUUID")
     } else {
         Write-host("Group ID: " + $OrganizationGroupID + " not found")
     }
@@ -306,9 +292,10 @@ Function Get-SmartGroupUUIDbyName {
     $SGSearchTotal = $webReturn.Total
 
     if ($SGSearchTotal -eq 0){
-        Write-host("Smart Group Name: " + $SGName + " not found")
+        Write-host("Smart Group Name: " + $SGName + " not found. Please check your assignment group name and try again.")
     } elseif ($SGSearchTotal -eq 1){
         $Choice = 0
+        #write-host "only one SG found"
     } elseif ($SGSearchTotal -gt 1) {
         $ValidChoices = 0..($SGSearch.Count -1)
         $ValidChoices += 'Q'
@@ -340,10 +327,8 @@ Function Get-SmartGroupUUIDbyName {
         }
     }
     $getSG = $SGSearch[$Choice]
-    $script:SmartGroupID = $getSG.SmartGroupID
-    $script:SmartGroupUUID = $getSG.SmartGroupUuid
-    $script:SmartGroupName = $getSG.Name
-    #Write-host("Smart Group Name for $SmartGroupID = $SmartGroupName with UUID = $SmartGroupUUID")
+    $SmartGroupUUID = $getSG.SmartGroupUuid
+    return $SmartGroupUUID
 }
 
 # Returns Workspace ONE UEM Console Version
@@ -503,7 +488,7 @@ function get-ScriptAssignments {
     )
     $endpointURL = $URL + "/mdm/scripts/$ScriptUUID/assignments"
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $headerv2
-    $assignments = $webReturn.assigned_smart_groups
+    $assignments = $webReturn.SearchResults.assigned_smart_groups
     return $assignments
 }
 
@@ -513,27 +498,37 @@ Function Assign-Scripts {
         [Parameter(Mandatory=$True)]
         [string]$ScriptUUID,
         [Parameter(Mandatory=$True)]
-        [string]$SmartGroupName
+        [string]$SmartGroupName,
+        [Parameter(Mandatory=$True)]
+        [string]$SmartGroupUUID
     )
-    
-    $endpointURL = $URL + "/mdm/scripts/"+$ScriptUUID+"/updateassignments"
+
+    $endpointURL = $URL + "/mdm/scripts/$ScriptUUID/updateassignments"
     $EventsBody = @()
     if($LOGIN) {$EventsBody += "LOGIN"}
     if($LOGOUT) {$EventsBody += "LOGOUT"}
     if($STARTUP) {$EventsBody += "STARTUP"}
     if($RUN_IMMEDIATELY) {$EventsBody += "RUN_IMMEDIATELY"}
     if($NETWORK_CHANGE) {$EventsBody += "NETWORK_CHANGE"}
+    
     $SmartGroupBody = @()
     $SmartGroupBody += @{ 
         'smart_group_uuid' = "$SmartGroupUUID";
         'smart_group_name' = "$SmartGroupName"
     }
     
-    if(!$TriggerType) { $TriggerType = "SCHEDULE" }
+    if(!$TriggerType) { 
+        $TriggerType = "SCHEDULE";
+        $TriggerSchedule = "FOUR_HOURS"
+    }
     if($SCHEDULE) { $TriggerSchedule = "FOUR_HOURS" }
-    $body = [pscustomobject]@{
+
+    $assignmentsbody = @()
+   
+    $assignmentsbody += @{
+        "assignment_uuid"         = "00000000-0000-0000-0000-000000000000";
         'name'                    = $SmartGroupName;
-        'priority'                = 0;
+        'priority'                = 1;
         'deployment_mode'         = "AUTO";
         'show_in_catalog'         = $false;
         'memberships'             = $SmartGroupBody;
@@ -541,9 +536,12 @@ Function Assign-Scripts {
             'trigger_type'            = $TriggerType;
             'trigger_events'          = $EventsBody;
             'trigger_schedule'        = $TriggerSchedule;
-                };
-            }
-    $json = $body | ConvertTo-Json
+            };
+        }
+    $body += @{
+        "assignments" = $assignmentsbody
+    }
+    $json = $body | ConvertTo-Json -Depth 100
     $webReturn = Invoke-RestMethod -Method Post -Uri $endpointURL -Headers $header -Body $json
 }
 
@@ -670,9 +668,50 @@ Function Export-Scripts($path) {
     } While ($Num -ge 0)
 }
 
-Write-Host("*****************************************************************") -ForegroundColor Yellow 
-Write-Host("               Starting up the Import Process") -ForegroundColor Yellow 
-Write-Host("*****************************************************************") -ForegroundColor Yellow 
+Function usage {
+    param (
+        [Parameter(Mandatory=$True)]
+        [string]$ScriptName
+    )
+
+    Write-Host("*****************************************************************") -ForegroundColor Yellow 
+    Write-Host("               $ScriptName Header Missing ") -ForegroundColor Yellow 
+    Write-Host("*****************************************************************") -ForegroundColor Yellow 
+    Write-Host "`rPlease ensure that $ScriptName script includes the required header so that it can be imported correctly.`r" -ForegroundColor Yellow
+    Write-Host "Note: The ""Variables:"" metadata is optional for all platforms. Please do not include if not relevant.`r`n"
+
+    Write-Host "Example Windows Script Header`r" -ForegroundColor Green
+    Write-Host "# Description: Description`r"
+    Write-Host "# Execution Context: System | User`r"
+    Write-Host "# Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY`r"
+    Write-Host "# Timeout: ## greater than 0`r"
+    Write-Host "# Variables: KEY,VALUE; KEY,VALUE`r"
+    Write-Host "<YOUR POWERSHELL COMMANDS>`r`n"
+
+    Write-Host "Example macOS/Linux Script Header`r" -ForegroundColor Green
+    Write-Host "<YOUR SCRIPT COMMANDS>`r"
+    Write-Host "# Description: Description`r"
+    Write-Host "# Execution Context: System | User`r"
+    Write-Host "# Execution Architecture: UNKNOWN`r"
+    Write-Host "# Timeout: ## greater than 0`r"
+    Write-Host "# Variables: KEY,VALUE; KEY,VALUE`r"
+    Write-Host "Note: The ""Execution Architecture: UNKNOWN"" metadata is mandatory for macOS/Linux platforms.`r"
+    Read-Host -Prompt "Press any key to continue"
+}
+
+# Forces the use of TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+$URL = $WorkspaceONEServer + "/API"
+$global:CurrentScriptUUID = ""
+
+# If a custom script directory is not provided then use current directory of import_script_samples.ps1 
+if (!$ScriptsDirectory) {$ScriptsDirectory = Get-Location}
+
+# Base64 Encode Workspace ONE UEM Username and Password for API Access
+$combined = $WorkspaceONEAdmin + ":" + $WorkspaceONEAdminPW
+$encoding = [System.Text.Encoding]::ASCII.GetBytes($combined)
+$cred = [Convert]::ToBase64String($encoding)
 
 # Construct REST HEADER
 $header = @{
@@ -686,7 +725,12 @@ $headerv2 = @{
 "aw-tenant-code" = $WorkspaceONEAPIKey;
 "Accept"		 = "application/json;version=2";
 "Content-Type"   = "application/json";}
-     
+
+
+Write-Host("*****************************************************************") -ForegroundColor Yellow 
+Write-Host("               Starting up the Import Process") -ForegroundColor Yellow 
+Write-Host("*****************************************************************") -ForegroundColor Yellow 
+
 # Get ogID and UUID from Organizational Group Name
 if ($WorkspaceONEOgId -eq $null){
     if($OrganizationGroupName){
@@ -739,25 +783,28 @@ do {
     $Script = $PSScripts[$NumScripts]
     $ScriptName = $Script.Name.ToLower()
     Write-Host("Working on $ScriptName") -ForegroundColor Green
+    $usageflag = $false
 
     #Get the actual content
     $content = Get-Content -Path $Script.FullName
 
-    $d = $content | Select-String -Pattern 'Description: ' -Raw
-    $Description = $d.Substring($d.LastIndexOf('Description: ')+13) -replace '[#]' -replace '"',"" -replace "'",""
+    $d = $content | Select-String -Pattern 'Description: ' -Raw -ErrorAction SilentlyContinue
+    if($d){$Description = $d.Substring($d.LastIndexOf('Description: ')+13) -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Execution Context: USER, SYSTEM
-    $c = $content | Select-String -Pattern 'Execution Context: ' -Raw
-    $Context = $c.Substring(($c.LastIndexOf('Execution Context: ')+19))  -replace '[#]' -replace '"',"" -replace "'",""
+    $c = $content | Select-String -Pattern 'Execution Context: ' -Raw -ErrorAction SilentlyContinue
+    if($c){$Context = $c.Substring(($c.LastIndexOf('Execution Context: ')+19))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
-    $a = $content | Select-String -Pattern 'Execution Architecture: ' -Raw
-    $Architecture = $a.Substring(($a.LastIndexOf('Execution Architecture: ')+24))  -replace '[#]' -replace '"',"" -replace "'",""
+    $a = $content | Select-String -Pattern 'Execution Architecture: ' -Raw -ErrorAction SilentlyContinue
+    if($a){$Architecture = $a.Substring(($a.LastIndexOf('Execution Architecture: ')+24))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Return Type: INTEGER, BOOLEAN, STRING, DATETIME
-    $t = $content | Select-String -Pattern 'Timeout: ' -Raw
-    $Timeout = $t.Substring(($t.LastIndexOf('Timeout: ')+9))  -replace '[#]' -replace '"',"" -replace "'",""
+    $t = $content | Select-String -Pattern 'Timeout: ' -Raw -ErrorAction SilentlyContinue
+    if($t){$Timeout = $t.Substring(($t.LastIndexOf('Timeout: ')+9))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
     # Variables: Key, Value; Key, Value
-    $v = $content | Select-String -Pattern 'Variables: ' -Raw
+    $v = $content | Select-String -Pattern 'Variables: ' -Raw -ErrorAction SilentlyContinue
     if($v){$Varibles = $v.Substring(($v.LastIndexOf('Variables: ')+11))  -replace '[#]' -replace '"',"" -replace "'",""}
     
+    if($usageflag){usage -ScriptName $ScriptName;$NumScripts--;Continue}
+
     # Encode Script
     $Data = Get-Content -Path $Script.FullName -Encoding UTF8 -Raw
     $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
@@ -877,11 +924,15 @@ do {
 # Assign Scripts to Smart Group if option is set
 #Get Smart Group ID and UUID
 if(($SmartGroupID -ne 0) -or $SmartGroupName){
-    Write-Host("Assigning Scripts to Smart Group") -ForegroundColor Green
+    Write-Host("Assigning Scripts to Smart Group $SmartGroupName") -ForegroundColor Green
+
     if($SmartGroupID){
         Get-SmartGroupUUIDbyID -SGID $SmartGroupID
+        #write-host "SmartGroupID function SmartGroupUUID = $SmartGroupUUID"
     }elseif($SmartGroupName){
-        Get-SmartGroupUUIDbyName -SGName $SmartGroupName -WorkspaceONEOgId $WorkspaceONEOgId
+        $SmartGroupUUID = Get-SmartGroupUUIDbyName -SGName $SmartGroupName -WorkspaceONEOgId $WorkspaceONEOgId
+        #write-host "Get-SmartGroupUUIDbyName function"
+        #write-host "-SGName $SmartGroupName -WorkspaceONEOgId $WorkspaceONEOgId SmartGroupUUID = $SmartGroupUUID"
     }else{
         Write-Host("Please check your values for SmartGroupID or SmartGroupName") -ForegroundColor Yellow 
         Exit
@@ -891,40 +942,41 @@ if(($SmartGroupID -ne 0) -or $SmartGroupName){
         $Scripts=Get-Scripts
         $Num = $Scripts.RecordCount #-1
         $Scripts = $Scripts.SearchResults
+        #write-host "Assigning the following new scripts:"
+        #write-host $newScripts -Separator "`r`n"
+        #write-host "`r`n"
         DO
         {
             # iterate through Console scripts and get the name
-            $consoleScript = $Scripts[$Num].Name -replace " ","_"
-            foreach ($script in $newScripts){
-                $Result = $consoleScript -eq $script
-                if($Result){
-                    # Existing Script
-                    #check if assigned
-                    #If not assigned, then assign
-                    $CurrentScriptAssignmentCount = $Scripts[$Num].assignment_count
-                    $ScriptUUID = $Scripts[$Num].script_uuid
-                    if($CurrentScriptAssignmentCount -ge 1){
-                        #check existing assignment
-                        $ScriptAssignments = get-ScriptAssignments -ScriptUUID $ScriptUUID
-                        foreach($assignment in $ScriptAssignments){
-                            if($assignment.smart_group_uuid -eq $SmartGroupUUID){
-                                $ScripttobeAssigned = $False
-                                write-host "Sensor already assigned to SG: $SmartGroupName"
-                            } else {
-                                $ScripttobeAssigned = $True
-                            }
+            $ConsoleScript = $Scripts[$Num].Name -replace " ","_"
+
+            $newscript = (Compare-Object $ConsoleScript $newScripts -IncludeEqual | Where-Object -FilterScript {$_.SideIndicator -eq '=='}).InputObject
+            if($newscript){
+                #check if assigned
+                $CurrentScriptAssignmentCount = $Scripts[$Num].assignment_count
+                $ScriptUUID = $Scripts[$Num].script_uuid
+                if($CurrentScriptAssignmentCount -gt 0){
+                    #check existing assignment
+                    #write-host "Current assignments for $ConsoleScript with UUID $ScriptUUID"
+                    $ScriptAssignments = get-ScriptAssignments -ScriptUUID $ScriptUUID
+                    foreach($assignment in $ScriptAssignments){
+                        if($assignment.smart_group_uuid -eq $SmartGroupUUID){
+                            $ScripttobeAssigned = $False
+                            write-host "Sensor already assigned to SG: $SmartGroupName"
+                        } else {
+                            $ScripttobeAssigned = $True
                         }
-                        if($ScripttobeAssigned){
-                            Assign-Scripts -ScriptUUID $ScriptUUID -SmartGroupName $SmartGroupName
-                            write-host "Assigned Script: "$Scripts[$Num].Name" to SG: $SmartGroupName"
-                        }
-                    } else {
-                        Assign-Scripts -ScriptUUID $ScriptUUID -SmartGroupName $SmartGroupName
+                    }
+                    if($ScripttobeAssigned){
+                        Assign-Scripts -ScriptUUID $ScriptUUID -SmartGroupName $SmartGroupName -SmartGroupUUID $SmartGroupUUID
                         write-host "Assigned Script: "$Scripts[$Num].Name" to SG: $SmartGroupName"
                     }
+                } else {
+                    Assign-Scripts -ScriptUUID $ScriptUUID -SmartGroupName $SmartGroupName -SmartGroupUUID $SmartGroupUUID
+                    write-host "Assigned Script: "$Scripts[$Num].Name" to SG: $SmartGroupName"
                 }
-            }
 
+            }
             $Num--
         } while ($Num -ge 0)
     }

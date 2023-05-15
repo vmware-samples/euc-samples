@@ -3,7 +3,6 @@
 # Execution Architecture: EITHER64OR32BIT
 # Return Type: STRING
 
-$properties = @('Name','InterfaceDescription')
-$physical_adapter = get-netadapter -physical | where status -eq "up" |select-object -Property $properties
+$physical_adapter = Get-NetAdapter -physical | Where-Object status -eq "up"
 Return $physical_adapter.InterfaceDescription
 
