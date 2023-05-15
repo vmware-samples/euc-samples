@@ -24,6 +24,19 @@
     <Data>YYYY-MM-DD</Data>
   </Item>
 </Replace>
+<Exec>
+  <CmdID>f203d3b3-5157-4f77-b54c-92674b0198ae</CmdID>
+  <Item>
+    <Target>
+        <LocURI>./Vendor/MSFT/Update/Rollback/FeatureUpdate</LocURI>
+      </Target>
+    <Meta>
+      <Format xmlns="syncml:metinf">null</Format>
+      <Type>text/plain</Type>
+    </Meta>
+    <Data></Data>
+  </Item>
+</Exec>
 
 <Delete>
   <CmdID>ab8081fa-57d5-45b6-8219-cdf5f7dd678b</CmdID>
