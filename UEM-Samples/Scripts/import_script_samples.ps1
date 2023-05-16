@@ -6,6 +6,7 @@
   .NOTES
     Created:   	    January, 2021
     Created by:	    Josue Negron, jnegron@vmware.com
+    Contributors:   Chris Halstead, chealstead@vmware.com; Phil Helmling, helmlingp@vmware.com
     Organization:   VMware, Inc.
     Filename:       import_script_samples.ps1
     Updated:        January, 2023, helmlingp@vmware.com
@@ -942,9 +943,6 @@ if(($SmartGroupID -ne 0) -or $SmartGroupName){
         $Scripts=Get-Scripts
         $Num = $Scripts.RecordCount #-1
         $Scripts = $Scripts.SearchResults
-        #write-host "Assigning the following new scripts:"
-        #write-host $newScripts -Separator "`r`n"
-        #write-host "`r`n"
         DO
         {
             # iterate through Console scripts and get the name
@@ -957,7 +955,6 @@ if(($SmartGroupID -ne 0) -or $SmartGroupName){
                 $ScriptUUID = $Scripts[$Num].script_uuid
                 if($CurrentScriptAssignmentCount -gt 0){
                     #check existing assignment
-                    #write-host "Current assignments for $ConsoleScript with UUID $ScriptUUID"
                     $ScriptAssignments = get-ScriptAssignments -ScriptUUID $ScriptUUID
                     foreach($assignment in $ScriptAssignments){
                         if($assignment.smart_group_uuid -eq $SmartGroupUUID){
