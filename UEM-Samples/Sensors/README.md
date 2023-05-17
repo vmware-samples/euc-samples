@@ -125,45 +125,45 @@ Place this PowerShell script in the same directory of all of your samples (.ps1,
    `-ExportSensors`
 
 ### Parameters 
-**WorkspaceONEServer**: Server URL for the Workspace ONE UEM API Server e.g. https://as###.awmdm.com without the ending /API. Navigate to **All Settings -> System -> Advanced -> API -> REST API**.
+**-WorkspaceONEServer**: Server URL for the Workspace ONE UEM API Server e.g. https://as###.awmdm.com without the ending /API. Navigate to **All Settings -> System -> Advanced -> API -> REST API**.
 
-**WorkspaceONEAdmin**: An Workspace ONE UEM admin account in the tenant that is being queried.  This admin must have the API role at a minimum.
+**-WorkspaceONEAdmin**: An Workspace ONE UEM admin account in the tenant that is being queried.  This admin must have the API role at a minimum.
 
-**WorkspaceONEAdminPW**: The password that is used by the admin specified in the admin parameter
+**-WorkspaceONEAdminPW**: The password that is used by the admin specified in the admin parameter
 
-**WorkspaceONEAPIKey**: This is the REST API key that is generated in the Workspace ONE UEM Console.  You locate this key at **All Settings -> System -> Advanced -> API -> REST API**,
+**-WorkspaceONEAPIKey**: This is the REST API key that is generated in the Workspace ONE UEM Console.  You locate this key at **All Settings -> System -> Advanced -> API -> REST API**,
 and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access. 
 ![](https://i.imgur.com/CjiC2Qt.png)
 
-**OrganizationGroupName**: (OPTIONAL) The display name of the Organization Group. You can find this at the top of the console, normally your company's name. This parameter uses a function to search the tenant for the OrganizationGroupName. If multiple Organization Groups are returned, a choice prompt will allow selection of the correct Organization Group. **Required to provide OrganizationGroupName or OrganizationGroupID.** 
+**-OrganizationGroupName**: (OPTIONAL) The display name of the Organization Group. You can find this at the top of the console, normally your company's name. This parameter uses a function to search the tenant for the OrganizationGroupName. If multiple Organization Groups are returned, a choice prompt will allow selection of the correct Organization Group. **Required to provide OrganizationGroupName or OrganizationGroupID.** 
 
-**OrganizationGroupID**: (OPTIONAL) The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console. **Required to provide OrganizationGroupName or OrganizationGroupID.**
+**-OrganizationGroupID**: (OPTIONAL) The Group ID of the Organization Group. You can find this by hovering over your Organization's Name in the console. **Required to provide OrganizationGroupName or OrganizationGroupID.**
 ![](https://i.imgur.com/lWjWBsF.png)
 
-**SensorsDirectory**: (OPTIONAL) The directory your sensors samples are located, default location is the current PowerShell directory of this script. 
+**-SensorsDirectory**: (OPTIONAL) The directory your sensors samples are located, default location is the current PowerShell directory of this script. 
 
-**SmartGroupName**: (OPTIONAL) If provided, sensors imported will be assigned to this Smart Group. Existing assignments will NOT be overwritten, only added to. Navigate to **Groups & Settings > Groups > Assignment Groups**. The Smart Group Name is the friendly name displayed in the Groups column. The script will default to using Managed By = Organization Group used above. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
+**-SmartGroupName**: (OPTIONAL) If provided, sensors imported will be assigned to this Smart Group. Existing assignments will NOT be overwritten, only added to. Navigate to **Groups & Settings > Groups > Assignment Groups**. The Smart Group Name is the friendly name displayed in the Groups column. The script will default to using Managed By = Organization Group used above. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
 
-**SmartGroupID**: (OPTIONAL) If provided, sensors imported will be assigned to this Smart Group. Existing assignments will NOT be overwritten, only added to. Navigate to **Groups & Settings > Groups > Assignment Groups**. Hover over the Smart Group, then look for the number at the end of the URL, this is your Smart Group ID. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
+**-SmartGroupID**: (OPTIONAL) If provided, sensors imported will be assigned to this Smart Group. Existing assignments will NOT be overwritten, only added to. Navigate to **Groups & Settings > Groups > Assignment Groups**. Hover over the Smart Group, then look for the number at the end of the URL, this is your Smart Group ID. **If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.**
 ![](https://i.imgur.com/IjvkoGC.png)
 
-**DeleteSensors**: (OPTIONAL) If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
+**-DeleteSensors**: (OPTIONAL) If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
 
-**UpdateSensors** (OPTIONAL) If enabled, sensors imported that match existing version by name in the tenant will have the Description, Platform Architecture, Return Type and Sensor Code updated in the console.
+**-UpdateSensors** (OPTIONAL) If enabled, sensors imported that match existing version by name in the tenant will have the Description, Platform Architecture, Return Type and Sensor Code updated in the console.
 
-**Platform** (OPTIONAL) Keep disabled to import all platforms. If enabled, determines what platform's sensors to import. Supported values are **Windows**, **macOS** or **Linux**.
+**-Platform** (OPTIONAL) Keep disabled to import all platforms. If enabled, determines what platform's sensors to import. Supported values are **Windows**, **macOS** or **Linux**.
 
-**ExportSensors** (OPTIONAL) If enabled, all sensors will be downloaded locally, this is a good option for backing up sensors before making updates. 
+**-ExportSensors** (OPTIONAL) If enabled, all sensors will be downloaded locally, this is a good option for backing up sensors before making updates. 
 
-**TriggerType** (OPTIONAL) When bulk assigning, provide the Trigger Type: **SCHEDULE**, **EVENT**, or **SCHEDULEANDEVENT**. By default, all sensors assigned to a Smart Group will have a Trigger Type of Schedule with 4 hours.
+**-TriggerType** (OPTIONAL) When bulk assigning, provide the Trigger Type: **SCHEDULE**, **EVENT**, or **SCHEDULEANDEVENT**. If omitted, all sensors assigned to a Smart Group will have a Trigger Type of Schedule with 4 hours.
 
-**LOGIN** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+**-LOGIN** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType**
 
-**LOGOUT** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+**-LOGOUT** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType**
 
-**STARTUP** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+**-STARTUP** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType**
 
-**USER_SWITCH** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType** provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
+**-USER_SWITCH** (OPTIONAL) When using **Event** or **SCHEDULEANDEVENT** as **TriggerType**
 
 ## Resources 
 - [macOS Custom Attributes to Sensors Migration Script](https://github.com/vmware-samples/euc-samples/tree/master/macOS-Samples/Tools/CustomAttributesToSensorsMigration)
