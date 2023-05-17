@@ -107,7 +107,7 @@
     OPTIONAL: Keep disabled to import all platforms. If enabled, determines what platform's sensors to import. Supported values are "Windows", "macOS" or "Linux".  
     
     .PARAMETER TriggerType
-    OPTIONAL: Required when using 'SmartGroupID' or 'SmartGroupName' paramaters. When bulk assigning, provide the Trigger Type: 'SCHEDULE', 'EVENT', or 'SCHEDULEANDEVENT'
+    OPTIONAL: Required when using 'SmartGroupID' or 'SmartGroupName' paramaters. When bulk assigning, provide the Trigger Type: 'SCHEDULE' or 'EVENT'
 
     .PARAMETER LOGIN
     OPTIONAL: When using 'Event' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', or 'USER_SWITCH'
@@ -484,15 +484,20 @@ Function Assign-Sensors {
         [string]$SensorUUID
     )
     $endpointURL = $URL + "/mdm/devicesensors/$SensorUUID/assignment"
+    
     $EventsBody = @()
-    if($LOGIN) {$EventsBody += "LOGIN"}
-    if($LOGOUT) {$EventsBody += "LOGOUT"}
-    if($STARTUP) {$EventsBody += "STARTUP"}
-    if($USER_SWITCH) {$EventsBody += "USER_SWITCH"}
+    if(!$TriggerType) { 
+        $TriggerType = "SCHEDULE" 
+    } elseif ($TriggerType = "EVENT") {
+        if($LOGIN) {$EventsBody += "LOGIN"}
+        if($LOGOUT) {$EventsBody += "LOGOUT"}
+        if($STARTUP) {$EventsBody += "STARTUP"}
+        if($USER_SWITCH) {$EventsBody += "USER_SWITCH"}
+    }
+
     $SmartGroupBody = @()
     $SmartGroupBody += "$SmartGroupUUID"
-
-    if(!$TriggerType) { $TriggerType = "SCHEDULE" }
+    
     $body = [pscustomobject]@{
         'name'                    = $SmartGroupName;
         'smart_group_uuids'	      = $SmartGroupBody;

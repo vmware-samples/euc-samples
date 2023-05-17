@@ -9,7 +9,7 @@
     Contributors:   Chris Halstead, chealstead@vmware.com; Phil Helmling, helmlingp@vmware.com
     Organization:   VMware, Inc.
     Filename:       import_script_samples.ps1
-    Updated:        January, 2023, helmlingp@vmware.com
+    Updated:        May, 2023, helmlingp@vmware.com
     Github:         https://github.com/vmware-samples/euc-samples/tree/master/UEM-Samples/Scripts
 
   .DESCRIPTION
@@ -43,16 +43,16 @@
 
   .EXAMPLE
 
-    .\import_script_samples.ps1 `
-        -WorkspaceONEServer 'https://as###.awmdm.com' `
-        -WorkspaceONEAdmin 'administrator' `
-        -WorkspaceONEAdminPW 'P@ssw0rd' `
-        -WorkspaceONEAPIKey '7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E=' `
-        -OrganizationGroupName 'Digital Workspace Tech Zone' `
-        -SmartGroupName 'All Devices' `
-        -UpdateScripts `
-        -TriggerType 'SCHEDULE_AND_EVENT' `
-        -SCHEDULE 'FOUR_HOURS' `
+    .\import_script_samples.ps1
+        -WorkspaceONEServer 'https://as###.awmdm.com'
+        -WorkspaceONEAdmin 'administrator'
+        -WorkspaceONEAdminPW 'P@ssw0rd'
+        -WorkspaceONEAPIKey '7t5NQg8bGUQdRTGtmDBXknho9Bu9W+7hnvYGzyCAP+E='
+        -OrganizationGroupName 'Digital Workspace Tech Zone'
+        -SmartGroupName 'All Devices'
+        -UpdateScripts
+        -TriggerType 'SCHEDULE_AND_EVENT'
+        -SCHEDULE 'FOUR_HOURS'
         -LOGIN -LOGOUT
 
     .PARAMETER WorkspaceONEServer
@@ -87,10 +87,10 @@
     OPTIONAL: If provided, imported scripts will be assigned to this Smart Group. Exisiting assignments will be overwritten. 
     If wanting to assign, you are required to provide SmartGroupID or SmartGroupName. This option will prompt to select the correct Smart Group
     if multiple Smart Groups are found with a similar name.
-    
+
     .PARAMETER DeleteScripts
     OPTIONAL: If enabled, all scripts in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
-    
+
     .PARAMETER UpdateScripts
     OPTIONAL: If enabled, imported scripts will update matched scripts found in the Workspace ONE UEM Console. 
 
@@ -99,7 +99,7 @@
 
     .PARAMETER Platform
     OPTIONAL: Keep disabled to import all platforms. If enabled, determines what platform's scripts to import. Supported values are "Windows" or "macOS".  
-    
+
     .PARAMETER TriggerType
     OPTIONAL: Required when using 'SmartGroupID' or 'SmartGroupName' paramaters. When bulk assigning, provide the Trigger Type: 'SCHEDULE', 'EVENT', or 'SCHEDULE_AND_EVENT'
 
@@ -111,10 +111,10 @@
 
     .PARAMETER LOGOUT
     OPTIONAL: Required when using 'EVENT' or 'SCHEDULE_AND_EVENT' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', 'RUN_IMMEDIATELY', or 'NETWORK_CHANGE'
-    
+
     .PARAMETER STARTUP
     OPTIONAL: Required when using 'EVENT' or 'SCHEDULE_AND_EVENT' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', 'RUN_IMMEDIATELY', or 'NETWORK_CHANGE'
-    
+
     .PARAMETER RUN_IMMEDIATELY
     OPTIONAL: Required when using 'EVENT' or 'SCHEDULE_AND_EVENT' as TriggerType provide the Trigger(s): 'LOGIN', 'LOGOUT', 'STARTUP', 'RUN_IMMEDIATELY', or 'NETWORK_CHANGE'
 
@@ -506,23 +506,33 @@ Function Assign-Scripts {
 
     $endpointURL = $URL + "/mdm/scripts/$ScriptUUID/updateassignments"
     $EventsBody = @()
-    if($LOGIN) {$EventsBody += "LOGIN"}
-    if($LOGOUT) {$EventsBody += "LOGOUT"}
-    if($STARTUP) {$EventsBody += "STARTUP"}
-    if($RUN_IMMEDIATELY) {$EventsBody += "RUN_IMMEDIATELY"}
-    if($NETWORK_CHANGE) {$EventsBody += "NETWORK_CHANGE"}
-    
+    if(!$TriggerType) { 
+        $TriggerType = "SCHEDULE"
+        if(!$TriggerSchedule) {$TriggerSchedule = "FOUR_HOURS"}
+    } elseif ($TriggerType = "SCHEDULE") {
+        if(!$TriggerSchedule) {$TriggerSchedule = "FOUR_HOURS"}
+    } elseif ($TriggerType = "EVENT") {
+        if($LOGIN) {$EventsBody += "LOGIN"}
+        if($LOGOUT) {$EventsBody += "LOGOUT"}
+        if($STARTUP) {$EventsBody += "STARTUP"}
+        if($RUN_IMMEDIATELY) {$EventsBody += "RUN_IMMEDIATELY"}
+        if($NETWORK_CHANGE) {$EventsBody += "NETWORK_CHANGE"}
+    } elseif ($TriggerType = "SCHEDULE_AND_EVENT") {
+        if($TriggerSchedule) { $TriggerSchedule = "FOUR_HOURS" }
+        if($LOGIN) {$EventsBody += "LOGIN"}
+        if($LOGOUT) {$EventsBody += "LOGOUT"}
+        if($STARTUP) {$EventsBody += "STARTUP"}
+        if($RUN_IMMEDIATELY) {$EventsBody += "RUN_IMMEDIATELY"}
+        if($NETWORK_CHANGE) {$EventsBody += "NETWORK_CHANGE"}
+    }
+
     $SmartGroupBody = @()
     $SmartGroupBody += @{ 
         'smart_group_uuid' = "$SmartGroupUUID";
         'smart_group_name' = "$SmartGroupName"
     }
     
-    if(!$TriggerType) { 
-        $TriggerType = "SCHEDULE";
-        $TriggerSchedule = "FOUR_HOURS"
-    }
-    if($SCHEDULE) { $TriggerSchedule = "FOUR_HOURS" }
+
 
     $assignmentsbody = @()
    
@@ -755,8 +765,6 @@ if($ExportScripts){
     }
     Export-Scripts($download_path)
     Write-Host "Scripts have been downloaded to " $download_path -ForegroundColor Yellow
-    Write-Host("*****************************************************************") -ForegroundColor Yellow 
-    Write-Host("We did it! You are awesome, have a great day!") -ForegroundColor Yellow 
     Write-Host("*****************************************************************") -ForegroundColor Yellow 
     Exit
 }

@@ -66,13 +66,13 @@ function Invoke-iHubUpdate {
   $TestforiHub = Test-Path -Path $agent -PathType Leaf
   if ($TestforiHub) {
     Try
-  {
-    Start-Process $Updater;
-  }
-  catch
-  {
-    Write-Log2 -Path "$logLocation" -Message $_.Exception -Level Info
-  }
+    {
+      Start-Process $Updater;
+    }
+    catch
+    {
+      Write-Log2 -Path "$logLocation" -Message $_.Exception -Level Info
+    }
   }
 }
 

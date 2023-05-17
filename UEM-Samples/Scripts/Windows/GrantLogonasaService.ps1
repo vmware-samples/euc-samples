@@ -5,52 +5,52 @@
 # Variables: RegPath,"Registry::HKLM:\SOFTWARE\AIRWATCH"; Regkey,"EAUATScript"; RegValue,"UAT Script run in System Context"
 
 Add-Type @'
-using System;
-using System.Runtime.InteropServices;
+    using System;
+    using System.Runtime.InteropServices;
 
-public enum LSA_AccessPolicy : long
-{
-    // Other values omitted for clarity
-    POLICY_ALL_ACCESS = 0x00001FFFL
-}
+    public enum LSA_AccessPolicy : long
+    {
+        // Other values omitted for clarity
+        POLICY_ALL_ACCESS = 0x00001FFFL
+    }
 
-[StructLayout(LayoutKind.Sequential)]
-public struct LSA_UNICODE_STRING
-{
-    public UInt16 Length;
-    public UInt16 MaximumLength;
-    public IntPtr Buffer;
-}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LSA_UNICODE_STRING
+    {
+        public UInt16 Length;
+        public UInt16 MaximumLength;
+        public IntPtr Buffer;
+    }
 
-[StructLayout(LayoutKind.Sequential)]
-public struct LSA_OBJECT_ATTRIBUTES
-{
-    public UInt32 Length;
-    public IntPtr RootDirectory;
-    public LSA_UNICODE_STRING ObjectName;
-    public UInt32 Attributes;
-    public IntPtr SecurityDescriptor;
-    public IntPtr SecurityQualityOfService;
-}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LSA_OBJECT_ATTRIBUTES
+    {
+        public UInt32 Length;
+        public IntPtr RootDirectory;
+        public LSA_UNICODE_STRING ObjectName;
+        public UInt32 Attributes;
+        public IntPtr SecurityDescriptor;
+        public IntPtr SecurityQualityOfService;
+    }
 
-public static partial class AdvAPI32 {
-    [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
-    public static extern uint LsaOpenPolicy(
-        ref LSA_UNICODE_STRING SystemName,
-        ref LSA_OBJECT_ATTRIBUTES ObjectAttributes,
-        uint DesiredAccess,
-        out IntPtr PolicyHandle);
+    public static partial class AdvAPI32 {
+        [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+        public static extern uint LsaOpenPolicy(
+            ref LSA_UNICODE_STRING SystemName,
+            ref LSA_OBJECT_ATTRIBUTES ObjectAttributes,
+            uint DesiredAccess,
+            out IntPtr PolicyHandle);
 
-    [DllImport("advapi32.dll")]
-    public static extern Int32 LsaClose(IntPtr ObjectHandle);
+        [DllImport("advapi32.dll")]
+        public static extern Int32 LsaClose(IntPtr ObjectHandle);
 
-    [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
-    public static extern uint LsaAddAccountRights(
-        IntPtr PolicyHandle,
-        byte[] AccountSid,
-        LSA_UNICODE_STRING[] UserRights,
-        uint CountOfRights);
-}
+        [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+        public static extern uint LsaAddAccountRights(
+            IntPtr PolicyHandle,
+            byte[] AccountSid,
+            LSA_UNICODE_STRING[] UserRights,
+            uint CountOfRights);
+    }
 '@
 
 function Get-LsaPolicyHandle() {
