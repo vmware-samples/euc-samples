@@ -1,6 +1,6 @@
 ## Sensors for Reporting
 
-- **Authors**: Leon Letto, George Gonzalez, and others
+- **Authors**: Matt Zaske, Leon Letto, George Gonzalez, and others
 - **Date Created**: 1/27/2023
 
 ### Overview of Sensors
