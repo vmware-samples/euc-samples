@@ -123,4 +123,7 @@ Here is a breakdown of the keys and their meaning:
         - When specifying a RSR patch in desiredOS (i.e. 13.3.1 (a)) the tool will first ensure the device is on 13.3.1 before it will try to install RSR patch
 - 2023-05-04: Revision 11.2: 
     - Added fallback logic for obtaining productKey for RSR installation
+- 2023-05-18: Revision 11.3:
+    - Fix for latest mode download when using on a machine for first time
+    - Fix for RSR Version sensor for machines on 13.3.1
       
