@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 11.2 (May 4, 2023)
+# revision 11.3 (May 18, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -981,7 +981,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 11.2 ---  "
+log_info "  --- Revision 11.3 ---  "
 
 
 #Setup ManagePlist
@@ -1041,6 +1041,7 @@ if [[ "$desiredOS" == "latest" ]]; then
   latestMode=1
   log_info "latest mode enabled - retrieving latest minor version release"
   #get latest version
+  /bin/mkdir -p "/private/var/macOSupdater/"
   /usr/bin/curl "https://gdmf.apple.com/v2/pmv" -o "/private/var/macOSupdater/appleOS.json"
   /usr/bin/plutil -convert xml1 "/private/var/macOSupdater/appleOS.json" -o "/private/var/macOSupdater/OS.plist"
   currentMajor=$(echo $currentOS | /usr/bin/cut -f1 -d ".")
