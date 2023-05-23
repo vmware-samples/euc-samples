@@ -44,3 +44,4 @@ Function Invoke-SetPassword {
 
 $securenewpwd = Invoke-GenerateStrongPassword -PasswordLength $env:PasswordLength
 Invoke-SetPassword -securenewpwd $securenewpwd -AdminUser $env:AdminUser
+

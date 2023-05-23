@@ -9,3 +9,8 @@ if [ -f "$ACEplist" ];  then
 else
   echo "Not Found"
 fi
+
+# Description: Returns Apple Care Support End Date
+# Execution Context: SYSTEM
+# Execution Architecture: UNKNOWN
+# Return Type: STRING
