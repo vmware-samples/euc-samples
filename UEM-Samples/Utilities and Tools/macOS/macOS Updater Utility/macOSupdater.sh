@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 11.3 (May 18, 2023)
+# revision 12.0 (July 21, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -550,7 +550,7 @@ getProductKey() {
     if [[ "$1" == "major" ]]; then
         desiredProductKey="_MACOS_"$desiredOS
     elif [[ "$rsrMode" == 1 ]]; then
-      declare -a rsrKeys=($(/usr/libexec/PlistBuddy -c "Print :ManagedProductKeys" "$suPlist" 2>/dev/null | /usr/bin/sed -e 1d -e '$d'))
+      declare -a rsrKeys=($(/usr/libexec/PlistBuddy -c "Print :ManagedProductKeys" "$suPlist" 2>/dev/null | /usr/bin/sed -e 1d -e '$d' || :))
       subString=$desiredOS"_rsr"
       ## now loop through the above array
       for key in "${rsrKeys[@]}"
@@ -702,17 +702,62 @@ dlCheck() {
         case $desiredMajor in
         "11")
             # Checking for Big Sur
-            if [ -d "/Applications/Install macOS Big Sur.app" ]; then echo "yes"; else echo "no"; fi
+            if [ -d "/Applications/Install macOS Big Sur.app" ]; then
+              #verify version matches
+              installerVersion=$(/usr/libexec/PlistBuddy -c "Print :DTPlatformVersion" "/Applications/Install macOS Big Sur.app/Contents/Info.plist")
+              if [[ $(version $installerVersion) -eq $(version $desiredOS) ]]; then
+                echo "yes"
+              else
+                log_info "update found but wrong version. deleting wrong version"
+                rm -rf "/Applications/Install macOS Big Sur.app"
+                echo "no"
+              fi
+            else echo "no"; fi
 
             ;;
         "12")
             # Checking for Monterey
-            if [ -d "/Applications/Install macOS Monterey.app" ]; then echo "yes"; else echo "no"; fi
+            if [ -d "/Applications/Install macOS Monterey.app" ]; then
+              #verify version matches
+              installerVersion=$(/usr/libexec/PlistBuddy -c "Print :DTPlatformVersion" "/Applications/Install macOS Monterey.app/Contents/Info.plist")
+              if [[ $(version $installerVersion) -eq $(version $desiredOS) ]]; then
+                echo "yes"
+              else
+                log_info "update found but wrong version. deleting wrong version"
+                rm -rf "/Applications/Install macOS Monterey.app"
+                echo "no"
+              fi
+            else echo "no"; fi
 
             ;;
         "13")
             # Checking for Ventura
-            if [ -d "/Applications/Install macOS Ventura.app" ]; then echo "yes"; else echo "no"; fi
+            if [ -d "/Applications/Install macOS Ventura.app" ]; then
+              #verify version matches
+              installerVersion=$(/usr/libexec/PlistBuddy -c "Print :DTPlatformVersion" "/Applications/Install macOS Ventura.app/Contents/Info.plist")
+              if [[ $(version $installerVersion) -eq $(version $desiredOS) ]]; then
+                echo "yes"
+              else
+                log_info "update found but wrong version. deleting wrong version"
+                rm -rf "/Applications/Install macOS Ventura.app"
+                echo "no"
+              fi
+            else echo "no"; fi
+
+            ;;
+        "14")
+            # Checking for Sonoma
+            if [ -d "/Applications/Install macOS Sonoma.app" ]; then
+              #verify version matches
+              installerVersion=$(/usr/libexec/PlistBuddy -c "Print :DTPlatformVersion" "/Applications/Install macOS Sonoma.app/Contents/Info.plist")
+              if [[ $(version $installerVersion) -eq $(version $desiredOS) ]]; then
+                echo "yes"
+              else
+                log_info "update found but wrong version. deleting wrong version"
+                rm -rf "/Applications/Install macOS Sonoma.app"
+                echo "no"
+              fi
+            else echo "no"; fi
 
             ;;
         *)
@@ -824,7 +869,25 @@ userPrompt() {
     # $1 will tell us if deferral button should be present
     if [[ "$1" = "deferral" ]]; then
         #prompt user with buttons and deferral info
-        prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nYou have $deferrals deferrals remaining before the upgrade will automatically commence.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"Defer\", \"$buttonLabel\"} default button 2 giving up after $promptTimer")
+        prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nYou have $deferrals deferrals remaining before the update will automatically commence.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"Defer\", \"$buttonLabel\"} default button 2 giving up after $promptTimer")
+    elif [[ "$1" = "deadline" ]]; then
+      #prompt user with buttons and deadline info
+      begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile")
+      dlDate=$(date -j -f "%a %b %e %H:%M:%S %Z %Y" -v+"$maxDays"d "$begin" +'%B %d, %Y')
+      time=$(/usr/libexec/PlistBuddy -c "Print :deadlineTime" "$counterFile")
+      dlHour=$(echo "$time" | cut -f1 -d ":")
+      dlMinute=$(echo "$time" | cut -f2 -d ":")
+      if [ "$dlHour" -lt "12" ]; then
+          #do nothing
+          #dlHour=$(($dlHour-0))
+          time="$dlHour:$dlMinute AM"
+      else
+          #convert to 12 hr
+          dlHour=$(($dlHour-12))
+          if [ $dlHour -eq 0 ]; then dlHour=12; fi
+          time="$dlHour:$dlMinute PM"
+      fi
+      prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nIf not previously completed, the update will automatically commence on $dlDate at $time.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"Snooze\", \"$buttonLabel\"} default button 2 giving up after $promptTimer")
     else
         #prompt user with no buttons - message that upgrade is commencing, save all work and close all apps
         prompt=$(/bin/launchctl asuser "$currentUID" sudo -iu "$currentUser" /usr/bin/osascript -e "display dialog \"$message \n\nThe upgrade will begin momentarily. Please save any work and close all applications.\" with title \"$title\" with icon POSIX file \"$icon\" buttons {\"$buttonLabel\"} default button 1 giving up after 300")
@@ -927,6 +990,10 @@ installUpdate() {
                     log_info "running startosinstall for Ventura"
                     /Applications/Install\ macOS\ Ventura.app/Contents/Resources/startosinstall --agreetolicense --nointeraction --forcequitapps &
                     ;;
+                "14")
+                    log_info "running startosinstall for Sonoma"
+                    /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/startosinstall --agreetolicense --nointeraction --forcequitapps &
+                    ;;
                 *)
                     log_error "cpuType: $cpuType desiredMajor: $desiredMajor  Unsupported macOS version $currentOS"
                     echo "unknown major version"
@@ -981,7 +1048,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 11.3 ---  "
+log_info "  --- Revision 12.0 ---  "
 
 
 #Setup ManagePlist
@@ -1026,7 +1093,7 @@ log_info "$currentUser is logged in"
 #check if settings profile is Installed
 if [ ! -f "$managedPlist" ]; then
     #clean up counter file and Exit
-    rm -rf "$counterFile"
+    /bin/rm -f "$counterFile"
     log_info "config profile not installed, exiting....."
     gatherLogs
     exit 0
@@ -1035,6 +1102,7 @@ fi
 #check which mode is enabled - latest, RSR or none (normal)
 rsrMode=0
 latestMode=0
+deadlineMode=0
 rsrVersion=""
 desiredOS=$(/usr/libexec/PlistBuddy -c "Print :desiredOSversion" "$managedPlist")
 if [[ "$desiredOS" == "latest" ]]; then
@@ -1065,7 +1133,7 @@ if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
       log_info "current RSR: $currentRSR"
       if [[ "$currentRSR" == "$rsrVersion" ]]; then
         #clean up counter file and Exit
-        rm -rf "$counterFile"
+        rm -f "$counterFile"
         log_info "device is up to date, exiting....."
         gatherLogs
         exit 0
@@ -1076,14 +1144,14 @@ if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
     elif [[ "$latestMode" == 1 ]]; then
       #find most recent rsrVersion if there is one, if not dont set rsrMode
       log_info "device up to date - checking if RSR available"
-      rsrVersion=$(/usr/libexec/PlistBuddy -c "Print :PublicRapidSecurityResponses:macOS" "/private/var/macOSupdater/OS.plist" 2>/dev/null | /usr/bin/awk '/ProductVersion = '$currentMajor'/{ getline; print $3}')
+      rsrVersion=$(/usr/libexec/PlistBuddy -c "Print :PublicRapidSecurityResponses:macOS" "/private/var/macOSupdater/OS.plist" 2>/dev/null | /usr/bin/awk '/ProductVersion = '$currentMajor'/{ getline; print $3}' || :)
       if [[ ! -z "$rsrVersion" ]]; then
         log_info "RSR available - check if needs to be applied. RSR Version: $rsrVersion"
         currentRSR=$(sw_vers -ProductVersionExtra)
         log_info "current RSR: $currentRSR"
         if [[ "$currentRSR" == "$rsrVersion" ]]; then
           #clean up counter file and Exit
-          rm -rf "$counterFile"
+          rm -f "$counterFile"
           log_info "device is up to date, exiting....."
           gatherLogs
           exit 0
@@ -1093,7 +1161,7 @@ if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
       fi
     else
       #clean up counter file and Exit
-      rm -rf "$counterFile"
+      rm -f "$counterFile"
       log_info "device is up to date, exiting....."
       gatherLogs
       exit 0
@@ -1104,9 +1172,32 @@ log_info "upgrade needed - currentOS: $currentOS : desiredOS: $desiredOS"
 #check if properties file has been created, if not create it
 if [ ! -f "$counterFile" ]; then
     /usr/bin/defaults write "$counterFile" deferralCount -int 0
+    /usr/bin/defaults write "$counterFile" startDate -date "$(date)"
 fi
-deferralCount=$(/usr/libexec/PlistBuddy -c "Print deferralCount" "$counterFile")
-maxDeferrals=$(/usr/libexec/PlistBuddy -c "Print maxDeferrals" "$managedPlist")
+
+#check if using deferrals or deadline date
+maxDays=$(/usr/libexec/PlistBuddy -c "Print :maxDays" "$managedPlist" 2>/dev/null || :)
+if [ "$maxDays" = "" ]; then
+  log_info "deferral mode active"
+  deferralCount=$(/usr/libexec/PlistBuddy -c "Print :deferralCount" "$counterFile")
+  maxDeferrals=$(/usr/libexec/PlistBuddy -c "Print :maxDeferrals" "$managedPlist")
+else
+  log_info "deadline mode active"
+  deadlineMode=1
+  begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile" 2>/dev/null || :)
+  #verify startDate
+  if [ "$begin" = "" ]; then
+    /usr/bin/defaults write "$counterFile" startDate -date "$(date)"
+    begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile")
+  fi
+  startDate=$(date -j -f "%a %b %e %H:%M:%S %Z %Y" "$begin" +'%m/%d/%Y')
+  deadlineDate=$(date -j -v+"$maxDays"d -f "%m/%d/%Y" "$startDate" +'%m/%d/%Y')
+  deadlineTime=$(/usr/libexec/PlistBuddy -c "Print :deadlineTime" "$managedPlist" 2>/dev/null || :)
+  if [ "$deadlineTime" = "" ]; then deadlineTime="06:00"; fi
+  /usr/bin/defaults write "$counterFile" deadlineTime -string "$deadlineTime"
+  combine="$deadlineDate $deadlineTime"
+  dlCombine=$(date -j -f "%m/%d/%Y %H:%M" "$combine" +'%s')
+fi
 log_info "counter present"
 
 #check if major update or minor
@@ -1130,9 +1221,7 @@ if le "$currentMajor" "11" || [[ "$rsrMode" == 1 ]]; then
 fi
 
 #grab proxy info
-if /usr/bin/grep -Fxq "<key>proxy</key>" "$managedPlist"; then
-  proxy=$(/usr/libexec/PlistBuddy -c "Print :proxy" "$managedPlist")
-fi
+proxy=$(/usr/libexec/PlistBuddy -c "Print :proxy" "$managedPlist" 2>/dev/null || :)
 
 #grab API info
 log_info "retrieving oauth token"
@@ -1151,7 +1240,7 @@ if [[ "$downloadCheck" = "no" ]]; then
     if [[ "$updateType" = "major" ]]; then
         #download major OS Installer
         (set -m; /usr/sbin/softwareupdate --fetch-full-installer --full-installer-version "$desiredOS" &)
-        if [ "$desiredMajor" = "13" ]; then
+        if [ "$desiredMajor" -ge "13" ] && [ "$currentOS" != "12.6.8" ];; then
             response=$(dlInstaller "$updateType")
             if [[ "$response" == "no" ]]; then
                 log_info "API command to download installer failed, exiting....."
@@ -1173,55 +1262,97 @@ if [[ "$downloadCheck" = "no" ]]; then
 fi
 log_info "installer downloaded"
 
-log_info "deferrals: $deferralCount"
-log_info "maxDeferrals: $maxDeferrals"
+if [[ "$deadlineMode" == 1 ]]; then
+  log_info "deadline mode info:"
+  log_info "enforcement start date: $startDate"
+  log_info "maxDays: $maxDays"
+else
+  log_info "deferral mode info:"
+  log_info "deferrals: $deferralCount"
+  log_info "maxDeferrals: $maxDeferrals"
+fi
 
-#check if user is active
-userStatus=$(/usr/bin/pmset -g useractivity | /usr/bin/grep "Level =" | /usr/bin/awk '{print $3}' | /usr/bin/tr -d "'")
-log_info "User status: $userStatus"
-if [[ ! "$userStatus" = "PresentActive" ]]; then
-    log_info "user is not active so not proceeding to prompt, exiting....."
-    gatherLogs
-    exit 0
+#check if user is active - if using deferrals
+if [[ "$deadlineMode" == 0 ]]; then
+  userStatus=$(/usr/bin/pmset -g useractivity | /usr/bin/grep "Level =" | /usr/bin/awk '{print $3}' | /usr/bin/tr -d "'")
+  log_info "User status: $userStatus"
+  if [[ ! "$userStatus" = "PresentActive" ]]; then
+      log_info "user is not active so not proceeding to prompt, exiting....."
+      gatherLogs
+      exit 0
+  fi
 fi
 
 #prompt user to upgrade
-if /usr/bin/grep -Fxq "<key>buttonLabel</key>" "$managedPlist"; then
-  buttonLabel=$(/usr/libexec/PlistBuddy -c "Print :buttonLabel" "$managedPlist")
-else
-  buttonLabel="Upgrade"; fi
-log_info "buttonLabel set to: $buttonLabel"
+buttonLabel=$(/usr/libexec/PlistBuddy -c "Print :buttonLabel" "$managedPlist" 2>/dev/null || :)
+if [ "$buttonLabel" = "" ]; then buttonLabel="Upgrade"; fi
+echo "label - $buttonLabel"
 
-#check if user has deferrals remaining
-if [[ $deferralCount -lt $maxDeferrals ]]; then
-    #prompt user to upgrade with deferral option
-    log_info "prompting user with deferral"
-    userReturn=$(userPrompt "deferral")
-    log_info "userReturn: $userReturn"
-    #check user response
-    if [ "$userReturn" = "button returned:$buttonLabel, gave up:false" ]; then
-        #trigger update and exit
-        log_info "installing update"
-        installUpdate "$updateType"
-        #trigger script to notify user that upgrade is installing and reboot is imminent
-        log_info "triggering notification script"
-        installStatus
-    else
-        #increase deferral count and exit
-        log_info "user deferred"
-        deferralCount=$((deferralCount + 1))
-        /usr/bin/defaults write "$counterFile" deferralCount -int $deferralCount
-    fi
-else
-    #prompt user that upgrade will take place momentarily - close out of all programs, save work, etc.
-    log_info "prompting user without deferral"
-    userPrompt "force"
-    #trigger update
-    log_info "installing update"
-    installUpdate "$updateType"
-    #trigger script to notify user that upgrade is installing and reboot is imminent
-    log_info "triggering notification script"
-    installStatus
+#check if using deadlineMode or deferrals
+if [[ "$deadlineMode" == 1 ]]; then
+  #verify dayCount
+  currentDate=$(date +'%s')
+  if [[ $currentDate -lt $dlCombine ]]; then
+      #prompt user to upgrade with deadline option
+      log_info "prompting user with deferral - deadline"
+      userReturn=$(userPrompt "deadline")
+      log_info "userReturn: $userReturn"
+      #check user response
+      if [ "$userReturn" = "button returned:$buttonLabel, gave up:false" ]; then
+          #trigger update and exit
+          log_info "installing update"
+          installUpdate "$updateType"
+          #trigger script to notify user that upgrade is installing and reboot is imminent
+          log_info "triggering notification script"
+          installStatus
+      else
+          #user did not accept - snooze
+          log_info "user snoozed or timeout expired"
+      fi
+  else
+      #force update
+      #prompt user that upgrade will take place momentarily - close out of all programs, save work, etc.
+      log_info "prompting user without deferral"
+      userPrompt "force"
+      #trigger update
+      log_info "installing update"
+      installUpdate "$updateType"
+      #trigger script to notify user that upgrade is installing and reboot is imminent
+      log_info "triggering notification script"
+      installStatus
+  fi
+else # deferal mode
+  #check if user has deferrals remaining
+  if [[ $deferralCount -lt $maxDeferrals ]]; then
+      #prompt user to upgrade with deferral option
+      log_info "prompting user with deferral"
+      userReturn=$(userPrompt "deferral")
+      log_info "userReturn: $userReturn"
+      #check user response
+      if [ "$userReturn" = "button returned:$buttonLabel, gave up:false" ]; then
+          #trigger update and exit
+          log_info "installing update"
+          installUpdate "$updateType"
+          #trigger script to notify user that upgrade is installing and reboot is imminent
+          log_info "triggering notification script"
+          installStatus
+      else
+          #increase deferral count and exit
+          log_info "user deferred"
+          deferralCount=$((deferralCount + 1))
+          /usr/bin/defaults write "$counterFile" deferralCount -int $deferralCount
+      fi
+  else
+      #prompt user that upgrade will take place momentarily - close out of all programs, save work, etc.
+      log_info "prompting user without deferral"
+      userPrompt "force"
+      #trigger update
+      log_info "installing update"
+      installUpdate "$updateType"
+      #trigger script to notify user that upgrade is installing and reboot is imminent
+      log_info "triggering notification script"
+      installStatus
+  fi
 fi
 
 log_info ">>>>> Exiting macOS Updater Utility <<<<<"
