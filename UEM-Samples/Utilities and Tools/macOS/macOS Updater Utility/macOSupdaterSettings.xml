@@ -1,10 +1,12 @@
 <dict>
   <key>desiredOSversion</key>
-  <string>12.5</string>
+  <string>13.5</string>
   <key>promptTimer</key>
   <string>300</string>
   <key>maxDeferrals</key>
   <integer>10</integer>
+  <key>maxDays</key>
+  <integer>14</integer>
   <key>buttonLabel</key>
   <string>Upgrade</string>
   <key>messageIcon</key>
