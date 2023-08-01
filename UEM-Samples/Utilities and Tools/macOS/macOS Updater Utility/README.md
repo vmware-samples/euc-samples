@@ -77,7 +77,9 @@ Here is a breakdown of the keys and their meaning:
 | messageIcon | string | /System/Applications/App Store.app/Contents/Resources/AppIcon.icns | The location of the icon to be used in the prompt to the user. Do not escape spaces in the path. |
 | messageTitle | string | Approved macOS Update Ready | The title of the prompt dialog box that is displayed to the user. |
 | messageBody | string | This will upgrade your computer the latest version of macOS. It will quit out of all open applications. Please make sure to save your documents and data before proceeding. This installation will restart your computer and may take several minutes to complete. If you have questions and/or concerns, please contact your IT Support team. | The message body of the prompt dialog box that is displayed to the user. |
-| proxy | string | This will be used by the tool to help the device connect to the API and Token URLs if required. If the device can connect freely to the API and Token endpoints then this is not needed to be included. |
+| proxy | string | http://myproxy.company.com | This will be used by the tool to help the device connect to the API and Token URLs if required. If the device can connect freely to the API and Token endpoints then this is not needed to be included. |
+| maxDays | integer | 10 | The number of days the user has to defer the update before it is forced. This key will take precendence over maxDeferrals. |
+| deadlineTime | string | 19:30 | Optional (default: 06:00) - The time in which the update will be enforced on the given deadline date (controlled by maxDays). Must me in format hh:mm (the mUU will not enforce at this exact time, but on the next time the script executes). |
 
 ## Notes
 - Action is only taken on the device (i.e. user prompted) if both the Script and Profile are deployed to the device and the following criteria are met:
@@ -126,4 +128,12 @@ Here is a breakdown of the keys and their meaning:
 - 2023-05-18: Revision 11.3:
     - Fix for latest mode download when using on a machine for first time
     - Fix for RSR Version sensor for machines on 13.3.1
+- 2023-08-01: Revision 12:
+    - Deadline Mode:
+        - Enable this feature to have the mUU utilize a deadline to enforce updates instead of maximum number of deferrals.
+        - Utilize the maxDays and deadlineTime key-value pairs in the custom settings profile to enable this feature. See more details [here](#profile).
+    - macOS Sonoma Support:
+        - You will now be able to enforce macOS Sonoma update (once available).
+    - Major Version Update - logic enhancement:
+        - mUU ensures the installer for a major update now matches the exact version you are wanting to enforce. 
       
