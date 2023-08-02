@@ -1,5 +1,7 @@
 # macOS Updater Utility (mUU)
-
+<p align="center">
+    <img width="500" alt="image" src="https://github.com/mzaske3/euc-samples/assets/63124926/7dbc1fe7-0fbe-4380-a209-821505ea29c4">
+</p>
 ## Overview
 
 - **Authors**: Matt Zaske, Leon Letto, and others
