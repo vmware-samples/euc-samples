@@ -1,8 +1,9 @@
 # macOS Updater Utility (mUU)
 <p align="center">
-    <img width="500" alt="image" src="https://github.com/mzaske3/euc-samples/assets/63124926/7dbc1fe7-0fbe-4380-a209-821505ea29c4">
+    <img width="500" alt="image" src="https://github.com/mzaske3/euc-samples/assets/63124926/1466c174-21d5-4fc0-8a28-2f1fd52ddcde">
 </p>
 ## Overview
+
 
 - **Authors**: Matt Zaske, Leon Letto, and others
 - **Email**: mzaske@vmware.com
@@ -137,5 +138,7 @@ Here is a breakdown of the keys and their meaning:
     - macOS Sonoma Support:
         - You will now be able to enforce macOS Sonoma update (once available).
     - Major Version Update - logic enhancement:
-        - mUU ensures the installer for a major update now matches the exact version you are wanting to enforce. 
+        - mUU ensures the installer for a major update now matches the exact version you are wanting to enforce.
+- 2023-08-03: Revision 12.1:
+    - Syntax fix for major updates
       
