@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 12.0 (July 21, 2023)
+# revision 12.1 (August 3, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -1048,7 +1048,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 12.0 ---  "
+log_info "  --- Revision 12.1 ---  "
 
 
 #Setup ManagePlist
@@ -1240,7 +1240,7 @@ if [[ "$downloadCheck" = "no" ]]; then
     if [[ "$updateType" = "major" ]]; then
         #download major OS Installer
         (set -m; /usr/sbin/softwareupdate --fetch-full-installer --full-installer-version "$desiredOS" &)
-        if [ "$desiredMajor" -ge "13" ] && [ "$currentOS" != "12.6.8" ];; then
+        if [ "$desiredMajor" -ge "13" ] && [ "$currentOS" != "12.6.8" ]; then
             response=$(dlInstaller "$updateType")
             if [[ "$response" == "no" ]]; then
                 log_info "API command to download installer failed, exiting....."
