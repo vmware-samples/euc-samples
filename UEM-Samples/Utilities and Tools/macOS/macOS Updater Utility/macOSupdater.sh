@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 12.1 (August 3, 2023)
+# revision 12.2 (August 4, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -1048,7 +1048,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 12.1 ---  "
+log_info "  --- Revision 12.2 ---  "
 
 
 #Setup ManagePlist
@@ -1144,7 +1144,7 @@ if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
     elif [[ "$latestMode" == 1 ]]; then
       #find most recent rsrVersion if there is one, if not dont set rsrMode
       log_info "device up to date - checking if RSR available"
-      rsrVersion=$(/usr/libexec/PlistBuddy -c "Print :PublicRapidSecurityResponses:macOS" "/private/var/macOSupdater/OS.plist" 2>/dev/null | /usr/bin/awk '/ProductVersion = '$currentMajor'/{ getline; print $3}' || :)
+      rsrVersion=$(/usr/libexec/PlistBuddy -c "Print :PublicRapidSecurityResponses:macOS" "/private/var/macOSupdater/OS.plist" 2>/dev/null | /usr/bin/awk '/ProductVersion = '$desiredOS'/{ getline; print $3; exit}' || :)
       if [[ ! -z "$rsrVersion" ]]; then
         log_info "RSR available - check if needs to be applied. RSR Version: $rsrVersion"
         currentRSR=$(sw_vers -ProductVersionExtra)
@@ -1158,6 +1158,13 @@ if ge "$(version "$currentOS")" "$(version "$desiredOS")"; then
         fi
         log_info "need to apply RSR - $rsrVersion"
         rsrMode=1
+      else
+        log_info "No RSR available"
+        #clean up counter file and Exit
+        rm -f "$counterFile"
+        log_info "device is up to date, exiting....."
+        gatherLogs
+        exit 0
       fi
     else
       #clean up counter file and Exit
@@ -1247,6 +1254,8 @@ if [[ "$downloadCheck" = "no" ]]; then
             else
                 log_info "major update installer download started via MDM command"
             fi
+        else
+            sudo launchctl kickstart -k system/com.apple.softwareupdated
         fi
         log_info "major update installer download started, exiting....."
     else
