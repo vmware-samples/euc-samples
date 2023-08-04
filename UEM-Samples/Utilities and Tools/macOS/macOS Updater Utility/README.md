@@ -141,4 +141,6 @@ Here is a breakdown of the keys and their meaning:
         - mUU ensures the installer for a major update now matches the exact version you are wanting to enforce.
 - 2023-08-03: Revision 12.1:
     - Syntax fix for major updates
+- 2023-08-04: Revision 12.2:
+    - Logic enhancement for latest mode
       
