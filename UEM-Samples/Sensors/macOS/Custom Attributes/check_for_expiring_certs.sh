@@ -1,13 +1,24 @@
 #!/bin/bash
 
+# Description: Sensor to find certificates in the current user store that match a given subject search string and check if they are revoked.
+# Remember to set the subject search string in the $subjectPattern variable.  This will search the subject for any instance of the string.
+# If you are testing this, you can change the $testing variable to $true and it will log to a file in the temp directory and show it at the end.
+# Execution Context: USER
+# Return Type: STRING
+
+
 # Variables
-subjectPattern="vmware"
+if [ -z "$subjectPattern" ]; then
+    subjectPattern="vmware"
+fi
 
 # if testing is set to true then the script will create a log file in the users temp directory and open it when done
-#TESTING="false"
+if [ -z "$testing" ]; then
+    testing="false"
+fi
 
 # Check if testing mode is enabled
-if [ "$TESTING" == "true" ]; then
+if [ "$testing" == "true" ]; then
     # create a log file to record the results in teh users temp directory
     testLogFile=$(mktemp)
     # rename to add the log extension
@@ -43,7 +54,7 @@ done < "${TMPDIR}certList.pem"
 if [ ${#matchingCertificates[@]} -eq 0 ]; then
     echo "No certificates were found for searchString $subjectPattern."
 
-    if [ "$TESTING" == "true" ]; then
+    if [ "$testing" == "true" ]; then
         echo "$(date '+%Y-%m-%d %H:%M:%S'): No certificates were found for searchString $subjectPattern." >> "$testLogFile"
     fi
 
@@ -63,17 +74,17 @@ for cert in "${matchingCertificates[@]}"; do
     # get the serial number of the cert
     serialNumber=$(openssl x509 -noout -serial -in "$tempCertFile" | awk -F= '{print $2}')
 
-    if [ "$TESTING" == "true" ]; then
+    if [ "$testing" == "true" ]; then
         echo "Checking Cert with Serial Number: $serialNumber"
     fi
 
     # Log the certificate to check its content
-    if [ "$TESTING" == "true" ]; then
+    if [ "$testing" == "true" ]; then
         echo "Checking Cert with Serial Number: $serialNumber" >> "$testLogFile"
     fi
 
     # Extract CRL Distribution Points from the certificate
-    if [ "$TESTING" == "true" ]; then
+    if [ "$testing" == "true" ]; then
         crlUrls=$(echo "$cert" | openssl x509 -noout -text 2>> "$testLogFile" | grep "URI:" | awk -F'URI:' '{print $2}' | sed 's/^[[:space:]]*//')
     else
         crlUrls=$(echo "$cert" | openssl x509 -noout -text | grep "URI:" | awk -F'URI:' '{print $2}' | sed 's/^[[:space:]]*//')
@@ -86,7 +97,7 @@ for cert in "${matchingCertificates[@]}"; do
     fi
 
     # Write the url of the CRL to the log file
-    if [ "$TESTING" == "true" ]; then
+    if [ "$testing" == "true" ]; then
         echo "CRL Distribution Points: $crlUrls" >> "$testLogFile"
     fi
 
@@ -103,13 +114,13 @@ for cert in "${matchingCertificates[@]}"; do
         crlPath=$(mktemp)
 
         # log the crl url and path
-        if [ "$TESTING" == "true" ]; then
+        if [ "$testing" == "true" ]; then
             printf "CRL URL: %s\nCRL Path: %s\nCRL PEM file path: %s.pem\n" "$crlUrl" "$crlPath" "$crlPath" >> "$testLogFile"
         fi
 
         curl -s "$crlUrl" > "$crlPath"
         if [ $? -ne 0 ]; then
-            if [ "$TESTING" == "true" ]; then
+            if [ "$testing" == "true" ]; then
                 echo "Error downloading crl from $crlUrl. Check log for details." >> "$testLogFile"
             fi
             logger "Error downloading crl from $crlUrl. Check log for details."
@@ -117,7 +128,7 @@ for cert in "${matchingCertificates[@]}"; do
         fi
         openssl crl -inform DER -in "$crlPath" -out "${crlPath}.pem" -outform PEM
         if [ $? -ne 0 ]; then
-            if [ "$TESTING" == "true" ]; then
+            if [ "$testing" == "true" ]; then
                 echo "Error processing crl from $crlUrl. Check log for details." >> "$testLogFile"
             fi
             logger "Error processing crl from $crlUrl. Check log for details."
@@ -127,11 +138,11 @@ for cert in "${matchingCertificates[@]}"; do
         # check if the serial number is in the CRL which means its revoked
         serialNumberRevoked=$(openssl crl -in "${crlPath}.pem" -inform PEM -noout -text | grep "$serialNumber" | awk -F'Serial Number:' '{print $2}')
         if [ $? -eq 0 ]; then
-            if [ "$TESTING" == "true" ]; then
+            if [ "$testing" == "true" ]; then
                 echo "Certificate with serial number $serialNumber is not revoked." >> "$testLogFile"
             fi
         else
-            if [ "$TESTING" == "true" ]; then
+            if [ "$testing" == "true" ]; then
                 echo "Certificate with serial number $serialNumberRevoked has been revoked." >> "$testLogFile"
             fi
             # write a warning the system log
@@ -157,18 +168,18 @@ done
 if [ ${#revokedCertificates[@]} -gt 0 ]; then
     echo "Revoked Certs with subject $subjectPattern: ${revokedCertificates[*]}"
 
-    if [ "$TESTING" == "true" ]; then
+    if [ "$testing" == "true" ]; then
         echo "$(date '+%Y-%m-%d %H:%M:%S'): Revoked Certs with subject $subjectPattern: ${revokedCertificates[*]}" >> "$testLogFile"
     fi
 else
     echo "No certificates were revoked for searchString $subjectPattern."
 
-    if [ "$TESTING" == "true" ]; then
+    if [ "$testing" == "true" ]; then
         echo "$(date '+%Y-%m-%d %H:%M:%S'): No certificates were revoked for searchString $subjectPattern." >> "$testLogFile"
     fi
 fi
 
 # Open the log file if in testing mode
-if [ "$TESTING" == "true" ]; then
+if [ "$testing" == "true" ]; then
     open "$testLogFile"
 fi
