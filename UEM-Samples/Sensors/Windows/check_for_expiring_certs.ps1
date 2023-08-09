@@ -146,14 +146,13 @@ foreach ($cert in $matchingCertificates) {
     # If revoked add to array
     if ($isRevoked) {
         $revokedCertificates += $cert.SerialNumber
-        Write-Output "This certificate is revoked: $($cert.SerialNumber)"
     }
 }
 
  # If revoked add to array
 if ($revokedCertificates.Count -gt 0) {
     $revokedCertsString = "Revoked Certs with subject $($subjectPattern): " + ($revokedCertificates -join ", ")
-    Write-Host $revokedCertsString
+    Write-Output $revokedCertsString
     if ($testing) {
         $message = "$(Get-FormattedDateTime): $($revokedCertsString)"
         Add-Content -Path $testLogFile -Value $message
@@ -161,7 +160,7 @@ if ($revokedCertificates.Count -gt 0) {
 
 } else {
     $message = "No certificates were revoked for searchString $($subjectPattern)."
-    Write-Host $message
+    Write-Output $message
      if ($testing) {
         $message = "$(Get-FormattedDateTime): $($message)"
         Add-Content -Path $testLogFile -Value $message
