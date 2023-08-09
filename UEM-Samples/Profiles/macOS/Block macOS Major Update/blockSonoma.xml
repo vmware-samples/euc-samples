@@ -1,0 +1,40 @@
+<dict>
+	<key>Restrictions</key>
+	<array>
+		<dict>
+			<key>Attributes</key>
+			<dict>
+				<key>name</key>
+				<array>
+					<string>Install macOS Sonoma</string>
+          <string>Install macOS Sonoma beta</string>
+				</array>
+				<key>bundleId</key>
+				<array>
+					<string>com.apple.InstallAssistant.Sonoma</string>
+					<string>com.apple.InstallAssistant.macOSSonoma</string>
+					<string>com.apple.InstallAssistant.Seed.macOS14Seed</string>
+          <string>com.apple.InstallAssistant.Seed.macOS14Seed1</string>
+				</array>
+			</dict>
+			<key>Actions</key>
+			<array>
+			<integer>1</integer>
+			</array>
+			<key>Message</key>
+			<string>You are not permitted to install macOS Sonoma.</string>
+		</dict>
+	</array>
+	<key>PayloadDisplayName</key>
+	<string>Restricted Software Policy</string>
+	<key>PayloadOrganization</key>
+	<string>VMware</string>
+	<key>PayloadType</key>
+	<string>com.vmware.hub.mac.restrictions</string>
+	<key>PayloadUUID</key>
+	<string>ADE948AE-FDA7-4A8C-80ED-FEAF3E35F532</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+  <key>PayloadIdentifier</key>
+	<string>com.vmware.hub.mac.restrictions.ADE948AE-FDA7-4A8C-80ED-FEAF3E35F532</string>
+</dict>
