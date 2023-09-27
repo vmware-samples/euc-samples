@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 12.2 (August 4, 2023)
+# revision 12.2.2 (September 13, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -1048,7 +1048,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 12.2 ---  "
+log_info "  --- Revision 12.2.2 ---  "
 
 
 #Setup ManagePlist
@@ -1179,7 +1179,7 @@ log_info "upgrade needed - currentOS: $currentOS : desiredOS: $desiredOS"
 #check if properties file has been created, if not create it
 if [ ! -f "$counterFile" ]; then
     /usr/bin/defaults write "$counterFile" deferralCount -int 0
-    /usr/bin/defaults write "$counterFile" startDate -date "$(date)"
+    /usr/bin/defaults write "$counterFile" startDate -int "$(date +%s)"
 fi
 
 #check if using deferrals or deadline date
@@ -1194,10 +1194,10 @@ else
   begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile" 2>/dev/null || :)
   #verify startDate
   if [ "$begin" = "" ]; then
-    /usr/bin/defaults write "$counterFile" startDate -date "$(date)"
+    /usr/bin/defaults write "$counterFile" startDate -int "$(date +%s)"
     begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile")
   fi
-  startDate=$(date -j -f "%a %b %e %H:%M:%S %Z %Y" "$begin" +'%m/%d/%Y')
+  startDate=$(date -j -f "%s" "$begin" +'%m/%d/%Y')
   deadlineDate=$(date -j -v+"$maxDays"d -f "%m/%d/%Y" "$startDate" +'%m/%d/%Y')
   deadlineTime=$(/usr/libexec/PlistBuddy -c "Print :deadlineTime" "$managedPlist" 2>/dev/null || :)
   if [ "$deadlineTime" = "" ]; then deadlineTime="06:00"; fi
@@ -1247,7 +1247,7 @@ if [[ "$downloadCheck" = "no" ]]; then
     if [[ "$updateType" = "major" ]]; then
         #download major OS Installer
         (set -m; /usr/sbin/softwareupdate --fetch-full-installer --full-installer-version "$desiredOS" &)
-        if [ "$desiredMajor" -ge "13" ] && [ "$currentOS" != "12.6.8" ]; then
+        if [ "$desiredMajor" -ge "13" ]; then
             response=$(dlInstaller "$updateType")
             if [[ "$response" == "no" ]]; then
                 log_info "API command to download installer failed, exiting....."
