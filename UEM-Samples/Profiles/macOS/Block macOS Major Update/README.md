@@ -5,8 +5,16 @@
 * Minimal/High-Level Description:    Custom XML Payload to block the macOS Installer using MDM and the Workspace ONE Intelligent Hub system extension. 
 * Tested Version:   Workspace ONE UEM 2204 + Hub 22.05
 
+### UPDATE
+
+With the release of macOS Sonoma (14.x), not all Mac devices will pull down the full installer in order to conduct the update. Some devices on newer releases of Ventura will only pull down a delta update (smaller file size), and the process is handled completely within Software Update. Due to this the blockSonoma custom settings profile will not block these devices from updating using the delta update. We recommend utilizing the delay major OS update functionality seen below to ensure devices are not unexpectedly updated to macOS Sonoma. 
 
 ### Utilize the OS Software Delay using MDM Keys
+
+**NEW - this can now be configured in the UI on UEM v2306+ (see further down for custom settings XML if not on UEM v2306+):**
+
+![image](https://github.com/mzaske3/euc-samples/assets/63124926/0040f665-96b5-4756-91d8-8bfa90ceb87b)
+
 
 The following delays Major OS updates (*enforcedSoftwareUpdateMajorOSDeferredInstallDelay*) by 45 days, and defers minor OS updates (*enforcedSoftwareUpdateMinorOSDeferredInstallDelay*) by 7 days.  Feel free to modify to your own needs (values must be between 1-90 days).
 
