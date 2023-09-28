@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 12.2 (August 4, 2023)
+# revision 13 (September 27, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -482,12 +482,6 @@ currentUser=$(stat -f%Su /dev/console)
 currentUID=$(id -u "$currentUser")
 serial=$(ioreg -c IOPlatformExpertDevice -d 2 | awk -F\" '/IOPlatformSerialNumber/{print $(NF-1)}')
 uuid=$(ioreg -c IOPlatformExpertDevice -d 2 | awk -F\" '/IOPlatformUUID/{print $(NF-1)}' | tr '[:lower:]' '[:upper:]' | tr -d '-')
-#variables set via WS1
-# $clientID
-# $clientSec
-# $apiURL
-# $tokenURL
-proxy=""
 
 ### functions
 
@@ -613,83 +607,29 @@ getProductKey() {
     echo "$desiredProductKey"
 }
 
-# generate oAuth token
-getToken() {
-    #request access token
-    if [ -n "$proxy" ]; then
-        oAuthToken=$(/usr/bin/curl -x $proxy -X POST $tokenURL -H "accept: application/json" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials&client_id=$1&client_secret=$2")
-    else
-        oAuthToken=$(/usr/bin/curl -X POST $tokenURL -H "accept: application/json" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials&client_id=$1&client_secret=$2")
-    fi
-    oAuthToken=$(echo $oAuthToken | /usr/bin/sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")
-    if [[ "$oAuthToken" == '{"error":"invalid_client"}' || -z "$oAuthToken" ]]; then
-        #api failed
-        log_error "Failed to retrieve oAuth Token"
-        echo "no"
-    fi
-    echo "$oAuthToken"
-    log_info "Oauth token retrieved"
-}
-
-# MDM command via api
+# MDM command via HubCLI
 # $1 - InstallAction, $2 - ProductKey or ProductVersion, $3 - productKey/version data
 mdmCommand() {
-    # custom MDM command API using UUID instead of serial
-    if [ -n "$proxy" ]; then
-        response=$(/usr/bin/curl -x $proxy "$apiURL/api/mdm/devices/commands?command=CustomMdmCommand&searchby=Udid&id=$uuid" \
-            -X POST \
-            -H "Authorization: Bearer $authToken" \
-            -H "Accept: application/json;version=2" \
-            -H "Content-Type: application/json" \
-            -d '{"CommandXML" : "<dict><key>RequestType</key><string>ScheduleOSUpdate</string><key>Updates</key><array><dict><key>InstallAction</key><string>'$1'</string><key>'$2'</key><string>'$3'</string></dict></array></dict>"}')
+    # use hubcli to make custom command request
+    # check for product key or version
+    if [ "$2" == "ProductVersion" ]; then
+        log_info "sending hubCLI call - /usr/local/bin/hubcli mdmcommand --osupdate --productversion $3 --installaction $1"
+        response=$(/usr/local/bin/hubcli mdmcommand --osupdate --productversion "$3" --installaction "$1")
     else
-        response=$(/usr/bin/curl "$apiURL/api/mdm/devices/commands?command=CustomMdmCommand&searchby=Udid&id=$uuid" \
-            -X POST \
-            -H "Authorization: Bearer $authToken" \
-            -H "Accept: application/json;version=2" \
-            -H "Content-Type: application/json" \
-            -d '{"CommandXML" : "<dict><key>RequestType</key><string>ScheduleOSUpdate</string><key>Updates</key><array><dict><key>InstallAction</key><string>'$1'</string><key>'$2'</key><string>'$3'</string></dict></array></dict>"}')
+        log_info "sending hubCLI call - /usr/local/bin/hubcli mdmcommand --osupdate --productversion $3 --installaction $1"
+        response=$(/usr/local/bin/hubcli mdmcommand --osupdate --productkey "$3" --installaction "$1")
     fi
 
-    log_info "API call sent - udid: $uuid, action: $1, type: $2, value: $3"
-    log_info "API Response: $response"
-    if [[ -n "$response" ]]; then
-        #api failed
-        log_error "Failed to send MDM command via API"
-        log_error "API Response: $response"
+    # error handling
+    log_info "Response: $response"
+    if [[ ! "$response" == *"Request for software update completed successfully" ]]; then
+        #failed
+        log_error "Failed to send MDM command via HubCLI"
         echo "no"
         return
     fi
+    # success
     log_info "command sent"
-    echo ""
-}
-
-mdmCommandSerial() {
-    # custom MDM command API using UUID instead of serial
-    if [ -n "$proxy" ]; then
-        response=$(/usr/bin/curl -x $proxy "$apiURL/api/mdm/devices/commands?command=CustomMdmCommand&searchby=SerialNumber&id=$serial" \
-            -X POST \
-            -H "Authorization: Bearer $authToken" \
-            -H "Accept: application/json;version=2" \
-            -H "Content-Type: application/json" \
-            -d '{"CommandXML" : "<dict><key>RequestType</key><string>ScheduleOSUpdate</string><key>Updates</key><array><dict><key>InstallAction</key><string>'$1'</string><key>'$2'</key><string>'$3'</string></dict></array></dict>"}')
-    else
-        response=$(/usr/bin/curl "$apiURL/api/mdm/devices/commands?command=CustomMdmCommand&searchby=SerialNumber&id=$serial" \
-            -X POST \
-            -H "Authorization: Bearer $authToken" \
-            -H "Accept: application/json;version=2" \
-            -H "Content-Type: application/json" \
-            -d '{"CommandXML" : "<dict><key>RequestType</key><string>ScheduleOSUpdate</string><key>Updates</key><array><dict><key>InstallAction</key><string>'$1'</string><key>'$2'</key><string>'$3'</string></dict></array></dict>"}')
-    fi
-
-    log_info "API call sent - serial: $serial, action: $1, type: $2, value: $3"
-    log_info "API Response: $response"
-    if [[ ! -z "$response" ]]; then
-        #api failed
-        echo "no"
-        log_error "Failed to send MDM command via API"
-        return
-    fi
     echo ""
 }
 
@@ -757,6 +697,25 @@ dlCheck() {
                 rm -rf "/Applications/Install macOS Sonoma.app"
                 echo "no"
               fi
+            #also check same way as minor for delta update
+            dirCount=$(find /System/Library/AssetsV2/com_apple_MobileAsset_MacSoftwareUpdate -maxdepth 1 -type d | /usr/bin/wc -l)
+            elif [[ "$dirCount" -gt 1 ]]; then
+              #check for matching OS version
+              index=1
+              while [ $index -lt $dirCount ]; do
+                  index=$((index + 1))
+                  updateDir=$(find /System/Library/AssetsV2/com_apple_MobileAsset_MacSoftwareUpdate -maxdepth 1 -type d | /usr/bin/awk 'NR=='$index'{print}')
+                  msuPlist="$updateDir/Info.plist"
+                  msuOSVersion=$(/usr/libexec/PlistBuddy -c "Print :MobileAssetProperties:OSVersion" "$msuPlist")
+                  if [[ $(version $msuOSVersion) -eq $(version $desiredOS) ]]; then
+                      log_info "Download found"
+                      echo "yes"
+                      return
+                  fi
+              done
+              log_error "Download found but not correct"
+              log_debug "desiredOS: $desiredOS msuOSVersion: $msuOSVersion"
+              echo "no"
             else echo "no"; fi
 
             ;;
@@ -993,6 +952,7 @@ installUpdate() {
                 "14")
                     log_info "running startosinstall for Sonoma"
                     /Applications/Install\ macOS\ Sonoma.app/Contents/Resources/startosinstall --agreetolicense --nointeraction --forcequitapps &
+
                     ;;
                 *)
                     log_error "cpuType: $cpuType desiredMajor: $desiredMajor  Unsupported macOS version $currentOS"
@@ -1048,7 +1008,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 12.2 ---  "
+log_info "  --- Revision 13 ---  "
 
 
 #Setup ManagePlist
@@ -1179,7 +1139,7 @@ log_info "upgrade needed - currentOS: $currentOS : desiredOS: $desiredOS"
 #check if properties file has been created, if not create it
 if [ ! -f "$counterFile" ]; then
     /usr/bin/defaults write "$counterFile" deferralCount -int 0
-    /usr/bin/defaults write "$counterFile" startDate -date "$(date)"
+    /usr/bin/defaults write "$counterFile" startDate -int "$(date +%s)"
 fi
 
 #check if using deferrals or deadline date
@@ -1194,10 +1154,10 @@ else
   begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile" 2>/dev/null || :)
   #verify startDate
   if [ "$begin" = "" ]; then
-    /usr/bin/defaults write "$counterFile" startDate -date "$(date)"
+    /usr/bin/defaults write "$counterFile" startDate -int "$(date +%s)"
     begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile")
   fi
-  startDate=$(date -j -f "%a %b %e %H:%M:%S %Z %Y" "$begin" +'%m/%d/%Y')
+  startDate=$(date -j -f "%s" "$begin" +'%m/%d/%Y')
   deadlineDate=$(date -j -v+"$maxDays"d -f "%m/%d/%Y" "$startDate" +'%m/%d/%Y')
   deadlineTime=$(/usr/libexec/PlistBuddy -c "Print :deadlineTime" "$managedPlist" 2>/dev/null || :)
   if [ "$deadlineTime" = "" ]; then deadlineTime="06:00"; fi
@@ -1227,18 +1187,6 @@ if le "$currentMajor" "11" || [[ "$rsrMode" == 1 ]]; then
     fi
 fi
 
-#grab proxy info
-proxy=$(/usr/libexec/PlistBuddy -c "Print :proxy" "$managedPlist" 2>/dev/null || :)
-
-#grab API info
-log_info "retrieving oauth token"
-authToken=$(getToken $clientID $clientSec)
-if [[ "$authToken" == "no" ]]; then
-    log_info "oAuth token not found - check API variables, exiting....."
-    gatherLogs
-    exit 0
-fi
-
 #check if update has downloaded, if not trigger download and exit
 downloadCheck=$(dlCheck "$updateType")
 log_info "downloadCheck: $downloadCheck"
@@ -1247,10 +1195,10 @@ if [[ "$downloadCheck" = "no" ]]; then
     if [[ "$updateType" = "major" ]]; then
         #download major OS Installer
         (set -m; /usr/sbin/softwareupdate --fetch-full-installer --full-installer-version "$desiredOS" &)
-        if [ "$desiredMajor" -ge "13" ] && [ "$currentOS" != "12.6.8" ]; then
+        if [ "$desiredMajor" -ge "13" ]; then
             response=$(dlInstaller "$updateType")
             if [[ "$response" == "no" ]]; then
-                log_info "API command to download installer failed, exiting....."
+                log_info "HubCLI command to download installer failed, exiting....."
             else
                 log_info "major update installer download started via MDM command"
             fi
@@ -1261,7 +1209,7 @@ if [[ "$downloadCheck" = "no" ]]; then
     else
         response=$(dlInstaller "$updateType")
         if [[ "$response" == "no" ]]; then
-            log_info "API command to download installer failed, exiting....."
+            log_info "HubCLI command to download installer failed, exiting....."
         else
             log_info "minor update installer download started, exiting....."
         fi

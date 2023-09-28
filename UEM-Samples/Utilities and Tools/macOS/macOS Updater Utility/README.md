@@ -8,7 +8,9 @@
 - **Authors**: Matt Zaske, Leon Letto, and others
 - **Email**: mzaske@vmware.com
 - **Date Created**: 7/22/2022
-- **Supported Platforms**: Workspace ONE UEM with Freestyle Workflow Engine (Scripts engine required) 
+- **Supported Platforms**:
+    - VMware Workspace ONE UEM (22.10+) with Freestyle Workflow Engine (Scripts engine required)
+    - VMware Workspace ONE Intelligent Hub for macOS (22.12+)
 - **Tested on macOS Versions**: macOS 11+ (Intel and Apple Silicon CPU)
 
 ## Purpose
@@ -19,22 +21,18 @@ The macOS Updater Utility (mUU) keeps your Mac device fleet up to date by prompt
 </p>
 
 1. [Prerequisites for mUU](#prerequisites-for-mUU)
-    1. [API Credentials](#api-credentials)
+    1. ~~[API Credentials](#api-credentials)~~
 2. [Deploying macOS Updater Utility](#deploying-macOS-updater-utility)
     1. [Script](#script)
     2. [Profile](#profile)
 
 ## Prerequisites for mUU
 - macOS Version 11.0 (Big Sur) or higher recommended. This tool has not been tested on anything previous to Big Sur.
-- UEM v21.11 or higher with Freestyle Orchestrator is recommended in order to utilize "Scripts" engine. See more information here: https://kb.vmware.com/s/article/81163
+- Intelligent Hub for macOS v22.12 or higher
+- UEM v22.10 or higher with Freestyle Orchestrator is recommended in order to utilize "Scripts" engine. See more information here: https://kb.vmware.com/s/article/81163
 
-#### API Credentials
-In order to make the MDM commands to download and install macOS updates, mUU utilizes the Workspace ONE UEM API. The following steps need to be taken to ensure the proper credentials can be supplied when deploying the script:
-1. Navigate to Groups & Settings > Configurations within your UEM Console
-2. Search for and select "OAuth Client Management"
-3. Select "Add" and fill in the details similar to below. Feel free to modify as you see fit:
-    1. <img width="1165" alt="image" src="https://user-images.githubusercontent.com/63124926/181052726-89d89b96-9c20-4817-9946-d8ef55639e14.png">
-4. After selecting "Save" you will need to note/save the Client ID and Secret. This is the only time you will be able to access the Client Secret, so ensure to keep it in a safe place. These will be needed in a later step when deploying the script. 
+#### ~~API Credentials~~
+No longer required with revision 13. The tool now utilizes hubCLI to make the request to Workspace ONE. 
 
 ## Deploying macOS Updater Utility
 #### Script
@@ -45,21 +43,13 @@ In order to make the MDM commands to download and install macOS updates, mUU uti
     1. Leave the "Language" as Bash and "Execution Context" as System
     2. The timeout will need to be set to 30 seconds longer than "promptTimer" which is explained in the [Profile](#profile) section below
     3. Upload or copy/paste the contents of the `macOSupdater.sh` [file](https://github.com/mzaske3/euc-samples/blob/master/UEM-Samples/Utilities%20and%20Tools/macOS/macOS%20Updater%20Utility/macOSupdater.sh)
-5. After selecting "Next" you will configure the "Variables" section. It is very important that the variables names match exactly as below (see table and screenshot below).
+5. After selecting "Next" you will see the "Variables" screen. There is nothing you need to configre here (new in revision 13).
 6. Then select "Save" and you will be taken back to the Scripts List View. Here you will select the bubble the left of your Script and select "Assign"
 7. Selct "New Assignement" and fill in the "Definition" tab as needed. Ensure to scope the assignment to only devices intended to upgrade using proper smart group.
 8. After selecting "Next" you will configure the "Deployment" tab:
     1. Here you will select "Run Periodically" and select the time interval.
-    2. This time interval will coorespond to the user's deferral grace period (i.e. how long a user will have once they defer an update prompt until they are prompted again). 
-
-| Variable Name | Value | Example | 
-|---|---|---|
-| apiURL | The API URL for your Workspace ONE UEM tenant. | https://as1380.awmdm.com | 
-| clientID | The Client ID that was generated in the Prerequisites section. | abcd1234abcd1234 | 
-| clientSec | The Client Secret that was generated in the Prerequisites section. | ABCDEFG1234567ABCDEFG1234567 | 
-| tokenURL | The URL for the Workspace ONE Token Service in your region, [seen here](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/UEM_ConsoleBasics/GUID-BF20C949-5065-4DCF-889D-1E0151016B5A.html ). | https://na.uemauth.vmwservices.com/connect/token | 
-
-<img width="899" alt="image" src="https://user-images.githubusercontent.com/63124926/181089063-3266f78b-9604-4f43-bd3e-96ad08f61489.png">
+    2. This time interval will coorespond to the user's deferral grace period (i.e. how long a user will have once they defer an update prompt until they are prompted again). I would suggest using 4 hours as the default value.
+    3. Be careful with using multiple triggers as it could cause the script to launch multiple times at once which would cause multiple pop-ups to the user at one time. 
 
 #### Profile
 The behavior the end user experiences is controlled by a configuration profile that is deployed through Workspace ONE UEM:
@@ -80,7 +70,6 @@ Here is a breakdown of the keys and their meaning:
 | messageIcon | string | /System/Applications/App Store.app/Contents/Resources/AppIcon.icns | The location of the icon to be used in the prompt to the user. Do not escape spaces in the path. |
 | messageTitle | string | Approved macOS Update Ready | The title of the prompt dialog box that is displayed to the user. |
 | messageBody | string | This will upgrade your computer the latest version of macOS. It will quit out of all open applications. Please make sure to save your documents and data before proceeding. This installation will restart your computer and may take several minutes to complete. If you have questions and/or concerns, please contact your IT Support team. | The message body of the prompt dialog box that is displayed to the user. |
-| proxy | string | http://myproxy.company.com | This will be used by the tool to help the device connect to the API and Token URLs if required. If the device can connect freely to the API and Token endpoints then this is not needed to be included. |
 | maxDays | integer | 10 | The number of days the user has to defer the update before it is forced. This key will take precendence over maxDeferrals. |
 | deadlineTime | string | 19:30 | Optional (default: 06:00) - The time in which the update will be enforced on the given deadline date (controlled by maxDays). Must me in format hh:mm (the mUU will not enforce at this exact time, but on the next time the script executes). |
 
@@ -100,8 +89,7 @@ Here is a breakdown of the keys and their meaning:
 - Updates to come:
   - Icon file improvements
   - Battery and Disk Space verification
-  - Deadline functionality
-
+ 
 ## Change Log
 
 - 2022-07-22: Created Initial File
@@ -143,4 +131,9 @@ Here is a breakdown of the keys and their meaning:
     - Syntax fix for major updates
 - 2023-08-04: Revision 12.2:
     - Logic enhancement for latest mode
-      
+- 2023-09-28: Revision 13:
+    - MDM Commands via hubCLI:
+        - Removes the need to use the API and supply credentials to the tool.
+    - Minor fixes:
+        -  Deadline mode time formatting
+        -  macOS Sonoma logic
