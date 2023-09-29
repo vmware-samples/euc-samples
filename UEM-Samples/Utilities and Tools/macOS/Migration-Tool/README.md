@@ -52,10 +52,10 @@ This tool installs a launchdaemon that executes a bash script to perform the mig
 | --enrollment-profile-path | Yes if different than example | /Library/Application Support/VMware/MigratorResources/enroll.mobileconfig | Full absolute path of the mobileconfig file that is used to enroll device to destination WS1 tenant. |
 | --registration-type | Yes if different than 'none' | local, prompt or none | The method used to retrieve username of the Mac being migrated. More details [here](#registration-types) |
 | --dest-baseurl | Yes if registration-type is not 'none' | https://ds1688.awmdm.com | The WS1 Device Services URL of destination environment |
-| --dest-auth | Yes if registration-type is not 'none' | Basic ABCD1234WXYZ9876== | Base64 encoded API credentials for the destination WS1 tenant |
-| --dest-token | Yes if registration-type is not 'none' | ABCDEFG1234567+COJnXFNZM6uZxXLVVTAUuUheXI= | REST API token for the destination WS1 tenant |
+| --dest-auth | Yes if registration-type is not 'none' or using DEP | Basic ABCD1234WXYZ9876== | Base64 encoded API credentials for the destination WS1 tenant |
+| --dest-token | Yes if registration-type is not 'none' or using DEP | ABCDEFG1234567+COJnXFNZM6uZxXLVVTAUuUheXI= | REST API token for the destination WS1 tenant |
 | --dest-groupid | Yes if registration-type is not 'none' | Group1234 | Group ID of target Organization Group in destination environment |
-| --dest-apiURL | Yes if registration-type is not 'none' | https://as1688.awmdm.com | The WS1 API URL of destination environment  |
+| --dest-apiurl | Yes if registration-type is not 'none' or using DEP | https://as1688.awmdm.com | The WS1 API URL of destination environment  |
 | --user-prompt | Yes if registration-type set to 'prompt' | username or email | What value to request from the user during migration in order to find their user account in destination WS1 tenant |
 | --dep-profile-name | No | DEP Profile Name | Supply this value if you wish to apply a custom DEP profile to your devices that differs from the default profile that is automatically assigned to your devices in WS1 UEM. A use case for this might be to stage the devices to a staging user and rely on the script preregistration to assign device to correct user. |
 
@@ -168,3 +168,11 @@ The tool can also be further customized through the use of add-on scripts. You w
 
 - 2022-08-08: Created Initial File
 - 2022-08-30: Added fuctionality to enroll devices synced via ABM using profiles command
+- 2023-09-29: Revision 3:
+   - Number of minor fixes:
+   	 - jq prompting after launch
+  	 - DEPNotify location aligninment
+   	 - Updated zip file
+   	 - Logic enhancement to checking if device is DEP eligible
+  	 - Logic enhancement to pulling Hub download location
+   	 - Adding button to registration flow	 
