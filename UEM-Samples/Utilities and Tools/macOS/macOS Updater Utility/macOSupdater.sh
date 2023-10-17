@@ -6,7 +6,7 @@
 # Developed by: Matt Zaske, Leon Letto and others
 # July 2022
 #
-# revision 13 (September 27, 2023)
+# revision 13.1 (October 17, 2023)
 #
 # macOS Updater Utility (mUU):
 # Designed to keep macOS devices on the desired OS version
@@ -832,7 +832,7 @@ userPrompt() {
     elif [[ "$1" = "deadline" ]]; then
       #prompt user with buttons and deadline info
       begin=$(/usr/libexec/PlistBuddy -c "Print :startDate" "$counterFile")
-      dlDate=$(date -j -f "%a %b %e %H:%M:%S %Z %Y" -v+"$maxDays"d "$begin" +'%B %d, %Y')
+      dlDate=$(date -j -v+"$maxDays"d -f "%s" "$begin" +'%B %d, %Y')
       time=$(/usr/libexec/PlistBuddy -c "Print :deadlineTime" "$counterFile")
       dlHour=$(echo "$time" | cut -f1 -d ":")
       dlMinute=$(echo "$time" | cut -f2 -d ":")
@@ -1008,7 +1008,7 @@ log_to_screen false
 
 log_info "===== Launching macOS Updater Utility $(date)============"
 #log "===== Launching macOS Updater Utility ====="
-log_info "  --- Revision 13 ---  "
+log_info "  --- Revision 13.1 ---  "
 
 
 #Setup ManagePlist
