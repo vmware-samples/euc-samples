@@ -137,3 +137,5 @@ Here is a breakdown of the keys and their meaning:
     - Minor fixes:
         -  Deadline mode time formatting
         -  macOS Sonoma logic
+- 2023-10-17: Revision 13.1:
+    - Fix for displaying deadline date on user prompt screen
