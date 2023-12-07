@@ -10,7 +10,7 @@ If ($DeviceManufacturer -notlike "*Dell*") {
   return $null
 } ElseIf (Test-Path $registryPath) {
   # Read the stored value and calculate the number of days from today
-    $WarrantyEndDate = Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Dell\WARRANTY' -Name 'WarrantyEndDate'
+    $WarrantyEndDate = Get-ItemPropertyValue -Path $registryPath -Name 'WarrantyEndDate'
     $Today = Get-Date
     $TimeLine = New-TimeSpan -Start $Today -End $WarrantyEndDate
     return $TimeLine.Days
