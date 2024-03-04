@@ -1308,6 +1308,8 @@ else # deferal mode
       installUpdate "$updateType"
       #trigger script to notify user that upgrade is installing and reboot is imminent
       log_info "triggering notification script"
+      # reset the deferral counter to 0, so the user will have deferrals available for the next update
+      /usr/bin/defaults write "$counterFile" deferralCount -int 0
       installStatus
   fi
 fi
