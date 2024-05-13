@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # Simplifying eSIM Cellular Plan Activation with Workspace ONE UEM
 
 ## Overview
@@ -18,17 +21,23 @@ This sample guidance provides details on how to bulk activate iPad Cellular Plan
 
 ## Table of Contents
 
-- [Activating Cellular Service without MDM](#activating-cellular-service-without-mdm)
-- [Automated Cellular Service Activation with Workspace ONE UEM](#automated-cellular-service-activation-with-workspace-one-uem)
-  - [Pre-Requisites](#pre-requisites)
-  - [Known Carrier eSIM Activation Server URLs](#known-carrier-esim-activation-server-urls)
-  - [Activating with API Integration](#Activating-with-API-Integration)
-  - [Activating via Workspace ONE UEM Console](#Activating-via-Workspace-ONE-UEM-Console)
-- [Considerations and Troubleshooting](#considerations-and-troubleshooting)
-  - [Considerations for Device Reset](#considerations-for-device-reset)
-  - [Considerations When Bulk Activating](#Considerations-When-Bulk-Activating)
-  - [eSIM Activation Troubleshooting](#eSIM-Activation-Troubleshooting)
-  - [Pop-Up Notifications Related to Cellular Networks](#Pop-Up-Notifications-Related-to-Cellular-Networks)
+- [EUC-samples is now hosted https://github.com/euc-oss/euc-samples.](#euc-samples-is-now-hosted-httpsgithubcomeuc-osseuc-samples)
+- [This repo is no longer maintained.](#this-repo-is-no-longer-maintained)
+- [Simplifying eSIM Cellular Plan Activation with Workspace ONE UEM](#simplifying-esim-cellular-plan-activation-with-workspace-one-uem)
+  - [Overview](#overview)
+  - [Purpose](#purpose)
+  - [Table of Contents](#table-of-contents)
+  - [Activating Cellular Service without MDM](#activating-cellular-service-without-mdm)
+  - [Automated Cellular Service Activation with Workspace ONE UEM](#automated-cellular-service-activation-with-workspace-one-uem)
+    - [Pre-Requisites](#pre-requisites)
+    - [Known Carrier eSIM Activation Server URLs](#known-carrier-esim-activation-server-urls)
+    - [Activating with API Integration](#activating-with-api-integration)
+    - [Activating via Workspace ONE UEM Console](#activating-via-workspace-one-uem-console)
+  - [Considerations and Troubleshooting](#considerations-and-troubleshooting)
+    - [Considerations for Device Reset](#considerations-for-device-reset)
+    - [Considerations When Bulk Activating](#considerations-when-bulk-activating)
+    - [eSIM Activation Troubleshooting](#esim-activation-troubleshooting)
+    - [Pop-Up Notifications Related to Cellular Networks](#pop-up-notifications-related-to-cellular-networks)
 
 ## Activating Cellular Service without MDM
 

@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # Workspace ONE mobileconfig Importer
 * Author: Paul Evans
 * Date Created: December 2020 (Note: no longer receiving updates)

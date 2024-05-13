@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # macOS Updater Utility (mUU)
 <p align="center">
     <img width="500" alt="image" src="https://github.com/mzaske3/euc-samples/assets/63124926/1466c174-21d5-4fc0-8a28-2f1fd52ddcde">

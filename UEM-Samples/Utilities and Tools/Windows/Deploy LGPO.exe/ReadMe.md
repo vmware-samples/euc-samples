@@ -1,4 +1,7 @@
 
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # LGPO Upload to WS1 UEM Console
 
 ## Overview

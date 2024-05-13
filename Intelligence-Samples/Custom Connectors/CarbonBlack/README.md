@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples
+# This repo is no longer maintained
+
 
 # VMware Carbon Black Cloud Custom Connector Sample Collection
 

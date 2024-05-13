@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples
+# This repo is no longer maintained
+
 # Search for the VMware Unified Access Gateway Master Appliance
 
 ## Overview

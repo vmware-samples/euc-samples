@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # Migrate macOS Devices to Workspace ONE UEM
 
 This is an updated version of the previous generation of the tool which can be found [here]().

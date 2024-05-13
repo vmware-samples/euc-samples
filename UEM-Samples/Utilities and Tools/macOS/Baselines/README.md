@@ -1,4 +1,8 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples
+# This repo is no longer maintained
+
 # macOS Baselines
+
 
 ## Overview
 
@@ -12,17 +16,24 @@
 
 Utilizing the macOS Security Compliance Project (mSCP) to enforce baselines on macOS devices using Workspace ONE. We will review briefly how to use the mSCP to generate the desired baseline and then detail the procedure to deploy this configuration using Workspace ONE. We will close by reviewing deployment options for Freestyle-enabled and non-Freestyle-enabled environments. Here is a high level overview:
 
-1. [Prerequisites for mSCP](#prerequisites-for-mSCP)
-2. [Generating a Baseline](#generating-a-baseline)
-3. [Generating Guidance](#generating-guidance)
-4. [Deploying Baseline with Workspace ONE](#deploying-baseline-with-workspace-one)
-    1. [Profiles](#profiles)
-    2. [Script](#script)
-    3. [Sensors](#sensors)
-    4. [Remediation](#remediation)
-        1. [Using Freestyle Orchestrator](#remediation-with-freestyle-orchestrator)
-        2. [Using other methods](#remediation-without-freestyle-orchestrator)
-5. [Reporting](#reporting)
+- [macOS Baselines](#macos-baselines)
+  - [Overview](#overview)
+  - [Purpose](#purpose)
+  - [Prerequisites for mSCP](#prerequisites-for-mscp)
+  - [Generating a Baseline](#generating-a-baseline)
+  - [Generating Guidance](#generating-guidance)
+  - [Deploying Baseline with Workspace ONE](#deploying-baseline-with-workspace-one)
+    - [Profiles](#profiles)
+    - [Script](#script)
+    - [Sensors](#sensors)
+    - [Remediation](#remediation)
+      - [Remediation with Freestyle Orchestrator](#remediation-with-freestyle-orchestrator)
+      - [Remediation without Freestyle Orchestrator](#remediation-without-freestyle-orchestrator)
+  - [Reporting](#reporting)
+  - [Notes](#notes)
+  - [Resources](#resources)
+  - [Required Changes/Updates](#required-changesupdates)
+  - [Change Log](#change-log)
 
 ## Prerequisites for mSCP
 

@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples
+# This repo is no longer maintained
+
 # Expand-WV
 .SYNOPSIS
   Script to update the size of VMware App Volumes Writable Volumes.  Can also be used to view sizes of volumes.

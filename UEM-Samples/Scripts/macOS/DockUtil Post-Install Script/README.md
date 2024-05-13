@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # dockutil Post-Install Script for MacOS Internal Apps
 
 There are times where it would be useful to add icons to the user's dock after installing a new application.   The following script can be added as a post-install script in order to call an open source utility script (dockutil) to add the item as desired.

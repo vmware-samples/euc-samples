@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # Example - DEPNotify package
 This package is designed to open [DEPNotify](https://gitlab.com/Mactroll/DEPNotify) on first user login coming out of Setup Assistant from a DEP enrollment. 
 

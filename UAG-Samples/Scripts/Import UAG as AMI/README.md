@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples
+# This repo is no longer maintained
+
 # Import VMware Unified Access Gateway into Amazon Web Service and register as AMI (Amazon Image Machines)
 
 ## Overview

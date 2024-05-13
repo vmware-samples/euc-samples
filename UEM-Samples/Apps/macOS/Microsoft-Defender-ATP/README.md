@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # Microsoft Defender ATP #
 Deploying MS Defender ATP macOS with vmWare WorkspaceOne UEM
 

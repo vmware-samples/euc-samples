@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # EUC-samples
 
 ## macOS-Samples / 3rd-Party_Software_Guidance

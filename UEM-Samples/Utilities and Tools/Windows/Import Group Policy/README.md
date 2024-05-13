@@ -1,3 +1,6 @@
+# EUC-samples is now hosted https://github.com/euc-oss/euc-samples.
+# This repo is no longer maintained.
+
 # PRODUCTIZE: Workspace ONE Baselines and Workspace ONE AirLift #
 
 # Import Group Policy
