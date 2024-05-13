@@ -9,14 +9,14 @@
     Contributors:   Chris Halstead, chealstead@vmware.com; Phil Helmling, helmlingp@vmware.com
     Organization:   VMware, Inc.
     Filename:       import_sensor_samples.ps1
-    Updated:        January, 2023, helmlingp@vmware.com
-    Github:         https://github.com/vmware-samples/euc-samples/tree/master/UEM-Samples/Sensors
+    Updated:        May 2024, helmlingp@vmware.com
+    Github:         https://github.com/euc-oss/euc-samples/tree/main/UEM-Samples/Sensors
 
 
   .DESCRIPTION
     Place this PowerShell script in the same directory of all of your samples (.ps1, .sh, .zsh, .py files) or use the -SensorsDirectory parameter 
-    to specify your directory. This script will parse the sample sensors, check if they already exist, then upload to Workspace ONE UEM via 
-    the REST API. You can leverage the optional switch parameters to update the sensors included in the source directory, and assign them to the 
+    to specify your directory. This script will parse the sensors, check if they already exist, then upload to Workspace ONE UEM via 
+    the REST API. You can leverage the optional switch parameter -UpdateSensors to update the sensors included in the source directory, and assign them to the 
     specified Smart Group. There is also an ability to delete or export all sensors. 
 
     For Windows Samples be sure to use the following format when creating new samples so that they are imported correctly:
@@ -75,24 +75,25 @@
     and you will find the key in the API Key field.  If it is not there you may need override the settings and Enable API Access
 
     .PARAMETER OrganizationGroupName
-    OPTIONAL: The display name of the Organization Group. You can find this at the top of the console, normally your company's name.
-    Required to provide OrganizationGroupName or OrganizationGroupID.
+    OPTIONAL (Required to provide OrganizationGroupName or OrganizationGroupID):
+    The display name of the Organization Group. You can find this at the top of the console, normally your company's name.
+    This option will prompt to select the correct Organization Group if multiple OGs are found with a similar name.
 
     .PARAMETER OrganizationGroupID
-    OPTIONAL: The Group ID for your organization group. You can find this at the top of the console by hovering over the company name.
-    Required to provide OrganizationGroupName or OrganizationGroupID.
+    OPTIONAL (Required to provide OrganizationGroupName or OrganizationGroupID):
+    The Group ID for your organization group. You can find this at the top of the console by hovering over the company name.
+    This option will prompt to select the correct Organization Group if multiple OGs are found with a similar name.
 
     .PARAMETER SensorsDirectory
     OPTIONAL: The directory your sensor samples are located, default location is the current PowerShell directory of this script. 
 
     .PARAMETER SmartGroupID
-    OPTIONAL: If provided, imported sensors will be assigned to this Smart Group. Exisiting assignments will be overwritten. 
-    If wanting to assign, you are required to provide SmartGroupID or SmartGroupName.
+    OPTIONAL: If provided, new & existing sensors that are not already assigned to this SmartGroup will be assigned.
+    This option will prompt to select the correct Smart Group if multiple Smart Groups are found with a similar name.
 
     .PARAMETER SmartGroupName
-    OPTIONAL: If provided, imported scripts will be assigned to this Smart Group. Exisiting assignments will be overwritten. 
-    If wanting to assign, you are required to provide SmartGroupID or SmartGroupName. This option will prompt to select the correct Smart Group
-    if multiple Smart Groups are found with a similar name.
+    OPTIONAL: If provided, new & existing sensors that are not already assigned to this SmartGroup will be assigned.
+    This option will prompt to select the correct Smart Group if multiple Smart Groups are found with a similar name.
     
     .PARAMETER DeleteSensors
     OPTIONAL: If enabled, all sensors in your environment will be deleted. This action cannot be undone. Ensure you are targeting the correct Organization Group. 
@@ -335,7 +336,7 @@ Function Check-ConsoleVersion {
     $Version = $ProductVersion -replace '[\.]'
     $Version = [int]$Version
     if ($Version -ge 18110) {
-        Write-Host("Console Version " + $ProductVersion)
+        Write-Host("Console Version " + $ProductVersion) -ForegroundColor Green
         Return $null
     }else{
         Write-Host("Your Console Version is " + $ProductVersion + " Sensors only works on Console Version 18.11.0.0 or above.") -ForegroundColor Yellow 
@@ -351,12 +352,12 @@ Function Check-ConsoleVersion {
 
 # Returns a list of Sensors from Workspace ONE UEM Console
 Function Get-Sensors {
-    Write-Host("Getting List of Sensors in the Console") -ForegroundColor Green
+    Write-Host("Getting List of Sensors in the Console")
     $endpointURL = $URL + "/mdm/devicesensors/list/" + $WorkspaceONEGroupUUID
     $webReturn = Invoke-RestMethod -Method Get -Uri $endpointURL -Headers $headerv2
     $Sensors = $webReturn
     if($Sensors){
-        Write-Host($Sensors.total_results.toString() + " sensors found in console")
+        Write-Host($Sensors.total_results.toString() + " sensors found in console") -ForegroundColor Green
     }ELSE{
         Write-Host("No Sensors Found in Console")}
     Return $Sensors
@@ -369,6 +370,8 @@ Function Set-Sensors {
         [string]$Description,
         [Parameter(Mandatory=$True)]
         [string]$Context,
+        [Parameter(Mandatory=$False)]
+        [string]$Architecture = "EITHER64OR32BIT",
         [Parameter(Mandatory=$True)]
         [string]$SensorName,
         [Parameter(Mandatory=$True)]
@@ -400,7 +403,7 @@ Function Set-Sensors {
         'name'	                  = "$SensorName";
         'description'             = "$Description";
         'organization_group_uuid' =	"$WorkspaceONEGroupUUID";
-        'execution_architecture'  = "EITHER64OR32BIT";
+        'execution_architecture'  = "$Architecture";
         'execution_context'	      = "$Context";
         'platform'	              = "$os";
         'query_response_type'	  = "$ResponseType";
@@ -420,6 +423,8 @@ Function Update-Sensors {
         [string]$Description,
         [Parameter(Mandatory=$True)]
         [string]$Context,
+        [Parameter(Mandatory=$False)]
+        [string]$Architecture = "EITHER64OR32BIT",
         [Parameter(Mandatory=$True)]
         [string]$SensorName,
         [Parameter(Mandatory=$True)]
@@ -451,7 +456,7 @@ Function Update-Sensors {
         'name'	                  = "$SensorName";
         'description'             = "$Description";
         'organization_group_uuid' =	"$WorkspaceONEGroupUUID";
-        'execution_architecture'  = "EITHER64OR32BIT";
+        'execution_architecture'  = "$Architecture";
         'execution_context'	      = "$Context";
         'platform'	              = "$os";
         'query_response_type'	  = "$ResponseType";
@@ -478,7 +483,7 @@ function get-SensorAssignments {
 }
 
 # Assigns Sensors
-Function Assign-Sensors {
+Function Assign-Sensor {
     param (
         [Parameter(Mandatory=$True)]
         [string]$SensorUUID
@@ -506,6 +511,7 @@ Function Assign-Sensors {
             }
     $json = $body | ConvertTo-Json
     $webReturn = Invoke-RestMethod -Method Post -Uri $endpointURL -Headers $headerv2 -Body $json
+    return $webReturn
 }
 
 # Parse Local PowerShell Files
@@ -514,7 +520,7 @@ Function Get-LocalSensors {
     #$Sensors = Select-String -Path $SensorsDirectory\* -Pattern 'Return Type' -Context 10000000 -ErrorAction SilentlyContinue
     $ExcludedcTemplates = "import_sensor_samples|get_enrollment_sid_32_64|check_matching_sid_sensor|template*"
     $Sensors = Get-ChildItem -File | Where-Object Name -NotMatch $ExcludedcTemplates
-    Write-Host("Found " + $Sensors.Count + " Sensor Samples") -ForegroundColor Green
+    Write-Host("Found " + $Sensors.Count + " Sensors in local folder") -ForegroundColor Green
     Return $Sensors
 }
 
@@ -614,6 +620,7 @@ Function Export-Sensors($path) {
     } While ($Num -ge 0)
 }
 
+# Display usage info
 Function usage {
     param (
         [Parameter(Mandatory=$True)]
@@ -639,7 +646,7 @@ Function usage {
     Write-Host "# Return Type: INTEGER | BOOLEAN | STRING | DATETIME`r"
     Write-Host "# Variables: KEY,VALUE; KEY,VALUE`r"
 
-    Write-Host "Example macOS Sensor Header`r" -ForegroundColor Green
+    Write-Host "Example Linux Sensor Header`r" -ForegroundColor Green
     Write-Host "<YOUR SCRIPT COMMANDS>`r"
     Write-Host "# Description: Description`r"
     Write-Host "# Execution Context: System | User`r"
@@ -650,6 +657,9 @@ Function usage {
     Write-Host "Note: The ""Variables:"" metadata in macOS/Linux scripts are optional. Please do not include if not relevant.`r`n"
     Read-Host -Prompt "Press any key to continue"
 }
+
+# Clear variables so they don't get reused
+Clear-Variable -Name ("PSSensors", "NumSensors", "SmartGroupUUID") -ErrorAction SilentlyContinue
 
 # Forces the use of TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -678,8 +688,28 @@ $headerv2 = @{
 "Accept"		 = "application/json;version=2";
 "Content-Type"   = "application/json";}
 
+# change this to say whether its going to deletes, imports, exports or updates sensors
+# also say if its going to assign them
+if($Platform){$platformMessage = "$Platform"}else{$platformMessage = "all"}
+if($DeleteSensors){
+    
+    Write-Host "`n`nDeleting all sensors in $WorkspaceONEServer within $OrganizationGroupName. This is destructive and not reversible." -ForegroundColor Red 
+    $Response = Read-Host "Are you sure you want to continue?( y / n )"
+    Switch ($Response) 
+     { 
+       Y {$startmsg = "Deleting all sensors in $WorkspaceONEServer within $OrganizationGroupName"; Return $null} 
+       N {Write-Host "Exiting Script`n" -ForegroundColor Red; Exit} 
+       Default {Write-Host "Exiting Script`n" -ForegroundColor Red; Exit} 
+     }
+} elseif ($ExportSensors) {
+    $startmsg = "Exporting all sensors in $WorkspaceONEServer within $OrganizationGroupName"
+} elseif ($UpdateSensors){
+    $startmsg = "Updating $platformMessage sensors in $WorkspaceONEServer within $OrganizationGroupName"
+} else {
+    $startmsg = "Importing $platformMessage sensors into $WorkspaceONEServer within $OrganizationGroupName"
+}
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
-Write-Host("               Starting up the Import Process") -ForegroundColor Yellow 
+Write-Host($startmsg) -ForegroundColor Yellow 
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
                 
 # Get ogID and UUID from Organizational Group Name
@@ -715,7 +745,6 @@ if ($DeleteSensors) {
     Break
 }
 
-Clear-Variable -Name ("PSSensors", "NumSensors") -ErrorAction SilentlyContinue
 # Pull in Sensor Samples
 $PSSensors = Get-LocalSensors
 $NumSensors = $PSSensors.Count - 1
@@ -728,36 +757,52 @@ if($ExisitingSensors){
     $CurrentSensors = $ExisitingSensors.result_set
 }
 
+# SmartGroupID or SmartGroupName parameter specified. Get SmartGroupUUID for assignment
+if($SmartGroupID){
+    Get-SmartGroupUUIDbyID -SGID $SmartGroupID
+} elseif ($SmartGroupName){
+    Get-SmartGroupUUIDbyName -SGName $SmartGroupName -WorkspaceONEOgId $WorkspaceONEOgId
+}
+
 do {
     $Sensor = $PSSensors[$NumSensors]
     $SensorName = $sensor.Name.ToLower()
-    Write-Host("Working on $SensorName") -ForegroundColor Green
-    $usageflag = $false
+    Write-Host("`nWorking on $SensorName") -ForegroundColor Green
+    $showusage = $false
+
+    Clear-Variable -Name ("scriptPlatform", "Description", "Context", "Architecture", "ResponseType", "Variables", "SensortobeAssigned", "SensorAssigned") -ErrorAction SilentlyContinue
 
     #Get the actual content
     $content = Get-Content -Path $Sensor.FullName
-    
+
     # Description: Removes Comment # and Quotes
     $d = $content | Select-String -Pattern 'Description: ' -Raw
-    if($d){$Description = $d.Substring($d.LastIndexOf('Description: ')+13) -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
+    if($d){$Description = $d.Substring($d.LastIndexOf('Description: ')+13) -replace '[#]' -replace '"',"" -replace "'",""}else{$showusage = $true}
     # Execution Context: USER, SYSTEM
     $c = $content | Select-String -Pattern 'Execution Context: ' -Raw
-    if($c){$Context = $c.Substring(($c.LastIndexOf('Execution Context: ')+19))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
+    if($c){$Context = $c.Substring(($c.LastIndexOf('Execution Context: ')+19))  -replace '[#]' -replace '"',"" -replace "'",""}else{$showusage = $true}
     # Execution Architecture: EITHER64OR32BIT | ONLY_32BIT | ONLY_64BIT | LEGACY
     $a = $content | Select-String -Pattern 'Execution Architecture: ' -Raw
-    if($a){$Architecture = $a.Substring(($a.LastIndexOf('Execution Architecture: ')+24))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
+    if($a){$Architecture = $a.Substring(($a.LastIndexOf('Execution Architecture: ')+24))  -replace '[#]' -replace '"',"" -replace "'",""}else{$showusage = $true}
     # Return Type: INTEGER, BOOLEAN, STRING, DATETIME
     $r = $content | Select-String -Pattern 'Return Type: ' -Raw
-    if($r){$ResponseType = $r.Substring(($r.LastIndexOf('Return Type: ')+13))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
+    if($r){$ResponseType = $r.Substring(($r.LastIndexOf('Return Type: ')+13))  -replace '[#]' -replace '"',"" -replace "'",""}else{$showusage = $true}
     # Variables: Key, Value; Key, Value
     $v = $content | Select-String -Pattern 'Variables: ' -Raw
-    if($v){$Varibles = $v.Substring(($v.LastIndexOf('Variables: ')+8))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
+    if($v){$Varibles = $v.Substring(($v.LastIndexOf('Variables: ')+8))  -replace '[#]' -replace '"',"" -replace "'",""}else{$showusage = $true}
     # Platform: WIN_RT | APPLE_OSX | LINUX
     $p = $content | Select-String -Pattern 'Platform: ' -Raw
-    if($p){$Platform = $p.Substring(($p.LastIndexOf('Platform: ')+10))  -replace '[#]' -replace '"',"" -replace "'",""}else{$usageflag = $true}
-    
-    if($usageflag){usage -ScriptName $ScriptName;$NumScripts--;Continue}
-    
+    if($p){$scriptPlatform = $p.Substring(($p.LastIndexOf('Platform: ')+10))  -replace '[#]' -replace '"',"" -replace "'",""}else{$showusage = $true}
+
+    switch ($scriptPlatform) {
+        "Windows" { $Platform = "Windows" }
+        "macOS" { $Platform = "macOS" }
+        "Linux" { $Platform = "Linux" }
+        Default { $Platform = $null }
+    }
+
+    if(!$showusage){usage -ScriptName $SensorName;$NumScripts--;Continue}
+
     # Encode Script
     $Data = Get-Content -Path $Sensor.FullName -Encoding UTF8 -Raw
     $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
@@ -765,146 +810,152 @@ do {
 
     switch -Regex ( $SensorName )
     {
-      '^.*\.(ps1)$'
-      {
+        '^.*\.(ps1)$'
+        {
         $query_type = "POWERSHELL"
         $os = "WIN_RT"
         $SensorName = $SensorName.Replace(".ps1","").Replace(" ","_")
-      }
-      '^.*\.(py)$'
-      {
+        }
+        '^.*\.(py)$'
+        {
         $query_type = "PYTHON"
         $os = "APPLE_OSX"
         $SensorName = $SensorName.Replace(".py","").Replace(" ","_")
-      }
-      '^.*\.(zsh)$'
-      {
+        }
+        '^.*\.(zsh)$'
+        {
         $query_type = "ZSH"
         $os = "APPLE_OSX"
         $SensorName = $SensorName.Replace(".zsh","").Replace(" ","_")
-      }
-      '^.*\.(sh)$'
-      {
-        #Add Logic to look into the first line of the file
-        $ShaBang = $content[0].ToLower()
-        switch -Regex ( $ShaBang )
-        {
-          '^.*(\/bash)$'
-          {
-            $query_type = "BASH"
-            $os = "APPLE_OSX"
-            $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
-          }
-          '^.*(\/zsh)$'
-          {
-            $query_type = "ZSH"
-            $os = "APPLE_OSX"
-            $SensorName = $SensorName.Replace(".sh","").Replace(".zsh","").Replace(" ","_")
-          }
-          default
-          {
-            $query_type = "BASH"
-            $os = "APPLE_OSX"
-            $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
-          }
         }
-      }
-      default # searches the sha-bang for sensors with no file extension 
+        '^.*\.(sh)$'
         {
-          $ShaBang = $content[0].ToLower()
-          switch -Regex ( $ShaBang )
-          {
-            '^.*(\/bash)$'
+            #macOS and Linux both support BASH shell script
+            $ShaBang = $content[0].ToLower()
+            switch -Regex ( $ShaBang )
             {
-              $query_type = "BASH"
-              $os = "APPLE_OSX"
-              $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
+                '^.*(\/bash)$'
+                {
+                    $query_type = "BASH"
+                    if($scriptPlatform -eq "LINUX"){
+                        $os = $scriptPlatform
+                    }else{
+                        $os = "APPLE_OSX"
+                    }
+                    $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
+                }
+                '^.*(\/zsh)$'
+                {
+                    $query_type = "ZSH"
+                    $os = "APPLE_OSX"
+                    $SensorName = $SensorName.Replace(".sh","").Replace(".zsh","").Replace(" ","_")
+                }
+                default
+                {
+                    $query_type = "BASH"
+                    if($scriptPlatform -eq "LINUX"){
+                        $os = $scriptPlatform
+                    }else{
+                        $os = "APPLE_OSX"
+                    }                
+                    $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
+                }
             }
-            '^.*(\/zsh)$'
+        }
+        default # searches the sha-bang for sensors with no file extension 
+        {
+            $ShaBang = $content[0].ToLower()
+            switch -Regex ( $ShaBang )
             {
-              $query_type = "ZSH"
-              $os = "APPLE_OSX"
-              $SensorName = $SensorName.Replace(".sh","").Replace(".zsh","").Replace(" ","_")
+                '^.*(\/bash)$'
+                {
+                    $query_type = "BASH"
+                    if($scriptPlatform -eq "LINUX"){
+                        $os = $scriptPlatform
+                    }else{
+                        $os = "APPLE_OSX"
+                    }
+                    $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
+                }
+                '^.*(\/zsh)$'
+                {
+                    $query_type = "ZSH"
+                    $os = "APPLE_OSX"
+                    $SensorName = $SensorName.Replace(".sh","").Replace(".zsh","").Replace(" ","_")
+                }
+                '^.*(\/python)$'
+                {
+                    $query_type = "PYTHON"
+                    $os = "APPLE_OSX"
+                    $SensorName = $SensorName.Replace(".py","").Replace(" ","_")
+                }
+                default
+                {
+                    $query_type = "BASH"
+                    if($scriptPlatform -eq "LINUX"){
+                        $os = $scriptPlatform
+                    }else{
+                        $os = "APPLE_OSX"
+                    }
+                    $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
+                }
             }
-            '^.*(\/python)$'
-            {
-              $query_type = "PYTHON"
-              $os = "APPLE_OSX"
-              $SensorName = $SensorName.Replace(".py","").Replace(" ","_")
-            }
-            default
-            {
-              $query_type = "BASH"
-              $os = "APPLE_OSX"
-              $SensorName = $SensorName.Replace(".sh","").Replace(" ","_")
-            }
-          }
         }
     }
     
-    # Check if Sensor Already Exists
-    if (Check-Duplicate-Sensor -SensorName $SensorName) {
-        # If sensor already exists & UpdateSensor parameter is provided, then update into the console
-        $SensortobeAssigned = $False
-        if($UpdateSensors){
-            Write-Host($SensorName + " already exists in this tenant. Updating Sensor in the Console") -ForegroundColor White
-            if(!$Platform -or (($Platform -eq 'Windows' -and $os -eq 'WIN_RT') -or ($Platform -eq 'macOS' -and $os -eq 'APPLE_OSX') -or ($Platform -eq 'LINUX' -and $os -eq 'LINUX'))){
-                $SensorUUID=$CurrentSensorUUID
-                Update-Sensors -Description $Description -Context $Context -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles
-            }else{
-                Write-Host($SensorName + " isn't for " + $Platform + ". Skipping!") -ForegroundColor Yellow
-            }
-        } else {
-            write-host "Sensor is a duplicate and UpdateSensors option is not set. Do Nothing." -ForegroundColor Yellow
-        }
-    } else {
-        # Import new Sensor
-        if(!$Platform -or (($Platform -eq 'Windows' -and $os -eq 'WIN_RT') -or ($Platform -eq 'macOS' -and $os -eq 'APPLE_OSX') -or ($Platform -eq 'LINUX' -and $os -eq 'LINUX'))){
-            $addsensor = Set-Sensors -Description $Description -Context $Context -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles
-            $SensorUUID=$addsensor.uuid
-        }else{
-            Write-Host($SensorName + " isn't for " + $Platform + ". Skipping!") -ForegroundColor Yellow
-        }
-    }
-    if(($SmartGroupID -ne 0) -or $SmartGroupName){
-        Write-Host("Assigning Sensors to Smart Group $SmartGroupName") -ForegroundColor Green
-        if($SmartGroupID){
-            Get-SmartGroupUUIDbyID -SGID $SmartGroupID
-        }elseif($SmartGroupName){
-            Get-SmartGroupUUIDbyName -SGName $SmartGroupName -WorkspaceONEOgId $WorkspaceONEOgId
-        }else{
-            Write-Host("Please check your values for SmartGroupID or SmartGroupName") -ForegroundColor Yellow 
-            Exit
-        }
-        
-        if($SmartGroupUUID){
-            # Only assign new sensors
+    # If sensor already exists & UpdateSensor parameter is provided, then update into the console
+    if(($os -eq $Platform) -or (!$Platform)){
+        # Check if Sensor Already Exists
+        if (Check-Duplicate-Sensor -SensorName $SensorName) {
             if($UpdateSensors){
-                if($CurrentSensorAssignmentCount -ge 1){
-                    $SensorAssignments = get-SensorAssignments -SensorUUID $SensorUUID
-                    foreach($assignment in $SensorAssignments){
-                        if($assignment.smart_group_uuid -eq $SmartGroupUUID){
-                            $SensortobeAssigned = $False
-                            write-host "Sensor already assigned to SG: $SmartGroupName"
-                        } else {
-                            $SensortobeAssigned = $True
-                        }
-                    }
-                    if($SensortobeAssigned){
-                        Assign-Sensors -SensorUUID $SensorUUID
-                        write-host "Assigned Sensor: $SensorName to SG: $SmartGroupName"
-                    }
-                } else {
-                    Assign-Sensors -SensorUUID $SensorUUID
-                    write-host "Assigned Sensor: $SensorName to SG: $SmartGroupName"
+                Write-Host("Updating exiting sensor $SensorName.") -ForegroundColor Green
+                $SensortobeAssigned = $True
+
+                if($os -eq 'WIN_RT'){
+                    $SensorUUID=$CurrentSensorUUID
+                    Update-Sensors -Description $Description -Context $Context -Architecture $Architecture -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles
+                }
+                elseif(($os -eq 'APPLE_OSX') -or ($os -eq 'LINUX')){
+                    $SensorUUID=$CurrentSensorUUID
+                    Update-Sensors -Description $Description -Context $Context -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles
                 }
             } else {
-                if($SensortobeAssigned){
-                    Assign-Sensors -SensorUUID $SensorUUID
-                    write-host "Assigned Sensor: $SensorName to SG: $SmartGroupName"
-                }
+                $SensortobeAssigned = $False
+                write-host "Not updating existing sensor." -ForegroundColor Yellow
+            }
+        } else {
+            # Import new Sensor
+            $SensortobeAssigned = $True
+            if($os -eq 'WIN_RT'){
+                $addsensor = Set-Sensors -Description $Description -Context $Context -Architecture $Architecture -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles
+                $SensorUUID=$addsensor.uuid
+            }
+            elseif(($os -eq 'APPLE_OSX') -or ($os -eq 'LINUX')){
+                $addsensor = Set-Sensors -Description $Description -Context $Context -SensorName $SensorName -ResponseType $ResponseType -Script $Script -query_type $query_type -os $os -Varibles $Varibles
+                $SensorUUID=$addsensor.uuid
             }
         }
+    } else {
+        $SensortobeAssigned = $False
+        Write-Host($SensorName + " isn't for " + $Platform + ". Skipping!") -ForegroundColor Yellow
+    }
+
+    if($SmartGroupUUID -and $SensortobeAssigned){
+
+        $SensorAssignments = get-SensorAssignments -SensorUUID $SensorUUID
+        foreach($assignment in $SensorAssignments){
+            if($assignment.smart_group_uuid -eq $SmartGroupUUID){
+                $SensorAssigned = $True
+                Write-Host "Sensor already assigned to SG: $SmartGroupName" -ForegroundColor Yellow
+            } else {
+                $SensorAssigned = $False
+            }
+        }
+        if(!$SensorAssigned){
+            $sensorAssigned = Assign-Sensors -SensorUUID $SensorUUID
+            Write-Host "Assigning Sensor: $SensorName to SG: $SmartGroupName" -ForegroundColor Green 
+        }
+
     }
     
     $NumSensors--
@@ -912,7 +963,7 @@ do {
     $NumSensors -ge 0
 )
 
-Write-Host("*****************************************************************") -ForegroundColor Yellow 
-Write-Host("                    Import Process Complete") -ForegroundColor Yellow 
-Write-Host("             Please review the status messages above") -ForegroundColor Yellow 
+Write-Host("`n`n*****************************************************************") -ForegroundColor Yellow 
+Write-Host("`t`t`t`tProcess Complete") -ForegroundColor Yellow 
+Write-Host("`t`t`tPlease review the status messages above") -ForegroundColor Yellow 
 Write-Host("*****************************************************************") -ForegroundColor Yellow 
