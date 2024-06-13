@@ -839,7 +839,7 @@ elseif ($Arch -eq 'amd64')
 
 #Checking connection to target server before doing anything else
 Write-Log "Verifying connection to the target UEM server: $server"
-$connectionStatus  = Test-Connection -ComputerName $server -Quiet
+$connectionStatus  = Test-NetConnection -ComputerName $server -Port 443 -InformationLevel Quiet
 if($connectionStatus)
 {
 	Write-Log "Test connection passed."
